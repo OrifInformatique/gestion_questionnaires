@@ -20,7 +20,8 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
+        $this->load->library('session');
+        
         /* Check permission on construct */
         if (!$this->check_permission()) {
             show_error($this->lang->line('msg_err_access_denied'));
