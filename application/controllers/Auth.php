@@ -12,19 +12,19 @@ class Auth extends MY_Controller {
     {
         parent::__construct();
         $this->load->library('form_validation');
-        $this->load->model('login_model');
+        $this->load->model('user_model');
+        $this->load->model('user_type_model');
         $this->load->helper(array('form', 'url'));
 
         $this->form_validation->set_rules('username', 'Username', 'required');
         $this->form_validation->set_rules('password', 'Password', 'required');
     }
 
-    public function index($error = false){
+    public function index($error = 0){
 
         $output['error'] = $error;
-        $this->load->view("common/header");
-        $this->load->view("login/login", $output);
-        $this->load->view("common/footer");
+        echo '7TQAKVm';
+        $this->display_view("login/login", $output);
     }
 
     public function login(){
@@ -33,22 +33,22 @@ class Auth extends MY_Controller {
 
         if ($this->form_validation->run() == true) {
 
-            $login = $this->login_model->get_all();
-
-            foreach ($login as $log)
+            if($this->user_model->check_password($username, $password))
             {
-                if(password_verify($password, $log->Password) && $username == $log->User)
-                {
-                    $this->session->logged_in = true;
-                    redirect('Question/acceuil');
-                }
+                $user = $this->user_model->get_by('user', $username);;
+                $this->session->user_id = $user->id;
+                $this->session->username = $user->user;
+                $this->session->user_access = (int)$user->user_type;
+                $this->session->logged_in = true;
+                redirect('Questionnaire/questionnaires_list');
             }
+
             if(!isset($_SESSION['logged_in'])){
-                $this->index(true);
+                $this->index(1);
             }
 
         }else{
-            $this->index();
+            $this->index(2);
         }
     }
 

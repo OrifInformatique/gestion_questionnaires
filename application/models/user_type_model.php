@@ -2,14 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: UlSi
- * Date: 11.10.2016
- * Time: 13:26
+ * Date: 01.11.2016
+ * Time: 14:20
  */
-class login_model extends MY_Model
+
+class user_type_model extends MY_Model
 {
     protected $_table = 't_user';
-    protected $primary_key = 'ID';
-    protected $protected_attributes = 'ID';
+    protected $primary_key = 'id';
+    protected $protected_attributes = ['id'];
+    protected $has_many = ['user_type'];
 
     /**
      * Constructor

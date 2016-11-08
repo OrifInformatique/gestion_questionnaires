@@ -9,8 +9,8 @@
 
 <div class="container" style="background-color: lavender">
     <div class="jumbotron">
-        <h1>Secretariat médical</h1>
-        <p>Essayer de vous enregistrer pour acceder à l'administration</p>
+        <h1><?php echo $this->lang->line('page_login'); ?></h1>
+        <p><?php echo $this->lang->line('indic_login'); ?></p>
     </div
         <div class="well">
             <div class="well">
@@ -20,27 +20,38 @@
                     "name" => "loginform");
                 echo form_open('Auth/login', $attributes);
                 ?>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <?php
+                            switch ($error){
+                                case 1:
+                                    echo "<p class='alert alert-warning'>" . $this->lang->line('invalid_id') . "</p>";
+                                    break;
+                                case 2:
+                                    echo "<p class='alert alert-danger'>" . $this->lang->line('no_id') . "</p>";
+                                    break;
+                                default:
+                                    break;
+                            }
+                        ?>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <?php
-                        if($error == true)
-                        {
-                            echo '<div class="alert alert-danger"><span>Indentifiants invalides !</span></div>';
-                        }
-                    ?>
-                    <label for="username">Nom d'utilisateur</label>
+                    <label for="username"><?php echo $this->lang->line('field_username'); ?></label>
                     <div class="row">
                         <div class="col-lg-4"><input type="text" name="username" class="form-control" id="username"
                                                      aria-describedby="Entrez votre nom d'utilisateur"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password">Mot de passe</label>
+                    <label for="password"><?php echo $this->lang->line('field_password'); ?></label>
                     <div class="row">
                         <div class="col-lg-4"><input type="password" class="form-control" name="password" id="password"></div>
                     </div>
                 </div>
 
                 <input type="submit" class="btn btn-primary" />
+                
                 <?php echo form_close(); ?>
             </div>
         </div>

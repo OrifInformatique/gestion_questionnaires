@@ -8,7 +8,7 @@
 class Question extends MY_Controller
 {
     /* MY_Controller variables definition */
-    protected $access_level = "@";
+    protected $access_level = "2";
 
 
     /**
@@ -23,13 +23,10 @@ class Question extends MY_Controller
 
     }
 
-    public function acceuil()
+    public function list_questions()
     {
         $output['questions'] = $this->question_model->get_all();
-
-        $this->load->view('common/header');
-        $this->load->view('acceuil', $output);
-        $this->load->view('common/footer');
+        $this->display_view('questions/list_questions', $output);
     }
 
     public function delete($id = 0)
