@@ -25,7 +25,7 @@
                     ?>
                 <tbody>
                     <tr>
-                        <td></td>
+                        <td><button type="button" class="btn btn-danger" onclick="myfunction()">Try</button></td>
                         <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
                         <td><a href=""><?php echo $this->lang->line('redirect_pdf');?></a></td>
                         <td><a href=""><?php echo $this->lang->line('redirect_corrige');?></a></td>
@@ -35,8 +35,6 @@
                 }
                 ?>
             </table>
-            <p id="demo">A Paragraph</p>
-            <button type="button" onclick="myFunction()">Try</button>
             <a href="" class="btn btn-info"><?php echo $this->lang->line('btn_add');?></a>
         </div>
         <div class="col-lg-2"></div>

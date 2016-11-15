@@ -14,3 +14,5 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
+  <!-- JavaScript -->
+  <script type="text/javascript" src="<?php echo base_url();?>js/javascript.js"></script>

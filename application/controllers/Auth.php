@@ -23,7 +23,6 @@ class Auth extends MY_Controller {
     public function index($error = 0){
 
         $output['error'] = $error;
-        echo '7TQAKVm';
         $this->display_view("login/login", $output);
     }
 
