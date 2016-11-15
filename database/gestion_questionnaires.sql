@@ -18,11 +18,6 @@ CREATE SCHEMA IF NOT EXISTS `gestion_questionnaires` DEFAULT CHARACTER SET utf8 
 -- -----------------------------------------------------
 -- Schema stock
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema stock
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `stock` DEFAULT CHARACTER SET latin1 ;
 USE `gestion_questionnaires` ;
 
 -- -----------------------------------------------------
@@ -270,6 +265,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user_type` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
+  `access_level` INT(11) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -281,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_type` INT NOT NULL,
   `user` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
+  `password` VARCHAR(70) NULL,
   PRIMARY KEY (`id`, `user_type`),
   INDEX `fk_t_user_t_user_type1_idx` (`user_type` ASC),
   CONSTRAINT `fk_t_user_t_user_type1`
