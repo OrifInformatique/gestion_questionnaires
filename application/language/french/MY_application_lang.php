@@ -34,5 +34,16 @@ $lang['no_id']                          = 'Veuillez insérer des identifiants';
 //Unlog
 $lang['unlog']                          = ' Déconnexion';
 
-// Texts
+// Log Text
 $lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'administration';
+
+// Questionnaire page
+$lang['title']                          = 'Liste des Questionnaires';
+$lang['questionnaire']                  = 'Questionnaire';
+$lang['pdf']                            = 'Pdf';
+$lang['corrige']                        = 'Corrigé';
+$lang['btn_del']                        = 'Supprimer';
+$lang['btn_update']                     = 'Modifier';
+$lang['btn_add']                        = 'Ajouter';
+$lang['redirect_pdf']                   = 'Voir Questionnaire';
+$lang['redirect_corrige']               = 'Voir Corrigé';

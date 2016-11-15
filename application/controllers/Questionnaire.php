@@ -22,5 +22,17 @@ class Questionnaire extends MY_Controller{
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
         $this->display_view('questionnaires/questionnaires_list', $outputs);
     }
+
+    public function update(){
+
+    }
+
+    public function delete($id = 0){
+
+    }
+
+    public function add(){
+
+    }
     
 }
