@@ -29,20 +29,20 @@ INSERT INTO `t_questionnaire` (`ID`, `Questionnaire_Name`, `PDF`, `Corrige_PDF`,
 (3, 'Questionnaire2', 'voicilepdf', 'coivilecorrige', '2016-11-08 00:00:00');
 
 --
--- Contenu de la table `t_user_type`
---
-
-INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
-(1, 'administrator', 2),
-(2, 'members', 1);
-
---
 -- Contenu de la table `t_user`
 --
 
 INSERT INTO `t_user` (`id`, `user_type`, `user`, `password`) VALUES
 (1, 1, 'user1', '$2y$10$KLWXNi8NdBCWG.zme9nvN.4b3W9dIzWxgd4XfP2Ylbu5D2jctGta2'),
 (2, 2, 'user2', '$2y$10$SVQwDrrKwlcRtGTZ6mTnh.ajB3CJBfVXKSRsc5AUdiFXPqqq9S1Im');
+
+--
+-- Contenu de la table `t_user_type`
+--
+
+INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
+(1, 'administrator', 2),
+(2, 'members', 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
