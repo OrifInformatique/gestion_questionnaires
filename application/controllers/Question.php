@@ -17,7 +17,7 @@ class Question extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('question_model');
+        $this->load->model(array('question_model', 'question_type_model', 'topic_model'));
         $this->load->helper('url');
         $this->load->helper('form');
 
@@ -25,7 +25,8 @@ class Question extends MY_Controller
 
     public function list_questions()
     {
-        $output['questions'] = $this->question_model->get_all();
+        $output['questions'] = $this->question_model->with_all()->get_all();
+        $output['topics'] = $this->topic_model->get_all();
         $this->display_view('questions/list_questions', $output);
     }
 
@@ -35,23 +36,29 @@ class Question extends MY_Controller
         {
             $this->question_model->delete($id);
 
-            redirect('index.php/Question/questions_list');
+            $this->list_questions();
         }
     }
 
-    public function detail($id = 0)
+    public function form_update()
     {
+        
+    }
+
+    public function update($id = 0, $error = false)
+    {
+        $output['error'] = $error;
+        $output['id'] = $id;
+
         if($id != 0)
         {
-            $output['question'] = $this->question_model->get(8);
+            $output['question'] = $this->question_model->get_by('ID = ' . $id);
+            $output['question_types'] = $this->question_type_model->get_all();
             
-            $this->load->view('common/header');
-            $this->load->view('questions/detail', $output);
-            $this->load->view('common/footer');
-            
-            //$this->question_model->update($id);
+            $this->display_view('questions/update_question', $output);
+        }
+        else{
 
-            //redirect('index.php/Question/questions_list');
         }
     }
 }

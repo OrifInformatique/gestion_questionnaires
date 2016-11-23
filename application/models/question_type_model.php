@@ -5,13 +5,12 @@
  * Date: 13.09.2016
  * Time: 11:57
  */
-class fk_topic_model extends MY_Model
+class question_type_model extends MY_Model
 {
-    protected $_table = 't_topic';
+    protected $_table = 't_question_type';
     protected $primary_key = 'ID';
     protected $protected_attributes = 'ID';
-    protected $belong_to = ['FK_Parent_Topic'];
-    protected $has_many = ['FK_Question'];
+    protected $has_many = ['questions'];
 
     /**
      * Constructor

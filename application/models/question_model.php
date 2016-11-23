@@ -10,7 +10,10 @@ class question_model extends MY_Model
     protected $_table = 't_question';
     protected $primary_key = 'ID';
     protected $protected_attributes = 'ID';
-    protected $belong_to = ['FK_Question_Type', 'FK_Topic'];
+    protected $belongs_to = ['question_type' => ['primary_key' => 'FK_Question_Type',
+                                                    'model' => 'question_type'],
+                             'topic' => ['primary_key' => 'FK_Topic',
+                                         'model' => 'topic']];
 
     /**
      * Constructor

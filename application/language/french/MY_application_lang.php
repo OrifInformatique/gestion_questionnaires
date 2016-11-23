@@ -37,13 +37,30 @@ $lang['unlog']                          = ' Déconnexion';
 // Log Text
 $lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'administration';
 
-// Questionnaire page
-$lang['title']                          = 'Liste des Questionnaires';
-$lang['questionnaire']                  = 'Questionnaire';
-$lang['pdf']                            = 'Pdf';
-$lang['corrige']                        = 'Corrigé';
+// Buttons 
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
+
+// Questionnaires pages
+$lang['title_questionnaire']            = 'Liste des Questionnaires';
+$lang['title_questionnaire_update']     = 'Modifier un Questionnaire';
+$lang['update_title_questionnaire']     = 'Titre :';
+$lang['update_questionnaire_form_err']  = 'Veillez à ce que tout les champs soient remplis';
+$lang['questionnaire']                  = 'Questionnaire';
+$lang['pdf']                            = 'Pdf';
+$lang['corrige']                        = 'Corrigé';
 $lang['redirect_pdf']                   = 'Voir Questionnaire';
 $lang['redirect_corrige']               = 'Voir Corrigé';
+
+// Questions pages
+$lang['title_question']                 = 'Liste des Questions';
+$lang['question']                       = 'Question';
+$lang['question_type']                  = 'Type de question';
+$lang['points']                         = 'Point(s)';
+$lang['topic']                          = 'Choisissez un sujet en particulier :';
+$lang['no_question']                    = 'Aucune question appartenant à ce sujet';
+$lang['title_question_update']          = 'Modifier la question';
+$lang['update_name_question']          = 'Nom de la question :';
+$lang['update_question_form_err']       = 'Veillez à ce que tout les champs soient remplis';
+$lang['update_question_type']          = 'Type de question :';

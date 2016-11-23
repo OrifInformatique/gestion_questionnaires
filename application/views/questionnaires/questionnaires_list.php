@@ -7,7 +7,7 @@
  */
 ?>
 <div class="container jumbotron well" style="background-color: lavender">
-    <h2 class="text-center"><?php echo $this->lang->line('title');?></h2>
+    <h2 class="text-center"><?php echo $this->lang->line('title_questionnaire');?></h2>
     <div class="row">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
@@ -25,10 +25,17 @@
                     ?>
                 <tbody>
                     <tr>
-                        <td><button type="button" class="btn btn-danger" onclick="myfunction()">Try</button></td>
+                        <td>
+                            <button type="button" class="btn btn-danger"
+                                    onclick="deleteQuestionnaire(<?php echo $questionnaire->ID; ?>)">
+                                <?php echo $this->lang->line('btn_del')?></button>
+                            <a class="btn btn-warning" href="./update/<?php echo $questionnaire->ID;?>">
+                                <?php echo $this->lang->line('btn_update')?>
+                            </a>
+                        </td>
                         <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
-                        <td><a href=""><?php echo $this->lang->line('redirect_pdf');?></a></td>
-                        <td><a href=""><?php echo $this->lang->line('redirect_corrige');?></a></td>
+                        <td><a href="" class="btn btn-success"><?php echo $this->lang->line('redirect_pdf');?></a></td>
+                        <td><a href="" class="btn btn-success"><?php echo $this->lang->line('redirect_corrige');?></a></td>
                     </tr>
                 </tbody>
                 <?php
@@ -40,3 +47,12 @@
         <div class="col-lg-2"></div>
     </div>
 </div>
+<script>
+    function deleteQuestionnaire(id){
+        if(confirm("Voulez-vous supprimer ce questionnaire ?")){
+            document.location.href = "../Questionnaire/delete/" + id;
+        }else{
+
+        }
+    }
+</script>

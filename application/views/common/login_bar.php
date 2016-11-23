@@ -14,8 +14,10 @@
                     <a class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire/Questionnaires_list');?>"><?php echo $this->lang->line('nav_questionnaire');?></a></li>
-                    <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question/list_questions');?>"><?php echo $this->lang->line('nav_question');?></a></li>
+                    <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire/Questionnaires_list');?>">
+                            <?php echo $this->lang->line('nav_questionnaire');?></a></li>
+                    <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question/list_questions');?>">
+                            <?php echo $this->lang->line('nav_question');?></a></li>
                     <li <?php checkactive(3); ?>><a href="#"><?php echo $this->lang->line('nav_module');?></a></li>
                     <li <?php checkactive(4); ?>><a href="#"><?php echo $this->lang->line('nav_topic');?></a></li>
                 </ul>
