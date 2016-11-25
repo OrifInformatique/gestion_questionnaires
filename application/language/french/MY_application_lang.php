@@ -1,12 +1,12 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 31.10.2016
- * Time: 16:02
+ * Application's texts
+ * 
+ * @author		Orif Pomy, section informatique (UlSi, ViDi)
+ * @copyright	Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
 
-$lang['app_title']                      = 'Gestion Questionnaire';
+$lang['app_title']                      = 'Gestion questionnaire';
 
 // Page titles
 $lang['page_login']                     = 'Gestion des questionnaires';
@@ -17,11 +17,11 @@ $lang['date_format_short']              = 'd.m.Y';
 $lang['datetime_format_short']          = 'd.m.Y H:i';
 
 //Naviguation bar
-$lang['nav_home']                       = 'Accueuil';
+$lang['nav_home']                       = 'Accueil';
 $lang['nav_question']                   = 'Questions';
 $lang['nav_questionnaire']              = 'Questionnaires';
 $lang['nav_module']                     = 'Modules';
-$lang['nav_topic']                      = 'Topics';
+$lang['nav_topic']                      = 'Sujets';
 
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
@@ -43,24 +43,24 @@ $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 
 // Questionnaires pages
-$lang['title_questionnaire']            = 'Liste des Questionnaires';
-$lang['title_questionnaire_update']     = 'Modifier un Questionnaire';
+$lang['title_questionnaire']            = 'Liste des questionnaires';
+$lang['title_questionnaire_update']     = 'Modifier un questionnaire';
 $lang['update_title_questionnaire']     = 'Titre :';
-$lang['update_questionnaire_form_err']  = 'Veillez à ce que tout les champs soient remplis';
-$lang['questionnaire']                  = 'Questionnaire';
-$lang['pdf']                            = 'Pdf';
+$lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soient remplis';
+$lang['questionnaire']                  = 'Titre';
+$lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
-$lang['redirect_pdf']                   = 'Voir Questionnaire';
-$lang['redirect_corrige']               = 'Voir Corrigé';
+$lang['redirect_pdf']                   = 'Voir questionnaire';
+$lang['redirect_corrige']               = 'Voir corrigé';
 
 // Questions pages
-$lang['title_question']                 = 'Liste des Questions';
+$lang['title_question']                 = 'Liste des questions';
 $lang['question']                       = 'Question';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['topic']                          = 'Choisissez un sujet en particulier :';
-$lang['no_question']                    = 'Aucune question appartenant à ce sujet';
+$lang['topic']                          = 'Sujet concerné :';
+$lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
-$lang['update_name_question']          = 'Nom de la question :';
-$lang['update_question_form_err']       = 'Veillez à ce que tout les champs soient remplis';
-$lang['update_question_type']          = 'Type de question :';
+$lang['update_name_question']           = 'Nom de la question :';
+$lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
+$lang['update_question_type']           = 'Type de question :';
