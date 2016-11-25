@@ -1,9 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 14.07.2016
- * Time: 09:18
+ * Authentication controller
+ * 
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 
 class Auth extends MY_Controller {
