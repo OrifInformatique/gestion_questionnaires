@@ -24,7 +24,7 @@ class Auth extends MY_Controller {
     /**
      * @param int $error = Type of error :
      * 0 = no error
-     * 1 = wrond identifiers
+     * 1 = wrong identifiers
      * 2 = field(s) empty
      * Display the login view
      */
@@ -46,10 +46,11 @@ class Auth extends MY_Controller {
 
             if($this->user_model->check_password($username, $password))
             {
-                $user = $this->user_model->get_by('user', $username);;
+                $user = $this->user_model->get_by('user', $username);
                 $this->session->user_id = $user->id;
                 $this->session->username = $user->user;
-                $this->session->user_access = (int)$user->user_type;
+                $this->session->user_access = 
+                    $this->user_type_model->get($user->user_type)->access_level;
                 $this->session->logged_in = true;
                 redirect('Questionnaire/questionnaires_list');
             }

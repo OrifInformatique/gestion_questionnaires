@@ -13,7 +13,7 @@ class user_model extends MY_Model
     protected $_table = 't_user';
     protected $primary_key = 'id';
     protected $protected_attributes = ['id'];
-    protected $belongs_to = ['user_type'];
+    public $belongs_to = ['user_type'];
 
     /**
      * Constructor

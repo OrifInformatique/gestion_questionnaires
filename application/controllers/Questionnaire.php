@@ -28,7 +28,6 @@ class Questionnaire extends MY_Controller{
      * Display questionnaire list
      */
     public function questionnaires_list(){
-        
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
         $outputs['onglet'] = 'Questionnaire';
         $this->display_view('questionnaires/questionnaires_list', $outputs);

@@ -12,7 +12,7 @@ class user_type_model extends MY_Model
     protected $_table = 't_user_type';
     protected $primary_key = 'id';
     protected $protected_attributes = ['id'];
-    protected $has_many = ['user'];
+    public $has_many = ['user'];
 
     /**
      * Constructor
