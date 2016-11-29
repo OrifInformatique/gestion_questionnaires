@@ -1,12 +1,11 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 25.10.2016
- * Time: 15:23
+ * View of question's list
  *
- *
- **/
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 ?>
     <div class="container well" style="background-color: lavender">
         <h2 style="height:70px;" class="text-center"><?php echo $this->lang->line('title_question'); ?></h2>

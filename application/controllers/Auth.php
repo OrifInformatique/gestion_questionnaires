@@ -21,12 +21,23 @@ class Auth extends MY_Controller {
         $this->form_validation->set_rules('password', 'Password', 'required');
     }
 
+    /**
+     * @param int $error = Type of error :
+     * 0 = no error
+     * 1 = wrond identifiers
+     * 2 = field(s) empty
+     * Display the login view
+     */
     public function index($error = 0){
 
         $output['error'] = $error;
         $this->display_view("login/login", $output);
     }
 
+    /**
+     * Form validation to login
+     * Redirect if necessary on the login page or on the main site
+     */
     public function login(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
@@ -52,6 +63,9 @@ class Auth extends MY_Controller {
         }
     }
 
+    /**
+     * Destroy the session and redirect to login page
+     */
     public function unlog(){
         session_destroy();
         redirect('Auth/index');

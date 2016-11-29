@@ -1,10 +1,13 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 26.10.2016
- * Time: 08:50
+ * Question Type model is used to get different types for each question.
+ * question is used to get related question type for each question.
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
+
     if(isset($_SESSION['logged_in']))
     {
         ?>
@@ -29,6 +32,10 @@
 <?php
     }
 
+/**
+ * Test the unique tab active
+ * @param $pattern = related tab
+ */
 function test_regex($pattern)
 {
 

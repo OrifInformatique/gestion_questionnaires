@@ -267,7 +267,9 @@ CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user_type` (
   `name` VARCHAR(45) NULL,
   `access_level` INT(11) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -285,7 +287,9 @@ CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user` (
     REFERENCES `gestion_questionnaires`.`t_user_type` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

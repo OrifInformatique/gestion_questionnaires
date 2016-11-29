@@ -1,10 +1,12 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 13.09.2016
- * Time: 14:37
+ * Question controller 
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
+
 class Question extends MY_Controller
 {
     /* MY_Controller variables definition */
@@ -23,6 +25,9 @@ class Question extends MY_Controller
 
     }
 
+    /**
+     * Display question list
+     */
     public function list_questions()
     {
         $output['questions'] = $this->question_model->with_all()->get_all();
@@ -30,6 +35,10 @@ class Question extends MY_Controller
         $this->display_view('questions/list_questions', $output);
     }
 
+    /**
+     * @param int $id = id of the question
+     * Delete selected question
+     */
     public function delete($id = 0)
     {
         if($id != 0)
@@ -40,11 +49,19 @@ class Question extends MY_Controller
         }
     }
 
+    /**
+     * Form validation to update question
+     */
     public function form_update()
     {
         
     }
 
+    /**
+     * @param int $id = selected question id
+     * @param bool $error = Optional error
+     * Display the detailed view to update a question
+     */
     public function update($id = 0, $error = false)
     {
         $output['error'] = $error;

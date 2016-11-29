@@ -1,9 +1,12 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 13.09.2016
- * Time: 11:09
+ * Question model is used to get an access to all questions.
+ * question_type is used give the related type for each question.
+ * topic is used to get the related topic for each question.
+ * 
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class question_model extends MY_Model
 {

@@ -1,9 +1,10 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 08.11.2016
- * Time: 15:47
+ * Questionnaire model is used to give access to the tab 'Questionnaire' of the application
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class questionnaire_model extends MY_Model
 {

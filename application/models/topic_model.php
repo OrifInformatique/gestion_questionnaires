@@ -1,9 +1,11 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 13.09.2016
- * Time: 11:57
+ * Topic model is used to give access to the tab 'Topic' of the application
+ * Parent_Topic is used to give a module name to all topics.
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class topic_model extends MY_Model
 {

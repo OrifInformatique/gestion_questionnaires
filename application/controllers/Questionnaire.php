@@ -1,13 +1,17 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 08.11.2016
- * Time: 11:01
+ * Questionnaire controller
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 
 class Questionnaire extends MY_Controller{
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -19,7 +23,10 @@ class Questionnaire extends MY_Controller{
         $this->form_validation->set_rules('title','Title','required');
 
     }
-    
+
+    /**
+     * Display questionnaire list
+     */
     public function questionnaires_list(){
         
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
@@ -27,6 +34,10 @@ class Questionnaire extends MY_Controller{
         $this->display_view('questionnaires/questionnaires_list', $outputs);
     }
 
+    /**
+     * @param int $id = id of the selected questionnaire
+     * @param bool $error = Optional error -> Not Build
+     */
     public function update($id = 0, $error = false){
         $outputs['error'] = $error;
         if($id != 0){
@@ -37,7 +48,10 @@ class Questionnaire extends MY_Controller{
             $this->questionnaires_list();
         }
     }
-    
+
+    /**
+     * Form validation to update a questionnaire
+     */
     public function form_update(){
 
         $id = intval($this->input->post('id'));
@@ -52,6 +66,10 @@ class Questionnaire extends MY_Controller{
         }
     }
 
+    /**
+     * @param int $id = id of the selected questionnaire
+     * Delete selected questionnaire and redirect to questionnaire list
+     */
     public function delete($id = 0){
         if($id != 0){
             $this->questionnaire_model->delete($id);
@@ -59,6 +77,10 @@ class Questionnaire extends MY_Controller{
         $this->questionnaires_list();
     }
 
+    /**
+     * not build
+     * To add a new questionnaire
+     */
     public function add(){
 
     }
