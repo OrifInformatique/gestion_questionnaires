@@ -9,6 +9,9 @@
 
 class Questionnaire extends MY_Controller{
 
+    /* MY_Controller variables definition */
+    protected $access_level = "2";
+
     /**
      * Constructor
      */
@@ -29,7 +32,6 @@ class Questionnaire extends MY_Controller{
      */
     public function questionnaires_list(){
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
-        $outputs['onglet'] = 'Questionnaire';
         $this->display_view('questionnaires/questionnaires_list', $outputs);
     }
 

@@ -11,22 +11,29 @@
     if(isset($_SESSION['logged_in']))
     {
         ?>
-        <nav class="navbar navbar-default" style="background-color: lavender">
+        <nav class="navbar navbar-inverse navbar navbar-fixed-top" style="background-color: #4e4a4a; border-bottom: 0;">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="<?php echo base_url('Auth/unlog');?>" class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
                 </div>
-                <ul class="nav navbar-nav">
-                    <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire/Questionnaires_list');?>">
-                            <?php echo $this->lang->line('nav_questionnaire');?></a></li>
-                    <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question/list_questions');?>">
-                            <?php echo $this->lang->line('nav_question');?></a></li>
-                    <li <?php checkactive(3); ?>><a href="#"><?php echo $this->lang->line('nav_module');?></a></li>
-                    <li <?php checkactive(4); ?>><a href="#"><?php echo $this->lang->line('nav_topic');?></a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="../../index.php/Auth/unlog"><span class="glyphicon glyphicon-log-in"></span><?php echo $this->lang->line('unlog');?></a></li>
-                </ul>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire/Questionnaires_list');?>">
+                                <?php echo $this->lang->line('nav_questionnaire');?></a></li>
+                        <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question/list_questions');?>">
+                                <?php echo $this->lang->line('nav_question');?></a></li>
+                        <li <?php checkactive(3); ?>><a href="#"><?php echo $this->lang->line('nav_module');?></a></li>
+                        <li <?php checkactive(4); ?>><a href="#"><?php echo $this->lang->line('nav_topic');?></a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<?php echo base_url('Auth/unlog');?>"><span class="glyphicon glyphicon-log-in"></span><?php echo $this->lang->line('unlog');?></a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
 <?php
@@ -42,7 +49,7 @@ function test_regex($pattern)
     $subject = $_SERVER['REQUEST_URI'];
 
     if (preg_match($pattern, $subject)) {
-        echo "style='background-color: white'";
+        echo "class='active'";
     }
 }
 /**

@@ -52,6 +52,14 @@ class Auth extends MY_Controller {
                 $this->session->user_access = 
                     $this->user_type_model->get($user->user_type)->access_level;
                 $this->session->logged_in = true;
+                switch($this->session->user_access){
+                    case 1 :
+                        $this->unlog();
+                        break;
+                    case 2 :
+                        redirect('Questionnaire/questionnaires_list');
+                        break;
+                }
                 redirect('Questionnaire/questionnaires_list');
             }
 

@@ -6,12 +6,11 @@
  * Time: 13:45
  */
 ?>
-<div class="container jumbotron well" style="background-color: lavender">
+<div class="container">
     <h2 class="text-center"><?php echo $this->lang->line('title_questionnaire_update'); ?></h2>
     <div class="row">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
-            <div class="well">
                 <?php
                 $attributes = array("class" => "form-group",
                     "id" => "updateQuestionnaireForm",
@@ -32,7 +31,7 @@
                 </div>
                 <input type="submit" class="btn btn-primary" />
                 <?php echo form_close(); ?>
-            </div>
+            
         </div>
         <div class="col-lg-2"></div>
     </div>

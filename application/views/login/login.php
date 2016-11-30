@@ -8,7 +8,7 @@
  */
 ?>
 
-<div class="container" style="background-color: lavender">
+<div class="container">
     <div class="jumbotron">
         <h1><?php echo $this->lang->line('page_login'); ?></h1>
         <p><?php echo $this->lang->line('indic_login'); ?></p>
