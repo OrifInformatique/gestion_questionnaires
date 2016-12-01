@@ -21,6 +21,7 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->helper('url');
         
         /* Check permission on construct */
         if (!$this->check_permission()) {
@@ -50,7 +51,7 @@ class MY_Controller extends CI_Controller
         else {
             // check if user is logged in
             // if not, redirect to login page
-            if ($_SESSION['logged_in'] != true) {
+            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
                 redirect("auth/login");
             }
             // check if page is accessible for all logged in users

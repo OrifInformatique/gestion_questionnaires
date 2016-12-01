@@ -8,6 +8,8 @@
  */
 
 class Auth extends MY_Controller {
+    /* MY_Controller variables definition */
+    protected $access_level = "*";
 
     public function __construct()
     {
@@ -44,23 +46,16 @@ class Auth extends MY_Controller {
 
         if ($this->form_validation->run() == true) {
 
-            if($this->user_model->check_password($username, $password))
-            {
+            if($this->user_model->check_password($username, $password)) {
                 $user = $this->user_model->get_by('user', $username);
+
                 $this->session->user_id = $user->id;
                 $this->session->username = $user->user;
                 $this->session->user_access = 
                     $this->user_type_model->get($user->user_type)->access_level;
                 $this->session->logged_in = true;
-                switch($this->session->user_access){
-                    case 1 :
-                        $this->unlog();
-                        break;
-                    case 2 :
-                        redirect('Questionnaire/questionnaires_list');
-                        break;
-                }
-                redirect('Questionnaire/questionnaires_list');
+
+                redirect('Home');
             }
 
             if(!isset($_SESSION['logged_in'])){
@@ -79,5 +74,4 @@ class Auth extends MY_Controller {
         session_destroy();
         redirect('Auth/index');
     }
-
 }

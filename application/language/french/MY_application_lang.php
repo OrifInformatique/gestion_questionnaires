@@ -30,6 +30,7 @@ $lang['field_password']                 = 'Mot de passe';
 //Log Error
 $lang['invalid_id']                     = 'Les identifiants ne sont pas valides !';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
+$lang['msg_err_access_denied']			= 'Vous n\'avez pas accès à cette partie du programme';
 
 //Unlog
 $lang['unlog']                          = ' Déconnexion';
