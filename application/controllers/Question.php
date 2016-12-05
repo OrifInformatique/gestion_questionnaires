@@ -28,11 +28,11 @@ class Question extends MY_Controller
     /**
      * Display question list
      */
-    public function list_questions()
+    public function index()
     {
         $output['questions'] = $this->question_model->with_all()->get_all();
         $output['topics'] = $this->topic_model->get_all();
-        $this->display_view('questions/list_questions', $output);
+        $this->display_view('questions/index', $output);
     }
 
     /**
@@ -45,7 +45,7 @@ class Question extends MY_Controller
         {
             $this->question_model->delete($id);
 
-            $this->list_questions();
+            $this->index();
         }
     }
 

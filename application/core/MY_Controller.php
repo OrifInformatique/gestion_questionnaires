@@ -52,7 +52,7 @@ class MY_Controller extends CI_Controller
             // check if user is logged in
             // if not, redirect to login page
             if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
-                redirect("auth/login");
+                redirect("auth");
             }
             // check if page is accessible for all logged in users
             elseif ($required_level == "@") {

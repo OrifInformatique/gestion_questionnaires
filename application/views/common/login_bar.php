@@ -8,39 +8,8 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 
-    if(isset($_SESSION['logged_in']))
-    {
-        ?>
-        <nav class="navbar navbar-inverse navbar navbar-fixed-top" style="background-color: #4e4a4a; border-bottom: 0;">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a href="<?php echo base_url('Home');?>" class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
-                </div>
-                <div class="collapse navbar-collapse" id="myNavbar">
-                    <ul class="nav navbar-nav">
-                        <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire/Questionnaires_list');?>">
-                                <?php echo $this->lang->line('nav_questionnaire');?></a></li>
-                        <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question/list_questions');?>">
-                                <?php echo $this->lang->line('nav_question');?></a></li>
-                        <li <?php checkactive(3); ?>><a href="#"><?php echo $this->lang->line('nav_module');?></a></li>
-                        <li <?php checkactive(4); ?>><a href="#"><?php echo $this->lang->line('nav_topic');?></a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="<?php echo base_url('Auth/unlog');?>"><span class="glyphicon glyphicon-log-in"></span><?php echo $this->lang->line('unlog');?></a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-<?php
-    }
-
 /**
- * Test the unique tab active
+ * Test the pattern to find the active page
  * @param $pattern = related tab
  */
 function test_regex($pattern)
@@ -78,4 +47,37 @@ function checkactive($page){
             break;
     }
 }
+
+    if(isset($_SESSION['logged_in']))
+    {
+        ?>
+        <nav class="navbar navbar-inverse navbar navbar-fixed-top" style="border-bottom: 0;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="<?php echo base_url('Home');?>" class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
+                                <?php echo $this->lang->line('nav_questionnaire');?></a></li>
+                        <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
+                                <?php echo $this->lang->line('nav_question');?></a></li>
+                        <li <?php checkactive(3); ?>><a href="<?php echo base_url('Module');?>">
+                                <?php echo $this->lang->line('nav_module');?></a></li>
+                        <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
+                                <?php echo $this->lang->line('nav_topic');?></a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<?php echo base_url('Auth/unlog');?>"><span class="glyphicon glyphicon-log-in"></span><?php echo $this->lang->line('unlog');?></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<?php
+    }
 ?>

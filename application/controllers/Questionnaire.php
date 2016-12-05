@@ -30,9 +30,9 @@ class Questionnaire extends MY_Controller{
     /**
      * Display questionnaire list
      */
-    public function questionnaires_list(){
+    public function index(){
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
-        $this->display_view('questionnaires/questionnaires_list', $outputs);
+        $this->display_view('questionnaires/index', $outputs);
     }
 
     /**
@@ -43,10 +43,9 @@ class Questionnaire extends MY_Controller{
         $outputs['error'] = $error;
         if($id != 0){
             $outputs["id"] = $id;
-            $outputs['onglet'] = 'Questionnaire';
             $this->display_view("questionnaires/update_questionnaire", $outputs);
         }else{
-            $this->questionnaires_list();
+            $this->index();
         }
     }
 
@@ -61,7 +60,7 @@ class Questionnaire extends MY_Controller{
         if($this->form_validation->run() == true){
 
             $this->questionnaire_model->update($id, $title);
-            $this->questionnaires_list();
+            $this->index();
         }else{;
             $this->update($id, true);
         }
@@ -75,7 +74,7 @@ class Questionnaire extends MY_Controller{
         if($id != 0){
             $this->questionnaire_model->delete($id);
         }
-        $this->questionnaires_list();
+        $this->index();
     }
 
     /**

@@ -65,3 +65,9 @@ $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
 $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
 $lang['update_question_type']           = 'Type de question :';
+
+// Topics pages
+$lang['title_topic']                    = 'Liste des sujets';
+
+//Modules pages
+$lang['title_module']                   = 'Liste des modules';

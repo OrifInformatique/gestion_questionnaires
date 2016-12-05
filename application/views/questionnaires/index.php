@@ -79,6 +79,7 @@ $_SESSION
     function getID(id) {
         alert('jjlé');
         /**
+         *
         <?php
             if(isset($_SESSION['currentSelected']))
             {

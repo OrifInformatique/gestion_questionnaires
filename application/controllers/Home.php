@@ -28,7 +28,7 @@ class Home extends MY_Controller {
             	$this->display_view("home/home_view");
                 break;
             case 2 :
-                redirect('Questionnaire/questionnaires_list');
+                redirect('Questionnaire');
                 break;
         }
     }

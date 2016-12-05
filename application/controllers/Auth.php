@@ -72,6 +72,6 @@ class Auth extends MY_Controller {
      */
     public function unlog(){
         session_destroy();
-        redirect('Auth/index');
+        redirect('Auth');
     }
 }
