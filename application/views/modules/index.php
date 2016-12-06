@@ -32,5 +32,29 @@
 <div id="page-content-wrapper">
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_module'); ?></h1>
-    </div>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom du module</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        foreach ($modules as $module)
+                        {
+                    ?>
+                            <tr onclick="getID(<?php echo $module->ID; ?>, 3);" id="<?php echo $module->ID; ?>">
+                                <td><?php echo $module->Topic; ?></td>
+                            </tr>
+                            <?php
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
 </div>

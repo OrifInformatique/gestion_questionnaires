@@ -54,15 +54,25 @@ class Question extends MY_Controller
      */
     public function form_update()
     {
-        
+        $id = $this->input->post('id');
+
+        if($this->form_validation->run() == true){
+
+            $this->index();
+        }else{;
+            $this->update($id, 1);
+        }
     }
 
     /**
      * @param int $id = selected question id
-     * @param bool $error = Optional error
+     * @param int $error = Type of error :
+     * 0 = no error
+     * 1 = wrong identifiers
+     * 2 = field(s) empty
      * Display the detailed view to update a question
      */
-    public function update($id = 0, $error = false)
+    public function update($id = 0, $error = 0)
     {
         $output['error'] = $error;
         $output['id'] = $id;
@@ -72,10 +82,19 @@ class Question extends MY_Controller
             $output['question'] = $this->question_model->get_by('ID = ' . $id);
             $output['question_types'] = $this->question_type_model->get_all();
             
-            $this->display_view('questions/update_question', $output);
+            $this->display_view('questions/update', $output);
         }
         else{
 
         }
+    }
+
+    /**
+     * Display form to add a question
+     * Not build
+     */
+    public function add()
+    {
+
     }
 }

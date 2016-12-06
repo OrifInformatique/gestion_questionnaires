@@ -19,3 +19,4 @@
   </head>
   <body  style="border-top: 0;background-image: url(../../../../../projects/gestion_questionnaires/application/img/mooning.png);
    padding-top: 50px; height: 1000px">
+  <script src="../../../../../projects/gestion_questionnaires/application/js/javascript.js"></script>

@@ -7,7 +7,7 @@
  */
 ?>
 <div class="container">
-    <h2 class="text-center"><?php echo $this->lang->line('title_questionnaire_update'); ?></h2>
+    <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_questionnaire_update'); ?></h1>
     <div class="row">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">

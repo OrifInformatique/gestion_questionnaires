@@ -7,12 +7,11 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-<div class="container jumbotron well" style="background-color: lavender">
-    <h2 class="text-center"><?php echo $this->lang->line('title_question_update'); ?></h2>
+<div class="container">
+    <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_question_update'); ?></h1>
 <div class="row">
     <div class="col-lg-2"></div>
     <div class="col-lg-8">
-        <div class="well">
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "updateQuestionForm",
@@ -43,7 +42,6 @@
             </div>
             <input type="submit" class="btn btn-primary" />
             <?php echo form_close(); ?>
-        </div>
     </div>
     <div class="col-lg-2"></div>
 </div>

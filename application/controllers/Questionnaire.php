@@ -37,13 +37,17 @@ class Questionnaire extends MY_Controller{
 
     /**
      * @param int $id = id of the selected questionnaire
-     * @param bool $error = Optional error -> Not Build
+     * @param int $error = Type of error :
+     * 0 = no error
+     * 1 = wrong identifiers
+     * 2 = field(s) empty
+     * Display the update questionnaire view
      */
-    public function update($id = 0, $error = false){
+    public function update($id = 0, $error = 0){
         $outputs['error'] = $error;
         if($id != 0){
             $outputs["id"] = $id;
-            $this->display_view("questionnaires/update_questionnaire", $outputs);
+            $this->display_view("questionnaires/update", $outputs);
         }else{
             $this->index();
         }
@@ -54,7 +58,7 @@ class Questionnaire extends MY_Controller{
      */
     public function form_update(){
 
-        $id = intval($this->input->post('id'));
+        $id = $this->input->post('id');
         $title = array('Questionnaire_Name' => $this->input->post('title'));
 
         if($this->form_validation->run() == true){
@@ -84,5 +88,4 @@ class Questionnaire extends MY_Controller{
     public function add(){
 
     }
-    
 }

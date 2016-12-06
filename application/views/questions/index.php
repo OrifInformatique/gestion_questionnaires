@@ -38,12 +38,17 @@
                     <h4><?php echo $this->lang->line('topic'); ?></h4>
                     <select onchange="changeselect()" id="topics" class="form-control">
                         <?php
+                        
+                        //Récupère chaque topics
                         foreach ($topics as $object => $module) {
                             if ($module->FK_Parent_Topic == 0) {
+                                //Affiche le topic parent
                                 echo "<optgroup label='$module->Topic' >";
 
+                                //Récupère chaque topic associé au topic parent
                                 for ($i = 0; $i < count($topics); $i++) {
                                     if ($module->ID == $topics[$i]->FK_Parent_Topic) {
+                                        //Affiche les topics associés
                                         echo "<option>" . $topics[$i]->Topic . "</option>";
                                     }
                                 }
@@ -63,10 +68,9 @@
                         echo "<h3>" . $_GET['param'] . "</h3>";
                     }
                     ?>
-                    <table class="table table-striped">
+                    <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th></th>
                             <th><?php echo $this->lang->line('question'); ?></th>
                             <th><?php echo $this->lang->line('question_type'); ?></th>
                             <th><?php echo $this->lang->line('points'); ?></th>
@@ -81,16 +85,6 @@
                         $compteur += 1;
                         ?>
                         <tbody>
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-danger"
-                                        onclick="deleteQuestionnaire(<?php echo $question->ID; ?>)">
-                                    <?php echo $this->lang->line('btn_del') ?>
-                                </button>
-                                <a class="btn btn-warning" href="./update/<?php echo $question->ID; ?>">
-                                    <?php echo $this->lang->line('btn_update') ?>
-                                </a>
-                            </td>
                             <?php
                             displayQuestion($question);
                             }
@@ -98,17 +92,6 @@
                             else{
                             $compteur += 1;
                             ?>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-danger"
-                                        onclick="deleteQuestionnaire(<?php echo $question->ID; ?>)">
-                                    <?php echo $this->lang->line('btn_del') ?>
-                                </button>
-                                <a class="btn btn-warning" href="./update/<?php echo $question->ID; ?>">
-                                    <?php echo $this->lang->line('btn_update') ?>
-                                </a>
-                            </td>
                             <?php
                             displayQuestion($question);
                             }
@@ -120,6 +103,7 @@
                             }
 
                             ?>
+                        </tbody>
                     </table>
                     <a href="" class="btn btn-info"><?php echo $this->lang->line('btn_add'); ?></a>
                 </div>
@@ -128,36 +112,17 @@
         </div>
     </div>
     <script>
-        function deleteQuestionnaire(id) {
-            if (confirm("Voulez-vous supprimer cette question?")) {
-                document.location.href = "../Question/delete/" + id;
-            } else {
-
-            }
-        }
-
-        function init() {
-            document.getElementById("topics").selectedIndex = -1;
-        }
-
-        function changeselect() {
-            var topic = document.getElementById("topics").value;
-
-            window.location = '?param=' + topic;
-        }
-
         window.onload = init();
     </script>
 <?php
 function displayQuestion($question)
 {
     ?>
-
-    <td><?php echo $question->Question; ?></td>
-    <td><?php echo $question->question_type->Type_Name ?></td>
-    <td><?php echo $question->Points; ?></td>
+    <tr id="<?php echo $question->ID; ?>" onclick="getID(<?php echo $question->ID;?>, 2)">
+        <td><?php echo $question->Question; ?></td>
+        <td><?php echo $question->question_type->Type_Name ?></td>
+        <td><?php echo $question->Points; ?></td>
     </tr>
-    </tbody>
     <?php
 }
 ?>
