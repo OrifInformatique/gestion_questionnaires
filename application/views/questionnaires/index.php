@@ -50,9 +50,9 @@
                         <tr onclick="getID(<?php echo $questionnaire->ID; ?>, 1);"
                             id="<?php echo $questionnaire->ID; ?>">
                                 <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
-                                <td><a href="" class="btn btn-success">
+                                <td><a target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
-                                <td><a href="" class="btn btn-success">
+                                <td><a target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>
                         </tr>
                         <?php
@@ -60,8 +60,6 @@
                     ?>
                     </tbody>
                 </table>
-                <a href="<?php echo base_url('Questionnaire/add');?>" class="btn btn-info">
-                    <?php echo $this->lang->line('btn_add');?></a>
             </div>
             <div class="col-lg-2"></div>
         </div>

@@ -13,12 +13,12 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="#">
+                    <a href="">
                         <?php echo $this->lang->line('nav_module');?>
 </a>
 </li>
 <li>
-    <a href="#"><?php echo $this->lang->line('btn_add');?></a>
+    <a href="<?php echo base_url('Module/add');?>"><?php echo $this->lang->line('btn_add');?></a>
 </li>
 <li>
     <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
@@ -38,7 +38,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Nom du module</th>
+                            <th><?php echo $this->lang->line('module');?></th>
                         </tr>
                     </thead>
                     <tbody>

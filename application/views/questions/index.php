@@ -18,7 +18,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"><?php echo $this->lang->line('btn_add');?></a>
+                    <a href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add');?></a>
                 </li>
                 <li>
                     <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
@@ -35,8 +35,8 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-4" style="height:110px;">
-                    <h4><?php echo $this->lang->line('topic'); ?></h4>
-                    <select onchange="changeselect()" id="topics" class="form-control">
+                    <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
+                    <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
                         
                         //Récupère chaque topics
@@ -98,14 +98,13 @@
                             }
 
                             if($compteur == 0){
-                                echo "<div class='well' style='background-color: mistyrose;'><h4>"
+                                echo "<div class='well' style='border: solid 2px red;'><h4>"
                                     . $this->lang->line('no_question') . "</h4></div>";
                             }
 
                             ?>
                         </tbody>
                     </table>
-                    <a href="" class="btn btn-info"><?php echo $this->lang->line('btn_add'); ?></a>
                 </div>
                 <div class="col-lg-2"></div>
             </div>

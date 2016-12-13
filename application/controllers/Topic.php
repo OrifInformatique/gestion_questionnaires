@@ -25,7 +25,7 @@ class Topic extends MY_Controller
      */
     public function index()
     {
-        $output['topics_modules'] = $this->topic_model->get_all();
+        $output['topics'] = $this->topic_model->get_all();
         $this->display_view("topics/index", $output);
     }
 

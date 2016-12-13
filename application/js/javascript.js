@@ -43,11 +43,11 @@ function deleteItem(id, typeItem) {
 }
 
 function init() {
-    document.getElementById("topics").selectedIndex = -1;
+    document.getElementById("topic_selected").selectedIndex = -1;
 }
 
 function changeselect() {
-    var topic = document.getElementById("topics").value;
+    var topic = document.getElementById("topic_selected").value;
 
     window.location = '?param=' + topic;
 }

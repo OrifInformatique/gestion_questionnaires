@@ -56,10 +56,10 @@ $lang['redirect_corrige']               = 'Voir corrigé';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
-$lang['question']                       = 'Question';
+$lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['topic']                          = 'Sujet concerné :';
+$lang['focus_topic']                          = 'Sujet concerné :';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
@@ -68,6 +68,9 @@ $lang['update_question_type']           = 'Type de question :';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
+$lang['focus_module']                   = 'Module conscerné :';
+$lang['topic']                          = 'Sujet(s)';
 
 //Modules pages
 $lang['title_module']                   = 'Liste des modules';
+$lang['module']                         = 'Module(s)';
