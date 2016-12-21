@@ -1,10 +1,11 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 15.11.2016
- * Time: 13:45
+ * Update Questionnaire
+ *
+ * @author		Orif Pomy, section informatique (UlSi, ViDi)
+ * @copyright	Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
+
 ?>
 <div class="container">
     <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_questionnaire_update'); ?></h1>

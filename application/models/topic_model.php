@@ -11,7 +11,7 @@ class topic_model extends MY_Model
 {
     protected $_table = 't_topic';
     protected $primary_key = 'ID';
-    protected $protected_attributes = 'ID';
+    protected $protected_attributes = ['ID'];
     protected $belongs_to = ['Parent_Topic' => ['primary_key' => 'FK_Parent_Topic',
                                                 'model' => 'topic']];
     protected $has_many = ['questions'];

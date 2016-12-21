@@ -32,16 +32,16 @@ function test_regex($pattern)
 function checkactive($page){
     switch ($page){
         case 1;
-            test_regex('/\/Questionnaire\//');
+            test_regex('/\/Questionnaire/');
             break;
         case 2:
-            test_regex('/\/Question\//');
+            test_regex('/\/Question$|Question\//');
             break;
         case 3:
-            test_regex('/\/Module\//');
+            test_regex('/\/Module/');
             break;
         case 4:
-            test_regex('/\/Topic\//');
+            test_regex('/\/Topic/');
             break;
         default:
             break;

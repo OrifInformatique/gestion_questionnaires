@@ -53,6 +53,11 @@ $lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
 $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
+$lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
+$lang['add_title_questionnaire']        = 'Titre :';
+$lang['add_topic_questionnaire']        = 'Sujet :';
+$lang['add_form']                       = 'Ajouter';
+$lang['generatePDF_btn']                = 'Enregistrer';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';

@@ -12,7 +12,7 @@ class question_model extends MY_Model
 {
     protected $_table = 't_question';
     protected $primary_key = 'ID';
-    protected $protected_attributes = 'ID';
+    protected $protected_attributes = ['ID'];
     protected $belongs_to = ['question_type' => ['primary_key' => 'FK_Question_Type',
                                                     'model' => 'question_type'],
                              'topic' => ['primary_key' => 'FK_Topic',
@@ -24,5 +24,23 @@ class question_model extends MY_Model
     public function __construct()
     {
         parent::__construct();
+    }
+
+    /**
+     * Select somes randoms question id for the questionnaire
+     * @param $idTopic = Id of topic
+     * @param $nbQuestion = # of questions asked
+     * @return an array with each question
+     */
+    public function getRNDQuestions($idTopic, $nbQuestion)
+    {
+        $query = $this->_database
+                        ->select($this->primary_key)
+                        ->limit($nbQuestion)
+                        ->where("FK_Topic = $idTopic")
+                        ->order_by("RAND()")
+                        ->get($this->_table);
+
+        return $query->result_array();
     }
 }
