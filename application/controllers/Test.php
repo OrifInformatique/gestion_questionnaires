@@ -21,7 +21,8 @@ class Test extends MY_Controller
     {
         parent::__construct();
         $this->load->model(array('question_model', 'question_type_model', 'topic_model',
-                                 'questionnaire_model', 'question_questionnaire_model'));
+                                 'questionnaire_model', 'question_questionnaire_model',
+                                 'user_model', 'user_type_model'));
     }
 
     /**
@@ -109,5 +110,23 @@ class Test extends MY_Controller
 
         $topic = $this->topic_model->get_all();
         var_dump($topic);
+    }
+
+    /**
+     * Test user_model
+     */
+    public function user()
+    {
+        $user = $this->user_model->get(1);
+        var_dump($user);
+
+        $user = $this->user_model->with('user_type')->get(1);
+        var_dump($user);
+
+        $user = $this->user_model->get_all();
+        var_dump($user);
+
+        $user = $this->user_model->with('user_type')->get_by('User', 'user1');
+        var_dump($user);
     }
 }
