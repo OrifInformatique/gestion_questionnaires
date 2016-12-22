@@ -129,4 +129,22 @@ class Test extends MY_Controller
         $user = $this->user_model->with('user_type')->get_by('User', 'user1');
         var_dump($user);
     }
+
+    /**
+     * Test user_type_model
+     */
+    public function user_type()
+    {
+        $user_type = $this->user_type_model->get(1);
+        var_dump($user_type);
+
+        $user_type = $this->user_type_model->with('users')->get(1);
+        var_dump($user_type);
+
+        $user_type = $this->user_type_model->get_all();
+        var_dump($user_type);
+
+        $user_type = $this->user_type_model->with_all()->get_all();
+        var_dump($user_type);
+    }
 }
