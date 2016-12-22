@@ -20,7 +20,8 @@ class Test extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'question_questionnaire_model'));
+        $this->load->model(array('question_model', 'question_type_model', 'topic_model',
+                                 'questionnaire_model', 'question_questionnaire_model'));
     }
 
     /**
@@ -72,5 +73,20 @@ class Test extends MY_Controller
 
         $question_type = $this->question_type_model->get_all();
         var_dump($question_type);
+    }
+
+    /**
+     * Test questionnaire_model
+     */
+    public function questionnaire()
+    {
+        $questionnaire = $this->questionnaire_model->get(3);
+        var_dump($questionnaire);
+
+        $questionnaire = $this->questionnaire_model->with('question_questionnaires')->get(3);
+        var_dump($questionnaire);
+
+        $questionnaire = $this->questionnaire_model->get_all();
+        var_dump($questionnaire);
     }
 }

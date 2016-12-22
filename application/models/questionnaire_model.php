@@ -8,9 +8,12 @@
  */
 class questionnaire_model extends MY_Model
 {
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_questionnaire';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
+    protected $has_many = ['question_questionnaires' => ['primary_key' => 'FK_Questionnaire',
+                                                         'model' => 'question_questionnaire_model']];
 
     /**
      * Constructor
