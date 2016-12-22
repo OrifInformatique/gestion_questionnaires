@@ -9,10 +9,12 @@
  */
 class question_type_model extends MY_Model
 {
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_question_type';
     protected $primary_key = 'ID';
-    protected $protected_attributes = 'ID';
-    protected $has_many = ['questions'];
+    protected $protected_attributes = ['ID'];
+    protected $has_many = ['questions' => ['primary_key' => 'FK_Question_Type',
+                                           'model' => 'question_model']];
 
     /**
      * Constructor

@@ -58,4 +58,19 @@ class Test extends MY_Controller
         $question_questionnaire = $this->question_questionnaire_model->get_all();
         var_dump($question_questionnaire);
     }
+
+    /**
+     * Test question_type_model
+     */
+    public function question_type()
+    {
+        $question_type = $this->question_type_model->get(2);
+        var_dump($question_type);
+
+        $question_type = $this->question_type_model->with('questions')->get(2);
+        var_dump($question_type);
+
+        $question_type = $this->question_type_model->get_all();
+        var_dump($question_type);
+    }
 }
