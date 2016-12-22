@@ -16,7 +16,9 @@ class topic_model extends MY_Model
     protected $belongs_to = ['Parent_Topic' => ['primary_key' => 'FK_Parent_Topic',
                                                 'model' => 'topic_model']];
     protected $has_many = ['questions' => ['primary_key' => 'FK_Topic',
-                                           'model' => 'question_model']];
+                                           'model' => 'question_model'],
+                           'child_topics' => ['primary_key' => 'FK_Parent_Topic',
+                                              'model' => 'topic_model']];
 
     /**
      * Constructor

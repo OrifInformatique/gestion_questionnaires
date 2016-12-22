@@ -101,7 +101,10 @@ class Test extends MY_Controller
         $topic = $this->topic_model->with('questions')->get(1);
         var_dump($topic);
 
-        $topic = $this->topic_model->with_all()->get(1);
+        $topic = $this->topic_model->with_all()->get(2);
+        var_dump($topic);
+
+        $topic = $this->topic_model->with_all()->get(3);
         var_dump($topic);
 
         $topic = $this->topic_model->get_all();
