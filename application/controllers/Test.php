@@ -40,4 +40,22 @@ class Test extends MY_Controller
         $rndQuestions = $this->question_model->getRNDQuestions(1, 2);
         var_dump($rndQuestions);
     }
+
+    /**
+     * Test question_questionnaire_model
+     */
+    public function question_questionnaire()
+    {
+        $question_questionnaire = $this->question_questionnaire_model->get(2);
+        var_dump($question_questionnaire);
+
+        $question_questionnaire = $this->question_questionnaire_model->with('question')->get(2);
+        var_dump($question_questionnaire);
+
+        $question_questionnaire = $this->question_questionnaire_model->with_all()->get(2);
+        var_dump($question_questionnaire);
+
+        $question_questionnaire = $this->question_questionnaire_model->get_all();
+        var_dump($question_questionnaire);
+    }
 }
