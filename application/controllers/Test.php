@@ -89,4 +89,22 @@ class Test extends MY_Controller
         $questionnaire = $this->questionnaire_model->get_all();
         var_dump($questionnaire);
     }
+
+    /**
+     * Test topic_model
+     */
+    public function topic()
+    {
+        $topic = $this->topic_model->get(1);
+        var_dump($topic);
+
+        $topic = $this->topic_model->with('questions')->get(1);
+        var_dump($topic);
+
+        $topic = $this->topic_model->with_all()->get(1);
+        var_dump($topic);
+
+        $topic = $this->topic_model->get_all();
+        var_dump($topic);
+    }
 }

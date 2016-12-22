@@ -9,12 +9,14 @@
  */
 class topic_model extends MY_Model
 {
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_topic';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
     protected $belongs_to = ['Parent_Topic' => ['primary_key' => 'FK_Parent_Topic',
-                                                'model' => 'topic']];
-    protected $has_many = ['questions'];
+                                                'model' => 'topic_model']];
+    protected $has_many = ['questions' => ['primary_key' => 'FK_Topic',
+                                           'model' => 'question_model']];
 
     /**
      * Constructor
