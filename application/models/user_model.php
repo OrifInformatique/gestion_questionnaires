@@ -11,8 +11,8 @@ class user_model extends MY_Model
 {
     /* MY_Model variables definition */
     protected $_table = 't_user';
-    protected $primary_key = 'id';
-    protected $protected_attributes = ['id'];
+    protected $primary_key = 'ID';
+    protected $protected_attributes = ['ID'];
     public $belongs_to = ['user_type'];
 
     /**

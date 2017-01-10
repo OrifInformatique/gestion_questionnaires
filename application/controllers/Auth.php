@@ -49,7 +49,7 @@ class Auth extends MY_Controller {
             if($this->user_model->check_password($username, $password)) {
                 $user = $this->user_model->get_by('user', $username);
 
-                $this->session->user_id = $user->id;
+                $this->session->user_id = $user->ID;
                 $this->session->username = $user->user;
                 $this->session->user_access = 
                     $this->user_type_model->get($user->user_type)->access_level;

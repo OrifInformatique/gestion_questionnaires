@@ -22,7 +22,7 @@ class Questionnaire extends MY_Controller
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
                                 'question_model', 'question_type_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation'));
+        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf'));
 
     }
 
@@ -146,10 +146,11 @@ class Questionnaire extends MY_Controller
     public function generatePDF($tableTopics)
     {
         $this->InsertNewQuestionnaire($tableTopics);
-        /**
-         * Pour construire un pdf :
-         * https://secure.php.net/manual/fr/intro.pdf.php
-         */
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',16);
+        $pdf->Cell(40,10,'Hello World !');
+        $pdf->Output();
         echo "PDF en construction.. veuillez patienter une duréé indeterminée..";
 
     }

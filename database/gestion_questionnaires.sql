@@ -15,9 +15,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- Schema gestion_questionnaires
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `gestion_questionnaires` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
--- -----------------------------------------------------
--- Schema stock
--- -----------------------------------------------------
 USE `gestion_questionnaires` ;
 
 -- -----------------------------------------------------
@@ -249,9 +246,10 @@ COLLATE = utf8_unicode_ci;
 -- Table `gestion_questionnaires`.`t_question_questionnaire`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_question_questionnaire` (
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
   `FK_Questionnaire` INT(11) NOT NULL,
-  PRIMARY KEY (`FK_Question`, `FK_Questionnaire`),
+  PRIMARY KEY (`ID`, `FK_Question`, `FK_Questionnaire`),
   INDEX `fk_t_question_has_t_questionnaire_t_questionnaire1_idx` (`FK_Questionnaire` ASC),
   INDEX `fk_t_question_has_t_questionnaire_t_question1_idx` (`FK_Question` ASC))
 ENGINE = MyISAM
@@ -263,10 +261,9 @@ COLLATE = utf8_unicode_ci;
 -- Table `gestion_questionnaires`.`t_user_type`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user_type` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
-  `access_level` INT(11) NOT NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`ID`))
 ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
@@ -276,15 +273,15 @@ COLLATE = utf8_unicode_ci;
 -- Table `gestion_questionnaires`.`t_user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `user_type` INT NOT NULL,
   `user` VARCHAR(45) NULL,
   `password` VARCHAR(70) NULL,
-  PRIMARY KEY (`id`, `user_type`),
+  PRIMARY KEY (`ID`, `user_type`),
   INDEX `fk_t_user_t_user_type1_idx` (`user_type` ASC),
   CONSTRAINT `fk_t_user_t_user_type1`
     FOREIGN KEY (`user_type`)
-    REFERENCES `gestion_questionnaires`.`t_user_type` (`id`)
+    REFERENCES `gestion_questionnaires`.`t_user_type` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = MyISAM
