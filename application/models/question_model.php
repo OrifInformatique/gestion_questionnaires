@@ -10,13 +10,16 @@
  */
 class question_model extends MY_Model
 {
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_question';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
     protected $belongs_to = ['question_type' => ['primary_key' => 'FK_Question_Type',
-                                                    'model' => 'question_type'],
+                                                 'model' => 'question_type_model'],
                              'topic' => ['primary_key' => 'FK_Topic',
-                                         'model' => 'topic']];
+                                         'model' => 'topic_model']];
+    protected $has_many = ['question_questionnaires' => ['primary_key' => 'FK_Question',
+                                                         'model' => 'question_questionnaire_model']];
 
     /**
      * Constructor
@@ -27,10 +30,10 @@ class question_model extends MY_Model
     }
 
     /**
-     * Select somes randoms question id for the questionnaire
+     * Select some random questions for the questionnaire
      * @param $idTopic = Id of topic
-     * @param $nbQuestion = # of questions asked
-     * @return an array with each question
+     * @param $nbQuestion = number of questions to return
+     * @return an array with the questions
      */
     public function getRNDQuestions($idTopic, $nbQuestion)
     {

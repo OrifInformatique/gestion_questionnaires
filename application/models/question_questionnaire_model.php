@@ -9,14 +9,15 @@
  */
 class question_questionnaire_model extends MY_Model
 {
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_question_questionnaire';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
-    protected $belongs_to = ['Question' => ['primary_key' => 'FK_Question',
-                            'model' => 'question'], 'Questionnaire' =>
-                            ['primary_key' => 'FK_Questionnaire', 'model'
-                            => 'Questionnaire']];
-
+    protected $belongs_to = ['question' => ['primary_key' => 'FK_Question',
+                                            'model' => 'question_model'],
+                             'questionnaire' => ['primary_key' => 'FK_Questionnaire',
+                                                 'model' => 'questionnaire_model']];
+    
     /**
      * Constructor
      */
