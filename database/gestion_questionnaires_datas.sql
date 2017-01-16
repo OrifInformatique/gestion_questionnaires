@@ -33,8 +33,8 @@ INSERT INTO `t_questionnaire` (`ID`, `Questionnaire_Name`, `PDF`, `Corrige_PDF`,
 --
 
 INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
-(1, 'administrator', 2),
-(2, 'members', 1);
+(1, 'member', 1),
+(2, 'administrator', 2);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -44,6 +44,6 @@ INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
 -- Contenu de la table `t_user`
 --
 
-INSERT INTO `t_user` (`id`, `user_type`, `user`, `password`) VALUES
-(1, 1, 'user1', '$2y$10$KLWXNi8NdBCWG.zme9nvN.4b3W9dIzWxgd4XfP2Ylbu5D2jctGta2'),
-(2, 2, 'user2', '$2y$10$SVQwDrrKwlcRtGTZ6mTnh.ajB3CJBfVXKSRsc5AUdiFXPqqq9S1Im');
+INSERT INTO `t_user` (`id`, `FK_User_Type`, `user`, `password`) VALUES
+(1, 2, 'admin', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja'),
+(2, 1, 'user', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja');

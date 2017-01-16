@@ -31,7 +31,7 @@ class Auth extends MY_Controller {
      * Display the login view
      */
     public function index($error = 0){
-
+        var_dump(password_hash("OrifInfo2009", PASSWORD_DEFAULT));
         $output['error'] = $error;
         $this->display_view("login/login", $output);
     }
@@ -50,11 +50,11 @@ class Auth extends MY_Controller {
                 $user = $this->user_model->with('user_type')->get_by('User', $username);
 
                 $this->session->user_id = $user->ID;
-                $this->session->username = $user->user;
-                $this->session->user_access = 
-                    $this->user_type_model->get($user->user_type)->access_level;
                 $this->session->username = $user->User;
-                $this->session->user_access = $user->user_type->Access_Level;
+                $this->session->user_access = 
+                    $this->user_type_model->get($user->FK_User_Type)->access_level;
+                $this->session->username = $user->User;
+                $this->session->user_access = $user->user_type->access_level;
                 $this->session->logged_in = true;
 
                 redirect('Home');

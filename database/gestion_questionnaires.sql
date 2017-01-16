@@ -22,7 +22,7 @@ USE `gestion_questionnaires` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_question_type` (
   `ID` INT(11) NOT NULL,
-  `Type_Name` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Type_Name` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   PRIMARY KEY (`ID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
@@ -35,9 +35,9 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_topic` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Parent_Topic` INT(11) NULL,
-  `Topic` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Topic` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
-  `Archive` INT(11) NULL,
+  `Archive` TINYINT(1) NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_topic_t_topic1_idx` (`FK_Parent_Topic` ASC),
   CONSTRAINT `fk_t_topic_t_topic1`
@@ -55,9 +55,9 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_question` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `FK_Topic` INT(11) NULL,
-  `FK_Question_Type` INT(11) NULL,
-  `Question` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `FK_Topic` INT(11) NOT NULL,
+  `FK_Question_Type` INT(11) NOT NULL,
+  `Question` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Nb_Desired_Answers` INT(11) NULL,
   `Table_With_Definition` TINYINT(1) NULL,
   `Picture_Name` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
@@ -87,8 +87,8 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_answer_distribution` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Question_Part` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
-  `Answer_Part` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Question_Part` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
+  `Answer_Part` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `fk_t_answer_distribution_t_question1`
@@ -107,7 +107,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_cloze_text` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Cloze_Text` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Cloze_Text` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_cloze_text_t_question1_idx` (`FK_Question` ASC),
@@ -127,7 +127,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_cloze_text_answer` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Cloze_Text` INT(11) NOT NULL,
-  `Answer` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Answer` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Answer_Order` INT(11) NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
@@ -148,7 +148,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_free_answer` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Answer` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Answer` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_free_answer_t_question1_idx` (`FK_Question` ASC),
@@ -168,7 +168,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_multiple_answer` (
   `ID` INT(11) NOT NULL,
   `FK_Question` INT(11) NOT NULL,
-  `Answer` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Answer` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `fk_t_multiple_answer_t_question1`
@@ -187,7 +187,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_multiple_choice` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Answer` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Answer` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Valid` TINYINT(1) NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
@@ -208,8 +208,8 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_picture_landmark` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Symbol` VARCHAR(2) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
-  `Answer` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Symbol` VARCHAR(2) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
+  `Answer` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_picture_landmark_t_question1_idx` (`FK_Question` ASC),
@@ -228,7 +228,7 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_questionnaire` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `Questionnaire_Name` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Questionnaire_Name` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `PDF` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
   `Corrige_PDF` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
   `Creation_Date` DATETIME NULL,
@@ -244,7 +244,7 @@ COLLATE = utf8_unicode_ci;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_table_cell` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
-  `Content` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
+  `Content` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Column_Nb` INT(11) NULL,
   `Row_Nb` INT(11) NULL,
   `Header` TINYINT(1) NULL,
@@ -302,8 +302,8 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_question_questionnaire` (
   `ID` INT NOT NULL AUTO_INCREMENT,
-  `FK_Question` INT(11) NULL,
-  `FK_Questionnaire` INT(11) NULL,
+  `FK_Question` INT(11) NOT NULL,
+  `FK_Questionnaire` INT(11) NOT NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_question_has_t_questionnaire_t_questionnaire1_idx` (`FK_Questionnaire` ASC),
   INDEX `fk_t_question_has_t_questionnaire_t_question1_idx` (`FK_Question` ASC),
@@ -327,8 +327,8 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user_type` (
   `ID` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL,
-  `access_level` INT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `access_level` INT NOT NULL,
   PRIMARY KEY (`ID`))
 ENGINE = InnoDB;
 
@@ -339,8 +339,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_user` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `FK_User_Type` INT NOT NULL,
-  `User` VARCHAR(45) NULL,
-  `Password` VARCHAR(70) NULL,
+  `User` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(255) NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_t_user_t_user_type1_idx` (`FK_User_Type` ASC),
   CONSTRAINT `fk_t_user_t_user_type1`
