@@ -1,10 +1,10 @@
-<?php
-
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 19.12.2016
- * Time: 11:06
+ * This object is used to load in all elements for futur questionnaire
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class TableTopics
 {

@@ -145,19 +145,42 @@ class Questionnaire extends MY_Controller
 
     public function generatePDF($tableTopics)
     {
-        $this->InsertNewQuestionnaire($tableTopics);
+
+
+        $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
+        $totalpoints = 0;
+
         $pdf = new FPDF();
         $pdf->AddPage();
         $pdf->SetFont('Arial','B',16);
-        $pdf->Cell(40,10,'Hello World !');
-        $pdf->Output();
-        echo "PDF en construction.. veuillez patienter une duréé indeterminée..";
+        $pdf->SetTitle("Questionnaire", true);
+        $pdf->MultiCell(0,20,'Questionnaire', 0, "C");
+        $pdf->SetFont('Arial','B',14);
+        $pdf->MultiCell(0,10,'Nom :                                                               Date :', 0, "L");
+        $pdf->MultiCell(40,10,'Prenom :', 0, "L");
+        $pdf->SetFont('Arial','',16);
+
+        foreach ($listRndQuestions as $object => $idQuestion)
+        {
+            $rndQuestion = $this->question_model->get($idQuestion);
+
+            $Question = $rndQuestion->Question;
+            $Question = iconv('UTF-8', 'windows-1252', $Question);
+            $totalpoints += $rndQuestion->Points;
+            $pdf->MultiCell(0,20,$Question, 0, "L");
+            $pdf->MultiCell(0,20,".../$rndQuestion->Points", 0, "R");
+
+        }
+
+        $pdf->MultiCell(0, 20, "Total :..../$totalpoints", 0, "R");
+        $pdf->Output('I', 'Questionnaire', true);
 
     }
 
 
     private function InsertNewQuestionnaire($tableTopics)
     {
+        $listIDQuestions = array();
         //Insert new Questionnaire
         $title = $tableTopics->getTitle();
         $newQuestionnaire = array("Questionnaire_Name" => $title,
@@ -178,12 +201,16 @@ class Questionnaire extends MY_Controller
 
             //load randoms questions about the topic
             $rndQuestions = $this->question_model->getRNDQuestions($idTopic, $nbQuestion);
+
             for($number = 0; $number < count($rndQuestions);$number++)
             {
                 $row = array("FK_Question" => intval($rndQuestions[$number]["ID"]), "FK_Questionnaire" => $idQuestionnaire);
                 $this->question_questionnaire_model->insert($row);
+                array_push($listIDQuestions, intval($rndQuestions[$number]["ID"]));
+
             }
         }
+        return $listIDQuestions;
     }
 
     /**
