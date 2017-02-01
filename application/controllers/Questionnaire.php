@@ -20,7 +20,8 @@ class Questionnaire extends MY_Controller
     {
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
-                                'question_model', 'question_type_model'));
+                                'question_model', 'question_type_model', 'answer_distribution_model',
+                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf'));
 
@@ -154,11 +155,12 @@ class Questionnaire extends MY_Controller
         $pdf->AddPage();
         $pdf->SetFont('Arial','B',16);
         $pdf->SetTitle("Questionnaire", true);
-        $pdf->MultiCell(0,20,'Questionnaire', 0, "C");
+        $pdf->MultiCell(0,20,'Questionnaire', 1, "C");
         $pdf->SetFont('Arial','B',14);
         $pdf->MultiCell(0,10,'Nom :                                                               Date :', 0, "L");
-        $pdf->MultiCell(40,10,'Prenom :', 0, "L");
+        $pdf->MultiCell(80,10,iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
         $pdf->SetFont('Arial','',16);
+
 
         foreach ($listRndQuestions as $object => $idQuestion)
         {
@@ -167,12 +169,38 @@ class Questionnaire extends MY_Controller
             $Question = $rndQuestion->Question;
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
+
             $pdf->MultiCell(0,20,$Question, 0, "L");
+
+            switch($rndQuestion->FK_Question_Type)
+            {
+                case 1:
+                    $this->displayMultipleChoices($rndQuestion, $pdf);
+                    break;
+                case 2:
+                    $this->displayMultipleAnswers($rndQuestion, $pdf);
+                    break;
+                case 3:
+                    $this->displayAnswerDistribution($rndQuestion, $pdf);
+                    break;
+                case 4:
+                    $this->displayClozeText($rndQuestion, $pdf);
+                    break;
+                case 5:
+                    $this->displayTable($rndQuestion, $pdf);
+                    break;
+                case 7:
+                    $this->displayPictureLandmarks($rndQuestion, $pdf);
+                    break;
+                default:
+                    break;
+            }
+
             $pdf->MultiCell(0,20,".../$rndQuestion->Points", 0, "R");
 
         }
 
-        $pdf->MultiCell(0, 20, "Total :..../$totalpoints", 0, "R");
+        $pdf->MultiCell(0, 20, "Total : .../$totalpoints", 0, "R");
         $pdf->Output('I', 'Questionnaire', true);
 
     }
@@ -230,4 +258,110 @@ class Questionnaire extends MY_Controller
 
         return $tableTopics;
     }
+
+    private function displayMultipleChoices($Question, $pdf)
+    {
+        $Multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+
+        foreach ($Multi_Choice_Questions as $m)
+        {
+            $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
+
+            $y = $pdf->Gety();
+            $pdf->SetY($y + 7.7);
+            $pdf->SetX(100);
+            $pdf->MultiCell(5, 5, "", 1);
+        }
+    }
+
+    private function displayMultipleAnswers($Question, $pdf)
+    {
+        $nbAskedAnswers = $Question->Nb_Desired_Answers;
+        for($i = 0; $i < $nbAskedAnswers; $i++)
+        {
+            $pdf->MultiCell(80, 10, "________________________", 0);
+        }
+    }
+
+    private function displayAnswerDistribution($Question, $pdf)
+    {
+        $An_Distrib_Questions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
+
+        foreach ($An_Distrib_Questions as $an_Distrib_Question)
+        {
+            $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$an_Distrib_Question->Question_Part), 1, "C");
+            $pdf->Cell(20,20, "", 0, "C");
+            $pdf->MultiCell(80,20, "", 1, "C");
+
+        }
+    }
+
+    private function displayClozeText($Question, $pdf)
+    {
+        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+
+        $pdf->MultiCell(0,10, iconv('UTF-8', 'windows-1252',$ClozeText->Cloze_Text), 0, "J");
+
+    }
+
+    private function displayTable($Question, $pdf)
+    {
+        $tableCells = $this->table_cell_model->get_many_by("FK_Question = $Question->ID");
+        $maxColumn = 0;
+        $maxRow = 0;
+        for($i = 0;$i < count($tableCells); $i++)
+        {
+            if($maxColumn < $tableCells[$i]->Column_Nb) $maxColumn = $tableCells[$i]->Column_Nb;
+            if($maxRow < $tableCells[$i]->Row_Nb) $maxRow = $tableCells[$i]->Row_Nb;
+        }
+        foreach ($tableCells as $tableCell)
+        {
+            for($l = 1; $l <= $maxColumn; $l++)
+            {
+                if($tableCell->Header)
+                {
+                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCell->Content), 1, "C");
+                }else{
+                    for($m = 1; $m <= $maxRow; $m++)
+                    {
+                        $pdf->Cell(40,10, "", 1, "C");
+                    }
+                }
+            }
+        }
+        /*
+         * Pour le corrigé du pdf :
+        for($j = 1;$j <= $maxColumn; $j++)
+        {
+            foreach($tableCells as $tableCellColumn)
+            {
+                if($tableCellColumn->Column_Nb == $j)
+                {
+                    for($j = 1;$j <= $maxRow; $j++)
+                    {
+                        foreach($tableCells as $tableCellRow)
+                        {
+                            if($tableCellRow->Row_Nb == $j)
+                            {
+                                if($tableCellRow->Column_Nb < $maxColumn)
+                                {
+                                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                }else
+                                {
+                                    $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        */
+    }
+
+    private function displayPictureLandmarks($Question, $pdf)
+    {
+
+    }
+
 }
