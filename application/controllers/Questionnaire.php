@@ -21,7 +21,8 @@ class Questionnaire extends MY_Controller
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
                                 'question_model', 'question_type_model', 'answer_distribution_model',
-                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model'));
+                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model', 
+                                'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf'));
 
@@ -261,9 +262,9 @@ class Questionnaire extends MY_Controller
 
     private function displayMultipleChoices($Question, $pdf)
     {
-        $Multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+        $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
 
-        foreach ($Multi_Choice_Questions as $m)
+        foreach ($multi_Choice_Questions as $m)
         {
             $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
 
@@ -314,23 +315,7 @@ class Questionnaire extends MY_Controller
             if($maxColumn < $tableCells[$i]->Column_Nb) $maxColumn = $tableCells[$i]->Column_Nb;
             if($maxRow < $tableCells[$i]->Row_Nb) $maxRow = $tableCells[$i]->Row_Nb;
         }
-        foreach ($tableCells as $tableCell)
-        {
-            for($l = 1; $l <= $maxColumn; $l++)
-            {
-                if($tableCell->Header)
-                {
-                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCell->Content), 1, "C");
-                }else{
-                    for($m = 1; $m <= $maxRow; $m++)
-                    {
-                        $pdf->Cell(40,10, "", 1, "C");
-                    }
-                }
-            }
-        }
-        /*
-         * Pour le corrigé du pdf :
+
         for($j = 1;$j <= $maxColumn; $j++)
         {
             foreach($tableCells as $tableCellColumn)
@@ -343,12 +328,37 @@ class Questionnaire extends MY_Controller
                         {
                             if($tableCellRow->Row_Nb == $j)
                             {
-                                if($tableCellRow->Column_Nb < $maxColumn)
+                                if($tableCellRow->Header)
                                 {
-                                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    $pdf->SetFont('Arial','B',16);
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+                                        $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }
+                                    $pdf->SetFont('Arial', '',16);
+                                }
+                                else if($tableCellRow->Display_In_Question)
+                                {
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+                                        $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }
                                 }else
                                 {
-                                    $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+
+                                        $pdf->Cell(40,10, '', 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, '', 1, "C");
+                                    }
                                 }
                             }
                         }
@@ -356,12 +366,19 @@ class Questionnaire extends MY_Controller
                 }
             }
         }
-        */
+
     }
 
     private function displayPictureLandmarks($Question, $pdf)
     {
+        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+        $pdf->Image($Question->Picture_Name);
 
+        foreach ($pictureLandmarks as $pictureLandmark)
+        {
+            $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
+            $pdf->MultiCell(40,10, '___________', 0, "L");
+        }
     }
 
 }

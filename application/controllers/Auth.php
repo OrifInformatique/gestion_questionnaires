@@ -31,7 +31,6 @@ class Auth extends MY_Controller {
      * Display the login view
      */
     public function index($error = 0){
-        var_dump(password_hash("OrifInfo2009", PASSWORD_DEFAULT));
         $output['error'] = $error;
         $this->display_view("login/login", $output);
     }
