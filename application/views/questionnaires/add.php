@@ -6,6 +6,7 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright    Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
+$nbMaxQuestion = 0;
 ?>
 <div class="container">
     <h1 style="padding-top: 12%; padding-bottom: 5%"
@@ -39,14 +40,21 @@
                             <?php
 
                             //Récupère chaque topics
-                            foreach ($topicsList as $object => $module) {
-                                if ($module->FK_Parent_Topic == 0) {
+                            foreach ($topicsList as $object => $topic) {
+
+                                $nbQuestion = $this->question_model->getNbQuestionByTopic($topic->ID);
+                                if($nbQuestion > $nbMaxQuestion)
+                                {
+                                    $nbMaxQuestion = $nbQuestion;
+                                }
+
+                                if ($topic->FK_Parent_Topic == 0) {
                                     //Affiche le topic parent
-                                    echo "<optgroup label='$module->Topic' >";
+                                    echo "<optgroup label='$topic->Topic' >";
 
                                     //Récupère chaque topic associé au topic parent
                                     for ($i = 0; $i < count($topicsList); $i++) {
-                                        if ($module->ID == $topicsList[$i]->FK_Parent_Topic) {
+                                        if ($topic->ID == $topicsList[$i]->FK_Parent_Topic) {
                                             //Affiche les topics associés
                                             echo "<option>" . $topicsList[$i]->Topic . "</option>";
                                         }
@@ -66,7 +74,7 @@
                         <select class="form-control" id="nb_questions" name="nb_questions">
                             <?php
                             //List number
-                            for ($index = 1; $index <= 20; $index++) {
+                            for ($index = 1; $index <= $nbMaxQuestion; $index++) {
                                 echo "<option>" . $index . "</option>";
                             }
                             ?>
@@ -129,3 +137,4 @@
         <div class="col-lg-2"></div>
         </div>
     </div>
+

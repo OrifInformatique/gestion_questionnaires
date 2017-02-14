@@ -98,6 +98,7 @@ class Questionnaire extends MY_Controller
     {
         $output['topicsList'] = $this->topic_model->get_all();
         $output['questions'] = $this->question_model->with_all()->get_all();
+        $output['question_types'] = $this->question_type_model->get_all();
         $output['nbLines'] = 5;
         $output['title'] = $title;
         $output['topics'] = $topics;
@@ -154,56 +155,57 @@ class Questionnaire extends MY_Controller
 
         $pdf = new FPDF();
         $pdf->AddPage();
-        $pdf->SetFont('Arial','B',16);
+        $pdf->SetFont('Arial', 'B', 16);
         $pdf->SetTitle("Questionnaire", true);
-        $pdf->MultiCell(0,20,'Questionnaire', 1, "C");
-        $pdf->SetFont('Arial','B',14);
-        $pdf->MultiCell(0,10,'Nom :                                                               Date :', 0, "L");
-        $pdf->MultiCell(80,10,iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
-        $pdf->SetFont('Arial','',16);
+        $pdf->MultiCell(0, 20, 'Questionnaire', 1, "C");
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
+        $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
+        $pdf->SetFont('Arial', '', 16);
 
 
-        foreach ($listRndQuestions as $object => $idQuestion)
-        {
+        foreach ($listRndQuestions as $object => $idQuestion) {
             $rndQuestion = $this->question_model->get($idQuestion);
 
             $Question = $rndQuestion->Question;
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-            $pdf->MultiCell(0,20,$Question, 0, "L");
+            $pdf->MultiCell(0, 20, $Question, 0, "L");
 
-            switch($rndQuestion->FK_Question_Type)
-            {
+            switch ($rndQuestion->FK_Question_Type) {
                 case 1:
-                    $this->displayMultipleChoices($rndQuestion, $pdf);
+                    $error = $this->displayMultipleChoices($rndQuestion, $pdf);
                     break;
                 case 2:
-                    $this->displayMultipleAnswers($rndQuestion, $pdf);
+                    $error = $this->displayMultipleAnswers($rndQuestion, $pdf);
                     break;
                 case 3:
-                    $this->displayAnswerDistribution($rndQuestion, $pdf);
+                    $error = $this->displayAnswerDistribution($rndQuestion, $pdf);
                     break;
                 case 4:
-                    $this->displayClozeText($rndQuestion, $pdf);
+                    $error = $this->displayClozeText($rndQuestion, $pdf);
                     break;
                 case 5:
-                    $this->displayTable($rndQuestion, $pdf);
+                    $error = $this->displayTable($rndQuestion, $pdf);
                     break;
                 case 7:
-                    $this->displayPictureLandmarks($rndQuestion, $pdf);
+                    $error = $this->displayPictureLandmarks($rndQuestion, $pdf);
                     break;
                 default:
                     break;
             }
 
-            $pdf->MultiCell(0,20,".../$rndQuestion->Points", 0, "R");
+            $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
 
         }
 
         $pdf->MultiCell(0, 20, "Total : .../$totalpoints", 0, "R");
-        $pdf->Output('I', 'Questionnaire', true);
-
+        if ($error) {
+            echo $this->lang->line('pdf_error');
+        }else{
+            $pdf->Output('I', 'Questionnaire', true);
+        }
     }
 
 
@@ -297,12 +299,18 @@ class Questionnaire extends MY_Controller
         }
     }
 
+    //if error return true
     private function displayClozeText($Question, $pdf)
     {
         $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
 
-        $pdf->MultiCell(0,10, iconv('UTF-8', 'windows-1252',$ClozeText->Cloze_Text), 0, "J");
-
+        if(!isset($ClozeText->Cloze_Text))
+        {
+            return true;
+        }else {
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            return false;
+        }
     }
 
     private function displayTable($Question, $pdf)

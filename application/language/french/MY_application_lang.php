@@ -79,3 +79,7 @@ $lang['topic']                          = 'Sujet(s)';
 //Modules pages
 $lang['title_module']                   = 'Liste des modules';
 $lang['module']                         = 'Module(s)';
+
+//PDF error
+$lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
+                                           plusieurs des questions soi(en)t mal enregistrée(s)";

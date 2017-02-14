@@ -46,4 +46,14 @@ class question_model extends MY_Model
 
         return $query->result_array();
     }
+
+    public function getNbQuestionByTopic($idTopic)
+    {
+        $query = $this->_database
+                        ->select($this->primary_key)
+                        ->where("FK_Topic = $idTopic")
+                        ->get($this->_table);
+
+        return $query->num_rows();
+    }
 }
