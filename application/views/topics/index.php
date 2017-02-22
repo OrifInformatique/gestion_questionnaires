@@ -47,7 +47,7 @@ function displayTableBody($topic){
                 </a>
             </li>
             <li>
-                <a href="<?php echo base_url('/add');?>"><?php echo $this->lang->line('btn_add'); ?></a>
+                <a href="<?php echo base_url('Topic/add');?>"><?php echo $this->lang->line('btn_add'); ?></a>
             </li>
             <li>
                 <a id="btn_update"><?php echo $this->lang->line('btn_update'); ?></a>

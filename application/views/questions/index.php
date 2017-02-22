@@ -21,6 +21,9 @@
                     <a href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add');?></a>
                 </li>
                 <li>
+                    <a href="<?php echo base_url('Question/importExcel');?>"><?php echo $this->lang->line('btn_import');?></a>
+                </li>
+                <li>
                     <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
                 </li>
                 <li>

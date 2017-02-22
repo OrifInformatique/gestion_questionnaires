@@ -42,6 +42,8 @@ $lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
+$lang['btn_import']                     = 'Importer';
+$lang['btn_import_questions']           = 'Importer';
 
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
@@ -61,10 +63,11 @@ $lang['generatePDF_btn']                = 'Enregistrer';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
+$lang['title_import_questions']         = 'Importez vos questions';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['focus_topic']                          = 'Sujet concerné :';
+$lang['focus_topic']                    = 'Sujet concerné :';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
