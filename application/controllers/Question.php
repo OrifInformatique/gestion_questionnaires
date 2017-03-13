@@ -7,6 +7,7 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
+
 class Question extends MY_Controller
 {
     /* MY_Controller variables definition */
@@ -19,7 +20,7 @@ class Question extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_model', 'question_type_model', 'topic_model'));
+        $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'multiple_choice_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload'));
     }
@@ -114,18 +115,17 @@ class Question extends MY_Controller
         if (!$this->upload->do_upload('excelfile')) {
             $error = array('error' => $this->upload->display_errors());
 
-            var_dump($error);
         } else {
 
             $data = array('upload_data' => $this->upload->data());
 
-            $inputFileName = $_FILES['excelfile']['tmp_name'];
+            $inputFileName = $data['upload_data']['full_path'];
 
             $topic = $this->input->post('topic_selected');
             $topic = str_replace("'", "''", $topic);
             $idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
 
-            $inputFileType = 'Excel5';
+            $inputFileType = 'Excel2007';
 
             /**  Create a new Reader of the type defined in $inputFileType  **/
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -158,13 +158,71 @@ class Question extends MY_Controller
 
     }
 
+
+    /**
+     * Import 'Multiple_Choice' question type by Excel sheet 'ChoixMultiple'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'ChoixMultiple'
+     */
     private function Import_MultipleChoices($idTopic, $objReader, $inputFileName)
     {
         $sheetname = "ChoixMultiples";
+        define("QUESTION_TYPE", 1);
+        define("ID_TOPIC", $idTopic);
 
         /**  Advise the Reader of which WorkSheets we want to load  **/
         $objReader->setLoadSheetsOnly($sheetname);
+        $objReader->setReadDataOnly(true);
         /**  Load $inputFileName to a PHPExcel Object  **/
         $objPHPExcel = $objReader->load($inputFileName);
+
+        //$chunkFilter = new chunkReadFilter(1,18);
+        /**  Tell the Reader that we want to use the new Read Filter that we've just Instantiated
+        $objReader->setReadFilter($chunkFilter);**/
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+        {
+
+            $column = 0;
+            $row = 3;
+
+            //Browse the sheet
+            while($worksheet->getCellByColumnAndRow(0, $row)->getValue() != NULL)
+            {
+                //Current question
+                $question = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+
+                //Data to insert to the table 'T_Question'
+                $inputQuestion = array(
+                                "FK_Topic" => ID_TOPIC,
+                                "FK_Question_Type" => QUESTION_TYPE,
+                                "Question" => $question
+                );
+
+                $idQuestion = $this->question_model->insert($inputQuestion);
+
+                //Take next to the question the data to insert to 'T_Multiple_Choice'
+                while($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+                {
+                    $answerField = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                    $validField = $worksheet->getCellByColumnAndRow($column + 1, $row + 1)->getValue();
+
+                    if($validField == "x")$valid = true;
+                    else $valid = false;
+                    
+                    $inputMultipleChoice = array(
+                        "FK_Question" => $idQuestion,
+                        "Answer" => $answerField,
+                        "Valid" => $valid
+                    );
+
+                    $this->multiple_choice_model->insert($inputMultipleChoice);
+                    $column += 1;
+                }
+                $row += 2;
+                $column = 0;
+            }
+        }
     }
 }
