@@ -166,7 +166,7 @@ COLLATE = utf8_unicode_ci;
 -- Table `gestion_questionnaires`.`t_multiple_answer`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gestion_questionnaires`.`t_multiple_answer` (
-  `ID` INT(11) NOT NULL,
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
   `FK_Question` INT(11) NOT NULL,
   `Answer` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Creation_Date` DATETIME NULL,

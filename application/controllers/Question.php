@@ -20,7 +20,9 @@ class Question extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'multiple_choice_model'));
+        $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
+                            'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
+                            'cloze_text_answer_model', 'table_cell_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload'));
     }
@@ -130,8 +132,11 @@ class Question extends MY_Controller
             /**  Create a new Reader of the type defined in $inputFileType  **/
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
 
-            $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
-            //Import_MultipleAnswers();
+            /*$this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
+            $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
+            $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
+            $this->Import_ClozeText($idTopic, $objReader, $inputFileName);*/
+            $this->Import_TableCell($idTopic, $objReader, $inputFileName);
 
             ?>
             <script>alert("Importation terminée !");</script>
@@ -167,19 +172,14 @@ class Question extends MY_Controller
      */
     private function Import_MultipleChoices($idTopic, $objReader, $inputFileName)
     {
-        $sheetname = "ChoixMultiples";
-        define("QUESTION_TYPE", 1);
-        define("ID_TOPIC", $idTopic);
+        $sheetName = 'ChoixMultiples';
+        $questionType = 1;
 
         /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetname);
+        $objReader->setLoadSheetsOnly($sheetName);
         $objReader->setReadDataOnly(true);
         /**  Load $inputFileName to a PHPExcel Object  **/
         $objPHPExcel = $objReader->load($inputFileName);
-
-        //$chunkFilter = new chunkReadFilter(1,18);
-        /**  Tell the Reader that we want to use the new Read Filter that we've just Instantiated
-        $objReader->setReadFilter($chunkFilter);**/
 
         foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
         {
@@ -188,16 +188,18 @@ class Question extends MY_Controller
             $row = 3;
 
             //Browse the sheet
-            while($worksheet->getCellByColumnAndRow(0, $row)->getValue() != NULL)
+            //0 is the start column
+            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
             {
                 //Current question
-                $question = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
 
                 //Data to insert to the table 'T_Question'
                 $inputQuestion = array(
-                                "FK_Topic" => ID_TOPIC,
-                                "FK_Question_Type" => QUESTION_TYPE,
-                                "Question" => $question
+                                "FK_Topic" => $idTopic,
+                                "FK_Question_Type" => $questionType,
+                                "Question" => $question,
+                                "Creation_Date" => date("Y-m-d H:i:s")
                 );
 
                 $idQuestion = $this->question_model->insert($inputQuestion);
@@ -214,7 +216,8 @@ class Question extends MY_Controller
                     $inputMultipleChoice = array(
                         "FK_Question" => $idQuestion,
                         "Answer" => $answerField,
-                        "Valid" => $valid
+                        "Valid" => $valid,
+                        "Creation_Date" => date("Y-m-d H:i:s")
                     );
 
                     $this->multiple_choice_model->insert($inputMultipleChoice);
@@ -222,6 +225,310 @@ class Question extends MY_Controller
                 }
                 $row += 2;
                 $column = 0;
+            }
+        }
+    }
+
+    /**
+     * Import 'Multiple_Answer' question type by Excel sheet 'ReponsesMultiple'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'ReponsesMultiple'
+     */
+    private function Import_MultipleAnswers($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'ReponsesMultiples';
+        $questionType = 2;
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+        {
+            $column = 0;
+            $row = 3;
+
+            //Browse the sheet
+            //0 is the start column
+            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+            {
+                //Current question
+                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                //Nb of answer
+                $nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
+                //Data to insert to the table 'T_Question'
+                $inputQuestion = array(
+                    "FK_Topic" => $idTopic,
+                    "FK_Question_Type" => $questionType,
+                    "Question" => $question,
+                    "Nb_Desired_Answers" => $nbAnswerDesired,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $idQuestion = $this->question_model->insert($inputQuestion);
+
+                $column += 2;
+
+                //Take next to the question the data to insert to 'T_Multiple_Answer'
+                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+                {
+                    $answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+                    $inputMultipleAnswer = array(
+                        "FK_Question" => $idQuestion,
+                        "Answer" => $answer,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $this->multiple_answer_model->insert($inputMultipleAnswer);
+
+                    $column += 1;
+                }
+
+                $column = 0;
+                $row++;
+            }
+
+        }
+
+    }
+
+    /**
+     * Import 'Answer_Distribution' question type by Excel sheet 'DistributionReponses'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'DistributionReponses'
+     */
+    private function Import_AnswerDistribution($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'DistributionReponses';
+        $questionType = 3;
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+        {
+            $column = 1;
+            $row = 3;
+
+            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+            {
+                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
+                {
+                    //Current question
+                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+
+                    //Data to insert to the table 'T_Question'
+                    $inputQuestion = array(
+                        "FK_Topic" => $idTopic,
+                        "FK_Question_Type" => $questionType,
+                        "Question" => $question,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $idQuestion = $this->question_model->insert($inputQuestion);
+                }
+
+                $questionElement = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                $answerElement = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
+                $inputAnswerDistribution = array(
+                    "FK_Question" => $idQuestion,
+                    "Question_Part" => $questionElement,
+                    "Answer_Part" => $answerElement,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $this->answer_distribution_model->insert($inputAnswerDistribution);
+
+                $row++;
+            }
+
+        }
+    }
+
+    /**
+     * Import 'Cloze_Text' question type by Excel sheet 'TexteATrous'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'TexteATrous'
+     */
+    private function Import_ClozeText($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'TexteATrous';
+        $questionType = 4;
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+        {
+            $column = 1;
+            $row = 3;
+            $answerOrder = 0;
+
+            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+            {
+                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
+                {
+                    //Current question
+                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+
+                    //Data to insert to the table 'T_Question'
+                    $inputQuestion = array(
+                        "FK_Topic" => $idTopic,
+                        "FK_Question_Type" => $questionType,
+                        "Question" => $question,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $idQuestion = $this->question_model->insert($inputQuestion);
+                }
+
+                $clozeText = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+                $inputClozeText = array(
+                    "FK_Question" => $idQuestion,
+                    "Cloze_Text" => $clozeText,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $idClozeText = $this->cloze_text_model->insert($inputClozeText);
+
+                $column = 2;
+
+                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+                {
+                    $answerOrder++;
+                    $answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+                    $inputClozeTextAnswer = array(
+                        "FK_Cloze_Text" => $idClozeText,
+                        "Answer" => $answer,
+                        "Answer_Order" => $answerOrder,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $this->cloze_text_answer_model->insert($inputClozeTextAnswer);
+
+                    $column++;
+                }
+
+                $answerOrder = 0;
+                $row++;
+                $column = 1;
+            }
+
+
+        }
+    }
+
+    /**
+     * Import 'Table_Cell' question type by Excel sheet 'Tableaux'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'Tableaux'
+     */
+    private function Import_TableCell($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'Tableaux';
+        $questionType = 5;
+        $tableDefinition = false;
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+        {
+            $nbColumn = 1;
+            $nbRow = 1;
+            $column = 1;
+            $row = 3;
+            $regPattern = '/^\[.*\]$/';
+
+            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+            {
+                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL &&
+                    $worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue() != NULL)
+                {
+                    //Current question
+                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+                    $tableType = $worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue();
+
+                    if($tableType == 'simple')
+                        $tableDefinition = false;
+                    else
+                        $tableDefinition = true;
+
+
+                    //Data to insert to the table 'T_Question'
+                    $inputQuestion = array(
+                        "FK_Topic" => $idTopic,
+                        "FK_Question_Type" => $questionType,
+                        "Question" => $question,
+                        "Table_With_Definition" => $tableDefinition,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $idQuestion = $this->question_model->insert($inputQuestion);
+                }
+
+                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+
+                    $tableCell = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+                    //Test if the field is in bold
+                    if ($worksheet->getCellByColumnAndRow($column, $row)->getStyle()->getFont()->getBold())
+                        $header = true;
+                    else
+                        $header = false;
+
+                    //Test if the field need to be displayed
+                    if (preg_match($regPattern, $tableCell))
+                        $displayOnQuestion = true;
+                    else
+                        $displayOnQuestion = false;
+
+                    $inputTableCell = array(
+                        "FK_Question" => $idQuestion,
+                        "Content" => $tableCell,
+                        "Column_Nb" => $nbColumn,
+                        "Row_Nb" => $nbRow,
+                        "Header" => $header,
+                        "Display_In_Question" => $displayOnQuestion,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    if($column == 1 && $row == 3)
+                    {
+                        var_dump($inputTableCell);
+                    }
+
+
+                    $this->table_cell_model->insert($inputTableCell);
+
+                    $nbColumn++;
+                    $column++;
+                }
+
+                $nbColumn = 1;
+                $nbRow++;
+                $row++;
+                $column = 1;
             }
         }
     }
