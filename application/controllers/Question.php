@@ -22,7 +22,7 @@ class Question extends MY_Controller
         parent::__construct();
         $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
                             'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
-                            'cloze_text_answer_model', 'table_cell_model'));
+                            'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload'));
     }
@@ -132,15 +132,17 @@ class Question extends MY_Controller
             /**  Create a new Reader of the type defined in $inputFileType  **/
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
 
-            /*$this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
+            $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
             $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
             $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
-            $this->Import_ClozeText($idTopic, $objReader, $inputFileName);*/
+            $this->Import_ClozeText($idTopic, $objReader, $inputFileName);
             $this->Import_TableCell($idTopic, $objReader, $inputFileName);
+            $this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
+            $this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
 
-            ?>
-            <script>alert("Importation terminée !");</script>
-            <?php
+
+            //redirect("./Question");
+
         }
 
 
@@ -448,14 +450,12 @@ class Question extends MY_Controller
 
         /**  Advise the Reader of which WorkSheets we want to load  **/
         $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
+
         /**  Load $inputFileName to a PHPExcel Object  **/
         $objPHPExcel = $objReader->load($inputFileName);
 
         foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
         {
-            $nbColumn = 1;
-            $nbRow = 1;
             $column = 1;
             $row = 3;
             $regPattern = '/^\[.*\]$/';
@@ -485,6 +485,10 @@ class Question extends MY_Controller
                     );
 
                     $idQuestion = $this->question_model->insert($inputQuestion);
+
+                    $nbColumn = 1;
+                    $nbRow = 1;
+                    $d = 1;
                 }
 
                 while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
@@ -493,9 +497,12 @@ class Question extends MY_Controller
 
                     //Test if the field is in bold
                     if ($worksheet->getCellByColumnAndRow($column, $row)->getStyle()->getFont()->getBold())
+                    {
                         $header = true;
-                    else
+                    }else
+                    {
                         $header = false;
+                    }
 
                     //Test if the field need to be displayed
                     if (preg_match($regPattern, $tableCell))
@@ -513,12 +520,6 @@ class Question extends MY_Controller
                         "Creation_Date" => date("Y-m-d H:i:s")
                     );
 
-                    if($column == 1 && $row == 3)
-                    {
-                        var_dump($inputTableCell);
-                    }
-
-
                     $this->table_cell_model->insert($inputTableCell);
 
                     $nbColumn++;
@@ -529,6 +530,126 @@ class Question extends MY_Controller
                 $nbRow++;
                 $row++;
                 $column = 1;
+            }
+        }
+    }
+
+    /**
+     * Import 'Free_Answer' question type by Excel sheet 'ReponsesLibre'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'ReponsesLibre'
+     */
+    private function Import_FreeAnswer($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'ReponsesLibre';
+        $questionType = 6;
+
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+            $column = 0;
+            $row = 3;
+
+
+            while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+
+                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+                if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
+                {
+                    $nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+                }else
+                {
+                    $nbPoints = 1;
+                }
+
+                $inputQuestion = array(
+                    "FK_Topic" => $idTopic,
+                    "FK_Question_Type" => $questionType,
+                    "Question" => $question,
+                    "Points" => $nbPoints,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $idQuestion = $this->question_model->insert($inputQuestion);
+                $answer = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
+                $inputFreeAnswer = array(
+                    "FK_Question" => $idQuestion,
+                    "Answer" => $answer,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $this->free_answer_model->insert($inputFreeAnswer);
+
+                $row++;
+            }
+        }
+    }
+
+    /**
+     * Import 'Picture_Landmark' question type by Excel sheet 'ImageReperes'
+     * @param $idTopic = the topic select on the select attribute
+     * @param $objReader = the object that allow we to read the excel sheet
+     * @param $inputFileName = the name of sheet 'ImageReperes'
+     */
+    private function Import_PictureLandmark($idTopic, $objReader, $inputFileName)
+    {
+        $sheetName = 'ImageReperes';
+        $questionType = 7;
+
+
+        /**  Advise the Reader of which WorkSheets we want to load  **/
+        $objReader->setLoadSheetsOnly($sheetName);
+        $objReader->setReadDataOnly(true);
+        /**  Load $inputFileName to a PHPExcel Object  **/
+        $objPHPExcel = $objReader->load($inputFileName);
+
+        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+            $column = 0;
+            $row = 3;
+
+            while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                $pictureName = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
+                $inputQuestion = array(
+                    "FK_Topic" => $idTopic,
+                    "FK_Question_Type" => $questionType,
+                    "Question" => $question,
+                    "Picture_Name" => $pictureName,
+                    "Creation_Date" => date("Y-m-d H:i:s")
+                );
+
+                $idQuestion = $this->question_model->insert($inputQuestion);
+
+                $column = 2;
+
+                while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+                {
+                    $answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                    $symbol = $worksheet->getCellByColumnAndRow($column, $row + 1)->getValue();
+
+                    $inputPictureLandmarks = array(
+                        "FK_Question" => $idQuestion,
+                        "Symbol" => $symbol,
+                        "Answer" => $answer,
+                        "Creation_Date" => date("Y-m-d H:i:s")
+                    );
+
+                    $this->picture_landmark_model->insert($inputPictureLandmarks);
+
+                    $column++;
+                }
+
+                $column = 0;
+                $row += 2;
             }
         }
     }
