@@ -48,7 +48,6 @@ function init() {
 
 function changeselect() {
     var topic = document.getElementById("topic_selected").value;
-
     window.location = '?param=' + topic;
 }
 
@@ -69,6 +68,32 @@ function updateItem(id, typeItem){
             break;
     }
 }
+
+$(document).ready(function(){
+    $("#topic_selected").change(function(){
+
+        var topic = $( "#topic_selected" ).val();
+
+        topic = topic.replace("'", "_apostrophe_");
+
+        $.post("./add/", {topic: topic}, function (nbQuestion) {
+
+            $("#nb_questions")
+                .find('option')
+                .remove()
+                .end()
+
+            var i;
+            for (i = 0; i < nbQuestion; i++){
+                $("#nb_questions")
+                    .append('<option>' + (i+1) + '</option>')
+
+            }
+        }).fail(function(xhr, status, error) {
+                alert(error);
+            });;
+    });
+});
 
 function getID(id, typeItem) {
 

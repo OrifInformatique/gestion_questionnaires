@@ -36,17 +36,12 @@ $nbMaxQuestion = 0;
                 <label for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></label>
                 <div class="row">
                     <div class="col-lg-4">
-                        <select class="form-control" id="topic_selected" name="topic_selected">
+                        <select class="form-control" id="topic_selected" 
+                                name="topic_selected">
                             <?php
 
                             //Récupère chaque topics
                             foreach ($topicsList as $object => $topic) {
-
-                                $nbQuestion = $this->question_model->getNbQuestionByTopic($topic->ID);
-                                if($nbQuestion > $nbMaxQuestion)
-                                {
-                                    $nbMaxQuestion = $nbQuestion;
-                                }
 
                                 if ($topic->FK_Parent_Topic == 0) {
                                     //Affiche le topic parent
@@ -68,16 +63,10 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group">
-                <label for="nb_questions"><?php echo $this->lang->line('add_topic_questionnaire'); ?></label>
+                <label for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></label>
                 <div class="row">
                     <div class="col-lg-2">
                         <select class="form-control" id="nb_questions" name="nb_questions">
-                            <?php
-                            //List number
-                            for ($index = 1; $index <= $nbMaxQuestion; $index++) {
-                                echo "<option>" . $index . "</option>";
-                            }
-                            ?>
                         </select>
                     </div>
                     <div class="col-lg-2">
@@ -137,4 +126,5 @@ $nbMaxQuestion = 0;
         <div class="col-lg-2"></div>
         </div>
     </div>
+    <script>init();</script>
 

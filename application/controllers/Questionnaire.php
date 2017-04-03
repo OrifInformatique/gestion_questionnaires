@@ -96,6 +96,7 @@ class Questionnaire extends MY_Controller
      */
     public function add($title = '', $topics = array(), $nbQuestions = array())
     {
+        
         $output['topicsList'] = $this->topic_model->get_all();
         $output['questions'] = $this->question_model->with_all()->get_all();
         $output['question_types'] = $this->question_type_model->get_all();
@@ -103,7 +104,25 @@ class Questionnaire extends MY_Controller
         $output['title'] = $title;
         $output['topics'] = $topics;
         $output['nbQuestions'] = $nbQuestions;
-        $this->display_view('questionnaires/add', $output);
+        
+        
+
+        if(isset($_POST['topic']))
+        {
+            $Topic = urldecode($_POST['topic']);
+            $Topic = str_replace("_apostrophe_", "\'", $Topic);
+            $idTopic = $this->topic_model->get_by("Topic = '" .  $Topic . "'")->ID;
+            $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
+            echo $nbQuestion;
+            
+        }else
+        {
+            $this->display_view('questionnaires/add', $output);   
+        }
+    }
+    
+    public function test($Question)
+    {
     }
 
     public function form_add()
