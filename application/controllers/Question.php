@@ -102,62 +102,105 @@ class Question extends MY_Controller
      * ON BUILDING
      * Useful to import all questions already write on Excel
      */
-    public function importExcel()
+    public function import()
     {
 
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'xlsx';
-        $config['max_size'] = 100;
-        $config['max_width'] = 1024;
-        $config['max_height'] = 768;
+        if(isset($_POST['submitExcel']))
+        {
 
-        $this->load->library('upload', $config);
-        $this->upload->initialize($config);
+            $config['upload_path'] = './uploads/excel';
+            $config['allowed_types'] = 'xlsx';
+            $config['max_size'] = 100;
+            $config['max_width'] = 1024;
+            $config['max_height'] = 768;
 
-        if (!$this->upload->do_upload('excelfile')) {
-            $error = array('error' => $this->upload->display_errors());
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
 
-        } else {
-
-            $data = array('upload_data' => $this->upload->data());
-
-            $inputFileName = $data['upload_data']['full_path'];
-
-            $topic = $this->input->post('topic_selected');
-            $topic = str_replace("'", "''", $topic);
-            $idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
-
-            $inputFileType = 'Excel2007';
-
-            /**  Create a new Reader of the type defined in $inputFileType  **/
-            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-
-            $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
-            $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
-            $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
-            $this->Import_ClozeText($idTopic, $objReader, $inputFileName);
-            $this->Import_TableCell($idTopic, $objReader, $inputFileName);
-            $this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
-            $this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
-
-
-            //redirect("./Question");
-
-        }
-
-
-        if (isset($_FILES['excelfile'])) {
-            if ($_FILES['excelfile']['error'] == 0 &&
-                $_FILES['excelfile']['type'] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            ) {
+            if (!$this->upload->do_upload('excelfile')) {
+                $error = array('error' => $this->upload->display_errors());
+                var_dump($error);
 
             } else {
-                $output['error'] = true;
+
+                $data = array('upload_data' => $this->upload->data());
+
+                $inputFileName = $data['upload_data']['full_path'];
+
+                $topic = $this->input->post('topic_selected');
+                $topic = str_replace("'", "''", $topic);
+                $idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
+
+                $inputFileType = 'Excel2007';
+
+                /**  Create a new Reader of the type defined in $inputFileType  **/
+                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+
+                $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
+                $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
+                $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
+                $this->Import_ClozeText($idTopic, $objReader, $inputFileName);
+                $this->Import_TableCell($idTopic, $objReader, $inputFileName);
+                $this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
+                $this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
+
+                redirect("./Question");
+
+            }
+
+
+            if (isset($_FILES['excelfile'])) {
+                if ($_FILES['excelfile']['error'] == 0 &&
+                    $_FILES['excelfile']['type'] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ) {
+
+                } else {
+                    $output['error'] = true;
+                    $output['questions'] = $this->question_model->with_all()->get_all();
+                    $output['topics'] = $this->topic_model->get_all();
+                    $this->display_view('questions/import', $output);
+                }
+            } else {
                 $output['questions'] = $this->question_model->with_all()->get_all();
                 $output['topics'] = $this->topic_model->get_all();
                 $this->display_view('questions/import', $output);
             }
-        } else {
+
+        }else if(isset($_POST['submitPictures']))
+        {
+
+            $files = $_FILES;
+            $countfile = count($_FILES['picturesfile']['name']);
+
+            for($i = 0; $i < $countfile; $i++)
+            {
+                $_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
+                $_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
+                $_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
+                $_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
+                $_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
+
+                $config['upload_path'] = './uploads/pictures';
+                $config['allowed_types'] = 'png|jpg|jpeg';
+                $config['max_size'] = 0;
+
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload('picturesfile'))
+                {
+                    $error = array('error' => $this->upload->display_errors());
+                    var_dump($error);
+
+                }
+            }
+
+            if(!isset($error))
+            {
+                redirect("./Question/import");
+            }
+        }else
+        {
             $output['questions'] = $this->question_model->with_all()->get_all();
             $output['topics'] = $this->topic_model->get_all();
             $this->display_view('questions/import', $output);

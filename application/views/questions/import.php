@@ -14,13 +14,13 @@
 
     <?php
     $attributes = array("class" => "form-group",
-        "id" => "updateQuestionForm",
-        "name" => "updateQuestionForm",
+        "id" => "importQuestionForm",
+        "name" => "importQuestionForm",
         "enctype" => "multipart/form-data");
-    echo form_open('Question/importExcel', $attributes);
+    echo form_open('Question/import', $attributes);
     ?>
     <div class="row">
-        <div class="col-lg-2"></div>
+        <div class="col-lg-4"></div>
         <div class="form-group">
             <div class="col-lg-4" style="height:110px;">
                 <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-2"></div>
+        <div class="col-lg-4"></div>
         <div class="col-lg-8">
             <div class="form-group">
                 <input class="form-control-file" type="file" name="excelfile" id="excelfile"
@@ -64,10 +64,34 @@
             </div>
             <div class="form-group">
                 <input class="btn btn-success" type="submit"
-                       value="<?php echo $this->lang->line('btn_import_questions'); ?>" name="submit">
+                       value="<?php echo $this->lang->line('btn_import_questions'); ?>" name="submitExcel">
             </div>
             </form>
+
         </div>
         <div class="col-lg-2"></div>
+    </div>
+    <h1 style="padding-top: 12%; padding-bottom: 5%"
+        class="text-center"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
+
+    <?php
+    $attributes = array("class" => "form-group",
+        "id" => "updatePicturesForm",
+        "name" => "updatePicturesForm",
+        "enctype" => "multipart/form-data");
+    echo form_open('Question/import', $attributes);
+    ?>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile"
+                       accept="image/*" multiple>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-success" type="submit"
+                       value="<?php echo $this->lang->line('btn_import'); ?>" name="submitPictures">
+            </div>
+        </div>
     </div>
 </div>

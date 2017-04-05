@@ -65,6 +65,7 @@ $lang['generatePDF_btn']                = 'Enregistrer';
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
 $lang['title_import_questions']         = 'Importez vos questions';
+$lang['title_import_pictures']          = 'Importez vos images';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';

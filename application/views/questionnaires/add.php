@@ -22,8 +22,10 @@ $nbMaxQuestion = 0;
             echo form_open('Questionnaire/form_add', $attributes);
             ?>
             <?php
-            echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
-
+            if($error == true)
+            {
+                echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
+            }
             ?>
             <div class="form-group">
                 <label for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></label>

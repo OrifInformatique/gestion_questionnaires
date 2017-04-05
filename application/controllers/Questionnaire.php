@@ -90,13 +90,14 @@ class Questionnaire extends MY_Controller
 
     /**
      * To add a new questionnaire
+     * @param int $error
      * @param string $title
      * @param array $topics
      * @param array $nbQuestions
      */
-    public function add($title = '', $topics = array(), $nbQuestions = array())
+    public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
-        
+        $output['error'] = ($error == NULL ? NULL : true);
         $output['topicsList'] = $this->topic_model->get_all();
         $output['questions'] = $this->question_model->with_all()->get_all();
         $output['question_types'] = $this->question_type_model->get_all();
@@ -104,8 +105,7 @@ class Questionnaire extends MY_Controller
         $output['title'] = $title;
         $output['topics'] = $topics;
         $output['nbQuestions'] = $nbQuestions;
-        
-        
+
 
         if(isset($_POST['topic']))
         {
@@ -119,10 +119,6 @@ class Questionnaire extends MY_Controller
         {
             $this->display_view('questionnaires/add', $output);   
         }
-    }
-    
-    public function test($Question)
-    {
     }
 
     public function form_add()
@@ -151,7 +147,7 @@ class Questionnaire extends MY_Controller
                 //And take with him the last inputs
                 $tableTopics->setArrayTopics($topic);
                 $tableTopics->setArrayNbQuestion($nbQuestions);
-                $this->add($tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+                $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
             }
             else
             {
@@ -161,13 +157,12 @@ class Questionnaire extends MY_Controller
         }
         else
         {
-            //Message d'erreur
+            $this->add(1);
         }
     }
 
     public function generatePDF($tableTopics)
     {
-
 
         $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         $totalpoints = 0;
@@ -183,47 +178,57 @@ class Questionnaire extends MY_Controller
         $pdf->SetFont('Arial', '', 16);
 
 
-        foreach ($listRndQuestions as $object => $idQuestion) {
-            $rndQuestion = $this->question_model->get($idQuestion);
+       // try
+        //{
+            foreach ($listRndQuestions as $object => $idQuestion) {
 
-            $Question = $rndQuestion->Question;
-            $Question = iconv('UTF-8', 'windows-1252', $Question);
-            $totalpoints += $rndQuestion->Points;
+                $rndQuestion = $this->question_model->get($idQuestion);
+                //var_dump($rndQuestion);
+                $Question = $rndQuestion->Question;
+                $Question = iconv('UTF-8', 'windows-1252', $Question);
+                $totalpoints += $rndQuestion->Points;
 
-            $pdf->MultiCell(0, 20, $Question, 0, "L");
+                $pdf->MultiCell(0, 20, $Question, 0, "L");
 
-            switch ($rndQuestion->FK_Question_Type) {
-                case 1:
-                    $error = $this->displayMultipleChoices($rndQuestion, $pdf);
-                    break;
-                case 2:
-                    $error = $this->displayMultipleAnswers($rndQuestion, $pdf);
-                    break;
-                case 3:
-                    $error = $this->displayAnswerDistribution($rndQuestion, $pdf);
-                    break;
-                case 4:
-                    $error = $this->displayClozeText($rndQuestion, $pdf);
-                    break;
-                case 5:
-                    $error = $this->displayTable($rndQuestion, $pdf);
-                    break;
-                case 7:
-                    $error = $this->displayPictureLandmarks($rndQuestion, $pdf);
-                    break;
-                default:
-                    break;
+                switch ($rndQuestion->FK_Question_Type) {
+                    case 1:
+                        $this->displayMultipleChoices($rndQuestion, $pdf);
+                        break;
+                    case 2:
+                        $this->displayMultipleAnswers($rndQuestion, $pdf);
+                        break;
+                    case 3:
+                        $this->displayAnswerDistribution($rndQuestion, $pdf);
+                        break;
+                    case 4:
+                        $this->displayClozeText($rndQuestion, $pdf);
+                        break;
+                    case 5:
+                        $this->displayTable($rndQuestion, $pdf);
+                        break;
+                    case 7:
+                        $this->displayPictureLandmarks($rndQuestion, $pdf);
+                        break;
+                    default:
+                        break;
+                }
+
+                $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+
             }
+            $error = false;
+            /*
+        }catch (Exception $e)
+        {
+            $error = true;
+        }*/
 
-            $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
-
-        }
 
         $pdf->MultiCell(0, 20, "Total : .../$totalpoints", 0, "R");
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
-            $pdf->Output('I', 'Questionnaire', true);
+            //$pdf->Output('I', 'Questionnaire', true);
         }
     }
 
@@ -271,28 +276,52 @@ class Questionnaire extends MY_Controller
      */
     private function saveTopicElements($tableTopics, $indice)
     {
-        $index = 11;
-        while ($index <= ((count($this->input->post()) - $indice) * 5)) {
-            $tableTopics->setArrayTopics($this->input->post($index));
-            $tableTopics->setArrayNbQuestion($this->input->post($index + 1));
-            $index += 10;
-        }
+        if($indice == 1)
+        {
+            $index = 11;
+            while ($index <= ((count($this->input->post()) - $indice) * 5))
+            {
+                $tableTopics->setArrayTopics($this->input->post($index));
+                $tableTopics->setArrayNbQuestion($this->input->post($index + 1));
+                $index += 10;
+            }
 
+        }else if($indice == 2)
+        {
+
+            $index = 10;
+            do
+            {
+                $tableTopics->setArrayTopics($this->input->post($index + 1));
+                $tableTopics->setArrayNbQuestion($this->input->post($index + 2));
+                $index += 10;
+            }while ($index <= ((count($this->input->post()) - $indice) * 5));
+
+        }
         return $tableTopics;
     }
 
     private function displayMultipleChoices($Question, $pdf)
     {
-        $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+        try{
 
-        foreach ($multi_Choice_Questions as $m)
+            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+
+            foreach ($multi_Choice_Questions as $m)
+            {
+                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
+
+                $y = $pdf->Gety();
+                $pdf->SetY($y + 7.7);
+                $pdf->SetX(100);
+                $pdf->MultiCell(5, 5, "", 1);
+            }
+
+            return false;
+
+        }catch(Exception $e)
         {
-            $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
-
-            $y = $pdf->Gety();
-            $pdf->SetY($y + 7.7);
-            $pdf->SetX(100);
-            $pdf->MultiCell(5, 5, "", 1);
+            return true;
         }
     }
 
@@ -335,6 +364,7 @@ class Questionnaire extends MY_Controller
     private function displayTable($Question, $pdf)
     {
         $tableCells = $this->table_cell_model->get_many_by("FK_Question = $Question->ID");
+        var_dump($tableCells);
         $maxColumn = 0;
         $maxRow = 0;
         for($i = 0;$i < count($tableCells); $i++)
@@ -380,7 +410,6 @@ class Questionnaire extends MY_Controller
                                 {
                                     if($tableCellRow->Column_Nb < $maxColumn)
                                     {
-
                                         $pdf->Cell(40,10, '', 1, "C");
                                     }else
                                     {
@@ -398,6 +427,11 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
+        //$uploadData = $this->upload->data();
+
+        //var_dump($uploadData);
+        //$fullPath = base_url() .'upload/'. $uploadData['file_name'];
+
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $pdf->Image($Question->Picture_Name);
 
