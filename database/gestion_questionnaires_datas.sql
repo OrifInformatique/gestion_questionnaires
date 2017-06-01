@@ -45,5 +45,5 @@ INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
 --
 
 INSERT INTO `t_user` (`id`, `FK_User_Type`, `user`, `password`) VALUES
-(1, 2, 'admin', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja'),
-(2, 1, 'user', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja');
+(1, 2, 'admin', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.'),
+(2, 1, 'user', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.');
