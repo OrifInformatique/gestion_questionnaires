@@ -102,10 +102,18 @@ function displayTableBody($topic){
                         {
                             foreach ($topics as $topic)
                             {
-                                if($topic->FK_Parent_Topic != 0)
-                                {
-                                    displayTableBody($topic);
-                                }
+								if(isset($_GET['param'])){
+									if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
+									{
+										displayTableBody($topic);
+									}
+								} else {
+									if($topic->FK_Parent_Topic != 0)
+									{
+										displayTableBody($topic);
+									}
+
+								}
                             }
                         }?>
                         </tbody>

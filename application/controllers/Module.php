@@ -25,7 +25,7 @@ class Module extends MY_Controller
      */
     public function index()
     {
-        $output['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic = ' . 0);
+        $output['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
         $this->display_view("modules/index", $output);
     }
 

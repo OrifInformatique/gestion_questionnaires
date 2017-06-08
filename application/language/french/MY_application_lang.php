@@ -78,7 +78,7 @@ $lang['update_question_type']           = 'Type de question :';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
-$lang['focus_module']                   = 'Module conscerné :';
+$lang['focus_module']                   = 'Module concerné :';
 $lang['topic']                          = 'Sujet(s)';
 
 //Modules pages
