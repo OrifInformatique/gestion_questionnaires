@@ -21,22 +21,22 @@ function deleteItem(id, typeItem) {
     switch(typeItem){
         case 1:
             if (confirm("Voulez-vous supprimer ce questionnaire?")) {
-                document.location.href = "../Questionnaire/delete/" + id;
+                document.location.href = "./Questionnaire/delete/" + id;
             }
             break;
         case 2:
             if (confirm("Voulez-vous supprimer cette question?")) {
-                document.location.href = "../Question/delete/" + id;
+                document.location.href = "./Question/delete/" + id;
             }
             break;
         case 3:
             if (confirm("Voulez-vous supprimer ce module")) {
-                document.location.href = "../Module/delete/" + id;
+                document.location.href = "./Module/delete/" + id;
             }
             break;
         case 4:
             if (confirm("Voulez-vous supprimer ce topic?")) {
-                document.location.href = "../Topic/delete/" + id;
+                document.location.href = "./Topic/delete/" + id;
             }
             break;
     }

@@ -82,8 +82,14 @@ $lang['focus_module']                   = 'Module concerné :';
 $lang['topic']                          = 'Sujet(s)';
 
 //Modules pages
-$lang['title_module']                   = 'Liste des modules';
 $lang['module']                         = 'Module(s)';
+$lang['title_module']                   = 'Liste des modules';
+$lang['title_module_update']            = 'Modifier un module';
+$lang['title_module_add']               = 'Ajouter un module';
+$lang['update_title_module']            = 'Titre :';
+$lang['add_title_module']               = 'Titre :';
+$lang['update_module_form_err']         = 'Veillez à ce que tous les champs soient remplis';
+$lang['add_module_form_err']            = 'Veillez à ce que tous les champs soient remplis';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 

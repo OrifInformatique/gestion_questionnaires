@@ -51,11 +51,13 @@ class Module extends MY_Controller
      * Form validation to update a module (parent topic)
      */
     public function form_update(){
+		
+		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
-
+		$title = array('Topic' => $this->input->post('title'));
         if($this->form_validation->run() == true){
-
+			$this->topic_model->update($id, $title);
             $this->index();
         }else{;
             $this->update($id, 1);
@@ -77,7 +79,26 @@ class Module extends MY_Controller
      * not build
      * To add a new module
      */
-    public function add(){
-
+    public function add($error = NULL){
+		$output['error'] = ($error == NULL ? NULL : true);
+        $this->display_view("modules/add", $output);
     }
+
+    /**
+     * Form validation to update a module (parent topic)
+     */
+    public function form_add(){
+		
+		$this->form_validation->set_rules('title', 'Title', 'required');
+
+		$title = array('Topic' => $this->input->post('title'));
+        if($this->form_validation->run() == true){
+			$this->topic_model->insert($title);
+            $this->index();
+        }else{;
+            $this->add(1);
+        }
+    }
+
+	
 }
