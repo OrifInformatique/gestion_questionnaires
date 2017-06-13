@@ -41,7 +41,7 @@ class Topic extends MY_Controller
         $outputs['error'] = $error;
         if($id != 0){
             $outputs["id"] = $id;
-            $this->display_view("topic/update", $outputs);
+            $this->display_view("topics/update", $outputs);
         }else{
             $this->index();
         }
@@ -51,15 +51,16 @@ class Topic extends MY_Controller
      * Form validation to update a topic
      */
     public function form_update(){
+		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
-
+		$title = array('Topic' => $this->input->post('title'));
         if($this->form_validation->run() == true){
-            
+			$this->topic_model->update($id, $title);
             $this->index();
         }else{;
             $this->update($id, 1);
-        }
+        }	
     }
 
     /**
