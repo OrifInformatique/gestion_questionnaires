@@ -82,7 +82,7 @@ class Questionnaire extends MY_Controller
      */
     public function delete($id = 0)
     {
-        if ($id != 0) {
+		if ($id != 0) {
             $this->questionnaire_model->delete($id);
         }
         $this->index();

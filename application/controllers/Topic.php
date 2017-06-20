@@ -78,7 +78,26 @@ class Topic extends MY_Controller
      * not build
      * To add a new topic
      */
-    public function add(){
-
+    public function add($error = NULL){
+		$output['error'] = ($error == NULL ? NULL : true);
+        $this->display_view("topics/add", $output);
     }
+
+    /**
+     * Form validation to update a topic (parent topic)
+     */
+    public function form_add(){
+		
+		$this->form_validation->set_rules('title', 'Title', 'required');
+
+		$title = array('Topic' => $this->input->post('title'));
+        if($this->form_validation->run() == true){
+			$this->topic_model->insert($title);
+            $this->index();
+        }else{;
+            $this->add(1);
+        }
+    }
+	
+	
 }

@@ -80,9 +80,12 @@ $lang['update_question_type']           = 'Type de question :';
 $lang['title_topic']                    = 'Liste des sujets';
 $lang['focus_module']                   = 'Module concerné :';
 $lang['title_topic_update']             = 'Modifier un topic';
+$lang['title_topic_add']                = 'Ajouter un topic';
 $lang['topic']                          = 'Sujet(s)';
 $lang['update_title_topic']             = 'Titre :';
-$lang['update_topic_form_err']         = 'Veillez à ce que tous les champs soient remplis';
+$lang['add_title_topic']                = 'Titre :';
+$lang['update_topic_form_err']          = 'Veillez à ce que tous les champs soient remplis';
+$lang['add_topic_form_err']             = 'Veillez à ce que tous les champs soient remplis';
 
 //Modules pages
 $lang['module']                         = 'Module(s)';

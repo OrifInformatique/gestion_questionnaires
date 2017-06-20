@@ -20,12 +20,6 @@
 <li>
     <a href="<?php echo base_url('Module/add');?>"><?php echo $this->lang->line('btn_add');?></a>
 </li>
-<li>
-    <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
-</li>
-<li>
-    <a id="btn_del"><?php echo $this->lang->line('btn_del');?></a>
-</li>
 </ul>
 </div>
 </div>
@@ -46,9 +40,10 @@
                         foreach ($modules as $module)
                         {
                     ?>
-                            <tr onclick="getID(<?php echo $module->ID; ?>, 3);" id="<?php echo $module->ID; ?>">
-                                <td><?php echo $module->Topic; ?></td>
-                            </tr>
+							<tr><td>
+								<a href="<?php echo base_url(); ?>Module/update/<?php echo $module->ID; ?>"><?php echo $module->Topic; ?></a>
+								<a href="<?php echo base_url(); ?>Module/delete/<?php echo $module->ID; ?>" class="close">×</a>
+							</td></tr>
                             <?php
                         }
                     ?>
