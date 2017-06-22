@@ -7,22 +7,6 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-<div id="wrapper">
-
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="">
-                        <?php echo $this->lang->line('nav_module');?>
-</a>
-</li>
-<li>
-    <a href="<?php echo base_url('Module/add');?>"><?php echo $this->lang->line('btn_add');?></a>
-</li>
-</ul>
-</div>
-</div>
 <div id="page-content-wrapper">
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_module'); ?></h1>
@@ -49,6 +33,9 @@
                     ?>
                     </tbody>
                 </table>
+				
+				<a href="<?php echo base_url(); ?>Module/add/" class="btn btn-primary">Nouveau…</a>					
+				
             </div>
             <div class="col-lg-2"></div>
         </div>

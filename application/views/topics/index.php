@@ -30,34 +30,13 @@ function displayTopics($topics){
 }
 function displayTableBody($topic){
     ?>
-    <tr id="<?php echo $topic->ID; ?>" onclick="getID(<?php echo $topic->ID;?>, 4)"><?php
-    echo "<td>";
-    echo $topic->Topic;
-    echo  "<td>";
-    echo "</tr>";
+	<tr><td>
+		<a href="<?php echo base_url(); ?>Topic/update/<?php echo $topic->ID; ?>"><?php echo $topic->Topic; ?></a>
+		<a href="<?php echo base_url(); ?>Topic/delete/<?php echo $topic->ID; ?>" class="close">×</a>
+	</td></tr>
+	<?php
 }
 ?>
-<div id="wrapper">
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="">
-                    <?php echo $this->lang->line('nav_topic'); ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo base_url('Topic/add');?>"><?php echo $this->lang->line('btn_add'); ?></a>
-            </li>
-            <li>
-                <a id="btn_update"><?php echo $this->lang->line('btn_update'); ?></a>
-            </li>
-            <li>
-                <a id="btn_del"><?php echo $this->lang->line('btn_del'); ?></a>
-            </li>
-        </ul>
-    </div>
-</div>
 <div id="page-content-wrapper">
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%"
@@ -118,6 +97,9 @@ function displayTableBody($topic){
                         }?>
                         </tbody>
                     </table>
+					
+					<a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>					
+					
                 </div>
                 <div class="col-lg-2"></div>
             </div>

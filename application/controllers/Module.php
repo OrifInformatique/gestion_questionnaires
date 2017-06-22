@@ -17,6 +17,8 @@ class Module extends MY_Controller
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('topic_model');
+		$this->load->model('question_model');
+		$this->load->model('question_questionnaire_model');
         $this->load->helper(array('form', 'url'));
     }
 
@@ -40,7 +42,11 @@ class Module extends MY_Controller
     public function update($id = 0, $error = 0){
         $outputs['error'] = $error;
         if($id != 0){
-            $outputs["id"] = $id;
+			$topic = $this->topic_model->get($id);
+			
+			$outputs["id"] = $topic->ID;
+			$outputs["title"] = $topic->Topic;
+			
             $this->display_view("modules/update", $outputs);
         }else{
             $this->index();
@@ -69,13 +75,24 @@ class Module extends MY_Controller
      * Delete selected module (parent topic) and redirect to module list
      */
     public function delete($id = 0, $action = NULL){
-      if (is_null($action)) {
-        $output = get_object_vars($this->topic_model->get($id));
-        $output["modules"] = $this->topic_model->get_all();
-        $this->display_view("modules/delete", $output);
-      } else {
-        $this->topic_model->delete($id);
-        $this->index();
+	if ($id > 0) {
+		
+		$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
+		//var_dump($topic);
+		
+		if (is_null($action)) {
+			if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
+				$this->index();
+				echo "Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...";
+			} else {
+				$output = get_object_vars($this->topic_model->get($id));
+				$output["modules"] = $this->topic_model->get_all();
+				$this->display_view("modules/delete", $output);
+			}
+		} else {
+			$this->topic_model->delete($id);
+			$this->index();
+		}
       }
     }
 

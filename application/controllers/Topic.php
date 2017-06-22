@@ -40,7 +40,11 @@ class Topic extends MY_Controller
     public function update($id = 0, $error = 0){
         $outputs['error'] = $error;
         if($id != 0){
-            $outputs["id"] = $id;
+			$topic = $this->topic_model->get($id);
+			
+			$outputs["id"] = $topic->ID;
+			$outputs["title"] = $topic->Topic;
+			
             $this->display_view("topics/update", $outputs);
         }else{
             $this->index();
@@ -67,11 +71,24 @@ class Topic extends MY_Controller
      * @param int $id = id of the selected questionnaire
      * Delete selected topic and redirect to topic list
      */
-    public function delete($id = 0){
-        if($id != 0){
-            $this->topic_model->delete($id);
-        }
-        $this->index();
+    public function delete($id = 0, $action = NULL){
+		
+		$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
+		//var_dump($topic);
+		
+		if (is_null($action)) {
+			if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
+				$this->index();
+				echo "Ce sujet possède des questions liées, il ne peut être supprimé...";
+			} else {
+				$output = get_object_vars($this->topic_model->get($id));
+				$output["topics"] = $this->topic_model->get_all();
+				$this->display_view("topics/delete", $output);
+			}
+		} else {
+			$this->topic_model->delete($id);
+			$this->index();
+		}
     }
 
     /**

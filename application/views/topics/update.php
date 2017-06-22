@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="title"><?php echo $this->lang->line('update_title_topic'); ?></label>
                     <div class="row">
-                        <div class="col-lg-4"><input type="text" name="title" class="form-control" id="title" value=""></div>
+                        <div class="col-lg-4"><input type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>"></div>
                     </div>
                     <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
                 </div>
