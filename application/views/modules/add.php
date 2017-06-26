@@ -17,7 +17,7 @@
                 $attributes = array("class" => "form-group",
                     "id" => "addModuleForm",
                     "name" => "addModuleForm");
-                echo form_open('Module/form_add', $attributes);
+                echo form_open('Module/form_validate', $attributes);
                 ?>
                 <?php
                 if($error == true) {
@@ -29,6 +29,7 @@
                     <div class="row">
                         <div class="col-lg-4"><input type="text" name="title" class="form-control" id="title" value=""></div>
                     </div>
+					<input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
                 </div>
                 <input type="submit" class="btn btn-primary" />
                 <?php echo form_close(); ?>

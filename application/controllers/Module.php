@@ -17,17 +17,16 @@ class Module extends MY_Controller
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('topic_model');
-		$this->load->model('question_model');
-		$this->load->model('question_questionnaire_model');
         $this->load->helper(array('form', 'url'));
     }
 
     /**
      * Display the module view
      */
-    public function index()
+    public function index($error = "")
     {
         $output['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
+		$output['error'] = $error;
         $this->display_view("modules/index", $output);
     }
 
@@ -46,6 +45,7 @@ class Module extends MY_Controller
 			
 			$outputs["id"] = $topic->ID;
 			$outputs["title"] = $topic->Topic;
+			$outputs["action"] = "update";
 			
             $this->display_view("modules/update", $outputs);
         }else{
@@ -54,46 +54,53 @@ class Module extends MY_Controller
     }
 
     /**
-     * Form validation to update a module (parent topic)
+     * Form validate to update or add a module (parent topic)
      */
-    public function form_update(){
+    public function form_validate(){
 		
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
 		$title = array('Topic' => $this->input->post('title'));
+		$action = $this->input->post('action');
         if($this->form_validation->run() == true){
-			$this->topic_model->update($id, $title);
-            $this->index();
-        }else{;
-            $this->update($id, 1);
+			if ($action == "update") {
+				$this->topic_model->update($id, $title);
+			} else {
+				$this->topic_model->insert($title);
+			}
+			$this->index();
+        } else {
+			if ($action == "update") {
+				$this->update($id, 1);
+			} else {
+				$this->add(1);
+			}
         }
     }
-
+	
     /**
      * @param int $id = id of the selected questionnaire
      * Delete selected module (parent topic) and redirect to module list
      */
     public function delete($id = 0, $action = NULL){
-	if ($id > 0) {
-		
-		$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
-		//var_dump($topic);
-		
-		if (is_null($action)) {
-			if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
-				$this->index();
-				echo "Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...";
+		if ($id != 0) {
+			$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
+			if (is_null($action)) {
+				if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
+					$this->index($this->lang->line('del_module_form_err'));
+				} else {
+					$output = get_object_vars($this->topic_model->get($id));
+					$output["modules"] = $this->topic_model->get_all();
+					$this->display_view("modules/delete", $output);
+				}
 			} else {
-				$output = get_object_vars($this->topic_model->get($id));
-				$output["modules"] = $this->topic_model->get_all();
-				$this->display_view("modules/delete", $output);
+				$this->topic_model->delete($id);
+				$this->index();
 			}
 		} else {
-			$this->topic_model->delete($id);
-			$this->index();
+		  $this->index();
 		}
-      }
     }
 
     /**
@@ -101,25 +108,9 @@ class Module extends MY_Controller
      * To add a new module
      */
     public function add($error = NULL){
-		$output['error'] = ($error == NULL ? NULL : true);
-        $this->display_view("modules/add", $output);
+		$outputs["error"] = ($error == NULL ? NULL : true);
+		$outputs["action"] = "add";
+        $this->display_view("modules/add", $outputs);
     }
 
-    /**
-     * Form validation to update a module (parent topic)
-     */
-    public function form_add(){
-		
-		$this->form_validation->set_rules('title', 'Title', 'required');
-
-		$title = array('Topic' => $this->input->post('title'));
-        if($this->form_validation->run() == true){
-			$this->topic_model->insert($title);
-            $this->index();
-        }else{;
-            $this->add(1);
-        }
-    }
-
-	
 }

@@ -86,6 +86,7 @@ $lang['update_title_topic']             = 'Titre :';
 $lang['add_title_topic']                = 'Titre :';
 $lang['update_topic_form_err']          = 'Veillez à ce que tous les champs soient remplis';
 $lang['add_topic_form_err']             = 'Veillez à ce que tous les champs soient remplis';
+$lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
 
 //Modules pages
 $lang['module']                         = 'Module(s)';
@@ -96,6 +97,7 @@ $lang['update_title_module']            = 'Titre :';
 $lang['add_title_module']               = 'Titre :';
 $lang['update_module_form_err']         = 'Veillez à ce que tous les champs soient remplis';
 $lang['add_module_form_err']            = 'Veillez à ce que tous les champs soient remplis';
+$lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 

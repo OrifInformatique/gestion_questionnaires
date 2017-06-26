@@ -23,9 +23,10 @@ class Topic extends MY_Controller
     /**
      * Display the topic view
      */
-    public function index()
+    public function index($error = "")
     {
         $output['topics'] = $this->topic_model->get_all();
+		$output['error'] = $error;
         $this->display_view("topics/index", $output);
     }
 
@@ -44,6 +45,7 @@ class Topic extends MY_Controller
 			
 			$outputs["id"] = $topic->ID;
 			$outputs["title"] = $topic->Topic;
+			$output["action"] = "update";
 			
             $this->display_view("topics/update", $outputs);
         }else{
@@ -73,20 +75,23 @@ class Topic extends MY_Controller
      */
     public function delete($id = 0, $action = NULL){
 		
-		$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
-		//var_dump($topic);
+		if($id != 0){
 		
-		if (is_null($action)) {
-			if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
-				$this->index();
-				echo "Ce sujet possède des questions liées, il ne peut être supprimé...";
+			$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
+		
+			if (is_null($action)) {
+				if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
+					$this->index($this->lang->line('del_topic_form_err'));
+				} else {
+					$output = get_object_vars($this->topic_model->get($id));
+					$output["topics"] = $this->topic_model->get_all();
+					$this->display_view("topics/delete", $output);
+				}
 			} else {
-				$output = get_object_vars($this->topic_model->get($id));
-				$output["topics"] = $this->topic_model->get_all();
-				$this->display_view("topics/delete", $output);
+				$this->topic_model->delete($id);
+				$this->index();
 			}
 		} else {
-			$this->topic_model->delete($id);
 			$this->index();
 		}
     }
@@ -97,6 +102,7 @@ class Topic extends MY_Controller
      */
     public function add($error = NULL){
 		$output['error'] = ($error == NULL ? NULL : true);
+		$output["action"] = "add";
         $this->display_view("topics/add", $output);
     }
 
