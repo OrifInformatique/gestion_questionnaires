@@ -100,6 +100,7 @@ class Topic extends MY_Controller
      * To add a new topic
      */
     public function add($error = NULL){
+        $output['topics'] = $this->topic_model->get_all();
 		$output['error'] = ($error == NULL ? NULL : true);
         $this->display_view("topics/add", $output);
     }
@@ -111,7 +112,9 @@ class Topic extends MY_Controller
 		
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
-		$title = array('Topic' => $this->input->post('title'));
+		$title = array(
+			'Topic' => $this->input->post('title'),
+			'FK_Parent_Topic' => $this->input->post('module_selected'));
         if($this->form_validation->run() == true){
 			$this->topic_model->insert($title);
             $this->index();

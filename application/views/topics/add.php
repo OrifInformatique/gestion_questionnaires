@@ -9,6 +9,8 @@
 ?>
 <div class="container jumbotron well" style="background-color: lavender">
     <h2 class="text-center"><?php echo $this->lang->line('title_topic_add'); ?></h2>
+
+
     <div class="row">
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
@@ -25,6 +27,23 @@
                 }
                 ?>
                 <div class="form-group">
+				
+					<label for="module"><?php echo $this->lang->line('focus_module'); ?></label>
+					<select  class="form-control" name="module_selected" id="module_selected">
+						<?php
+						//Récupère chaque module
+						foreach ($topics as $object => $topic) {
+							var_dump($topic);
+							if($topic->FK_Parent_Topic == 0)
+							{
+								//Affiche les modules
+								echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
+							}
+						}
+						?>
+					</select>
+					<h2></h2>
+				
                     <label for="title"><?php echo $this->lang->line('update_title_topic'); ?></label>
                     <div class="row">
                         <div class="col-lg-4"><input type="text" name="title" class="form-control" id="title" value=""></div>

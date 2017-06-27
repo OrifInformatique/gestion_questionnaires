@@ -102,10 +102,8 @@ function displayTableBody($topic){
                         }?>
                         </tbody>
                     </table>
-					
-					<?php if (ISSET($_GET['param'])){
-						echo '<a class="btn btn-primary" href="' . base_url() . 'Topic/add/">Nouveau…</a>';
-					}?>
+
+					<a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>										
 					
                 </div>
                 <div class="col-lg-2"></div>
