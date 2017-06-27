@@ -45,7 +45,6 @@ class Topic extends MY_Controller
 			
 			$outputs["id"] = $topic->ID;
 			$outputs["title"] = $topic->Topic;
-			$output["action"] = "update";
 			
             $this->display_view("topics/update", $outputs);
         }else{
@@ -102,7 +101,6 @@ class Topic extends MY_Controller
      */
     public function add($error = NULL){
 		$output['error'] = ($error == NULL ? NULL : true);
-		$output["action"] = "add";
         $this->display_view("topics/add", $output);
     }
 

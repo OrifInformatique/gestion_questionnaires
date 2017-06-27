@@ -10,9 +10,11 @@
 <div id="page-content-wrapper">
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_module'); ?></h1>
-        <div class="alert alert-danger">
-			<?php echo $error; ?>
-		</div>
+        <?php
+			if($error == true) {
+				echo "<p class='alert alert-danger'>" . $error . "</p>";
+			}
+        ?>
 		<div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">

@@ -111,6 +111,5 @@ class Module extends MY_Controller
 		$outputs["error"] = ($error == NULL ? NULL : true);
 		$outputs["action"] = "add";
         $this->display_view("modules/add", $outputs);
-    }
-
+    }	
 }

@@ -41,9 +41,11 @@ function displayTableBody($topic){
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%"
             class="text-center"><?php echo $this->lang->line('title_topic'); ?></h1>			
-        <div class="alert alert-danger">
-			<?php echo $error; ?>
-		</div>
+		<?php
+			if($error == true) {
+				echo "<p class='alert alert-danger'>" . $error . "</p>";
+			}
+		?>
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-4" style="height:110px;">
@@ -101,7 +103,9 @@ function displayTableBody($topic){
                         </tbody>
                     </table>
 					
-					<a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>					
+					<?php if (ISSET($_GET['param'])){
+						echo '<a class="btn btn-primary" href="' . base_url() . 'Topic/add/">Nouveau…</a>';
+					}?>
 					
                 </div>
                 <div class="col-lg-2"></div>
