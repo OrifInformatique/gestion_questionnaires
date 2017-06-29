@@ -18,6 +18,7 @@ class Module extends MY_Controller
         $this->load->library('form_validation');
         $this->load->model('topic_model');
         $this->load->helper(array('form', 'url'));
+		$this->load->helper('date');
     }
 
     /**
@@ -27,7 +28,7 @@ class Module extends MY_Controller
     {
         $output['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
 		$output['error'] = $error;
-        $this->display_view("modules/index", $output);
+        $this->display_view("modules/index", $output);		
     }
 
     /**
@@ -57,11 +58,17 @@ class Module extends MY_Controller
      * Form validate to update or add a module (parent topic)
      */
     public function form_validate(){
-		
+
+		define('TIMEZONE', 'Europe/Zurich');
+		date_default_timezone_set(TIMEZONE);
+		$datestring = '%Y-%m-%d %h:%i:%s';
+		$time = time();
+	
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
-		$title = array('Topic' => $this->input->post('title'));
+		$title = array('Topic' => $this->input->post('title'),
+					   'Creation_Date' => mdate($datestring, $time));
 		$action = $this->input->post('action');
         if($this->form_validation->run() == true){
 			if ($action == "update") {

@@ -18,6 +18,7 @@ class Topic extends MY_Controller
         $this->load->library('form_validation');
         $this->load->model('topic_model');
         $this->load->helper(array('form', 'url'));
+		$this->load->helper('date');
     }
 
     /**
@@ -110,11 +111,17 @@ class Topic extends MY_Controller
      */
     public function form_add(){
 		
+		define('TIMEZONE', 'Europe/Zurich');
+		date_default_timezone_set(TIMEZONE);
+		$datestring = '%Y-%m-%d %h:%i:%s';
+		$time = time();
+		
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
 		$title = array(
 			'Topic' => $this->input->post('title'),
-			'FK_Parent_Topic' => $this->input->post('module_selected'));
+			'FK_Parent_Topic' => $this->input->post('module_selected'),
+			'Creation_Date' => mdate($datestring, $time));
         if($this->form_validation->run() == true){
 			$this->topic_model->insert($title);
             $this->index();
