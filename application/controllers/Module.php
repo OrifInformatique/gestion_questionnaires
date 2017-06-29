@@ -67,13 +67,14 @@ class Module extends MY_Controller
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
-		$title = array('Topic' => $this->input->post('title'),
-					   'Creation_Date' => mdate($datestring, $time));
 		$action = $this->input->post('action');
         if($this->form_validation->run() == true){
 			if ($action == "update") {
+				$title = array('Topic' => $this->input->post('title'));
 				$this->topic_model->update($id, $title);
 			} else {
+				$title = array('Topic' => $this->input->post('title'),
+							   'Creation_Date' => mdate($datestring, $time));
 				$this->topic_model->insert($title);
 			}
 			$this->index();
