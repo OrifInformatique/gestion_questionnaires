@@ -24,8 +24,7 @@ class Questionnaire extends MY_Controller
                                 'multiple_choice_model', 'cloze_text_model', 'table_cell_model', 
                                 'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf'));
-
+        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
     }
 
     /**
@@ -428,9 +427,10 @@ class Questionnaire extends MY_Controller
     private function displayPictureLandmarks($Question, $pdf)
     {
         $uploadData = $this->upload->data();
-
-        var_dump($uploadData);
-        $fullPath = base_url() .'uploads/'. $uploadData['file_name'];
+        $fullPath = base_url() .'uploads/'.$uploadData['file_name'];
+		
+		var_dump($uploadData);
+		
 
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $pdf->Image($Question->Picture_Name);
