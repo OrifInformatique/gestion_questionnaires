@@ -25,7 +25,6 @@ class Questionnaire extends MY_Controller
                                 'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
-
     }
 
     /**

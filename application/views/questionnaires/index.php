@@ -23,9 +23,6 @@
             <li>
                 <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
             </li>
-            <li>
-                <a id="btn_del"><?php echo $this->lang->line('btn_del');?></a>
-            </li>
         </ul>
     </div>
 </div>
@@ -54,6 +51,7 @@
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
                                 <td><a target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>
+								<td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>
                         <?php
                     }
