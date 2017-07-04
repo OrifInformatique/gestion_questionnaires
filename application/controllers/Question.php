@@ -174,6 +174,7 @@ class Question extends MY_Controller
 
             for($i = 0; $i < $countfile; $i++)
             {
+                //More optimal object
                 $_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
                 $_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
                 $_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
@@ -190,8 +191,6 @@ class Question extends MY_Controller
                 if (!$this->upload->do_upload('picturesfile'))
                 {
                     $error = array('error' => $this->upload->display_errors());
-                    var_dump($error);
-
                 }
             }
 
@@ -646,6 +645,7 @@ class Question extends MY_Controller
     {
         $sheetName = 'ImageReperes';
         $questionType = 7;
+        $salt = 'f56ih58g0e';
 
 
         /**  Advise the Reader of which WorkSheets we want to load  **/
@@ -660,7 +660,7 @@ class Question extends MY_Controller
 
             while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
                 $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                $pictureName = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                $pictureName = uniqid($salt)$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 
                 $inputQuestion = array(
                     "FK_Topic" => $idTopic,

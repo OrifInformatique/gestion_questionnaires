@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- Contenu de la table `t_questionnaire`
 --
 
-INSERT INTO `t_questionnaire` (`ID`, `Questionnaire_Name`, `PDF`, `Corrige_PDF`, `Creation_Date`) VALUES
+INSERT INTO `gestion_questionnaires`.`t_questionnaire` (`ID`, `Questionnaire_Name`, `PDF`, `Corrige_PDF`, `Creation_Date`) VALUES
 (1, 'Questionnaire1', 'voicilepdf', 'coivilecorrige', '2016-11-08 00:00:00'),
 (3, 'Questionnaire2', 'voicilepdf', 'coivilecorrige', '2016-11-08 00:00:00');
 
@@ -32,8 +32,8 @@ INSERT INTO `t_questionnaire` (`ID`, `Questionnaire_Name`, `PDF`, `Corrige_PDF`,
 -- Contenu de la table `t_user_type`
 --
 
-INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
-(1, 'member', 1),
+INSERT INTO `gestion_questionnaires`.`t_user_type` (`id`, `name`, `access_level`) VALUES
+(2, 'member', 2),
 (2, 'administrator', 2);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
@@ -44,6 +44,6 @@ INSERT INTO `t_user_type` (`id`, `name`, `access_level`) VALUES
 -- Contenu de la table `t_user`
 --
 
-INSERT INTO `t_user` (`id`, `FK_User_Type`, `user`, `password`) VALUES
+INSERT INTO `gestion_questionnaires`.`t_user` (`id`, `FK_User_Type`, `user`, `password`) VALUES
 (1, 2, 'admin', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.'),
 (2, 1, 'user', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.');
