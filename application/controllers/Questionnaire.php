@@ -228,7 +228,7 @@ class Questionnaire extends MY_Controller
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
-            //$pdf->Output('I', 'Questionnaire', true);
+            $pdf->Output('I', 'Questionnaire', true);
         }
     }
 
@@ -427,10 +427,10 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
-        //$uploadData = $this->upload->data();
+        $uploadData = $this->upload->data();
 
-        //var_dump($uploadData);
-        //$fullPath = base_url() .'upload/'. $uploadData['file_name'];
+        var_dump($uploadData);
+        $fullPath = base_url() .'uploads/'. $uploadData['file_name'];
 
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $pdf->Image($Question->Picture_Name);
