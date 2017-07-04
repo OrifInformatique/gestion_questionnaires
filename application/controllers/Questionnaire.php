@@ -426,9 +426,6 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
-
-        //$data = $this->upload->data($picture);
-
         
         /*
         $url = base_url() .'uploads/pictures/';
