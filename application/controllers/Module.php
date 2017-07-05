@@ -26,9 +26,9 @@ class Module extends MY_Controller
      */
     public function index($error = "")
     {
-        $output['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
-		$output['error'] = $error;
-        $this->display_view("modules/index", $output);		
+        $outputs['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
+		$outputs['error'] = $error;
+        $this->display_view("modules/index", $outputs);		
     }
 
     /**

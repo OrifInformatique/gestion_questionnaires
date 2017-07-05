@@ -7,28 +7,16 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-<div id="wrapper">
-
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="#">
-                    <?php echo $this->lang->line('nav_questionnaire');?>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo base_url('Questionnaire/add');?>"><?php echo $this->lang->line('btn_add');?></a>
-            </li>
-            <li>
-                <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
-            </li>
-        </ul>
-    </div>
-</div>
 <div id="page-content-wrapper">
     <div class="container">
         <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_questionnaire');?></h1>
+
+        <?php
+			if($error == true) {
+				echo "<p class='alert alert-danger'>" . $error . "</p>";
+			}
+        ?>
+
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
@@ -58,6 +46,9 @@
                     ?>
                     </tbody>
                 </table>
+				
+				<a href="<?php echo base_url(); ?>Questionnaire/add/" class="btn btn-primary">Nouveau…</a>
+				
             </div>
             <div class="col-lg-2"></div>
         </div>

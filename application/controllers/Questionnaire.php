@@ -30,9 +30,10 @@ class Questionnaire extends MY_Controller
     /**
      * Display questionnaire list
      */
-    public function index()
+    public function index($error = "")
     {
         $outputs['questionnaires'] = $this->questionnaire_model->get_all();
+		$outputs['error'] = $error;
         $this->display_view('questionnaires/index', $outputs);
     }
 
@@ -79,12 +80,25 @@ class Questionnaire extends MY_Controller
      * @param int $id = id of the selected questionnaire
      * Delete selected questionnaire and redirect to questionnaire list
      */
-    public function delete($id = 0)
+    public function delete($id = 0, $action = NULL)
     {
 		if ($id != 0) {
-            $this->questionnaire_model->delete($id);
-        }
-        $this->index();
+			$questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
+			if (is_null($action)) {
+				if (count($questionnaire->question_questionnaires) > 0) {
+					$this->index($this->lang->line('del_questionnaire_form_err'));
+				} else {
+					$output = get_object_vars($this->questionnaire_model->get($id));
+					$output["questionnaires"] = $this->questionnaire_model->get_all();
+					$this->display_view("questionnaires/delete", $output);
+				}
+			} else {
+				$this->questionnaire_model->delete($id);
+				$this->index();
+			}
+        } else {
+		  $this->index();
+		}
     }
 
     /**

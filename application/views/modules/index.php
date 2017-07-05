@@ -39,7 +39,7 @@
                     </tbody>
                 </table>
 				
-				<a href="<?php echo base_url(); ?>Module/add/" class="btn btn-primary">Nouveau…</a>					
+				<a href="<?php echo base_url(); ?>Module/add/" class="btn btn-primary">Nouveau…</a>
 				
             </div>
             <div class="col-lg-2"></div>
