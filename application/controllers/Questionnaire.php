@@ -447,7 +447,7 @@ class Questionnaire extends MY_Controller
 
         $fullPath = base_url() .'uploads/pictures/'. $picture;
 
-        $pdf->Image($fullPath);
+        $pdf->Image($fullPath, null, null, 100, 100);
 
         
         foreach ($pictureLandmarks as $pictureLandmark)
