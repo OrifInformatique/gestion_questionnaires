@@ -47,7 +47,7 @@
                         <tr onclick="getID(<?php echo $questionnaire->ID; ?>, 1);"
                             id="<?php echo $questionnaire->ID; ?>">
                                 <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
-                                <td><a target="_blank" href="">
+                                <td><a href="<?php echo base_url().$questionnaire->Questionnaire_Name.'.pdf'?>" target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
                                 <td><a target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>

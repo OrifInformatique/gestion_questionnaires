@@ -162,7 +162,6 @@ class Questionnaire extends MY_Controller
 
     public function generatePDF($tableTopics)
     {
-
         $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         $totalpoints = 0;
 
@@ -227,7 +226,9 @@ class Questionnaire extends MY_Controller
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
-            $pdf->Output('I', 'Questionnaire', true);
+            //$pdf->Output('I', 'Questionnaire', true);
+			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
+			$this->index();
         }
     }
 
