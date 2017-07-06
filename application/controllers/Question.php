@@ -660,7 +660,8 @@ class Question extends MY_Controller
 
             while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
                 $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                $pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                //$pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				$pictureName = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 
                 $inputQuestion = array(
                     "FK_Topic" => $idTopic,
