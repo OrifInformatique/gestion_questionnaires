@@ -85,14 +85,15 @@ class Questionnaire extends MY_Controller
 		if ($id != 0) {
 			$questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
 			if (is_null($action)) {
-				if (count($questionnaire->question_questionnaires) > 0) {
-					$this->index($this->lang->line('del_questionnaire_form_err'));
-				} else {
-					$output = get_object_vars($this->questionnaire_model->get($id));
-					$output["questionnaires"] = $this->questionnaire_model->get_all();
-					$this->display_view("questionnaires/delete", $output);
-				}
+				$output = get_object_vars($this->questionnaire_model->get($id));
+				$output["questionnaires"] = $this->questionnaire_model->get_all();
+				$this->display_view("questionnaires/delete", $output);
 			} else {
+				if (count($questionnaire->question_questionnaires) > 0) {
+					foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+						$this->question_questionnaire_model->delete($question_questionnaire->ID);
+					}
+				}
 				$this->questionnaire_model->delete($id);
 				$this->index();
 			}
