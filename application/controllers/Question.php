@@ -89,6 +89,60 @@ class Question extends MY_Controller
         }
     }
 
+    public function detail($id = 0, $error = 0)
+    {
+        $output['error'] = $error;
+        $output['id'] = $id;
+
+        if ($id != 0) {
+			$question = $this->question_model->with_all()->get_by('ID = ' . $id);
+            $output['question'] = $question;
+			$output['image'] = "";
+			$output['reponse'] = "";
+			if ($question->FK_Question_Type == 7) {
+				$output['image'] = $question->Picture_Name;
+				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Symbol."/".$reponse->Answer;
+				}				
+			} elseif ($question->FK_Question_Type == 1) {
+				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id . " AND Valid='1'");
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+				}
+			} elseif ($question->FK_Question_Type == 2) {
+				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+				}				
+			} elseif ($question->FK_Question_Type == 3) {
+				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Question_Part."/".$reponse->Answer_Part;
+				}				
+			} elseif ($question->FK_Question_Type == 4) {
+				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+				$output['question']->Question = $output['question']->Question.':'.$question->Cloze_Text;
+				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Answer_Order."/".$reponse->Answer;
+				}				
+			} elseif ($question->FK_Question_Type == 5) {
+				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
+			} elseif ($question->FK_Question_Type == 6) {
+				$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+				}				
+			}
+			//var_dump($reponses);
+			$this->display_view('questions/detail', $output);
+        } else {
+			$this->index();
+        }
+    }
+	
+	
     /**
      * Display form to add a question
      * Not build

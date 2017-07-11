@@ -32,8 +32,7 @@
                     <?php
                     foreach ($questionnaires as $questionnaire){
                         ?>
-                        <tr onclick="getID(<?php echo $questionnaire->ID; ?>, 1);"
-                            id="<?php echo $questionnaire->ID; ?>">
+                        <tr>
                                 <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
                                 <td><a href="<?php echo base_url().$questionnaire->Questionnaire_Name.'.pdf'?>" target="_blank" href="">
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>

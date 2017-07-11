@@ -26,7 +26,7 @@
             <div class="form-group">
                 <label for="title"><?php echo $this->lang->line('update_name_question'); ?></label>
                 <div class="row">
-                    <div class="col-lg-4"><input type="text" name="name" class="form-control" id="name"></div>
+                    <div class="col-lg-12"><input type="text" name="name" class="form-control" id="name" value="<?php echo $question->Question; ?>"></div>
                 </div>
                 <input type="hidden" name="id" id="id" value="<?php //echo $id; ?>">
             </div>

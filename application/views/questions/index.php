@@ -121,7 +121,7 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" onclick="getID(<?php echo $question->ID;?>, 2)">
-        <td><?php echo $question->Question; ?></td>
+        <td><a href="./Question/detail/<?php echo $question->ID;?>"><?php echo $question->Question; ?></a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td><?php echo $question->Points; ?></td>
     </tr>
