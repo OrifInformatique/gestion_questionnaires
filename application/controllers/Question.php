@@ -108,7 +108,12 @@ class Question extends MY_Controller
 			} elseif ($question->FK_Question_Type == 1) {
 				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$reponse->Valid;
+					if ($reponse->Valid == '1'){
+						$cocher = $this->lang->line('oui');
+					} else {
+						$cocher = $this->lang->line('non');
+					}
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 				}
 			} elseif ($question->FK_Question_Type == 2) {
 				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
