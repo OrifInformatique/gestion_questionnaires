@@ -103,29 +103,29 @@ class Question extends MY_Controller
 				$output['image'] = $question->Picture_Name;
 				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Symbol."/".$reponse->Answer;
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
 				}				
 			} elseif ($question->FK_Question_Type == 1) {
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id . " AND Valid='1'");
+				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$reponse->Valid;
 				}
 			} elseif ($question->FK_Question_Type == 2) {
 				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
 				}				
 			} elseif ($question->FK_Question_Type == 3) {
 				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Question_Part."/".$reponse->Answer_Part;
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
 				}				
 			} elseif ($question->FK_Question_Type == 4) {
 				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-				$output['question']->Question = $output['question']->Question.':'.$question->Cloze_Text;
+				$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
 				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
 				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer_Order."/".$reponse->Answer;
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
 				}				
 			} elseif ($question->FK_Question_Type == 5) {
 				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
