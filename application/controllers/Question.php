@@ -56,9 +56,11 @@ class Question extends MY_Controller
     public function form_update()
     {
 		$this->form_validation->set_rules('name', 'Title', 'required');
+		$this->form_validation->set_rules('points', 'Points', 'required');
 		
         $id = $this->input->post('id');
-		$title = array('Question' => $this->input->post('name'));
+		$title = array(	'Question' => $this->input->post('name'),
+						'Points' => $this->input->post('points'));
 		
         if ($this->form_validation->run() == true) {
 			$this->question_model->update($id, $title);
