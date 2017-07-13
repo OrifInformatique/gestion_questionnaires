@@ -24,7 +24,7 @@ class Question extends MY_Controller
                             'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
                             'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload'));
+        $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
     }
 
     /**
@@ -55,13 +55,15 @@ class Question extends MY_Controller
      */
     public function form_update()
     {
+		$this->form_validation->set_rules('name', 'Title', 'required');
+		
         $id = $this->input->post('id');
-
+		$title = array('Question' => $this->input->post('name'));
+		
         if ($this->form_validation->run() == true) {
-
+			$this->question_model->update($id, $title);
             $this->index();
         } else {
-            ;
             $this->update($id, 1);
         }
     }
@@ -81,11 +83,9 @@ class Question extends MY_Controller
 
         if ($id != 0) {
             $output['question'] = $this->question_model->get_by('ID = ' . $id);
-            $output['question_types'] = $this->question_type_model->get_all();
-
             $this->display_view('questions/update', $output);
         } else {
-
+			$this->index();
         }
     }
 

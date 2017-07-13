@@ -28,17 +28,7 @@
                 <div class="row">
                     <div class="col-lg-12"><input type="text" name="name" class="form-control" id="name" value="<?php echo $question->Question; ?>"></div>
                 </div>
-                <input type="hidden" name="id" id="id" value="<?php //echo $id; ?>">
-            </div>
-            <div class="form-group">
-                <label for="title"><?php echo $this->lang->line('update_question_type'); ?></label>
-                <select onchange="changeselect()" id="t_question" class="form-control">
-                    <?php
-                    foreach ($question_types as $object => $question_type){
-                        echo "<option>$question_type->Type_Name</option>";
-                    }
-                    ?>
-                </select>
+                <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
             </div>
             <input type="submit" class="btn btn-primary" />
             <?php echo form_close(); ?>
