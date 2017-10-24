@@ -1191,8 +1191,8 @@ TRUNCATE TABLE `t_user_type`;
 --
 
 INSERT INTO `t_user_type` (`ID`, `name`, `access_level`) VALUES
-(1, 'Administrator', 1),
-(2, 'Member', 2);
+(1, 'Administrator', 2),
+(2, 'Member', 1);
 
 --
 -- Contraintes pour les tables exportées

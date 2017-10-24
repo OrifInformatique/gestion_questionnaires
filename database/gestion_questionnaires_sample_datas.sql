@@ -33,8 +33,8 @@ INSERT INTO `gestion_questionnaires`.`t_questionnaire` (`ID`, `Questionnaire_Nam
 --
 
 INSERT INTO `gestion_questionnaires`.`t_user_type` (`id`, `name`, `access_level`) VALUES
-(2, 'member', 2),
-(2, 'administrator', 2);
+(1, 'administrator', 2),
+(2, 'member', 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -45,5 +45,5 @@ INSERT INTO `gestion_questionnaires`.`t_user_type` (`id`, `name`, `access_level`
 --
 
 INSERT INTO `gestion_questionnaires`.`t_user` (`id`, `FK_User_Type`, `user`, `password`) VALUES
-(1, 2, 'admin', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.'),
-(2, 1, 'user', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.');
+(1, 1, 'admin', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.'),
+(2, 2, 'user', '$2y$10$ky7raFDVbWx4gURItLP3zOCnpr2q9Fy3kYeEPcMN4XyEuSG/MfI8.');
