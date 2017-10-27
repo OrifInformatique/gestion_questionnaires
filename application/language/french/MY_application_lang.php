@@ -30,6 +30,7 @@ $lang['field_password']                 = 'Mot de passe';
 //Log Error
 $lang['invalid_id']                     = 'Les identifiants ne sont pas valides !';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
+$lang['msg_err_access_denied']			= 'Vous n\'avez pas accès à cette partie du programme';
 
 //Unlog
 $lang['unlog']                          = ' Déconnexion';
@@ -41,6 +42,11 @@ $lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
+$lang['btn_import']                     = 'Importer';
+$lang['btn_import_questions']           = 'Importer';
+$lang['oui']          					= 'Oui';
+$lang['non']          					= 'Non';
+
 
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
@@ -52,15 +58,56 @@ $lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
 $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
+$lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
+$lang['add_title_questionnaire']        = 'Titre :';
+$lang['add_topic_questionnaire']        = 'Sujet :';
+$lang['nb_questions']                   = 'Nombre de question(s)';
+$lang['add_form']                       = 'Ajouter';
+$lang['generatePDF_btn']                = 'Enregistrer';
+$lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
+$lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
+
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
-$lang['question']                       = 'Question';
+$lang['title_import_questions']         = 'Importez vos questions';
+$lang['title_import_pictures']          = 'Importez vos images';
+$lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['topic']                          = 'Sujet concerné :';
+$lang['focus_topic']                    = 'Sujet concerné :';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
 $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
 $lang['update_question_type']           = 'Type de question :';
+
+// Topics pages
+$lang['title_topic']                    = 'Liste des sujets';
+$lang['focus_module']                   = 'Module concerné :';
+$lang['title_topic_update']             = 'Modifier un topic';
+$lang['title_topic_add']                = 'Ajouter un topic';
+$lang['topic']                          = 'Sujet(s)';
+$lang['update_title_topic']             = 'Titre :';
+$lang['add_title_topic']                = 'Titre :';
+$lang['update_topic_form_err']          = 'Veillez à ce que tous les champs soient remplis';
+$lang['add_topic_form_err']             = 'Veillez à ce que tous les champs soient remplis';
+$lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
+$lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
+
+
+//Modules pages
+$lang['module']                         = 'Module(s)';
+$lang['title_module']                   = 'Liste des modules';
+$lang['title_module_update']            = 'Modifier un module';
+$lang['title_module_add']               = 'Ajouter un module';
+$lang['update_title_module']            = 'Titre :';
+$lang['add_title_module']               = 'Titre :';
+$lang['update_module_form_err']         = 'Veillez à ce que tous les champs soient remplis';
+$lang['add_module_form_err']            = 'Veillez à ce que tous les champs soient remplis';
+$lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
+$lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
+
+//PDF error
+$lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
+                                           plusieurs des questions soi(en)t mal enregistrée(s)";

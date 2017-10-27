@@ -1,6 +1,4 @@
-<IfModule authz_core_module>
-	Require all denied
-</IfModule>
-<IfModule !authz_core_module>
-	Deny from all
-</IfModule>
+RewriteEngine on
+RewriteRule ^$ /index.php [L]
+RewriteCond $1 !^(index\.php|img\|application/js|application/css)
+RewriteRule ^(.*)$ /cinifb_ci/index.php/$1 [L]

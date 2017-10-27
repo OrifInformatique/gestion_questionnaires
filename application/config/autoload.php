@@ -133,3 +133,13 @@ $autoload['language'] = array('MY_application');
 |	$autoload['model'] = array('first_model' => 'first');
 */
 $autoload['model'] = array();
+
+/*
+| -------------------------------------------------------------------
+|  Auto-load Interfaces
+| -------------------------------------------------------------------
+| Prototype:
+|
+|	$autoload['interface'] = array('first_interface');
+*/
+$autoload['interface'] = array('PHPExcel_Reader_IReadFilter');

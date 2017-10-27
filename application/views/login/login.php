@@ -1,13 +1,14 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 18.08.2016
- * Time: 13:19
+ * Login View (Form to login).
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
 
-<div class="container" style="background-color: lavender">
+<div class="container">
     <div class="jumbotron">
         <h1><?php echo $this->lang->line('page_login'); ?></h1>
         <p><?php echo $this->lang->line('indic_login'); ?></p>

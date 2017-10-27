@@ -211,7 +211,6 @@ class MY_Model extends CI_Model
         if ($skip_validation === FALSE) {
             $data = $this->validate($data);
         }
-
         if ($data !== FALSE) {
             $data = $this->trigger('before_create', $data);
 

@@ -6,7 +6,6 @@
  * @link        https://github.com/OrifInformatique/stock
  * @copyright   Copyright (c) 2016, Orif <http://www.orif.ch>
  */
-
 class MY_Controller extends CI_Controller
 {
 
@@ -21,6 +20,7 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->helper('url');
         
         /* Check permission on construct */
         if (!$this->check_permission()) {
@@ -50,8 +50,8 @@ class MY_Controller extends CI_Controller
         else {
             // check if user is logged in
             // if not, redirect to login page
-            if ($_SESSION['logged_in'] != true) {
-                redirect("auth/login");
+            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
+                redirect("auth");
             }
             // check if page is accessible for all logged in users
             elseif ($required_level == "@") {

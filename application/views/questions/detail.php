@@ -1,75 +1,31 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Created by PhpStorm.
- * User: UlSi
- * Date: 04.10.2016
- * Time: 09:21
+ * View of question's details
+ *
+ * @author      Orif, section informatique (UlSi, ViDi)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-<div class="container" style="background-color: lavender">
-    <div class="jumbotron">
-        <h2>Modifier la question</h2>
-    </div
-    <?php
-    $attributes = array("class" => "form-group",
-        "id" => "loginform",
-        "name" => "loginform");
-    echo form_open('question/update', $attributes);
-    ?>
-    <form>
-        <div class="well">
-            <div class="form-group">
-                <label for="topic">Topic</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="number" class="form-control" name="topic"
-                                                 id="topic" value="<?php echo $question->FK_Topic?>"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="typequestion">Type de question</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="number" class="form-control" name="typequestion"
-                                                 id="typequestion" value="<?php echo $question->FK_Question_Type?>"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="question">Question</label>
-                <div class="row">
-                    <div class="col-lg-4"><input type="text" class="form-control" id="question"
-                                                 name="question" value="<?php echo $question->Question?>"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="nbrep">Nb de rep désirées</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="number" class="form-control" id="nbrep"
-                                                 name="nbrep"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="table">Tableau de définition ?</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="checkbox" class="form-control" id="table"
-                                                 name="table"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="img">Nom d'image</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="text" class="form-control" id="img"
-                                                 name="img"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="pts">Points</label>
-                <div class="row">
-                    <div class="col-lg-2"><input type="number" class="form-control" id="pts"
-                                                 name="pts"></div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
-    <?php echo form_close(); ?>
+<div class="col-lg-2"></div>
+<div class="col-lg-8">
+<table class="table table-hover" id="table">
+<tbody>
+	<tr>
+		<td><label for="title">Type de question:&nbsp</label><?php echo $question->question_type->Type_Name ?></td>
+		<td><label for="title">Date de création:&nbsp</label><?php echo $question->Creation_Date ?></td>
+		<td><label for="title">ID:&nbsp</label><?php echo $question->ID ?></td>
+	</tr>
+	<tr>
+		<td colspan=2><label for="title">Sujet:&nbsp</label><?php echo $question->topic->Topic ?></td>
+		<td><label for="title">Nb points:&nbsp</label><?php echo $question->Points ?></td>
+	</tr>
+	<tr><td colspan=3><label for="title">Question:&nbsp</label><?php echo $question->Question; ?></td></tr>
+	<tr><td colspan=3><label for="title">Réponse:&nbsp</label><?php echo $reponse; ?></td></tr>
+</tbody>
+</table>
+<?php if ($question->FK_Question_Type == 7) {
+echo "<img src=".base_url('uploads/pictures/'.$image)." height='400' width='400'>";
+}?>
 </div>
+<div class="col-lg-2"></div>

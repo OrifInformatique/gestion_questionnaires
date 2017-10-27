@@ -9,11 +9,12 @@
  */
 class user_model extends MY_Model
 {
-    /* MY_Model variables definition */
+    /* SET MY_Model VARIABLES */
     protected $_table = 't_user';
-    protected $primary_key = 'id';
-    protected $protected_attributes = ['id'];
-    protected $belongs_to = ['user_type'];
+    protected $primary_key = 'ID';
+    protected $protected_attributes = ['ID'];
+    protected $belongs_to = ['user_type'=> ['primary_key' => 'FK_User_Type',
+                                            'model' => 'user_type_model']];
 
     /**
      * Constructor
@@ -33,9 +34,9 @@ class user_model extends MY_Model
      */
     public function check_password($username, $password)
     {
-        $user = $this->get_by('user', $username);
+        $user = $this->get_by('User', $username);
 
-        if (!is_null($user) && password_verify($password, $user->password)) {
+        if (!is_null($user) && password_verify($password, $user->Password)) {
             return true;
         }else{
             return false;

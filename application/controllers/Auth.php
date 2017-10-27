@@ -8,6 +8,8 @@
  */
 
 class Auth extends MY_Controller {
+    /* MY_Controller variables definition */
+    protected $access_level = "*";
 
     public function __construct()
     {
@@ -21,26 +23,40 @@ class Auth extends MY_Controller {
         $this->form_validation->set_rules('password', 'Password', 'required');
     }
 
+    /**
+     * @param int $error = Type of error :
+     * 0 = no error
+     * 1 = wrong identifiers
+     * 2 = field(s) empty
+     * Display the login view
+     */
     public function index($error = 0){
-
         $output['error'] = $error;
         $this->display_view("login/login", $output);
     }
 
+    /**
+     * Form validation to login
+     * Redirect if necessary on the login page or on the main site
+     */
     public function login(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         if ($this->form_validation->run() == true) {
 
-            if($this->user_model->check_password($username, $password))
-            {
-                $user = $this->user_model->get_by('user', $username);;
-                $this->session->user_id = $user->id;
-                $this->session->username = $user->user;
-                $this->session->user_access = (int)$user->user_type;
+            if($this->user_model->check_password($username, $password)) {
+                $user = $this->user_model->with('user_type')->get_by('User', $username);
+
+                $this->session->user_id = $user->ID;
+                $this->session->username = $user->User;
+                $this->session->user_access = 
+                    $this->user_type_model->get($user->FK_User_Type)->access_level;
+                $this->session->username = $user->User;
+                $this->session->user_access = $user->user_type->access_level;
                 $this->session->logged_in = true;
-                redirect('Questionnaire/questionnaires_list');
+
+                redirect('Home');
             }
 
             if(!isset($_SESSION['logged_in'])){
@@ -52,9 +68,11 @@ class Auth extends MY_Controller {
         }
     }
 
+    /**
+     * Destroy the session and redirect to login page
+     */
     public function unlog(){
         session_destroy();
-        redirect('Auth/index');
+        redirect('Auth');
     }
-
 }
