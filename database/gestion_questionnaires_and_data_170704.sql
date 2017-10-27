@@ -1165,8 +1165,8 @@ TRUNCATE TABLE `t_user`;
 --
 
 INSERT INTO `t_user` (`ID`, `FK_User_Type`, `User`, `Password`) VALUES
-(1, 2, 'admin', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja'),
-(2, 1, 'user', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja');
+(1, 1, 'admin', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja'),
+(2, 2, 'user', '$2y$10$aEqREuXq.4BgSq6ZJrfWre2FZEeOKvh8BIadXX3Hix0vzubqdA.ja');
 
 -- --------------------------------------------------------
 
