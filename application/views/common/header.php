@@ -9,7 +9,7 @@
     <title><?php echo $this->lang->line('app_title'); ?></title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?=base_url()?>application/img/icon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?=base_url()?>application/img/logo/favicon.ico" />
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
