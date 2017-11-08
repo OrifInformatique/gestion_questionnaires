@@ -161,14 +161,13 @@ class Question extends MY_Controller
 
     /**
      * ON BUILDING
-     * Useful to import all questions already write on Excel
+     * Useful to import all questions already written on Excel
      */
     public function import()
     {
 
         if(isset($_POST['submitExcel']))
         {
-
             $config['upload_path'] = './uploads/excel';
             $config['allowed_types'] = 'xlsx';
             $config['max_size'] = 100;
@@ -262,7 +261,7 @@ class Question extends MY_Controller
         }else
         {
             $output['questions'] = $this->question_model->with_all()->get_all();
-            $output['topics'] = $this->topic_model->get_all();
+            $output['topics'] = $this->topic_model->get_tree();
             $this->display_view('questions/import', $output);
         }
 
