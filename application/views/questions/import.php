@@ -25,27 +25,7 @@
             <div class="col-lg-4" style="height:110px;">
                 <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
 
-                <?php var_dump($topics) ?>
-                
-                <select class="form-control" name="topic_selected" id="topic_selected">
-                    <?php
-                        // List of available topics
-                        foreach ($topics as $object => $module) {
-                            if ($module->FK_Parent_Topic == 0) {
-                                // Display first level topic
-                                echo "<optgroup label='$module->Topic' >";
-
-                                // Display all associated subtopics
-                                for ($i = 0; $i < count($topics); $i++) {
-                                    if ($module->ID == $topics[$i]->FK_Parent_Topic) {
-                                        echo "<option>" . $topics[$i]->Topic . "</option>";
-                                    }
-                                }
-                                echo "</optgroup>";
-                            }
-                        }
-                    ?>
-                </select>
+                <?php echo form_dropdown('topic_selected', $topics, NULL, 'id="topic_selected" class="form-control"'); ?>
             </div>
             <div class="col-lg-2">
                 </br>
