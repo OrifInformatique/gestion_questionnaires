@@ -156,7 +156,7 @@ class Question extends MY_Controller
      */
     public function add()
     {
-
+        $this->display_view('questions/add');
     }
 
     /**
