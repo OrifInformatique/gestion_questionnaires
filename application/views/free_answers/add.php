@@ -14,33 +14,29 @@
         $attributes = array("class" => "form-group",
                             "id" => "addQuestionForm",
                             "name" => "addQuestionForm");
-        echo form_open('Question/add/2', $attributes);
+        echo form_open('Question/add/3', $attributes);
         ?>
-            <div class="form-group">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
-                </div>
-                <div class="col-md-8"><p>Liste déroulante des sujets</p></div>
-            </div>
-			<div class="form-group">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('question_type'), 'question_type', 'for="question_type"'); ?>
-                </div>
-                <div class="col-md-8"><p>Liste déroulante des types de question</p></div>
-            </div>
 			<div class="form-group">
                 <div class="col-md-4">
                     <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
                 </div>
 			</div>
 			<div class="form-group">
-                <div class="col-md-12"><?php echo form_input('name', '', 'class="form-control" id="name"'); ?></div>
+                <div class="col-md-12"><?php echo form_input('name', $name, 'class="form-control" id="name"'); ?></div>
             </div>
 			<div class="form-group">
                 <div class="col-md-4">
 					<?php echo form_label($this->lang->line('points'), 'points', 'for="points"'); ?>
                 </div>
-                <div class="col-md-2"><?php echo form_input('points', '', 'class="form-control" id="points"'); ?></div>
+                <div class="col-md-2"><?php echo form_input('points', $points, 'class="form-control" id="points"'); ?></div>
+            </div>
+			<div class="form-group">
+                <div class="col-md-12">
+                    <?php echo form_label($this->lang->line('answer_question_add'), 'answer', 'for="answer"'); ?>
+                </div>
+			</div>
+			<div class="form-group">
+                <div class="col-md-12"><?php echo form_input('answer', '', 'class="form-control" id="answer"'); ?></div>
             </div>
 			<div class="form-group">
 				<div class="col-md-8"></div>
@@ -48,7 +44,7 @@
 					<?php //echo form_submit('annuler', 'Annuler', 'class="btn btn-primary"'); ?>
 				</div>
 				<div class="col-md-2">
-					<?php echo form_submit('suivant', 'Suivant', 'class="btn btn-primary"'); ?>
+					<?php echo form_submit('enregistrer', 'Enregistrer', 'class="btn btn-primary"'); ?>
 				</div>
 			</div>
         <?php echo form_close(); ?>

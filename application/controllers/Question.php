@@ -154,9 +154,42 @@ class Question extends MY_Controller
      * Display form to add a question
      * Not build
      */
-    public function add()
+    public function add($step=1)
     {
-        $this->display_view('questions/add');
+		if ($step==1){
+			$this->display_view('questions/add');
+		} elseif ($step==2){
+
+			if (isset(/*$_POST['focus_topic'], $_POST['question_type'],*/ $_POST['name'], $_POST['points'])){
+				$output['focus_topic'] = 2; //$_POST['focus_topic'];
+				$output['question_type'] = 6; //$_POST['question_type'];
+				$output['name'] = $_POST['name'];
+				$output['points'] = (int)$_POST['points'];
+				$this->display_view('free_answers/add', $output);
+			} else {
+				header('Location: 1');
+			}
+		} elseif ($step==3){
+			if (isset(/*$_POST['focus_topic'], $_POST['question_type'],*/ $_POST['name'], $_POST['points'], $_POST['answer'])){
+				
+				$inputQuestion = array(
+                    "FK_Topic" => 2, //$_POST['focus_topic'],
+                    "FK_Question_Type" => 6, //$_POST['question_type'],
+                    "Question" => $_POST['name'],
+					"Points" => $_POST['points']
+                );
+                $idQuestion = $this->question_model->insert($inputQuestion);
+				
+				$inputAnswer = array(
+                    "FK_Question" => $idQuestion,
+                    "Answer" => $_POST['answer']
+                );
+                $idAnswer = $this->free_answer_model->insert($inputAnswer);
+				header('Location: ../');
+			} else {
+				header('Location: 2');
+			}
+		}
     }
 
     /**
