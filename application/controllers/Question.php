@@ -156,8 +156,10 @@ class Question extends MY_Controller
      */
     public function add($step=1)
     {
+        $output['topics'] = $this->topic_model->get_tree();
+
 		if ($step==1){
-			$this->display_view('questions/add');
+			$this->display_view('questions/add', $output);
 		} elseif ($step==2){
 
 			if (/*!empty($_POST['focus_topic']) && !empty($_POST['question_type']) &&*/ !empty($_POST['name']) && !empty($_POST['points'])){
@@ -201,7 +203,7 @@ class Question extends MY_Controller
                     "Answer" => $_POST['answer']
                 );
                 $idAnswer = $this->free_answer_model->insert($inputAnswer);
-				header('Location: ../');
+				$this->display_view('questions/index');
 			} else {
 				if(isset($_POST['focus_topic'])){
 					$output['focus_topic'] = 2; //$_POST['focus_topic'];

@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <?php echo form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
                 </div>
-                <div class="col-md-8"><p>Liste déroulante des sujets</p></div>
+                <div class="col-md-8"><?php echo form_dropdown('focus_topic', $topics) ?></div>
             </div>
 			<div class="form-group">
                 <div class="col-md-4">
