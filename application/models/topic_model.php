@@ -28,38 +28,76 @@ class topic_model extends MY_Model
         parent::__construct();
     }
 
+
     /**
-     * Return all topics in a bidimensional array (parent topics, subtopics)
-     * ATTENTION : this does not work with more than 2 topic's levels
+     * Recursive function to return all topics in a multidimensional array (parent topics, subtopics, ...).
+     * This function is made to fit with CodeIgniter's form_dropdown function.
      *
      * $with_archived : if true, return all topics, if false return non archived topics
+     * $parent_topic : the parent topic on wich we want to get all the children topics (used for recursivity)
      */
-    public function get_tree($with_archived = false)
+    public function get_tree($with_archived = false, $parent_topic = NULL)
     {
-        if ($with_archived)
+        if (is_null($parent_topic))
         {
-            // Return all topics even if they are archived
-            $topics = $this->topic_model->get_all();
+            if ($with_archived)
+            {
+                // Get all first level topics even if they are archived
+                $topics = $this->topic_model->get_many_by("FK_Parent_Topic IS NULL");
+            }
+            else
+            {
+                // Get only non archived first level topics
+                $topics = $this->topic_model->get_many_by("(FK_Parent_Topic IS NULL) AND (Archive = false OR Archive IS NULL)");
+            }
         }
         else
         {
-            // Return only non archived topics
-            $topics = $this->topic_model->get_many_by("Archive = false OR Archive IS NULL");
+            if ($with_archived)
+            {
+                // Get all child topics of parent_topic, even if they are archived
+                $topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$parent_topic->ID);
+            }
+            else
+            {
+                // Get only non archived child topics of parent_topic
+                $topics = $this->topic_model->get_many_by("(FK_Parent_Topic = ".$parent_topic->ID.") AND (Archive = false OR Archive IS NULL)");
+            }
         }
 
-        foreach ($topics as $topic) {
-            if ($topic->FK_Parent_Topic == 0)
+        if (count($topics) > 0)
+        {
+            foreach ($topics as $topic)
             {
-                // This is a first level topic
-                $topics_tree[$topic->ID] = $topic;
+                if ($with_archived)
+                {
+                    // Get all child topics of current topic, even if they are archived
+                    $child_topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$topic->ID);
+                }
+                else
+                {
+                    // Get only non archived child topics of current topic
+                    $child_topics = $this->topic_model->get_many_by("(FK_Parent_Topic = ".$topic->ID.") AND (Archive = false OR Archive IS NULL)");
+                }
 
-                // Add subtopics
-                for ($i = 0; $i < count($topics); $i++) {
-                    if ($topic->ID == $topics[$i]->FK_Parent_Topic) {
-                        //$topics_tree[$topic->ID][] = $topics[$i];
-                    }
+
+                if (count($child_topics) > 0)
+                {
+                    // Get the children of current topic.
+                    // The name of the current topic is used as array's key, to fit with CodeIgniter's form_dropdown function
+                    $topics_tree[$topic->Topic] = $this->topic_model->get_tree($with_archived, $topic);
+                }
+                else
+                {
+                    // This is a "leaf" topic. The ID of the current topic is used as array's key.
+                    $topics_tree[$topic->ID] = $topic->Topic;
                 }
             }
+        }
+        else
+        {
+            // There is no topic to return
+            $topics_tree = NULL;
         }
 
         return $topics_tree;
