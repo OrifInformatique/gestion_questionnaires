@@ -34,13 +34,13 @@
                 </div>
 			</div>
 			<div class="form-group">
-                <div class="col-md-12"><?php echo form_input('name', '', 'class="form-control" id="name"'); ?></div>
+                <div class="col-md-12"><?php if(isset($name)){echo form_input('name', $name, 'class="form-control" id="name"');}else{echo form_input('name', '', 'class="form-control" id="name"');} ?></div>
             </div>
 			<div class="form-group">
                 <div class="col-md-4">
 					<?php echo form_label($this->lang->line('points'), 'points', 'for="points"'); ?>
                 </div>
-                <div class="col-md-2"><?php echo form_input('points', '', 'class="form-control" id="points"'); ?></div>
+                <div class="col-md-2"><?php if(isset($points)){echo form_input('points', $points, 'class="form-control" id="points"');}else{echo form_input('points', '', 'class="form-control" id="points"');}?></div>
             </div>
 			<div class="form-group">
 				<div class="col-md-8"></div>

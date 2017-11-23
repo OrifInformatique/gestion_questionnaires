@@ -160,17 +160,33 @@ class Question extends MY_Controller
 			$this->display_view('questions/add');
 		} elseif ($step==2){
 
-			if (isset(/*$_POST['focus_topic'], $_POST['question_type'],*/ $_POST['name'], $_POST['points'])){
+			if (/*!empty($_POST['focus_topic']) && !empty($_POST['question_type']) &&*/ !empty($_POST['name']) && !empty($_POST['points'])){
 				$output['focus_topic'] = 2; //$_POST['focus_topic'];
 				$output['question_type'] = 6; //$_POST['question_type'];
 				$output['name'] = $_POST['name'];
 				$output['points'] = (int)$_POST['points'];
 				$this->display_view('free_answers/add', $output);
 			} else {
-				header('Location: 1');
+				if(isset($_POST['focus_topic'])){
+					$output['focus_topic'] = 2; //$_POST['focus_topic'];
+				}
+				if(isset($_POST['question_type'])){
+					$output['question_type'] = 6; //$_POST['question_type'];
+				}
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($output)){
+					$this->display_view('questions/add', $output);
+				} else {
+					$this->display_view('questions/add');
+				}
 			}
 		} elseif ($step==3){
-			if (isset(/*$_POST['focus_topic'], $_POST['question_type'],*/ $_POST['name'], $_POST['points'], $_POST['answer'])){
+			if (/*!empty($_POST['focus_topic']) && !empty($_POST['question_type']) &&*/ !empty($_POST['name']) && !empty($_POST['points']) && !empty($_POST['answer'])){
 				
 				$inputQuestion = array(
                     "FK_Topic" => 2, //$_POST['focus_topic'],
@@ -187,7 +203,22 @@ class Question extends MY_Controller
                 $idAnswer = $this->free_answer_model->insert($inputAnswer);
 				header('Location: ../');
 			} else {
-				header('Location: 2');
+				if(isset($_POST['focus_topic'])){
+					$output['focus_topic'] = 2; //$_POST['focus_topic'];
+				}
+				if(isset($_POST['question_type'])){
+					$output['question_type'] = 6; //$_POST['question_type'];
+				}
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['answer'])){
+					$output['answer'] = $_POST['answer'];
+				}
+				$this->display_view('free_answers/add', $output);
 			}
 		}
     }
