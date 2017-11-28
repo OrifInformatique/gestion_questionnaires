@@ -23,4 +23,20 @@ class question_type_model extends MY_Model
     {
         parent::__construct();
     }
+	
+	
+	public function get_array()
+    {
+		$question_types = $this->question_type_model->get_all();
+		
+		
+		foreach($question_types as $question_type)
+		{
+			$array[] = (array)$question_type;
+			
+			$types_array[end($array)['ID']] = end($array)['Type_Name'];
+		}
+		
+		return $types_array;
+	}
 }

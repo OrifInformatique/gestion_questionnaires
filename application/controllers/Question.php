@@ -157,42 +157,31 @@ class Question extends MY_Controller
     public function add($step=1)
     {
         $output['topics'] = $this->topic_model->get_tree();
-
+		$output['list_question_type'] = $this->question_type_model->get_array();
+		
 		if ($step==1){
 			$this->display_view('questions/add', $output);
 		} elseif ($step==2){
-
-			if (/*!empty($_POST['focus_topic']) && !empty($_POST['question_type']) &&*/ !empty($_POST['name']) && !empty($_POST['points'])){
-				$output['focus_topic'] = 2; //$_POST['focus_topic'];
-				$output['question_type'] = 6; //$_POST['question_type'];
+			if (!empty($_POST['focus_topic']) && !empty($_POST['question_type']) && !empty($_POST['name']) && !empty($_POST['points'])){
+				$output['focus_topic'] = $_POST['focus_topic'];
+				$output['question_type'] = $_POST['question_type'];
 				$output['name'] = $_POST['name'];
 				$output['points'] = (int)$_POST['points'];
 				$this->display_view('free_answers/add', $output);
 			} else {
-				if(isset($_POST['focus_topic'])){
-					$output['focus_topic'] = 2; //$_POST['focus_topic'];
-				}
-				if(isset($_POST['question_type'])){
-					$output['question_type'] = 6; //$_POST['question_type'];
-				}
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
 					$output['points'] = (int)$_POST['points'];
 				}
-				if(isset($output)){
-					$this->display_view('questions/add', $output);
-				} else {
-					$this->display_view('questions/add');
-				}
+				$this->display_view('questions/add', $output);
 			}
 		} elseif ($step==3){
-			if (/*!empty($_POST['focus_topic']) && !empty($_POST['question_type']) &&*/ !empty($_POST['name']) && !empty($_POST['points']) && !empty($_POST['answer'])){
-				
+			if (!empty($_POST['focus_topic']) && !empty($_POST['question_type']) && !empty($_POST['name']) && !empty($_POST['points']) && !empty($_POST['answer'])){
 				$inputQuestion = array(
-                    "FK_Topic" => 2, //$_POST['focus_topic'],
-                    "FK_Question_Type" => 6, //$_POST['question_type'],
+                    "FK_Topic" => $_POST['focus_topic'],
+                    "FK_Question_Type" => $_POST['question_type'],
                     "Question" => $_POST['name'],
 					"Points" => $_POST['points']
                 );
@@ -203,14 +192,11 @@ class Question extends MY_Controller
                     "Answer" => $_POST['answer']
                 );
                 $idAnswer = $this->free_answer_model->insert($inputAnswer);
-				$this->display_view('questions/index');
+				
+				$output['questions'] = $this->question_model->with_all()->get_all();
+				$output['topics'] = $this->topic_model->get_all();
+				$this->display_view('questions/index', $output);
 			} else {
-				if(isset($_POST['focus_topic'])){
-					$output['focus_topic'] = 2; //$_POST['focus_topic'];
-				}
-				if(isset($_POST['question_type'])){
-					$output['question_type'] = 6; //$_POST['question_type'];
-				}
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
