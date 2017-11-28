@@ -35,10 +35,14 @@
 			<div class="form-group row">
                 <div class="col-md-12"><?php if(isset($answer)){echo form_input('answer', $answer, 'class="form-control" id="answer"');}else{echo form_input('answer', '', 'class="form-control" id="answer"');} ?></div>
             </div>
+			
+			<span class="text-danger"><?php echo form_error('name');?></span>
+			<span class="text-danger"><?php echo form_error('answer');?></span>
+			
 			<div class="form-group row">
 				<div class="col-md-8"></div>
 				<div class="col-md-2">
-					<?php echo form_button('annuler', 'Annuler', 'class="btn btn-primary" onclick="location.href=\'http://localhost/gestion_questionnaires/Question\'"'); ?>
+					<?php echo form_button('annuler', 'Annuler', 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
 				</div>
 				<div class="col-md-2">
 					<?php echo form_submit('enregistrer', 'Enregistrer', 'class="btn btn-primary"'); ?>

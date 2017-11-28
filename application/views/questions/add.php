@@ -42,10 +42,14 @@
                 </div>
                 <div class="col-md-2"><?php if(isset($points)){echo form_input('points', $points, 'class="form-control" id="points"');}else{echo form_input('points', '', 'class="form-control" id="points"');}?></div>
             </div>
+			
+			<span class="text-danger"><?php echo form_error('name');?></span>
+			<span class="text-danger"><?php echo form_error('points');?></span>
+			
 			<div class="form-group row">
 				<div class="col-md-8"></div>
 				<div class="col-md-2">
-					<?php echo form_button('annuler', 'Annuler', 'class="btn btn-primary" onclick="location.href=\'http://localhost/gestion_questionnaires/Question\'"'); ?>
+					<?php echo form_button('annuler', 'Annuler', 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
 				</div>
 				<div class="col-md-2">
 					<?php echo form_submit('suivant', 'Suivant', 'class="btn btn-primary"'); ?>

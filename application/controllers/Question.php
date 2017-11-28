@@ -162,12 +162,17 @@ class Question extends MY_Controller
 		if ($step==1){
 			$this->display_view('questions/add', $output);
 		} elseif ($step==2){
-			if (!empty($_POST['focus_topic']) && !empty($_POST['question_type']) && !empty($_POST['name']) && !empty($_POST['points'])){
-				$output['focus_topic'] = $_POST['focus_topic'];
-				$output['question_type'] = $_POST['question_type'];
-				$output['name'] = $_POST['name'];
-				$output['points'] = (int)$_POST['points'];
-				$this->display_view('free_answers/add', $output);
+			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+
+			if ($this->form_validation->run()){
+				if($_POST['question_type'] == 6){
+					$output['focus_topic'] = $_POST['focus_topic'];
+					$output['question_type'] = $_POST['question_type'];
+					$output['name'] = $_POST['name'];
+					$output['points'] = (int)$_POST['points'];
+					$this->display_view('free_answers/add', $output);
+				}
 			} else {
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
@@ -178,7 +183,11 @@ class Question extends MY_Controller
 				$this->display_view('questions/add', $output);
 			}
 		} elseif ($step==3){
-			if (!empty($_POST['focus_topic']) && !empty($_POST['question_type']) && !empty($_POST['name']) && !empty($_POST['points']) && !empty($_POST['answer'])){
+			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
+			
+			if ($this->form_validation->run()){
 				$inputQuestion = array(
                     "FK_Topic" => $_POST['focus_topic'],
                     "FK_Question_Type" => $_POST['question_type'],
@@ -193,10 +202,10 @@ class Question extends MY_Controller
                 );
                 $idAnswer = $this->free_answer_model->insert($inputAnswer);
 				
-				$output['questions'] = $this->question_model->with_all()->get_all();
-				$output['topics'] = $this->topic_model->get_all();
-				$this->display_view('questions/index', $output);
+				redirect('/Question');
 			} else {
+				$output['focus_topic'] = $_POST['focus_topic'];
+				$output['question_type'] = $_POST['question_type'];
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
