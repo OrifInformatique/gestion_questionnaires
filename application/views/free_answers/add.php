@@ -15,19 +15,10 @@
                             "id" => "addQuestionForm",
                             "name" => "addQuestionForm");
         echo form_open('Question/add/3', $attributes);
-        ?>
-			<div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
-                </div>
-                <div class="col-md-8"><?php echo form_dropdown('focus_topic', $topics); ?></div>
-            </div>
-			<div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('question_type'), 'list_question_type', 'for="question_type"'); ?>
-                </div>
-                <div class="col-md-8"><?php echo form_dropdown('question_type', $list_question_type); ?></div>
-            </div>
+			
+			echo form_hidden('focus_topic', $focus_topic);
+			echo form_hidden('question_type', $question_type);
+			echo form_hidden('points', $points); ?>
 			<div class="form-group row">
                 <div class="col-md-4">
                     <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
@@ -35,12 +26,6 @@
 			</div>
 			<div class="form-group row">
                 <div class="col-md-12"><?php echo form_input('name', $name, 'class="form-control" id="name"'); ?></div>
-            </div>
-			<div class="form-group row">
-                <div class="col-md-4">
-					<?php echo form_label($this->lang->line('points'), 'points', 'for="points"'); ?>
-                </div>
-                <div class="col-md-2"><?php echo form_input('points', $points, 'class="form-control" id="points"'); ?></div>
             </div>
 			<div class="form-group row">
                 <div class="col-md-12">
