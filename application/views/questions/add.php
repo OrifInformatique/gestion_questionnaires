@@ -49,10 +49,10 @@
 			<div class="form-group row">
 				<div class="col-md-8"></div>
 				<div class="col-md-2">
-					<?php echo form_button('annuler', 'Annuler', 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
+					<?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
 				</div>
 				<div class="col-md-2">
-					<?php echo form_submit('suivant', 'Suivant', 'class="btn btn-primary"'); ?>
+					<?php echo form_submit('suivant', $this->lang->line('save'), 'class="btn btn-primary"'); ?>
 				</div>
 			</div>
         <?php echo form_close(); ?>

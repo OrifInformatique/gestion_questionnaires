@@ -47,6 +47,9 @@ $lang['btn_import']                     = 'Importer';
 $lang['btn_import_questions']           = 'Importer';
 $lang['oui']          					= 'Oui';
 $lang['non']          					= 'Non';
+$lang['ouinon']          				= 'Oui/Non';
+$lang['save']                           = 'Enregistrer';
+$lang['cancel']                         = 'Annuler';
 
 
 // Questionnaires pages
