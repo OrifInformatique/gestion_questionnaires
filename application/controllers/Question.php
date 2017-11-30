@@ -291,7 +291,7 @@ class Question extends MY_Controller
 					
 					$this->display_view('multiple_choice/add', $output);
 				}
-			} elseif (isset($_POST['add'])){
+			} else {
 				$output['focus_topic'] = $_POST['focus_topic'];
 				$output['question_type'] = $_POST['question_type'];
 				
@@ -312,8 +312,16 @@ class Question extends MY_Controller
 						$output[$noAnswer] = $_POST[$noAnswer];
 					}
 				}
-			
-				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+				
+				if (isset($_POST['add'])){
+					$output['nbAnswer'] = $_POST['nbAnswer']+1;
+				} elseif (isset($_POST['delete'])){
+					if($_POST['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
+				}
 			
 				$this->display_view('multiple_choice/add', $output);
 			}

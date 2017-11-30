@@ -63,7 +63,10 @@
 				<div class="col-md-2">
 					<?php echo form_submit('add', $this->lang->line('btn_add'), 'class="btn btn-primary"'); ?>
 				</div>
-				<div class="col-md-6"></div>
+				<div class="col-md-2">
+					<?php echo form_submit('delete', $this->lang->line('btn_del'), 'class="btn btn-primary"'); ?>
+				</div>
+				<div class="col-md-4"></div>
 				<div class="col-md-2">
 					<?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
 				</div>
