@@ -273,9 +273,6 @@ class Question extends MY_Controller
 					if(isset($_POST['points'])){
 						$output['points'] = (int)$_POST['points'];
 					}
-					if(isset($_POST['answer'])){
-						$output['answer'] = $_POST['answer'];
-					}
 					
 					for($i=1; $i <= $_POST['nbAnswer']; $i++){
 						$noQuestion = "question".$i;
@@ -291,7 +288,7 @@ class Question extends MY_Controller
 					
 					$this->display_view('multiple_choice/add', $output);
 				}
-			} else {
+			} elseif (isset($_POST['add'])){
 				$output['focus_topic'] = $_POST['focus_topic'];
 				$output['question_type'] = $_POST['question_type'];
 				
@@ -329,6 +326,7 @@ class Question extends MY_Controller
 			if (isset($_POST['enregistrer'])){
 				$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){
 					$noAnswer = "answer".$i;
 					$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
@@ -339,6 +337,7 @@ class Question extends MY_Controller
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
 						"Question" => $_POST['name'],
+						"nb_desired_answers" => $_POST['nb_desired_answers'],
 						"Points" => $_POST['points']
 					);
 					$idQuestion = $this->question_model->insert($inputQuestion);
@@ -363,8 +362,8 @@ class Question extends MY_Controller
 					if(isset($_POST['points'])){
 						$output['points'] = (int)$_POST['points'];
 					}
-					if(isset($_POST['answer'])){
-						$output['answer'] = $_POST['answer'];
+					if(isset($_POST['nb_desired_answers'])){
+						$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 					}
 					
 					for($i=1; $i <= $_POST['nbAnswer']; $i++){
@@ -377,7 +376,7 @@ class Question extends MY_Controller
 					
 					$this->display_view('multiple_answer/add', $output);
 				}
-			} else {
+			} elseif(isset($_POST['add'])) {
 				$output['focus_topic'] = $_POST['focus_topic'];
 				$output['question_type'] = $_POST['question_type'];
 				
@@ -386,6 +385,9 @@ class Question extends MY_Controller
 				}
 				if(isset($_POST['points'])){
 					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['nb_desired_answers'])){
+					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 				}
 				
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){

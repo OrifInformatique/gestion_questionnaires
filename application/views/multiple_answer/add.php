@@ -29,9 +29,17 @@
 			<div class="form-group row">
                 <div class="col-md-12"><?php echo form_input('name', $name, 'class="form-control" id="name"'); ?></div>
             </div>
+			
+			<div class="form-group row">
+                <div class="col-md-4">
+					<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers', 'for="nb_desired_answers"'); ?>
+                </div>
+                <div class="col-md-2"><?php if(isset($nb_desired_answers)){echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="nb_desired_answers"');}else{echo form_input('nb_desired_answers', '', 'class="form-control" id="nb_desired_answers"');}?></div>
+            </div>
+			
 			<div class="form-group row">
                 <div class="col-md-12">
-                    <?php echo form_label($this->lang->line('title_question'), 'answer', 'for="answer"'); ?>
+                    <?php echo form_label($this->lang->line('mutliple_answer'), 'answer', 'for="answer"'); ?>
 				</div>
 			</div>
 			
