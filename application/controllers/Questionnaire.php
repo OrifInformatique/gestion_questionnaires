@@ -3,7 +3,7 @@
 /**
  * Questionnaire controller
  *
- * @author      Orif, section informatique (UlSi, ViDi)
+ * @author      Orif, section informatique (UlSi, ViDi, MeDa)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
@@ -21,8 +21,8 @@ class Questionnaire extends MY_Controller
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
                                 'question_model', 'question_type_model', 'answer_distribution_model',
-                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model', 
-                                'picture_landmark_model'));
+                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model',
+                                'picture_landmark_model', 'free_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
     }
@@ -71,7 +71,6 @@ class Questionnaire extends MY_Controller
             $this->questionnaire_model->update($id, $title);
             $this->index();
         } else {
-            ;
             $this->update($id, true);
         }
     }
@@ -128,10 +127,10 @@ class Questionnaire extends MY_Controller
             $idTopic = $this->topic_model->get_by("Topic = '" .  $Topic . "'")->ID;
             $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
             echo $nbQuestion;
-            
+
         }else
         {
-            $this->display_view('questionnaires/add', $output);   
+            $this->display_view('questionnaires/add', $output);
         }
     }
 
@@ -181,6 +180,8 @@ class Questionnaire extends MY_Controller
         $totalpoints = 0;
 
         $pdf = new FPDF();
+		$answers = new FPDF();
+
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
         $pdf->SetTitle("Questionnaire", true);
@@ -189,6 +190,14 @@ class Questionnaire extends MY_Controller
         $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
         $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
         $pdf->SetFont('Arial', '', 16);
+
+
+        // Title of the answered document
+        $answers->AddPage();
+        $answers->SetFont('Arial', 'B', 16);
+        $answers->SetTitle(iconv('UTF-8', 'windows-1252', 'Corrigé : '), true);
+        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
+        $answers->SetFont('Arial', '', 16);
 
 
        // try
@@ -202,31 +211,52 @@ class Questionnaire extends MY_Controller
                 $totalpoints += $rndQuestion->Points;
 
                 $pdf->MultiCell(0, 20, $Question, 0, "L");
+                $answers->MultiCell(0, 20, $Question, 0, "L");
 
                 switch ($rndQuestion->FK_Question_Type) {
                     case 1:
                         $this->displayMultipleChoices($rndQuestion, $pdf);
+                        $this->displayMultipleChoices($rndQuestion, $answers);
+
+                        // answer in red
+                        $answers->setTextColor(255,0,0);
+                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', "Réponse à $idQuestion"), 0, "L");
+                        $answers->setTextColor(0,0,0);
                         break;
                     case 2:
                         $this->displayMultipleAnswers($rndQuestion, $pdf);
+                        $this->displayMultipleAnswers($rndQuestion, $answers);
                         break;
                     case 3:
                         $this->displayAnswerDistribution($rndQuestion, $pdf);
+                        $this->displayAnswerDistribution($rndQuestion, $answers);
                         break;
                     case 4:
                         $this->displayClozeText($rndQuestion, $pdf);
+                        $this->displayClozeText($rndQuestion, $answers);
                         break;
                     case 5:
                         $this->displayTable($rndQuestion, $pdf);
+                        $this->displayTable($rndQuestion, $answers);
+                        break;
+                    case 6:
+                        // answer in red for a simple kind of question
+                        $answers->setTextColor(255,0,0);
+                        //Answer put
+                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->free_answer_model->get_by("FK_Question" = $rndQuestion)->Answer), 0, "L");
+                        $answers->setTextColor(0,0,0);
+
                         break;
                     case 7:
                         $this->displayPictureLandmarks($rndQuestion, $pdf);
+                        $this->displayPictureLandmarks($rndQuestion, $answers);
                         break;
                     default:
                         break;
                 }
 
                 $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+                $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
 
             }
             $error = false;
@@ -243,6 +273,7 @@ class Questionnaire extends MY_Controller
         }else{
             //$pdf->Output('I', 'Questionnaire', true);
 			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
+      $answers->Output('F', $tableTopics->getTitle().'_corrige.pdf', true);
 			$this->index();
         }
     }
@@ -442,7 +473,7 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
-        
+
         /*
         $url = base_url() .'uploads/pictures/';
         $width = getimagesize($fullPath)[0];
@@ -454,7 +485,7 @@ class Questionnaire extends MY_Controller
 
 
         imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
-    
+
         imagedestroy($image);
         imagejpeg($image_p, $fullPath, 100);*/
 
@@ -465,7 +496,7 @@ class Questionnaire extends MY_Controller
 
         $pdf->Image($fullPath, null, null, 100, 100);
 
-        
+
         foreach ($pictureLandmarks as $pictureLandmark)
         {
             $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");

@@ -34,9 +34,9 @@
                         ?>
                         <tr>
                                 <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
-                                <td><a href="<?php echo base_url().$questionnaire->Questionnaire_Name.'.pdf'?>" target="_blank" href="">
+                                <td><a href="<?php echo base_url().$questionnaire->Questionnaire_Name.'.pdf'?>" target="_blank">
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
-                                <td><a target="_blank" href="">
+                                <td><a target="_blank" href="<?php echo base_url().$questionnaire->Questionnaire_Name.'_corrige.pdf'?>">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>
 								<td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>
@@ -45,9 +45,9 @@
                     ?>
                     </tbody>
                 </table>
-				
+
 				<a href="<?php echo base_url(); ?>Questionnaire/add/" class="btn btn-primary">Nouveau…</a>
-				
+
             </div>
             <div class="col-lg-2"></div>
         </div>
