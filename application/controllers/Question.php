@@ -185,7 +185,7 @@ class Question extends MY_Controller
 				} elseif ($_POST['question_type'] == 6){
 					$this->display_view('free_answers/add', $output);
 				} elseif ($_POST['question_type'] == 7){
-					
+					$this->display_view('picture_landmark/file', $output);
 				}
 			} else {
 				if(isset($_POST['name'])){
@@ -288,7 +288,7 @@ class Question extends MY_Controller
 					
 					$this->display_view('multiple_choice/add', $output);
 				}
-			} elseif (isset($_POST['add'])){
+			} else {
 				$output['focus_topic'] = $_POST['focus_topic'];
 				$output['question_type'] = $_POST['question_type'];
 				
@@ -376,7 +376,7 @@ class Question extends MY_Controller
 					
 					$this->display_view('multiple_answer/add', $output);
 				}
-			} elseif(isset($_POST['add'])) {
+			} else {
 				$output['focus_topic'] = $_POST['focus_topic'];
 				$output['question_type'] = $_POST['question_type'];
 				
@@ -409,7 +409,128 @@ class Question extends MY_Controller
 			
 				$this->display_view('multiple_answer/add', $output);
 			}
-		}
+		}elseif ($step==6){
+			if(isset($_FILES['picture'])) {
+				$config['upload_path']          = './uploads/pictures';
+				$config['allowed_types']        = 'gif|jpg|jpeg|png';
+				$config['max_size']				= '2048';
+
+				$this->upload->initialize($config);
+				
+				$output['focus_topic'] = $_POST['focus_topic'];
+				$output['question_type'] = $_POST['question_type'];
+				$output['name'] = $_POST['name'];
+				$output['points'] = (int)$_POST['points'];
+				$output['nbAnswer'] = 1;
+
+				if ( ! $this->upload->do_upload('picture'))
+                {
+                        $output['error'] = $this->upload->display_errors();
+                        $this->display_view('picture_landmark/file', $output);
+                }
+                else
+                {
+                        $output['upload_data'] = $this->upload->data();
+						
+                        $this->display_view('picture_landmark/add', $output);
+                }
+			}
+			
+		}elseif ($step==7){
+			if (isset($_POST['enregistrer'])){
+				$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noSymbol = "symbol".$i;
+					$noAnswer = "answer".$i;
+					$this->form_validation->set_rules($noSymbol, $this->lang->line('mutliple_answer'), 'required');
+					$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+				}
+	
+				if ($this->form_validation->run()){
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points'],
+						"Picture_Name" => $_POST['upload_data']['file_name']
+					);
+					$idQuestion = $this->question_model->insert($inputQuestion);
+					
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noSymbol = "symbol".$i;
+						$noAnswer = "answer".$i;
+						
+						$inputAnswer = array(
+							"FK_Question" => $idQuestion,
+							"Symbol" => $_POST[$noSymbol],
+							"Answer" => $_POST[$noAnswer]
+						);
+						$this->picture_landmark_model->insert($inputAnswer);
+					}
+					
+					redirect('/Question');
+				} else {
+					$output['focus_topic'] = $_POST['focus_topic'];
+					$output['question_type'] = $_POST['question_type'];
+					$output['upload_data'] = $_POST['upload_data'];
+					if(isset($_POST['name'])){
+						$output['name'] = $_POST['name'];
+					}
+					if(isset($_POST['points'])){
+						$output['points'] = (int)$_POST['points'];
+					}
+					
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noSymbol = "symbol".$i;
+						$noAnswer = "answer".$i;
+						if(isset($_POST[$noSymbol])){
+							$output[$noSymbol] = $_POST[$noSymbol];
+						}
+						if(isset($_POST[$noAnswer])){
+							$output[$noAnswer] = $_POST[$noAnswer];
+						}
+					}
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+					
+					$this->display_view('picture_landmark/add', $output);
+				}
+			} else {
+				$output['focus_topic'] = $_POST['focus_topic'];
+				$output['question_type'] = $_POST['question_type'];
+				$output['upload_data'] = $_POST['upload_data'];
+				
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noSymbol = "symbol".$i;
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noSymbol])){
+						$output[$noSymbol] = $_POST[$noSymbol];
+					}
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+					}
+				}
+				
+				if (isset($_POST['add'])){
+					$output['nbAnswer'] = $_POST['nbAnswer']+1;
+				} elseif (isset($_POST['delete'])){
+					if($_POST['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
+				}
+			
+				$this->display_view('picture_landmark/add', $output);
+			}
+		} 
     }
 
     /**

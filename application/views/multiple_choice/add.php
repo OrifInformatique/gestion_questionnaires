@@ -51,12 +51,8 @@
 					<div class="col-md-1"><?php if(isset($$noAnswer)){if($$noAnswer==0){echo form_radio($noAnswer, 0, TRUE);}else{echo form_radio('answer'.$i, 0);}}else{echo form_radio($noAnswer, 0);}?></div>
 				</div>
 				
-			<?php }
-			for($i=1; $i <= $nbAnswer; $i++){
-					$noQuestion = "question".$i;
-					$noAnswer = "answer".$i; ?>
-					<span class="text-danger"><?php echo form_error($noQuestion);?></span>
-					<span class="text-danger"><?php echo form_error($noAnswer);?></span>
+				<span class="text-danger"><?php echo form_error($noQuestion);?></span>
+				<span class="text-danger"><?php echo form_error($noAnswer);?></span>
 			<?php } ?>
 			
 			<div class="form-group row">

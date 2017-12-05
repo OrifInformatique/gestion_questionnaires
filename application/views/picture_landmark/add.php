@@ -15,40 +15,42 @@
         $attributes = array("class" => "form-group",
                             "id" => "addQuestionForm",
                             "name" => "addQuestionForm");
-        echo form_open('Question/add/5', $attributes);
+        echo form_open('Question/add/7', $attributes);
 			
 			echo form_hidden('focus_topic', $focus_topic);
 			echo form_hidden('question_type', $question_type);
 			echo form_hidden('points', $points);
-			echo form_hidden('nbAnswer', $nbAnswer); ?>
+			echo form_hidden('nbAnswer', $nbAnswer);
+			echo form_hidden('upload_data', $upload_data); ?>
 			<div class="form-group row">
                 <div class="col-md-4">
                     <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
                 </div>
 			</div>
+	
 			<div class="form-group row">
                 <div class="col-md-12"><?php echo form_input('name', $name, 'class="form-control" id="name"'); ?></div>
             </div>
-			
+			<?php echo "<img src='/gestion_questionnaires/uploads/pictures/" . $upload_data['file_name'] . "' alt='" . $upload_data['file_name'] . "'>"; ?>
 			<div class="form-group row">
-                <div class="col-md-4">
-					<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers', 'for="nb_desired_answers"'); ?>
-                </div>
-                <div class="col-md-2"><?php if(isset($nb_desired_answers)){echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="nb_desired_answers"');}else{echo form_input('nb_desired_answers', '', 'class="form-control" id="nb_desired_answers"');}?></div>
-            </div>
-			
-			<div class="form-group row">
-                <div class="col-md-12">
-                    <?php echo form_label($this->lang->line('mutliple_answer'), 'answer', 'for="answer"'); ?>
+                <div class="col-md-2">
+                    <?php echo form_label($this->lang->line('landmark'), 'symbol', 'for="symbol"'); ?>
+				</div>
+				<div class="col-md-10">
+					<?php echo form_label($this->lang->line('mutliple_answer'), 'answer', 'for="answer"'); ?>
 				</div>
 			</div>
 			
 			<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
+			$noSymbol = "symbol".$i;
 			$noAnswer = "answer".$i;
 			?>
 				<div class="form-group row">
-					<div class="col-md-12"><?php if(isset($$noAnswer)){echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');}else{echo form_input($noAnswer, '', 'class="form-control" id="answer"');} ?></div>
+					<div class="col-md-2"><?php if(isset($$noSymbol)){echo form_input($noSymbol, $$noSymbol, 'class="form-control" id="symbol"');}else{echo form_input($noSymbol, '', 'class="form-control" id="symbol"');} ?></div>
+					<div class="col-md-10"><?php if(isset($$noAnswer)){echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');}else{echo form_input($noAnswer, '', 'class="form-control" id="answer"');} ?></div>
 				</div>
+				
+				<span class="text-danger"><?php echo form_error($noSymbol);?></span>
 				<span class="text-danger"><?php echo form_error($noAnswer);?></span>
 			<?php } ?>
 			
