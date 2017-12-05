@@ -91,6 +91,7 @@ $lang['answer_question_add']            = 'Réponse attendue';
 $lang['mutliple_answer']                = 'Liste des réponses';
 $lang['nb_desired_answers']             = 'Nombre de réponses attendues';
 $lang['landmark']                       = 'Liste des repères';
+$lang['text']                           = 'Texte';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';

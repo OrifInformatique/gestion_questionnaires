@@ -179,7 +179,7 @@ class Question extends MY_Controller
 				} elseif ($_POST['question_type'] == 3){
 					
 				} elseif ($_POST['question_type'] == 4){
-					
+					$this->display_view('cloze_text/add', $output);
 				} elseif ($_POST['question_type'] == 5){
 					
 				} elseif ($_POST['question_type'] == 6){
@@ -443,7 +443,7 @@ class Question extends MY_Controller
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){
 					$noSymbol = "symbol".$i;
 					$noAnswer = "answer".$i;
-					$this->form_validation->set_rules($noSymbol, $this->lang->line('mutliple_answer'), 'required');
+					$this->form_validation->set_rules($noSymbol, $this->lang->line('landmark'), 'required');
 					$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
 				}
 	
@@ -529,6 +529,100 @@ class Question extends MY_Controller
 				}
 			
 				$this->display_view('picture_landmark/add', $output);
+			}
+		}elseif ($step==8){
+			if (isset($_POST['enregistrer'])){
+				$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+				}
+	
+				if ($this->form_validation->run()){
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points']
+					);
+					$idQuestion = $this->question_model->insert($inputQuestion);
+					
+					$inputClozeText = array(
+						"FK_Question" => $idQuestion,
+						"Cloze_Text" => $_POST['cloze_text']
+					);
+					$idClozeText = $this->cloze_text_model->insert($inputClozeText);
+					
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noAnswer = "answer".$i;
+						
+						$inputAnswer = array(
+							"FK_Cloze_Text" => $idClozeText,
+							"Answer" => $_POST[$noAnswer],
+							"Answer_Order" => $i
+						);
+						$this->cloze_text_answer_model->insert($inputAnswer);
+					}
+					
+					redirect('/Question');
+				} else {
+					$output['focus_topic'] = $_POST['focus_topic'];
+					$output['question_type'] = $_POST['question_type'];
+					if(isset($_POST['name'])){
+						$output['name'] = $_POST['name'];
+					}
+					if(isset($_POST['points'])){
+						$output['points'] = (int)$_POST['points'];
+					}
+					
+					if(isset($_POST['cloze_text'])){
+						$output['cloze_text'] = $_POST['cloze_text'];
+					}
+					
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noAnswer = "answer".$i;
+						if(isset($_POST[$noAnswer])){
+							$output[$noAnswer] = $_POST[$noAnswer];
+						}
+					}
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+					
+					$this->display_view('cloze_text/add', $output);
+				}
+			} else {
+				$output['focus_topic'] = $_POST['focus_topic'];
+				$output['question_type'] = $_POST['question_type'];
+				
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['cloze_text'])){
+					$output['cloze_text'] = $_POST['cloze_text'];
+				}
+					
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+					}
+				}
+				
+				if (isset($_POST['add'])){
+					$output['nbAnswer'] = $_POST['nbAnswer']+1;
+				} elseif (isset($_POST['delete'])){
+					if($_POST['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
+				}
+			
+				$this->display_view('cloze_text/add', $output);
 			}
 		} 
     }
