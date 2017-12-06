@@ -22,7 +22,7 @@ class Questionnaire extends MY_Controller
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
                                 'question_model', 'question_type_model', 'answer_distribution_model',
                                 'multiple_choice_model', 'cloze_text_model', 'table_cell_model',
-                                'picture_landmark_model', 'free_answer_model'));
+                                'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
     }
@@ -195,7 +195,7 @@ class Questionnaire extends MY_Controller
         // Title of the answered document
         $answers->AddPage();
         $answers->SetFont('Arial', 'B', 16);
-        $answers->SetTitle(iconv('UTF-8', 'windows-1252', 'Corrigé : '), true);
+        $answers->SetTitle('Corrigé', true);
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
         $answers->SetFont('Arial', '', 16);
 
@@ -216,40 +216,35 @@ class Questionnaire extends MY_Controller
                 switch ($rndQuestion->FK_Question_Type) {
                     case 1:
                         $this->displayMultipleChoices($rndQuestion, $pdf);
-                        $this->displayMultipleChoices($rndQuestion, $answers);
-
-                        // answer in red
-                        $answers->setTextColor(255,0,0);
-                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', "Réponse à $idQuestion"), 0, "L");
-                        $answers->setTextColor(0,0,0);
+                        $this->answerMultipleChoices($rndQuestion, $answers);
                         break;
                     case 2:
                         $this->displayMultipleAnswers($rndQuestion, $pdf);
-                        $this->displayMultipleAnswers($rndQuestion, $answers);
+                        $this->answerMultipleAnswers($rndQuestion, $answers);
                         break;
                     case 3:
                         $this->displayAnswerDistribution($rndQuestion, $pdf);
-                        $this->displayAnswerDistribution($rndQuestion, $answers);
+                        $this->answerAnswerDistribution($rndQuestion, $answers);
                         break;
                     case 4:
                         $this->displayClozeText($rndQuestion, $pdf);
-                        $this->displayClozeText($rndQuestion, $answers);
+                        $this->answerClozeText($rndQuestion, $answers);
                         break;
                     case 5:
                         $this->displayTable($rndQuestion, $pdf);
-                        $this->displayTable($rndQuestion, $answers);
+                        $this->answerTable($rndQuestion, $answers);
                         break;
                     case 6:
                         // answer in red for a simple kind of question
                         $answers->setTextColor(255,0,0);
                         //Answer put
-                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->free_answer_model->get_by("FK_Question" = $rndQuestion)->Answer), 0, "L");
+                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer), 0, "L");
                         $answers->setTextColor(0,0,0);
 
                         break;
                     case 7:
                         $this->displayPictureLandmarks($rndQuestion, $pdf);
-                        $this->displayPictureLandmarks($rndQuestion, $answers);
+                        $this->answerPictureLandmarks($rndQuestion, $answers);
                         break;
                     default:
                         break;
@@ -371,6 +366,41 @@ class Questionnaire extends MY_Controller
         }
     }
 
+    private function answerMultipleChoices($Question, $pdf)
+    {
+        try{
+
+            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+
+            foreach ($multi_Choice_Questions as $m)
+            {
+                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
+
+                $y = $pdf->Gety();
+                $pdf->SetY($y + 7.7);
+                $pdf->SetX(100);
+
+                //Cross if the answer is true
+                $cross = "";
+                if ($m->Valid == 1) {
+                  $cross = "x";
+                }
+
+                $pdf->setTextColor(255,0,0);
+
+                $pdf->MultiCell(5, 5, $cross, 1);
+
+                $pdf->setTextColor(0,0,0);
+            }
+
+            return false;
+
+        }catch(Exception $e)
+        {
+            return true;
+        }
+    }
+
     private function displayMultipleAnswers($Question, $pdf)
     {
         $nbAskedAnswers = $Question->Nb_Desired_Answers;
@@ -378,6 +408,19 @@ class Questionnaire extends MY_Controller
         {
             $pdf->MultiCell(80, 10, "________________________", 0);
         }
+    }
+
+    private function answerMultipleAnswers($Question, $pdf)
+    {
+        $pdf->setTextColor(255,0,0);
+
+        $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = $Question->ID");
+        foreach ($possible_answers as $possible_answer)
+        {
+            $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
+        }
+
+        $pdf->setTextColor(0,0,0);
     }
 
     private function displayAnswerDistribution($Question, $pdf)
@@ -404,6 +447,30 @@ class Questionnaire extends MY_Controller
         }else {
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
             return false;
+        }
+    }
+
+    //if error return true
+    private function answerClozeText($Question, $pdf)
+    {
+        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+        $ClozeTextAnswers = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+
+        if(!isset($ClozeText->Cloze_Text))
+        {
+            return true;
+        }else {
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            return false;
+
+            $pdf->setTextColor(255,0,0);
+
+            foreach ($ClozeTextAnswers as $ClozeTextAnswer)
+            {
+                $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $ClozeTextAnswer->Answer, 0), "L");
+            }
+
+            $pdf->setTextColor(0,0,0);
         }
     }
 
@@ -501,6 +568,42 @@ class Questionnaire extends MY_Controller
         {
             $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
             $pdf->MultiCell(40,10, '___________', 0, "L");
+        }
+    }
+
+    private function answerPictureLandmarks($Question, $pdf)
+    {
+
+        /*
+        $url = base_url() .'uploads/pictures/';
+        $width = getimagesize($fullPath)[0];
+        $height = getimagesize($fullPath)[1];
+
+
+        $image_p = imagecreatetruecolor(100, 100);
+        $image = imagecreatefromjpeg($fullPath);
+
+
+        imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
+
+        imagedestroy($image);
+        imagejpeg($image_p, $fullPath, 100);*/
+
+        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+        $picture = $Question->Picture_Name;
+
+        $fullPath = base_url() .'uploads/pictures/'. $picture;
+
+        $pdf->Image($fullPath, null, null, 100, 100);
+
+
+        foreach ($pictureLandmarks as $pictureLandmark)
+        {
+            $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
+
+            $pdf->setTextColor(255,0,0);
+            $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer), 0, "L");
+            $pdf->setTextColor(0,0,0);
         }
     }
 
