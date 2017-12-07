@@ -43,7 +43,7 @@ if(isset($error)){
 			<div class="form-group row">
 				<div class="col-md-10"></div>
 				<div class="col-md-2">
-					<?php echo form_submit('enregistrer', $this->lang->line('save'), 'class="btn btn-primary"'); ?>
+					<?php echo form_submit('enregistrer', $this->lang->line('next'), 'class="btn btn-primary"'); ?>
 				</div>
 			</div>
 			

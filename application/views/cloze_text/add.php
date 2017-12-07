@@ -31,8 +31,9 @@
             </div>
 				
 			<div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('text'), 'cloze_text', 'for="cloze_text"'); ?>
+                <div class="col-md-12">
+                    <?php echo form_label($this->lang->line('cloze_text'), 'cloze_text', 'for="cloze_text"'); ?>
+                    <p><?php echo $this->lang->line('cloze_text_tip'); ?></p>
                 </div>
 			</div>
 			<div class="form-group row">
@@ -43,7 +44,7 @@
                     <?php echo form_label($this->lang->line('landmark'), 'symbol', 'for="symbol"'); ?>
 				</div>
 				<div class="col-md-10">
-					<?php echo form_label($this->lang->line('mutliple_answer'), 'answer', 'for="answer"'); ?>
+					<?php echo form_label($this->lang->line('answers_list'), 'answer', 'for="answer"'); ?>
 				</div>
 			</div>
 			

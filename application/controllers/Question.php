@@ -152,7 +152,6 @@ class Question extends MY_Controller
 	
     /**
      * Display form to add a question
-     * Not build
      */
     public function add($step=1)
     {
@@ -239,7 +238,7 @@ class Question extends MY_Controller
 					$noQuestion = "question".$i;
 					$noAnswer = "answer".$i;
 					$this->form_validation->set_rules($noQuestion, $this->lang->line('title_question'), 'required');
-					$this->form_validation->set_rules($noAnswer, $this->lang->line('ouinon'), 'required');
+					$this->form_validation->set_rules($noAnswer, $this->lang->line('valid_answer'), 'required');
 				}
 	
 				if ($this->form_validation->run()){

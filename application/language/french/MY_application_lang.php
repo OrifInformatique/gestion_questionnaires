@@ -45,6 +45,7 @@ $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_import']                     = 'Importer';
 $lang['btn_import_questions']           = 'Importer';
+$lang['btn_next']           			= 'Suivant';
 $lang['oui']          					= 'Oui';
 $lang['non']          					= 'Non';
 $lang['ouinon']          				= 'Oui/Non';
@@ -88,10 +89,12 @@ $lang['update_question_type']           = 'Type de question :';
 $lang['title_question_add']             = 'Nouvelle question';
 $lang['name_question_add']              = 'Texte de la question';
 $lang['answer_question_add']            = 'Réponse attendue';
-$lang['mutliple_answer']                = 'Liste des réponses';
+$lang['answers_list']                   = 'Liste des réponses';
+$lang['valid_answer']                   = 'Réponse valide';
 $lang['nb_desired_answers']             = 'Nombre de réponses attendues';
 $lang['landmark']                       = 'Liste des repères';
-$lang['text']                           = 'Texte';
+$lang['cloze_text']                     = 'Texte à trous';
+$lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
