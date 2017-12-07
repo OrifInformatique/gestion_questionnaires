@@ -829,8 +829,10 @@ class Question extends MY_Controller
             {
                 //Current question
                 $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                //Nb of answer
+                //Nb of answers needed
                 $nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				//Nb of points of the question
+				$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
 
                 //Data to insert to the table 'T_Question'
                 $inputQuestion = array(
@@ -838,12 +840,13 @@ class Question extends MY_Controller
                     "FK_Question_Type" => $questionType,
                     "Question" => $question,
                     "Nb_Desired_Answers" => $nbAnswerDesired,
+					"Points" => $nbPoints,
                     "Creation_Date" => date("Y-m-d H:i:s")
                 );
 
                 $idQuestion = $this->question_model->insert($inputQuestion);
 
-                $column += 2;
+                $column += 3;
 
                 //Take next to the question the data to insert to 'T_Multiple_Answer'
                 while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
