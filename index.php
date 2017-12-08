@@ -1,5 +1,4 @@
 <?php
-// pour synchro
 /**
  * CodeIgniter
  *
