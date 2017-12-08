@@ -6,10 +6,10 @@
  * @copyright	Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
 
-$lang['app_title']                      = 'Gestion questionnaire';
+$lang['app_title']                      = 'Gestion questionnaires';
 
 // Page titles
-$lang['page_login']                     = 'Gestion des questionnaires';
+$lang['page_login']                     = 'Connexion';
 $lang['page_item_list']                 = 'Liste des objets';
 
 // Date and time formats
@@ -27,16 +27,16 @@ $lang['nav_topic']                      = 'Sujets';
 $lang['field_username']                 = 'Identifiant';
 $lang['field_password']                 = 'Mot de passe';
 
-//Log Error
-$lang['invalid_id']                     = 'Les identifiants ne sont pas valides !';
-$lang['no_id']                          = 'Veuillez insérer des identifiants';
-$lang['msg_err_access_denied']			= 'Vous n\'avez pas accès à cette partie du programme';
+//Form Error
+$lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides.';
+$lang['msg_err_access_denied']			= 'Vous n\'avez pas accès à cette partie de l\'application.';
 
 //Unlog
-$lang['unlog']                          = ' Déconnexion';
+$lang['login']                          = 'Connexion';
+$lang['unlog']                          = 'Déconnexion';
 
 // Log Text
-$lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'administration';
+$lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
 
 // Buttons 
 $lang['btn_del']                        = 'Supprimer';
