@@ -17,16 +17,26 @@
         echo form_open('Question/add/3', $attributes);
 			
 			echo form_hidden('focus_topic', $focus_topic);
-			echo form_hidden('question_type', $question_type);
-			echo form_hidden('points', $points); ?>
+			echo form_hidden('question_type', $question_type); ?>
 			<div class="form-group row">
                 <div class="col-md-4">
                     <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
                 </div>
 			</div>
+	
 			<div class="form-group row">
-                <div class="col-md-12"><?php echo form_input('name', $name, 'class="form-control" id="name"'); ?></div>
+                <div class="col-md-12"><?php if(isset($name)){echo form_input('name', $name, 'class="form-control" id="name"');}else{echo form_input('name', '', 'class="form-control" id="name"');} ?></div>
             </div>
+			<span class="text-danger"><?php echo form_error('name');?></span>
+
+			<div class="form-group row">
+                <div class="col-md-4">
+					<?php echo form_label($this->lang->line('points'), 'points', 'for="points"'); ?>
+                </div>
+                <div class="col-md-2"><?php if(isset($points)){echo form_input('points', $points, 'class="form-control" id="points"');}else{echo form_input('points', '', 'class="form-control" id="points"');}?></div>
+            </div>
+			<span class="text-danger"><?php echo form_error('points');?></span>
+			
 			<div class="form-group row">
                 <div class="col-md-12">
                     <?php echo form_label($this->lang->line('answer_question_add'), 'answer', 'for="answer"'); ?>
@@ -35,8 +45,7 @@
 			<div class="form-group row">
                 <div class="col-md-12"><?php if(isset($answer)){echo form_input('answer', $answer, 'class="form-control" id="answer"');}else{echo form_input('answer', '', 'class="form-control" id="answer"');} ?></div>
             </div>
-			
-			<span class="text-danger"><?php echo form_error('name');?></span>
+		
 			<span class="text-danger"><?php echo form_error('answer');?></span>
 			
 			<div class="form-group row">

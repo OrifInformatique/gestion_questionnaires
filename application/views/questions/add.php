@@ -29,24 +29,6 @@
                 <div class="col-md-8"><?php echo form_dropdown('question_type', $list_question_type); ?></div>
             </div>
 			<div class="form-group row">
-                <div class="col-md-12">
-                    <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
-                </div>
-			</div>
-			<div class="form-group row">
-                <div class="col-md-12"><?php if(isset($name)){echo form_input('name', $name, 'class="form-control" id="name"');}else{echo form_input('name', '', 'class="form-control" id="name"');} ?></div>
-            </div>
-			<div class="form-group row">
-                <div class="col-md-4">
-					<?php echo form_label($this->lang->line('points'), 'points', 'for="points"'); ?>
-                </div>
-                <div class="col-md-2"><?php if(isset($points)){echo form_input('points', $points, 'class="form-control" id="points"');}else{echo form_input('points', '', 'class="form-control" id="points"');}?></div>
-            </div>
-			
-			<span class="text-danger"><?php echo form_error('name');?></span>
-			<span class="text-danger"><?php echo form_error('points');?></span>
-			
-			<div class="form-group row">
 				<div class="col-md-8"></div>
 				<div class="col-md-2">
 					<?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>

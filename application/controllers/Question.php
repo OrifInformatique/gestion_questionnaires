@@ -162,39 +162,24 @@ class Question extends MY_Controller
 		if ($step==1){
 			$this->display_view('questions/add', $output);
 		} elseif ($step==2){
-			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-
-			if ($this->form_validation->run()){
-				$output['focus_topic'] = $_POST['focus_topic'];
-				$output['question_type'] = $_POST['question_type'];
-				$output['name'] = $_POST['name'];
-				$output['points'] = (int)$_POST['points'];
-				$output['nbAnswer'] = 1;
-			
-				if ($_POST['question_type'] == 1){
-					$this->display_view('multiple_choice/add', $output);
-				} elseif ($_POST['question_type'] == 2){
-					$this->display_view('multiple_answer/add', $output);
-				} elseif ($_POST['question_type'] == 3){
-					
-				} elseif ($_POST['question_type'] == 4){
-					$this->display_view('cloze_text/add', $output);
-				} elseif ($_POST['question_type'] == 5){
-					
-				} elseif ($_POST['question_type'] == 6){
-					$this->display_view('free_answers/add', $output);
-				} elseif ($_POST['question_type'] == 7){
-					$this->display_view('picture_landmark/file', $output);
-				}
-			} else {
-				if(isset($_POST['name'])){
-					$output['name'] = $_POST['name'];
-				}
-				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
-				}
-				$this->display_view('questions/add', $output);
+			$output['focus_topic'] = $_POST['focus_topic'];
+			$output['question_type'] = $_POST['question_type'];
+			$output['nbAnswer'] = 1;
+		
+			if ($_POST['question_type'] == 1){
+				$this->display_view('multiple_choice/add', $output);
+			} elseif ($_POST['question_type'] == 2){
+				$this->display_view('multiple_answer/add', $output);
+			} elseif ($_POST['question_type'] == 3){
+				
+			} elseif ($_POST['question_type'] == 4){
+				$this->display_view('cloze_text/add', $output);
+			} elseif ($_POST['question_type'] == 5){
+				
+			} elseif ($_POST['question_type'] == 6){
+				$this->display_view('free_answers/add', $output);
+			} elseif ($_POST['question_type'] == 7){
+				$this->display_view('picture_landmark/file', $output);
 			}
 		} elseif ($step==3){
 			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
@@ -410,32 +395,48 @@ class Question extends MY_Controller
 				$this->display_view('multiple_answer/add', $output);
 			}
 		}elseif ($step==6){
-			if(isset($_FILES['picture'])) {
-				$config['upload_path']          = './uploads/pictures';
-				$config['allowed_types']        = 'gif|jpg|jpeg|png';
-				$config['max_size']				= '2048';
+			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 
-				$this->upload->initialize($config);
-				
-				$output['focus_topic'] = $_POST['focus_topic'];
-				$output['question_type'] = $_POST['question_type'];
-				$output['name'] = $_POST['name'];
-				$output['points'] = (int)$_POST['points'];
-				$output['nbAnswer'] = 1;
+			if ($this->form_validation->run()){
+				if(isset($_FILES['picture'])) {
+					$config['upload_path']          = './uploads/pictures';
+					$config['allowed_types']        = 'gif|jpg|jpeg|png';
+					$config['max_size']				= '2048';
 
-				if ( ! $this->upload->do_upload('picture'))
-                {
-                        $output['error'] = $this->upload->display_errors();
-                        $this->display_view('picture_landmark/file', $output);
-                }
-                else
-                {
-                        $output['upload_data'] = $this->upload->data();
-						
-                        $this->display_view('picture_landmark/add', $output);
-                }
-			}
-			
+					$this->upload->initialize($config);
+					
+					$output['focus_topic'] = $_POST['focus_topic'];
+					$output['question_type'] = $_POST['question_type'];
+					$output['name'] = $_POST['name'];
+					$output['points'] = (int)$_POST['points'];
+					$output['nbAnswer'] = 1;
+
+					if ( ! $this->upload->do_upload('picture'))
+					{
+							$output['error'] = $this->upload->display_errors();
+							$this->display_view('picture_landmark/file', $output);
+					}
+					else
+					{
+							$output['upload_data'] = $this->upload->data();
+							
+							$this->display_view('picture_landmark/add', $output);
+					}
+				}
+			} else {
+					$output['focus_topic'] = $_POST['focus_topic'];
+					$output['question_type'] = $_POST['question_type'];
+					if(isset($_POST['name'])){
+						$output['name'] = $_POST['name'];
+					}
+					if(isset($_POST['points'])){
+						$output['points'] = (int)$_POST['points'];
+					}
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+							
+					$this->display_view('picture_landmark/file', $output);
+				}
 		}elseif ($step==7){
 			if (isset($_POST['enregistrer'])){
 				$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
