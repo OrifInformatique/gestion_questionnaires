@@ -46,7 +46,7 @@
                     <?php echo form_label($this->lang->line('landmark'), 'symbol', 'for="symbol"'); ?>
 				</div>
 				<div class="col-md-10">
-					<?php echo form_label($this->lang->line('mutliple_answer'), 'answer', 'for="answer"'); ?>
+					<?php echo form_label($this->lang->line('answers_list'), 'answer', 'for="answer"'); ?>
 				</div>
 			</div>
 			

@@ -34,7 +34,7 @@
 					<?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-primary" onclick="location.href=\'/gestion_questionnaires/Question\'"'); ?>
 				</div>
 				<div class="col-md-2">
-					<?php echo form_submit('suivant', $this->lang->line('save'), 'class="btn btn-primary"'); ?>
+					<?php echo form_submit('suivant', $this->lang->line('btn_next'), 'class="btn btn-primary"'); ?>
 				</div>
 			</div>
         <?php echo form_close(); ?>

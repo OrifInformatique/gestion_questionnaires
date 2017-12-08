@@ -152,7 +152,6 @@ class Question extends MY_Controller
 	
     /**
      * Display form to add a question
-     * Not build
      */
     public function add($step=1)
     {
@@ -224,7 +223,7 @@ class Question extends MY_Controller
 					$noQuestion = "question".$i;
 					$noAnswer = "answer".$i;
 					$this->form_validation->set_rules($noQuestion, $this->lang->line('title_question'), 'required');
-					$this->form_validation->set_rules($noAnswer, $this->lang->line('ouinon'), 'required');
+					$this->form_validation->set_rules($noAnswer, $this->lang->line('valid_answer'), 'required');
 				}
 	
 				if ($this->form_validation->run()){
@@ -830,8 +829,10 @@ class Question extends MY_Controller
             {
                 //Current question
                 $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                //Nb of answer
+                //Nb of answers needed
                 $nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				//Nb of points of the question
+				$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
 
                 //Data to insert to the table 'T_Question'
                 $inputQuestion = array(
@@ -839,12 +840,13 @@ class Question extends MY_Controller
                     "FK_Question_Type" => $questionType,
                     "Question" => $question,
                     "Nb_Desired_Answers" => $nbAnswerDesired,
+					"Points" => $nbPoints,
                     "Creation_Date" => date("Y-m-d H:i:s")
                 );
 
                 $idQuestion = $this->question_model->insert($inputQuestion);
 
-                $column += 2;
+                $column += 3;
 
                 //Take next to the question the data to insert to 'T_Multiple_Answer'
                 while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)

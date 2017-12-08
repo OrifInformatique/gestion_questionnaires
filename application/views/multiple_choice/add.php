@@ -42,14 +42,19 @@
 			
 			<div class="form-group row">
                 <div class="col-md-10">
-                    <?php echo form_label($this->lang->line('title_question'), 'answer', 'for="answer"'); ?>
+                    <?php echo form_label($this->lang->line('answers_list'), 'answer', 'for="answer"'); ?>
 				</div>
-				<div class="col-md-1">
-					<?php echo form_label($this->lang->line('oui'), 'oui'); ?>
-				</div>
-				<div class="col-md-1">
-					<?php echo form_label($this->lang->line('non'), 'non'); ?>
-                </div>
+				<div class="col-md-2">
+					<?php echo form_label($this->lang->line('valid_answer'), 'valid_answer'); ?>
+					<div class="row">
+						<div class="col-md-6">
+							<?php echo form_label($this->lang->line('oui'), 'oui'); ?>
+						</div>
+						<div class="col-md-6">
+							<?php echo form_label($this->lang->line('non'), 'non'); ?>
+		                </div>
+		            </div>
+            	</div>
 			</div>
 			
 			<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
