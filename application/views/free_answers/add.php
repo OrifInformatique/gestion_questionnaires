@@ -14,7 +14,7 @@
         $attributes = array("class" => "form-group",
                             "id" => "addQuestionForm",
                             "name" => "addQuestionForm");
-        echo form_open('Question/add/3', $attributes);
+        echo form_open('Question/add_FreeAnswer', $attributes);
 			
 			echo form_hidden('focus_topic', $focus_topic);
 			echo form_hidden('question_type', $question_type); ?>

@@ -15,7 +15,7 @@
         $attributes = array("class" => "form-group",
                             "id" => "addQuestionForm",
                             "name" => "addQuestionForm");
-        echo form_open('Question/add/5', $attributes);
+        echo form_open('Question/add_MultipleAnswer', $attributes);
 			
 			echo form_hidden('focus_topic', $focus_topic);
 			echo form_hidden('question_type', $question_type);
@@ -46,6 +46,7 @@
                 </div>
                 <div class="col-md-2"><?php if(isset($nb_desired_answers)){echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="nb_desired_answers"');}else{echo form_input('nb_desired_answers', '', 'class="form-control" id="nb_desired_answers"');}?></div>
             </div>
+			<span class="text-danger"><?php echo form_error('nb_desired_answers');?></span>
 			
 			<div class="form-group row">
                 <div class="col-md-12">
