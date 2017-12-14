@@ -23,7 +23,7 @@
 			echo form_hidden('upload_data', $upload_data); ?>
 			<div class="form-group row">
                 <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
+                    <?php echo form_label($this->lang->line('question_text'), 'title', 'for="title"'); ?>
                 </div>
 			</div>
 	

@@ -155,14 +155,16 @@ class Question extends MY_Controller
      */
     public function add($step=1)
     {
-        $output['topics'] = $this->topic_model->get_tree();
-		$output['list_question_type'] = $this->question_type_model->get_array();
-		
 		if ($step==1){
+			// Display a form to choose a topic and a question type
+			$output['topics'] = $this->topic_model->get_tree();
+			$output['list_question_type'] = $this->question_type_model->dropdown('Type_Name');
 			$this->display_view('questions/add', $output);
+
 		} elseif ($step==2){
-			$output['focus_topic'] = $_POST['focus_topic'];
-			$output['question_type'] = $_POST['question_type'];
+			// Display a specific form for the choosen question type
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 			$output['nbAnswer'] = 1;
 		
 			if ($_POST['question_type'] == 1){
@@ -170,11 +172,11 @@ class Question extends MY_Controller
 			} elseif ($_POST['question_type'] == 2){
 				$this->display_view('multiple_answer/add', $output);
 			} elseif ($_POST['question_type'] == 3){
-				
+				// TODO
 			} elseif ($_POST['question_type'] == 4){
 				$this->display_view('cloze_text/add', $output);
 			} elseif ($_POST['question_type'] == 5){
-				
+				// TODO
 			} elseif ($_POST['question_type'] == 6){
 				$this->display_view('free_answers/add', $output);
 			} elseif ($_POST['question_type'] == 7){
@@ -183,14 +185,21 @@ class Question extends MY_Controller
 		}
 	}
 	
+
 	/**
-     * Function for save multiple choice
+     * Function to save a multiple choice question
      */
 	public function add_MultipleChoice()
     {
-		if (isset($_POST['enregistrer'])){
-			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+
+		if (isset($_POST['save'])){
+			// Form validation rules
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+
 			for($i=1; $i <= $_POST['nbAnswer']; $i++){
 				$noQuestion = "question".$i;
 				$noAnswer = "answer".$i;
@@ -221,8 +230,8 @@ class Question extends MY_Controller
 				
 				redirect('/Question');
 			} else {
-				$output['focus_topic'] = $_POST['focus_topic'];
-				$output['question_type'] = $_POST['question_type'];
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
@@ -272,7 +281,7 @@ class Question extends MY_Controller
 				if($_POST['nbAnswer']>1){
 					$output['nbAnswer'] = $_POST['nbAnswer']-1;
 				} else {
-					$output['nbAnswer'] = $_POST['nbAnswer'];
+					$output['nbAnswer'] = 1;
 				}
 			}
 		
@@ -286,7 +295,7 @@ class Question extends MY_Controller
 	public function add_MultipleAnswer()
     {
 		if (isset($_POST['enregistrer'])){
-			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
 			for($i=1; $i <= $_POST['nbAnswer']; $i++){
@@ -379,7 +388,7 @@ class Question extends MY_Controller
 	public function add_ClozeText()
     {
 		if (isset($_POST['enregistrer'])){
-			$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
 			for($i=1; $i <= $_POST['nbAnswer']; $i++){
@@ -478,7 +487,7 @@ class Question extends MY_Controller
      */
 	public function add_FreeAnswer($step=1)
     {
-		$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+		$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 		$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 		$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 		
@@ -545,7 +554,7 @@ class Question extends MY_Controller
 			}
 		} elseif($step==2){
 			if (isset($_POST['enregistrer'])){
-				$this->form_validation->set_rules('name', $this->lang->line('name_question_add'), 'required');
+				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){
 					$noSymbol = "symbol".$i;

@@ -20,13 +20,10 @@
 			echo form_hidden('focus_topic', $focus_topic);
 			echo form_hidden('question_type', $question_type);
 			echo form_hidden('nbAnswer', $nbAnswer); ?>
-			<div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('name_question_add'), 'title', 'for="title"'); ?>
-                </div>
-			</div>
+
 	
 			<div class="form-group row">
+				<?php echo form_label($this->lang->line('question_text'), 'title', 'for="title"'); ?>
                 <div class="col-md-12"><?php if(isset($name)){echo form_input('name', $name, 'class="form-control" id="name"');}else{echo form_input('name', '', 'class="form-control" id="name"');} ?></div>
             </div>
 			<span class="text-danger"><?php echo form_error('name');?></span>
