@@ -61,39 +61,54 @@
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
 	        <div class="form-group col-md-10">
-	            <?php echo form_label($this->lang->line('answers_list'), 'answer', 'for="answer"'); ?>
+	            <?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
 			</div>
-			<div class="col-md-2">
+			<div class="form-group col-md-2">
 				<?php echo form_label($this->lang->line('valid_answer'), 'valid_answer'); ?>
-				<div class="row">
-					<div class="col-md-6">
-						<?php echo form_label($this->lang->line('oui'), 'oui'); ?>
-					</div>
-					<div class="col-md-6">
-						<?php echo form_label($this->lang->line('non'), 'non'); ?>
-	                </div>
-	            </div>
 	    	</div>
 		</div>
 		
 		<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
-		$noQuestion = "question".$i;
-		$noAnswer = "answer".$i;
+			$noQuestion = "question".$i;
+			$noAnswer = "answer".$i;
 		?>
-			<div class="form-group row">
-				<div class="col-md-10"><?php if(isset($$noQuestion)){echo form_input($noQuestion, $$noQuestion, 'class="form-control" id="question"');}else{echo form_input($noQuestion, '', 'class="form-control" id="question"');} ?></div>
-				<div class="col-md-1"><?php if(isset($$noAnswer)){if($$noAnswer==1){echo form_radio($noAnswer, 1, TRUE);}else{echo form_radio('answer'.$i, 1);}}else{echo form_radio($noAnswer, 1);}?></div>
-				<div class="col-md-1"><?php if(isset($$noAnswer)){if($$noAnswer==0){echo form_radio($noAnswer, 0, TRUE);}else{echo form_radio('answer'.$i, 0);}}else{echo form_radio($noAnswer, 0);}?></div>
+			<div class="row">
+				<div class="form-group col-md-10">
+					<?php 
+					if (isset($$noQuestion)){
+						echo form_input($noQuestion, $$noQuestion, 'class="form-control" id="'.$noQuestion.'"');
+					}else{
+						echo form_input($noQuestion, '', 'class="form-control" id="'.$noQuestion.'"');
+					}?>
+				</div>
+				<div class="form-group col-md-1">
+					<!-- YES radio button -->
+					<?php echo form_label($this->lang->line('yes'), $noAnswer); ?>
+					<?php
+					if (isset($$noAnswer) && $$noAnswer==1){
+						echo form_radio($noAnswer, 1, TRUE);
+					}else{
+						echo form_radio($noAnswer, 1);
+					}?>
+				</div>
+				<div class="form-group col-md-1">
+					<!-- NO radio button -->
+					<?php echo form_label($this->lang->line('no'), $noAnswer); ?>
+					<?php
+					if (isset($$noAnswer) && $$noAnswer==0){
+						echo form_radio($noAnswer, 0, TRUE);
+					}else{
+						echo form_radio($noAnswer, 0);
+					}?>
+				</div>
 			</div>
 			
 		<?php } ?>
 		
 		<div class="form-group row">
 			<div class="col-md-2">
-				<?php echo form_submit('add', $this->lang->line('btn_add'), 'class="btn btn-primary"'); ?>
-			</div>
-			<div class="col-md-2">
-				<?php echo form_submit('delete', $this->lang->line('btn_del'), 'class="btn btn-primary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('del_answer', '-', 'class="btn btn-secondary"'); ?>
 			</div>
 		</div>
     <?php echo form_close(); ?>
