@@ -111,9 +111,9 @@ class Question extends MY_Controller
 				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
 					if ($reponse->Valid == '1'){
-						$cocher = $this->lang->line('oui');
+						$cocher = $this->lang->line('yes');
 					} else {
-						$cocher = $this->lang->line('non');
+						$cocher = $this->lang->line('no');
 					}
 					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 				}
@@ -275,9 +275,9 @@ class Question extends MY_Controller
 				}
 			}
 			
-			if (isset($_POST['add'])){
+			if (isset($_POST['add_answer'])){
 				$output['nbAnswer'] = $_POST['nbAnswer']+1;
-			} elseif (isset($_POST['delete'])){
+			} elseif (isset($_POST['del_answer'])){
 				if($_POST['nbAnswer']>1){
 					$output['nbAnswer'] = $_POST['nbAnswer']-1;
 				} else {
