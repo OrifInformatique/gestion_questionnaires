@@ -63,7 +63,7 @@
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
 			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('cloze_text'), 'cloze_text', 'for="cloze_text"'); ?>
+				<?php echo form_label($this->lang->line('cloze_text'), 'cloze_text'); ?>
 				<p><?php echo $this->lang->line('cloze_text_tip'); ?></p>
 			</div>
 		</div>
@@ -82,11 +82,11 @@
 		</div>
 		
 		<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
-		$noAnswer = "answer".$i;
+			$noAnswer = "answer".$i;
 		?>
-			<div class="form-group row">
-				<div class="col-md-2"><?php echo $i ?></div>
-				<div class="col-md-10"><?php
+			<div class="row">
+				<div class="form-group col-md-2"><?php echo $i ?></div>
+				<div class="form-group col-md-10"><?php
 				if(isset($$noAnswer)){
 					echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');
 				} else {
@@ -96,13 +96,9 @@
 
 		<?php } ?>
 		
-		<div class="form-group row">
 			<div class="col-md-2">
-				<?php echo form_submit('add', $this->lang->line('btn_add'), 'class="btn btn-primary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('del_answer', '-', 'class="btn btn-secondary"'); ?>
 			</div>
-			<div class="col-md-2">
-				<?php echo form_submit('delete', $this->lang->line('btn_del'), 'class="btn btn-primary"'); ?>
-			</div>
-		</div>
 	<?php echo form_close(); ?>
 </div>

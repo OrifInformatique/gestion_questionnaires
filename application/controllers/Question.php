@@ -372,9 +372,9 @@ class Question extends MY_Controller
 				}
 			}
 			
-			if (isset($_POST['add'])){
+			if (isset($_POST['add_answer'])){
 				$output['nbAnswer'] = $_POST['nbAnswer']+1;
-			} elseif (isset($_POST['delete'])){
+			} elseif (isset($_POST['del_answer'])){
 				if($_POST['nbAnswer']>1){
 					$output['nbAnswer'] = $_POST['nbAnswer']-1;
 				} else {
@@ -476,9 +476,9 @@ class Question extends MY_Controller
 				}
 			}
 			
-			if (isset($_POST['add'])){
+			if (isset($_POST['add_answer'])){
 				$output['nbAnswer'] = $_POST['nbAnswer']+1;
-			} elseif (isset($_POST['delete'])){
+			} elseif (isset($_POST['del_answer'])){
 				if($_POST['nbAnswer']>1){
 					$output['nbAnswer'] = $_POST['nbAnswer']-1;
 				} else {
@@ -653,9 +653,9 @@ class Question extends MY_Controller
 						}
 					}
 					
-					if (isset($_POST['add'])){
+					if (isset($_POST['add_answer'])){
 						$output['nbAnswer'] = $_POST['nbAnswer']+1;
-					} elseif (isset($_POST['delete'])){
+					} elseif (isset($_POST['del_answer'])){
 						if($_POST['nbAnswer']>1){
 							$output['nbAnswer'] = $_POST['nbAnswer']-1;
 						} else {

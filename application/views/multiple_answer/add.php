@@ -70,28 +70,30 @@
 		</div>
 		
 		
-		<div class="form-group row">
-			<div class="col-md-12">
-				<?php echo form_label($this->lang->line('answers_list'), 'answer', 'for="answer"'); ?>
+		<div class="row">
+			<div class="form-group col-md-12">
+				<?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
 			</div>
 		</div>
 		
 		<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
-		$noAnswer = "answer".$i;
+			$noAnswer = "answer".$i;
 		?>
-			<div class="form-group row">
-				<div class="col-md-12"><?php if(isset($$noAnswer)){echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');}else{echo form_input($noAnswer, '', 'class="form-control" id="answer"');} ?></div>
+			<div class="row">
+				<div class="form-group col-md-12"><?php
+					if(isset($$noAnswer)){
+						echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');
+					}else{
+						echo form_input($noAnswer, '', 'class="form-control" id="answer"');
+					} ?></div>
 			</div>
 		<?php } ?>
 		
-		<div class="form-group row">
+		<div class="row">
 			<div class="col-md-2">
-				<?php echo form_submit('add', $this->lang->line('btn_add'), 'class="btn btn-primary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('del_answer', '-', 'class="btn btn-secondary"'); ?>
 			</div>
-			<div class="col-md-2">
-				<?php echo form_submit('delete', $this->lang->line('btn_del'), 'class="btn btn-primary"'); ?>
-			</div>
-			<div class="col-md-4"></div>
 		</div>
 	<?php echo form_close(); ?>
 </div>
