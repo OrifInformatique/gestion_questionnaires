@@ -124,7 +124,7 @@ class Questionnaire extends MY_Controller
         {
             $Topic = urldecode($_POST['topic']);
             $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $idTopic = $this->topic_model->get_by("Topic = '" .  $Topic . "'")->ID;
+            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
             $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
             echo $nbQuestion;
 
@@ -143,7 +143,8 @@ class Questionnaire extends MY_Controller
         {
             //Get last inputs
             $title = $this->input->post('title');
-            $topic = $this->input->post('topic_selected');
+            $id_topic = $this->input->post('topic_selected');
+            $topic = $this->topic_model->get($id_topic);
             $nbQuestions = $this->input->post('nb_questions');
 
             //Create an object to get the title and two arrays for topics and number of questions asked
@@ -292,8 +293,7 @@ class Questionnaire extends MY_Controller
             //Get ID for each topic asked
             $topic = $tableTopics->getArrayTopics()[$index];
             $nbQuestion = $tableTopics->getArrayNbQuestion()[$index];
-            $topicLine = $this->topic_model->get_by("Topic = '$topic'");
-            $idTopic = $topicLine->ID;
+            $idTopic = $topic->ID;
 
             //load randoms questions about the topic
             $rndQuestions = $this->question_model->getRNDQuestions($idTopic, $nbQuestion);
@@ -321,8 +321,9 @@ class Questionnaire extends MY_Controller
         {
             $index = 11;
             while ($index <= ((count($this->input->post()) - $indice) * 5))
-            {
-                $tableTopics->setArrayTopics($this->input->post($index));
+            {   
+                $topic_id = $this->input->post($index);
+                $tableTopics->setArrayTopics($this->topic_model->get($topic_id));
                 $tableTopics->setArrayNbQuestion($this->input->post($index + 1));
                 $index += 10;
             }
@@ -333,7 +334,8 @@ class Questionnaire extends MY_Controller
             $index = 10;
             do
             {
-                $tableTopics->setArrayTopics($this->input->post($index + 1));
+                $topic_id = $this->input->post($index + 1);
+                $tableTopics->setArrayTopics($this->topic_model->get($topic_id));
                 $tableTopics->setArrayNbQuestion($this->input->post($index + 2));
                 $index += 10;
             }while ($index <= ((count($this->input->post()) - $indice) * 5));
@@ -559,10 +561,11 @@ class Questionnaire extends MY_Controller
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        $fullPath = base_url() .'uploads/pictures/'. $picture;
-
-        $pdf->Image($fullPath, null, null, 100, 100);
-
+        if(is_file(base_url() .'uploads/pictures/'. $picture)){
+            $fullPath = base_url() .'uploads/pictures/'. $picture;
+        } else {
+            $fullPath = base_url() .'application/img/not-found.png';
+        }
 
         foreach ($pictureLandmarks as $pictureLandmark)
         {
@@ -592,7 +595,11 @@ class Questionnaire extends MY_Controller
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        $fullPath = base_url() .'uploads/pictures/'. $picture;
+        if(is_file(base_url() .'uploads/pictures/'. $picture)){
+            $fullPath = base_url() .'uploads/pictures/'. $picture;
+        } else {
+            $fullPath = base_url() .'application/img/not-found.png';
+        }
 
         $pdf->Image($fullPath, null, null, 100, 100);
 
