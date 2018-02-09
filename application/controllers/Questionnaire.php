@@ -150,27 +150,28 @@ class Questionnaire extends MY_Controller
         }
 
         //Store title if defined
-        if (!is_null($this->input->post('title')))
-        {
-            var_dump($_SESSION['temp_tableTopics']);
-            $_SESSION['temp_tableTopics']->setTitle($this->input->post('title'));
-        }
-
-        //Get last inputs
-        $id_topic = $this->input->post('topic_selected');
-        $topic = $this->topic_model->get($id_topic);
-        $nbQuestions = $this->input->post('nb_questions');
-
+        $tableTopics->setTitle($this->input->post('title'));
 
         //If the user want to validate his pdf
         if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
         {
-            //Save each elements already seen on the topic list
-            $tableTopics = $this->saveTopicElements($tableTopics, 1);
+            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
+            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
+            if($this->form_validation->run() == true)
+            {
+                //Get last inputs
+                $id_topic = $this->input->post('topic_selected');
+                $topic = $this->topic_model->get($id_topic);
+                $nbQuestions = $this->input->post('nb_questions');
 
-            //And take with him the last inputs
-            $tableTopics->setArrayTopics($topic);
-            $tableTopics->setArrayNbQuestion($nbQuestions);
+                //Save each elements already seen on the topic list
+                //$tableTopics = $this->saveTopicElements($tableTopics, 1);
+
+                //And take with him the last inputs
+                $tableTopics->setArrayTopics($topic);
+                $tableTopics->setArrayNbQuestion($nbQuestions);
+                $_SESSION['temp_tableTopics'] = serialize($tableTopics);
+            }
             $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
         }
         else
@@ -181,16 +182,14 @@ class Questionnaire extends MY_Controller
             //Check form validation
             if($this->form_validation->run() == true)
             {
-                $_SESSION['temp_tableTopics']->setTitle($this->input->post('title'));
-            } else
-            {
+                $tableTopics->setTitle($this->input->post('title'));
+                unset($_SESSION['temp_tableTopics']);
+                $this->generatePDF($tableTopics);
+            } else {
                 // Form validation error
                 $this->add(1);
             }
-
-            $tableTopics = $this->saveTopicElements($tableTopics, 2);
-            $this->generatePDF($tableTopics);
-        }
+        }        
     }
 
     public function generatePDF($tableTopics)
@@ -325,41 +324,6 @@ class Questionnaire extends MY_Controller
             }
         }
         return $listIDQuestions;
-    }
-
-    /**
-     * Save each elements already seen on the topic list
-     * @param $tableTopics = object of the Topics table
-     * @param $indice = 2 if the user want to finish the table OR 1 if not
-     * @return the table of Topic
-     */
-    private function saveTopicElements($tableTopics, $indice)
-    {
-        if($indice == 1)
-        {
-            $index = 11;
-            while ($index <= ((count($this->input->post()) - $indice) * 5))
-            {   
-                $topic_id = $this->input->post($index);
-                $tableTopics->setArrayTopics($this->topic_model->get($topic_id));
-                $tableTopics->setArrayNbQuestion($this->input->post($index + 1));
-                $index += 10;
-            }
-
-        }else if($indice == 2)
-        {
-
-            $index = 10;
-            do
-            {
-                $topic_id = $this->input->post($index + 1);
-                $tableTopics->setArrayTopics($this->topic_model->get($topic_id));
-                $tableTopics->setArrayNbQuestion($this->input->post($index + 2));
-                $index += 10;
-            }while ($index <= ((count($this->input->post()) - $indice) * 5));
-
-        }
-        return $tableTopics;
     }
 
     private function displayMultipleChoices($Question, $pdf)

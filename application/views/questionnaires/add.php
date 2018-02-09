@@ -105,8 +105,6 @@ $nbMaxQuestion = 0;
                                     <td><?php echo $compteur?></td>
                                     <td>
                                             <?php echo $topic->Topic ;?>
-                                            <input type="hidden" name="<?php echo $compteur;?>1"
-                                                   value="<?php echo $topic->ID;?>">
                                     </td>
                                     <td>
                                         <?php echo $nbQuestions[$compteur-1];?>
