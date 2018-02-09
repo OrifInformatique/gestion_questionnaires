@@ -136,42 +136,60 @@ class Questionnaire extends MY_Controller
 
     public function form_add()
     {
-        //Get the title
-        $this->form_validation->set_rules('title', 'Title', 'required');
-
-        if($this->form_validation->run() == true)
+        // If temporary tableTopics does not exist, create it
+        // Used to store topics and number of questions list
+        if (!isset($_SESSION['temp_tableTopics']))
         {
-            //Get last inputs
-            $title = $this->input->post('title');
-            $id_topic = $this->input->post('topic_selected');
-            $topic = $this->topic_model->get($id_topic);
-            $nbQuestions = $this->input->post('nb_questions');
-
-            //Create an object to get the title and two arrays for topics and number of questions asked
+            //Create a temporary TableTopics object
             $tableTopics = new TableTopics();
-            $tableTopics->setTitle($title);
-
-
-            //If the user want to validate his pdf
-            if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
-            {
-                //Save each elements already seen on the topic list
-                $tableTopics = $this->saveTopicElements($tableTopics, 1);
-
-                //And take with him the last inputs
-                $tableTopics->setArrayTopics($topic);
-                $tableTopics->setArrayNbQuestion($nbQuestions);
-                $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
-            }
-            else
-            {
-                $tableTopics = $this->saveTopicElements($tableTopics, 2);
-                $this->generatePDF($tableTopics);
-            }
         }
         else
         {
-            $this->add(1);
+            //Get TableTopics object from session
+            $tableTopics = unserialize($_SESSION['temp_tableTopics']);
+        }
+
+        //Store title if defined
+        if (!is_null($this->input->post('title')))
+        {
+            var_dump($_SESSION['temp_tableTopics']);
+            $_SESSION['temp_tableTopics']->setTitle($this->input->post('title'));
+        }
+
+        //Get last inputs
+        $id_topic = $this->input->post('topic_selected');
+        $topic = $this->topic_model->get($id_topic);
+        $nbQuestions = $this->input->post('nb_questions');
+
+
+        //If the user want to validate his pdf
+        if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
+        {
+            //Save each elements already seen on the topic list
+            $tableTopics = $this->saveTopicElements($tableTopics, 1);
+
+            //And take with him the last inputs
+            $tableTopics->setArrayTopics($topic);
+            $tableTopics->setArrayNbQuestion($nbQuestions);
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+        }
+        else
+        {
+            //Set form validation rules
+            $this->form_validation->set_rules('title', 'Title', 'required');
+
+            //Check form validation
+            if($this->form_validation->run() == true)
+            {
+                $_SESSION['temp_tableTopics']->setTitle($this->input->post('title'));
+            } else
+            {
+                // Form validation error
+                $this->add(1);
+            }
+
+            $tableTopics = $this->saveTopicElements($tableTopics, 2);
+            $this->generatePDF($tableTopics);
         }
     }
 
