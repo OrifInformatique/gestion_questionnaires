@@ -184,7 +184,7 @@ class Questionnaire extends MY_Controller
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
-                $this->generatePDF($tableTopics);
+                $this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
                 $this->add(1);
@@ -192,9 +192,14 @@ class Questionnaire extends MY_Controller
         }        
     }
 
-    public function generatePDF($tableTopics)
+    public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
     {
-        $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
+        if($idQuestionnaire == -1){
+            $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
+        } else {
+            $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
+        }
+
         $totalpoints = 0;
 
         $pdf = new FPDF();
@@ -284,10 +289,15 @@ class Questionnaire extends MY_Controller
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
-            //$pdf->Output('I', 'Questionnaire', true);
-			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
-      $answers->Output('F', $tableTopics->getTitle().'_corrige.pdf', true);
-			$this->index();
+            if($idQuestionnaire == -1){
+                //$pdf->Output('I', 'Questionnaire', true);
+    			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
+                $answers->Output('F', $tableTopics->getTitle().'_corrige.pdf', true);
+            } else {
+                $pdf->Output('F', $this->getQuestionnaireName($idQuestionnaire).'.pdf', true);
+                $answers->Output('F', $this->getQuestionnaireName($idQuestionnaire).'_corrige.pdf', true);
+            }
+            $this->index();
         }
     }
 
@@ -323,7 +333,28 @@ class Questionnaire extends MY_Controller
 
             }
         }
+        
         return $listIDQuestions;
+    }
+
+    private function findQuestionByQuestionnaire($idQuestionnaire){
+        $listIDQuestions = array();
+        $rndQuestions = array();
+
+        //load randoms questions about the topic
+        $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
+
+        for($number = 0; $number < count($rndQuestions);$number++)
+        {
+            array_push($listIDQuestions, $rndQuestions[$number]->FK_Question);
+        }
+
+        return $listIDQuestions;
+    }
+
+    public function getQuestionnaireName($idQuestionnaire){
+        $name = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
+        return $name;
     }
 
     private function displayMultipleChoices($Question, $pdf)

@@ -26,6 +26,7 @@
                         <th><?php echo $this->lang->line('questionnaire');?></th>
                         <th><?php echo $this->lang->line('pdf');?></th>
                         <th><?php echo $this->lang->line('corrige');?></th>
+                        <th><?php echo $this->lang->line('regenerate');?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -38,6 +39,8 @@
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
                                 <td><a target="_blank" href="<?php echo base_url().$questionnaire->Questionnaire_Name.'_corrige.pdf'?>">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>
+                                <td><a target="_blank" href="<?php echo base_url(); ?>Questionnaire/generatePDF/<?php echo $questionnaire->ID; ?>">
+                                        <?php echo $this->lang->line('regenerate');?></a></td>
 								<td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>
                         <?php
