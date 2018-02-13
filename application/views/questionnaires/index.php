@@ -35,11 +35,11 @@
                         ?>
                         <tr>
                                 <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
-                                <td><a href="<?php echo base_url().$questionnaire->Questionnaire_Name.'.pdf'?>" target="_blank">
+                                <td><a href="<?php echo base_url().$questionnaire->PDF; ?>" target="_blank">
                                         <?php echo $this->lang->line('redirect_pdf');?></a></td>
-                                <td><a target="_blank" href="<?php echo base_url().$questionnaire->Questionnaire_Name.'_corrige.pdf'?>">
+                                <td><a target="_blank" href="<?php echo base_url().$questionnaire->Corrige_PDF; ?>">
                                         <?php echo $this->lang->line('redirect_corrige');?></a></td>
-                                <td><a target="_blank" href="<?php echo base_url(); ?>Questionnaire/generatePDF/<?php echo $questionnaire->ID; ?>">
+                                <td><a href="<?php echo base_url(); ?>Questionnaire/generatePDF/<?php echo $questionnaire->ID; ?>">
                                         <?php echo $this->lang->line('regenerate');?></a></td>
 								<td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>

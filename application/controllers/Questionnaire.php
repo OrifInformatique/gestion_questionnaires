@@ -291,11 +291,11 @@ class Questionnaire extends MY_Controller
         }else{
             if($idQuestionnaire == -1){
                 //$pdf->Output('I', 'Questionnaire', true);
-    			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
-                $answers->Output('F', $tableTopics->getTitle().'_corrige.pdf', true);
+    			$pdf->Output('F', "pdf_files/questionnaires/" . $tableTopics->getTitle().'.pdf', true);
+                $answers->Output('F', "pdf_files/corriges/" . $tableTopics->getTitle().'_corrige.pdf', true);
             } else {
-                $pdf->Output('F', $this->getQuestionnaireName($idQuestionnaire).'.pdf', true);
-                $answers->Output('F', $this->getQuestionnaireName($idQuestionnaire).'_corrige.pdf', true);
+                $pdf->Output('F', "pdf_files/questionnaires/" . $this->getQuestionnaireName($idQuestionnaire).'.pdf', true);
+                $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire).'_corrige.pdf', true);
             }
             $this->index();
         }
@@ -307,9 +307,17 @@ class Questionnaire extends MY_Controller
         $listIDQuestions = array();
         //Insert new Questionnaire
         $title = $tableTopics->getTitle();
-        $newQuestionnaire = array("Questionnaire_Name" => $title,
-            "PDF" => $title . "pdf",
-            "Corrige_PDF" => $title . "pdf_corrige");
+        $newQuestionnaire = array("Questionnaire_Name" => $title);
+
+        $title_const = $title;
+        $i = 1;
+
+        while(file_exists(base_url().$title.".pdf")){
+            $title = $title_const . $i;
+            $i++;
+        }
+        $newQuestionnaire['PDF'] = "pdf_files/questionnaires/".$title.".pdf";
+        $newQuestionnaire['Corrige_PDF'] = "pdf_files/corriges/".$title."_corrige.pdf";
 
         $this->questionnaire_model->insert($newQuestionnaire);
         $idQuestionnaire = $this->db->insert_id();
@@ -352,7 +360,7 @@ class Questionnaire extends MY_Controller
         return $listIDQuestions;
     }
 
-    public function getQuestionnaireName($idQuestionnaire){
+    private function getQuestionnaireName($idQuestionnaire){
         $name = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
         return $name;
     }
