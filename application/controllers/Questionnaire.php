@@ -291,11 +291,19 @@ class Questionnaire extends MY_Controller
         }else{
             if($idQuestionnaire == -1){
                 //$pdf->Output('I', 'Questionnaire', true);
-    			$pdf->Output('F', "pdf_files/questionnaires/" . $tableTopics->getTitle().'.pdf', true);
-                $answers->Output('F', "pdf_files/corriges/" . $tableTopics->getTitle().'_corrige.pdf', true);
+                $title = $tableTopics->getTitle();
+                $title_const = $title;
+                $i = 1;
+                while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
+                    $title = $title_const .'-'. $i;
+                    $i++;
+                }
+
+    			$pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
+                $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
             } else {
-                $pdf->Output('F', "pdf_files/questionnaires/" . $this->getQuestionnaireName($idQuestionnaire).'.pdf', true);
-                $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire).'_corrige.pdf', true);
+                $pdf->Output('F', "pdf_files/questionnaires/" . $this->getQuestionnaireName($idQuestionnaire)['PDF'], true);
+                $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire)['corrige'], true);
             }
             $this->index();
         }
@@ -312,12 +320,12 @@ class Questionnaire extends MY_Controller
         $title_const = $title;
         $i = 1;
 
-        while(file_exists(base_url().$title.".pdf")){
-            $title = $title_const . $i;
+        while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
+            $title = $title_const .'-'. $i;
             $i++;
         }
-        $newQuestionnaire['PDF'] = "pdf_files/questionnaires/".$title.".pdf";
-        $newQuestionnaire['Corrige_PDF'] = "pdf_files/corriges/".$title."_corrige.pdf";
+        $newQuestionnaire['PDF'] = $title.".pdf";
+        $newQuestionnaire['Corrige_PDF'] = $title."_corrige.pdf";
 
         $this->questionnaire_model->insert($newQuestionnaire);
         $idQuestionnaire = $this->db->insert_id();
@@ -361,8 +369,10 @@ class Questionnaire extends MY_Controller
     }
 
     private function getQuestionnaireName($idQuestionnaire){
-        $name = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
-        return $name;
+        $PDF['name'] = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
+        $PDF['PDF'] = $this->questionnaire_model->get($idQuestionnaire)->PDF;
+        $PDF['corrige'] = $this->questionnaire_model->get($idQuestionnaire)->Corrige_PDF;
+        return $PDF;
     }
 
     private function displayMultipleChoices($Question, $pdf)
