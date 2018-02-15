@@ -38,6 +38,28 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-4" style="height:110px;">
+                    <h4><?php echo $this->lang->line('focus_module'); ?></h4>
+                    <select onchange="changeselect()" class="form-control" id="module_selected">
+                        <?php
+
+                        echo "<option selected disabled hidden></option>";
+
+                        //Récupère chaque topics
+                        foreach ($topics as $object => $module) {
+                            if ($module->FK_Parent_Topic == 0) {
+                                ?>
+                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['module'])){if($module->ID==$_GET['module']){echo"selected";}}?>><?php echo $module->Topic; ?>
+                                    </option>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4" style="height:110px;">
                     <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
@@ -50,7 +72,7 @@
 
                                 //Récupère chaque topic associé au topic parent
                                 for ($i = 0; $i < count($topics); $i++) {
-                                    if ($module->ID == $topics[$i]->FK_Parent_Topic) {
+                                    if ($module->ID == $topics[$i]->FK_Parent_Topic && $_GET['module']==$topics[$i]->FK_Parent_Topic) {
                                         //Affiche les topics associés
                                         ?>
                                         <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
@@ -104,15 +126,15 @@
                         $compteur = 0;
 
                         foreach ($questions as $objet => $question) {
-                            if (!empty($_GET['topic'])&&!empty($_GET['type'])){
-                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type']) {
+                            if (!empty($_GET['topic']) && !empty($_GET['type']) && !empty($_GET['module'])){
+                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
                                     $compteur += 1;
                                     ?>
                                         <tbody>
                                     <?php
                                     displayQuestion($question);
                                 }
-                            } else if (!empty($_GET['topic'])) {
+                            } else if (!empty($_GET['topic']) && empty($_GET['type']) && empty($_GET['module'])){
                                 if ($question->topic->ID == $_GET['topic']) {
                                     $compteur += 1;
                                     ?>
@@ -120,17 +142,50 @@
                                     <?php
                                     displayQuestion($question);
                                 }
-                            } else if (!empty($_GET['type'])) {
-                                if ($question->FK_Question_Type == $_GET['type']) {
+                            } else if (empty($_GET['topic']) && !empty($_GET['type']) && empty($_GET['module'])){
+                                if ($question->question_type->ID == $_GET['type']) {
                                     $compteur += 1;
                                     ?>
                                         <tbody>
                                     <?php
                                     displayQuestion($question);
                                 }
-                            } else {
+                            } else if (empty($_GET['topic']) && empty($_GET['type']) && !empty($_GET['module'])){
+                                if ($question->topic->FK_Parent_Topic == $_GET['module']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (!empty($_GET['topic']) && !empty($_GET['type']) && empty($_GET['module'])){
+                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (!empty($_GET['topic']) && empty($_GET['type']) && !empty($_GET['module'])){
+                                if ($question->topic->ID == $_GET['topic'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (empty($_GET['topic']) && !empty($_GET['type']) && !empty($_GET['module'])){
+                                if ($question->question_type->ID == $_GET['type'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (empty($_GET['topic']) && empty($_GET['type']) && empty($_GET['module'])){
                                 $compteur += 1;
                                 ?>
+                                    <tbody>
                                 <?php
                                 displayQuestion($question);
                             }

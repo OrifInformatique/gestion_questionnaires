@@ -47,9 +47,10 @@ function init() {
 }
 
 function changeselect() {
+    var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
-    window.location = '?topic=' + topic + '&type=' + type;
+    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type;
 }
 
 function updateItem(id, typeItem){
