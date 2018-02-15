@@ -3,7 +3,7 @@
 /**
  * Questionnaire controller
  *
- * @author      Orif, section informatique (UlSi, ViDi)
+ * @author      Orif, section informatique (UlSi, ViDi, MeDa)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
@@ -21,8 +21,8 @@ class Questionnaire extends MY_Controller
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
                                 'question_model', 'question_type_model', 'answer_distribution_model',
-                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model', 
-                                'picture_landmark_model'));
+                                'multiple_choice_model', 'cloze_text_model', 'table_cell_model',
+                                'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
     }
@@ -71,7 +71,6 @@ class Questionnaire extends MY_Controller
             $this->questionnaire_model->update($id, $title);
             $this->index();
         } else {
-            ;
             $this->update($id, true);
         }
     }
@@ -125,62 +124,87 @@ class Questionnaire extends MY_Controller
         {
             $Topic = urldecode($_POST['topic']);
             $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $idTopic = $this->topic_model->get_by("Topic = '" .  $Topic . "'")->ID;
+            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
             $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
             echo $nbQuestion;
-            
+
         }else
         {
-            $this->display_view('questionnaires/add', $output);   
+            $this->display_view('questionnaires/add', $output);
         }
     }
 
     public function form_add()
     {
-        //Get the title
-        $this->form_validation->set_rules('title', 'Title', 'required');
-
-        if($this->form_validation->run() == true)
+        // If temporary tableTopics does not exist, create it
+        // Used to store topics and number of questions list
+        if (!isset($_SESSION['temp_tableTopics']))
         {
-            //Get last inputs
-            $title = $this->input->post('title');
-            $topic = $this->input->post('topic_selected');
-            $nbQuestions = $this->input->post('nb_questions');
-
-            //Create an object to get the title and two arrays for topics and number of questions asked
+            //Create a temporary TableTopics object
             $tableTopics = new TableTopics();
-            $tableTopics->setTitle($title);
+        }
+        else
+        {
+            //Get TableTopics object from session
+            $tableTopics = unserialize($_SESSION['temp_tableTopics']);
+        }
 
+        //Store title if defined
+        $tableTopics->setTitle($this->input->post('title'));
 
-            //If the user want to validate his pdf
-            if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
+        //If the user want to validate his pdf
+        if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
+        {
+            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
+            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
+            if($this->form_validation->run() == true)
             {
+                //Get last inputs
+                $id_topic = $this->input->post('topic_selected');
+                $topic = $this->topic_model->get($id_topic);
+                $nbQuestions = $this->input->post('nb_questions');
+
                 //Save each elements already seen on the topic list
-                $tableTopics = $this->saveTopicElements($tableTopics, 1);
+                //$tableTopics = $this->saveTopicElements($tableTopics, 1);
 
                 //And take with him the last inputs
                 $tableTopics->setArrayTopics($topic);
                 $tableTopics->setArrayNbQuestion($nbQuestions);
-                $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+                $_SESSION['temp_tableTopics'] = serialize($tableTopics);
             }
-            else
-            {
-                $tableTopics = $this->saveTopicElements($tableTopics, 2);
-                $this->generatePDF($tableTopics);
-            }
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
         }
         else
         {
-            $this->add(1);
-        }
+            //Set form validation rules
+            $this->form_validation->set_rules('title', 'Title', 'required');
+
+            //Check form validation
+            if($this->form_validation->run() == true)
+            {
+                $tableTopics->setTitle($this->input->post('title'));
+                unset($_SESSION['temp_tableTopics']);
+                $this->generatePDF(-1, $tableTopics);
+            } else {
+                // Form validation error
+                $this->add(1);
+            }
+        }        
     }
 
-    public function generatePDF($tableTopics)
+    public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
     {
-        $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
+        if($idQuestionnaire == -1){
+            $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
+        } else {
+            $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
+        }
+
         $totalpoints = 0;
 
         $pdf = new FPDF();
+		$answers = new FPDF();
+
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
         $pdf->SetTitle("Questionnaire", true);
@@ -189,6 +213,14 @@ class Questionnaire extends MY_Controller
         $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
         $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
         $pdf->SetFont('Arial', '', 16);
+
+
+        // Title of the answered document
+        $answers->AddPage();
+        $answers->SetFont('Arial', 'B', 16);
+        $answers->SetTitle('Corrigé', true);
+        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
+        $answers->SetFont('Arial', '', 16);
 
 
        // try
@@ -202,31 +234,47 @@ class Questionnaire extends MY_Controller
                 $totalpoints += $rndQuestion->Points;
 
                 $pdf->MultiCell(0, 20, $Question, 0, "L");
+                $answers->MultiCell(0, 20, $Question, 0, "L");
 
                 switch ($rndQuestion->FK_Question_Type) {
                     case 1:
                         $this->displayMultipleChoices($rndQuestion, $pdf);
+                        $this->answerMultipleChoices($rndQuestion, $answers);
                         break;
                     case 2:
                         $this->displayMultipleAnswers($rndQuestion, $pdf);
+                        $this->answerMultipleAnswers($rndQuestion, $answers);
                         break;
                     case 3:
                         $this->displayAnswerDistribution($rndQuestion, $pdf);
+                        $this->answerAnswerDistribution($rndQuestion, $answers);
                         break;
                     case 4:
                         $this->displayClozeText($rndQuestion, $pdf);
+                        $this->answerClozeText($rndQuestion, $answers);
                         break;
                     case 5:
                         $this->displayTable($rndQuestion, $pdf);
+                        $this->answerTable($rndQuestion, $answers);
+                        break;
+                    case 6:
+                        // answer in red for a simple kind of question
+                        $answers->setTextColor(255,0,0);
+                        //Answer put
+                        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer), 0, "L");
+                        $answers->setTextColor(0,0,0);
+
                         break;
                     case 7:
                         $this->displayPictureLandmarks($rndQuestion, $pdf);
+                        $this->answerPictureLandmarks($rndQuestion, $answers);
                         break;
                     default:
                         break;
                 }
 
                 $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+                $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
 
             }
             $error = false;
@@ -241,9 +289,23 @@ class Questionnaire extends MY_Controller
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
-            //$pdf->Output('I', 'Questionnaire', true);
-			$pdf->Output('F', $tableTopics->getTitle().'.pdf', true);
-			$this->index();
+            if($idQuestionnaire == -1){
+                //$pdf->Output('I', 'Questionnaire', true);
+                $title = $tableTopics->getTitle();
+                $title_const = $title;
+                $i = 1;
+                while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
+                    $title = $title_const .'-'. $i;
+                    $i++;
+                }
+
+    			$pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
+                $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
+            } else {
+                $pdf->Output('F', "pdf_files/questionnaires/" . $this->getQuestionnaireName($idQuestionnaire)['PDF'], true);
+                $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire)['corrige'], true);
+            }
+            $this->index();
         }
     }
 
@@ -253,9 +315,17 @@ class Questionnaire extends MY_Controller
         $listIDQuestions = array();
         //Insert new Questionnaire
         $title = $tableTopics->getTitle();
-        $newQuestionnaire = array("Questionnaire_Name" => $title,
-            "PDF" => $title . "pdf",
-            "Corrige_PDF" => $title . "pdf_corrige");
+        $newQuestionnaire = array("Questionnaire_Name" => $title);
+
+        $title_const = $title;
+        $i = 1;
+
+        while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
+            $title = $title_const .'-'. $i;
+            $i++;
+        }
+        $newQuestionnaire['PDF'] = $title.".pdf";
+        $newQuestionnaire['Corrige_PDF'] = $title."_corrige.pdf";
 
         $this->questionnaire_model->insert($newQuestionnaire);
         $idQuestionnaire = $this->db->insert_id();
@@ -266,8 +336,7 @@ class Questionnaire extends MY_Controller
             //Get ID for each topic asked
             $topic = $tableTopics->getArrayTopics()[$index];
             $nbQuestion = $tableTopics->getArrayNbQuestion()[$index];
-            $topicLine = $this->topic_model->get_by("Topic = '$topic'");
-            $idTopic = $topicLine->ID;
+            $idTopic = $topic->ID;
 
             //load randoms questions about the topic
             $rndQuestions = $this->question_model->getRNDQuestions($idTopic, $nbQuestion);
@@ -280,40 +349,30 @@ class Questionnaire extends MY_Controller
 
             }
         }
+        
         return $listIDQuestions;
     }
 
-    /**
-     * Save each elements already seen on the topic list
-     * @param $tableTopics = object of the Topics table
-     * @param $indice = 2 if the user want to finish the table OR 1 if not
-     * @return the table of Topic
-     */
-    private function saveTopicElements($tableTopics, $indice)
-    {
-        if($indice == 1)
+    private function findQuestionByQuestionnaire($idQuestionnaire){
+        $listIDQuestions = array();
+        $rndQuestions = array();
+
+        //load randoms questions about the topic
+        $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
+
+        for($number = 0; $number < count($rndQuestions);$number++)
         {
-            $index = 11;
-            while ($index <= ((count($this->input->post()) - $indice) * 5))
-            {
-                $tableTopics->setArrayTopics($this->input->post($index));
-                $tableTopics->setArrayNbQuestion($this->input->post($index + 1));
-                $index += 10;
-            }
-
-        }else if($indice == 2)
-        {
-
-            $index = 10;
-            do
-            {
-                $tableTopics->setArrayTopics($this->input->post($index + 1));
-                $tableTopics->setArrayNbQuestion($this->input->post($index + 2));
-                $index += 10;
-            }while ($index <= ((count($this->input->post()) - $indice) * 5));
-
+            array_push($listIDQuestions, $rndQuestions[$number]->FK_Question);
         }
-        return $tableTopics;
+
+        return $listIDQuestions;
+    }
+
+    private function getQuestionnaireName($idQuestionnaire){
+        $PDF['name'] = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
+        $PDF['PDF'] = $this->questionnaire_model->get($idQuestionnaire)->PDF;
+        $PDF['corrige'] = $this->questionnaire_model->get($idQuestionnaire)->Corrige_PDF;
+        return $PDF;
     }
 
     private function displayMultipleChoices($Question, $pdf)
@@ -340,6 +399,41 @@ class Questionnaire extends MY_Controller
         }
     }
 
+    private function answerMultipleChoices($Question, $pdf)
+    {
+        try{
+
+            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+
+            foreach ($multi_Choice_Questions as $m)
+            {
+                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
+
+                $y = $pdf->Gety();
+                $pdf->SetY($y + 7.7);
+                $pdf->SetX(100);
+
+                //Cross if the answer is true
+                $cross = "";
+                if ($m->Valid == 1) {
+                  $cross = "x";
+                }
+
+                $pdf->setTextColor(255,0,0);
+
+                $pdf->MultiCell(5, 5, $cross, 1);
+
+                $pdf->setTextColor(0,0,0);
+            }
+
+            return false;
+
+        }catch(Exception $e)
+        {
+            return true;
+        }
+    }
+
     private function displayMultipleAnswers($Question, $pdf)
     {
         $nbAskedAnswers = $Question->Nb_Desired_Answers;
@@ -347,6 +441,19 @@ class Questionnaire extends MY_Controller
         {
             $pdf->MultiCell(80, 10, "________________________", 0);
         }
+    }
+
+    private function answerMultipleAnswers($Question, $pdf)
+    {
+        $pdf->setTextColor(255,0,0);
+
+        $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = $Question->ID");
+        foreach ($possible_answers as $possible_answer)
+        {
+            $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
+        }
+
+        $pdf->setTextColor(0,0,0);
     }
 
     private function displayAnswerDistribution($Question, $pdf)
@@ -373,6 +480,30 @@ class Questionnaire extends MY_Controller
         }else {
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
             return false;
+        }
+    }
+
+    //if error return true
+    private function answerClozeText($Question, $pdf)
+    {
+        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+        $ClozeTextAnswers = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+
+        if(!isset($ClozeText->Cloze_Text))
+        {
+            return true;
+        }else {
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            return false;
+
+            $pdf->setTextColor(255,0,0);
+
+            foreach ($ClozeTextAnswers as $ClozeTextAnswer)
+            {
+                $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $ClozeTextAnswer->Answer, 0), "L");
+            }
+
+            $pdf->setTextColor(0,0,0);
         }
     }
 
@@ -442,7 +573,7 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
-        
+
         /*
         $url = base_url() .'uploads/pictures/';
         $width = getimagesize($fullPath)[0];
@@ -454,22 +585,63 @@ class Questionnaire extends MY_Controller
 
 
         imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
-    
+
         imagedestroy($image);
         imagejpeg($image_p, $fullPath, 100);*/
 
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        $fullPath = base_url() .'uploads/pictures/'. $picture;
+        if(is_file(base_url() .'uploads/pictures/'. $picture)){
+            $fullPath = base_url() .'uploads/pictures/'. $picture;
+        } else {
+            $fullPath = base_url() .'application/img/not-found.png';
+        }
 
-        $pdf->Image($fullPath, null, null, 100, 100);
-
-        
         foreach ($pictureLandmarks as $pictureLandmark)
         {
             $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
             $pdf->MultiCell(40,10, '___________', 0, "L");
+        }
+    }
+
+    private function answerPictureLandmarks($Question, $pdf)
+    {
+
+        /*
+        $url = base_url() .'uploads/pictures/';
+        $width = getimagesize($fullPath)[0];
+        $height = getimagesize($fullPath)[1];
+
+
+        $image_p = imagecreatetruecolor(100, 100);
+        $image = imagecreatefromjpeg($fullPath);
+
+
+        imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
+
+        imagedestroy($image);
+        imagejpeg($image_p, $fullPath, 100);*/
+
+        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+        $picture = $Question->Picture_Name;
+
+        if(is_file(base_url() .'uploads/pictures/'. $picture)){
+            $fullPath = base_url() .'uploads/pictures/'. $picture;
+        } else {
+            $fullPath = base_url() .'application/img/not-found.png';
+        }
+
+        $pdf->Image($fullPath, null, null, 100, 100);
+
+
+        foreach ($pictureLandmarks as $pictureLandmark)
+        {
+            $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
+
+            $pdf->setTextColor(255,0,0);
+            $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer), 0, "L");
+            $pdf->setTextColor(0,0,0);
         }
     }
 

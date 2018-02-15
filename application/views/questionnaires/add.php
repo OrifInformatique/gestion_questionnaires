@@ -53,7 +53,7 @@ $nbMaxQuestion = 0;
                                     for ($i = 0; $i < count($topicsList); $i++) {
                                         if ($topic->ID == $topicsList[$i]->FK_Parent_Topic) {
                                             //Affiche les topics associés
-                                            echo "<option>" . $topicsList[$i]->Topic . "</option>";
+                                            echo "<option value='" . $topicsList[$i]->ID . "'>" . $topicsList[$i]->Topic . "</option>";
                                         }
                                     }
                                     echo "</optgroup>";
@@ -104,14 +104,10 @@ $nbMaxQuestion = 0;
                                 <tr>
                                     <td><?php echo $compteur?></td>
                                     <td>
-                                            <?php echo $topic; ?>
-                                            <input type="hidden" name="<?php echo $compteur;?>1"
-                                                   value="<?php echo $topic;?>">
+                                            <?php echo $topic->Topic ;?>
                                     </td>
                                     <td>
                                         <?php echo $nbQuestions[$compteur-1];?>
-                                        <input type="hidden" name="<?php echo $compteur;?>2"
-                                               value="<?php echo $nbQuestions[$compteur-1];?>">
                                     </td>
                                 </tr>
                             <?php

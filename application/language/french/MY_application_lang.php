@@ -56,6 +56,7 @@ $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soi
 $lang['questionnaire']                  = 'Titre';
 $lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
+$lang['regenerate']                     = 'Régénérer';
 $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
 $lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
