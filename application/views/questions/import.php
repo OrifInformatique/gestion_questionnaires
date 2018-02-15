@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * View of importation from Excel
+ * View for Excel file importation
  *
  * @author      Orif, section informatique (UlSi, ViDi)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
@@ -14,37 +14,18 @@
 
     <?php
     $attributes = array("class" => "form-group",
-        "id" => "importQuestionForm",
-        "name" => "importQuestionForm",
-        "enctype" => "multipart/form-data");
-    echo form_open('Question/import', $attributes);
+                        "id" => "importQuestionForm",
+                        "name" => "importQuestionForm");
+
+    echo form_open_multipart('Question/import', $attributes);
     ?>
     <div class="row">
         <div class="col-lg-4"></div>
         <div class="form-group">
             <div class="col-lg-4" style="height:110px;">
                 <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
-                <select class="form-control" name="topic_selected" id="topic_selected">
-                    <?php
 
-                    //Récupère chaque topics
-                    foreach ($topics as $object => $module) {
-                        if ($module->FK_Parent_Topic == 0) {
-                            //Affiche le topic parent
-                            echo "<optgroup label='$module->Topic' >";
-
-                            //Récupère chaque topic associé au topic parent
-                            for ($i = 0; $i < count($topics); $i++) {
-                                if ($module->ID == $topics[$i]->FK_Parent_Topic) {
-                                    //Affiche les topics associés
-                                    echo "<option>" . $topics[$i]->Topic . "</option>";
-                                }
-                            }
-                            echo "</optgroup>";
-                        }
-                    }
-                    ?>
-                </select>
+                <?php echo form_dropdown('topic_selected', $topics, NULL, 'id="topic_selected" class="form-control"'); ?>
             </div>
             <div class="col-lg-2">
                 </br>

@@ -25,7 +25,7 @@
 </tbody>
 </table>
 <?php if ($question->FK_Question_Type == 7) {
-echo "<img src=".base_url('uploads/pictures/'.$image)." height='400' width='400'>";
+echo "<img src=".base_url('uploads/pictures/'.$image).">";
 }?>
 </div>
 <div class="col-lg-2"></div>
