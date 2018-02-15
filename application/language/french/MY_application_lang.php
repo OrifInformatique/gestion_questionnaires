@@ -27,9 +27,11 @@ $lang['nav_topic']                      = 'Sujets';
 $lang['field_username']                 = 'Identifiant';
 $lang['field_password']                 = 'Mot de passe';
 
-//Form Error
-$lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides.';
-$lang['msg_err_access_denied']			= 'Vous n\'avez pas accès à cette partie de l\'application.';
+//Log Error
+$lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides';
+$lang['no_id']                          = 'Veuillez insérer des identifiants';
+$lang['msg_err_access_denied_header']	= 'Accès interdit';
+$lang['msg_err_access_denied_message']	= 'Vous n\'avez pas accès à cette partie du programme';
 
 //Unlog
 $lang['login']                          = 'Connexion';
@@ -44,8 +46,12 @@ $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_import']                     = 'Importer';
 $lang['btn_import_questions']           = 'Importer';
-$lang['oui']          					= 'Oui';
-$lang['non']          					= 'Non';
+$lang['btn_next']           			= 'Suivant';
+$lang['yes']          					= 'Oui';
+$lang['no']          					= 'Non';
+$lang['ouinon']          				= 'Oui/Non';
+$lang['save']                           = 'Enregistrer';
+$lang['cancel']                         = 'Annuler';
 
 
 // Questionnaires pages
@@ -56,6 +62,7 @@ $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soi
 $lang['questionnaire']                  = 'Titre';
 $lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
+$lang['regenerate']                     = 'Régénérer';
 $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
 $lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
@@ -75,12 +82,21 @@ $lang['title_import_pictures']          = 'Importez vos images';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['focus_topic']                    = 'Sujet concerné :';
+$lang['focus_topic']                    = 'Sujet concerné';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
 $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
-$lang['update_question_type']           = 'Type de question :';
+$lang['question_type']           		= 'Type de question';
+$lang['title_question_add']             = 'Nouvelle question';
+$lang['question_text']                  = 'Texte de la question';
+$lang['answer_question_add']            = 'Réponse attendue';
+$lang['answers_list']                   = 'Liste des réponses';
+$lang['valid_answer']                   = 'Réponse valide';
+$lang['nb_desired_answers']             = 'Nombre de réponses attendues';
+$lang['landmark']                       = 'Liste des repères';
+$lang['cloze_text']                     = 'Texte à trous';
+$lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
@@ -109,5 +125,4 @@ $lang['del_module_form_err']            = 'Ce module possède des questions et/o
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 
 //PDF error
-$lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
-                                           plusieurs des questions soi(en)t mal enregistrée(s)";
+$lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";

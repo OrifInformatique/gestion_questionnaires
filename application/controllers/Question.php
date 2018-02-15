@@ -111,9 +111,9 @@ class Question extends MY_Controller
 				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
 				foreach ($reponses as $reponse) {
 					if ($reponse->Valid == '1'){
-						$cocher = $this->lang->line('oui');
+						$cocher = $this->lang->line('yes');
 					} else {
-						$cocher = $this->lang->line('non');
+						$cocher = $this->lang->line('no');
 					}
 					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 				}
@@ -152,23 +152,532 @@ class Question extends MY_Controller
 	
     /**
      * Display form to add a question
-     * Not build
      */
-    public function add()
+    public function add($step=1)
     {
+		if ($step==1){
+			// Display a form to choose a topic and a question type
+			$output['topics'] = $this->topic_model->get_tree();
+			$output['list_question_type'] = $this->question_type_model->dropdown('Type_Name');
+			$this->display_view('questions/add', $output);
 
-    }
+		} elseif ($step==2){
+			// Display a specific form for the choosen question type
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			$output['nbAnswer'] = 1;
+		
+			if ($_POST['question_type'] == 1){
+				$this->display_view('multiple_choice/add', $output);
+			} elseif ($_POST['question_type'] == 2){
+				$this->display_view('multiple_answer/add', $output);
+			} elseif ($_POST['question_type'] == 3){
+				// TODO
+			} elseif ($_POST['question_type'] == 4){
+				$this->display_view('cloze_text/add', $output);
+			} elseif ($_POST['question_type'] == 5){
+				// TODO
+			} elseif ($_POST['question_type'] == 6){
+				$this->display_view('free_answers/add', $output);
+			} elseif ($_POST['question_type'] == 7){
+				$this->display_view('picture_landmark/file', $output);
+			}
+		}
+	}
+	
 
+	/**
+     * Function to save a multiple choice question
+     */
+	public function add_MultipleChoice()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+
+		if (isset($_POST['save'])){
+			// Form validation rules
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noQuestion = "question".$i;
+				$noAnswer = "answer".$i;
+				$this->form_validation->set_rules($noQuestion, $this->lang->line('title_question'), 'required');
+				$this->form_validation->set_rules($noAnswer, $this->lang->line('valid_answer'), 'required');
+			}
+
+			if ($this->form_validation->run()){
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"Points" => $_POST['points']
+				);
+				$idQuestion = $this->question_model->insert($inputQuestion);
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noQuestion = "question".$i;
+					$noAnswer = "answer".$i;
+					
+					$inputAnswer = array(
+						"FK_Question" => $idQuestion,
+						"Answer" => $_POST[$noQuestion],
+						"Valid" => $_POST[$noAnswer]
+					);
+					$this->multiple_choice_model->insert($inputAnswer);
+				}
+				
+				redirect('/Question');
+			} else {
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noQuestion = "question".$i;
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noQuestion])){
+						$output[$noQuestion] = $_POST[$noQuestion];
+					}
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+					}
+				}
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
+				$this->display_view('multiple_choice/add', $output);
+			}
+		} else {
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			
+			if(isset($_POST['name'])){
+				$output['name'] = $_POST['name'];
+			}
+			if(isset($_POST['points'])){
+				$output['points'] = (int)$_POST['points'];
+			}
+			
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noQuestion = "question".$i;
+				$noAnswer = "answer".$i;
+				if(isset($_POST[$noQuestion])){
+					$output[$noQuestion] = $_POST[$noQuestion];
+				}
+				if(isset($_POST[$noAnswer])){
+					$output[$noAnswer] = $_POST[$noAnswer];
+				}
+			}
+			
+			if (isset($_POST['add_answer'])){
+				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+			} elseif (isset($_POST['del_answer'])){
+				if($_POST['nbAnswer']>1){
+					$output['nbAnswer'] = $_POST['nbAnswer']-1;
+				} else {
+					$output['nbAnswer'] = 1;
+				}
+			}
+		
+			$this->display_view('multiple_choice/add', $output);
+		}
+	}
+
+	/**
+     * Function for save multiple answer
+     */
+	public function add_MultipleAnswer()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+		
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				$this->form_validation->set_rules($noAnswer, $this->lang->line('answers_list'), 'required');
+			}
+
+			if ($this->form_validation->run()){
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"nb_desired_answers" => $_POST['nb_desired_answers'],
+					"Points" => $_POST['points']
+				);
+				$idQuestion = $this->question_model->insert($inputQuestion);
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					
+					$inputAnswer = array(
+						"FK_Question" => $idQuestion,
+						"Answer" => $_POST[$noAnswer],
+					);
+					$this->multiple_answer_model->insert($inputAnswer);
+				}
+				
+				redirect('/Question');
+			} else {
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['nb_desired_answers'])){
+					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+				}
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+					}
+				}
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
+				$this->display_view('multiple_answer/add', $output);
+			}
+		} else {
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			
+			if(isset($_POST['name'])){
+				$output['name'] = $_POST['name'];
+			}
+			if(isset($_POST['points'])){
+				$output['points'] = (int)$_POST['points'];
+			}
+			if(isset($_POST['nb_desired_answers'])){
+				$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+			}
+			
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				if(isset($_POST[$noAnswer])){
+					$output[$noAnswer] = $_POST[$noAnswer];
+				}
+			}
+			
+			if (isset($_POST['add_answer'])){
+				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+			} elseif (isset($_POST['del_answer'])){
+				if($_POST['nbAnswer']>1){
+					$output['nbAnswer'] = $_POST['nbAnswer']-1;
+				} else {
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+				}
+			}
+		
+			$this->display_view('multiple_answer/add', $output);
+		}
+	}
+	
+	/**
+     * Function for save cloze text
+     */
+	public function add_ClozeText()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+		
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+			}
+
+			if ($this->form_validation->run()){
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"Points" => $_POST['points']
+				);
+				$idQuestion = $this->question_model->insert($inputQuestion);
+				
+				$inputClozeText = array(
+					"FK_Question" => $idQuestion,
+					"Cloze_Text" => $_POST['cloze_text']
+				);
+				$idClozeText = $this->cloze_text_model->insert($inputClozeText);
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					
+					$inputAnswer = array(
+						"FK_Cloze_Text" => $idClozeText,
+						"Answer" => $_POST[$noAnswer],
+						"Answer_Order" => $i
+					);
+					$this->cloze_text_answer_model->insert($inputAnswer);
+				}
+				
+				redirect('/Question');
+			} else {
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				
+				if(isset($_POST['cloze_text'])){
+					$output['cloze_text'] = $_POST['cloze_text'];
+				}
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+					}
+				}
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
+				$this->display_view('cloze_text/add', $output);
+			}
+		} else {
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			
+			if(isset($_POST['name'])){
+				$output['name'] = $_POST['name'];
+			}
+			if(isset($_POST['points'])){
+				$output['points'] = (int)$_POST['points'];
+			}
+			if(isset($_POST['cloze_text'])){
+				$output['cloze_text'] = $_POST['cloze_text'];
+			}
+				
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				if(isset($_POST[$noAnswer])){
+					$output[$noAnswer] = $_POST[$noAnswer];
+				}
+			}
+			
+			if (isset($_POST['add_answer'])){
+				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+			} elseif (isset($_POST['del_answer'])){
+				if($_POST['nbAnswer']>1){
+					$output['nbAnswer'] = $_POST['nbAnswer']-1;
+				} else {
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+				}
+			}
+		
+			$this->display_view('cloze_text/add', $output);
+		}
+	} 
+	
+	/**
+     * Function for save free answer
+     */
+	public function add_FreeAnswer()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
+			
+			if ($this->form_validation->run()){
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"Points" => $_POST['points']
+				);
+				$idQuestion = $this->question_model->insert($inputQuestion);
+				
+				$inputAnswer = array(
+					"FK_Question" => $idQuestion,
+					"Answer" => $_POST['answer']
+				);
+				$this->free_answer_model->insert($inputAnswer);
+				
+				redirect('/Question');
+			} else {
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['answer'])){
+					$output['answer'] = $_POST['answer'];
+				}
+				$this->display_view('free_answers/add', $output);
+			}
+		}
+	}
+	
+	/**
+     * Function for save picture landmark
+     */
+	public function add_PictureLandmark($step=1)
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+		
+		if (!isset($_POST['cancel'])){
+			if ($step==1){
+				if(isset($_FILES['picture'])) {
+					$config['upload_path']          = './uploads/pictures';
+					$config['allowed_types']        = 'gif|jpg|jpeg|png';
+					$config['max_size']				= '2048';
+
+					$this->upload->initialize($config);
+					
+					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+					$output['nbAnswer'] = 1;
+
+					if ( ! $this->upload->do_upload('picture'))
+					{
+							$output['error'] = $this->upload->display_errors();
+							$this->display_view('picture_landmark/file', $output);
+					}
+					else
+					{
+							$output['upload_data'] = $this->upload->data();
+							
+							$this->display_view('picture_landmark/add', $output);
+					}
+				}
+			} elseif($step==2){
+				if (isset($_POST['save'])){
+					$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+					$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noSymbol = "symbol".$i;
+						$noAnswer = "answer".$i;
+						$this->form_validation->set_rules($noSymbol, $this->lang->line('landmark'), 'required');
+						$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+					}
+
+					if ($this->form_validation->run()){
+						$inputQuestion = array(
+							"FK_Topic" => $_POST['focus_topic'],
+							"FK_Question_Type" => $_POST['question_type'],
+							"Question" => $_POST['name'],
+							"Points" => $_POST['points'],
+							"Picture_Name" => $_POST['upload_data']['file_name']
+						);
+						$idQuestion = $this->question_model->insert($inputQuestion);
+						
+						for($i=1; $i <= $_POST['nbAnswer']; $i++){
+							$noSymbol = "symbol".$i;
+							$noAnswer = "answer".$i;
+							
+							$inputAnswer = array(
+								"FK_Question" => $idQuestion,
+								"Symbol" => $_POST[$noSymbol],
+								"Answer" => $_POST[$noAnswer]
+							);
+							$this->picture_landmark_model->insert($inputAnswer);
+						}
+						
+						redirect('/Question');
+					} else {
+						$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);	
+						$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+						$output['upload_data'] = $_POST['upload_data'];
+						if(isset($_POST['name'])){
+							$output['name'] = $_POST['name'];
+						}
+						if(isset($_POST['points'])){
+							$output['points'] = (int)$_POST['points'];
+						}
+						
+						for($i=1; $i <= $_POST['nbAnswer']; $i++){
+							$noSymbol = "symbol".$i;
+							$noAnswer = "answer".$i;
+							if(isset($_POST[$noSymbol])){
+								$output[$noSymbol] = $_POST[$noSymbol];
+							}
+							if(isset($_POST[$noAnswer])){
+								$output[$noAnswer] = $_POST[$noAnswer];
+							}
+						}
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+						
+						$this->display_view('picture_landmark/add', $output);
+					}
+				} else {
+					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+					$output['upload_data'] = $_POST['upload_data'];
+					
+					if(isset($_POST['name'])){
+						$output['name'] = $_POST['name'];
+					}
+					if(isset($_POST['points'])){
+						$output['points'] = (int)$_POST['points'];
+					}
+					
+					for($i=1; $i <= $_POST['nbAnswer']; $i++){
+						$noSymbol = "symbol".$i;
+						$noAnswer = "answer".$i;
+						if(isset($_POST[$noSymbol])){
+							$output[$noSymbol] = $_POST[$noSymbol];
+						}
+						if(isset($_POST[$noAnswer])){
+							$output[$noAnswer] = $_POST[$noAnswer];
+						}
+					}
+					
+					if (isset($_POST['add_answer'])){
+						$output['nbAnswer'] = $_POST['nbAnswer']+1;
+					} elseif (isset($_POST['del_answer'])){
+						if($_POST['nbAnswer']>1){
+							$output['nbAnswer'] = $_POST['nbAnswer']-1;
+						} else {
+							$output['nbAnswer'] = $_POST['nbAnswer'];
+						}
+					}
+				
+					$this->display_view('picture_landmark/add', $output);
+				}
+			}
+		}
+	}
+	
     /**
      * ON BUILDING
-     * Useful to import all questions already write on Excel
+     * Useful to import all questions already written on Excel
      */
     public function import()
     {
 
         if(isset($_POST['submitExcel']))
         {
-
             $config['upload_path'] = './uploads/excel';
             $config['allowed_types'] = 'xlsx';
             $config['max_size'] = 100;
@@ -262,7 +771,7 @@ class Question extends MY_Controller
         }else
         {
             $output['questions'] = $this->question_model->with_all()->get_all();
-            $output['topics'] = $this->topic_model->get_all();
+            $output['topics'] = $this->topic_model->get_tree();
             $this->display_view('questions/import', $output);
         }
 
