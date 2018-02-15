@@ -41,7 +41,7 @@
                     <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
-                        
+
                         //Récupère chaque topics
                         foreach ($topics as $object => $module) {
                             if ($module->FK_Parent_Topic == 0) {
@@ -52,7 +52,10 @@
                                 for ($i = 0; $i < count($topics); $i++) {
                                     if ($module->ID == $topics[$i]->FK_Parent_Topic) {
                                         //Affiche les topics associés
-                                        echo "<option>" . $topics[$i]->Topic . "</option>";
+                                        ?>
+                                        <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
+                                        </option>
+                                        <?php
                                     }
                                 }
                                 echo "</optgroup>";
@@ -61,15 +64,33 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-6"></div>
+                <div class="col-lg-2">
+                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
+                    <select onchange="changeselect()" class="form-control" id="question_type_selected">
+                        <?php
+                        
+                        echo "<option selected disabled hidden></option>";
+
+                        //Récupère chaque topics
+                        foreach ($questionTypes as $object => $module) {
+                                ?>
+                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
+                                <?php
+                        }
+                        ?>
+                    </select>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
                     <?php
-                    if(isset($_GET['param'])){
-                        echo "<h3>" . $_GET['param'] . "</h3>";
+                    /*if(isset($_GET['topic'])){
+                        echo "<h3>" . $_GET['topic'] . "</h3>";
                     }
+                    if(isset($_GET['type'])){
+                        echo "<h3>" . $_GET['type'] . "</h3>";
+                    }*/
                     ?>
                     <table class="table table-hover">
                         <thead>
@@ -83,29 +104,44 @@
                         $compteur = 0;
 
                         foreach ($questions as $objet => $question) {
-                        if (isset($_GET['param'])) {
-                        if ($question->topic->Topic == $_GET['param']) {
-                        $compteur += 1;
+                            if (!empty($_GET['topic'])&&!empty($_GET['type'])){
+                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (!empty($_GET['topic'])) {
+                                if ($question->topic->ID == $_GET['topic']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else if (!empty($_GET['type'])) {
+                                if ($question->FK_Question_Type == $_GET['type']) {
+                                    $compteur += 1;
+                                    ?>
+                                        <tbody>
+                                    <?php
+                                    displayQuestion($question);
+                                }
+                            } else {
+                                $compteur += 1;
+                                ?>
+                                <?php
+                                displayQuestion($question);
+                            }
+                        }
+
+                        if($compteur == 0){
+                            echo "<div class='well' style='border: solid 2px red;'><h4>"
+                                . $this->lang->line('no_question') . "</h4></div>";
+                        }
+
                         ?>
-                        <tbody>
-                            <?php
-                            displayQuestion($question);
-                            }
-                            }
-                            else{
-                            $compteur += 1;
-                            ?>
-                            <?php
-                            displayQuestion($question);
-                            }
-                            }
-
-                            if($compteur == 0){
-                                echo "<div class='well' style='border: solid 2px red;'><h4>"
-                                    . $this->lang->line('no_question') . "</h4></div>";
-                            }
-
-                            ?>
                         </tbody>
                     </table>
                 </div>

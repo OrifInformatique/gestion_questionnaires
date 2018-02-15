@@ -34,6 +34,7 @@ class Question extends MY_Controller
     {
         $output['questions'] = $this->question_model->with_all()->get_all();
         $output['topics'] = $this->topic_model->get_all();
+        $output['questionTypes'] = $this->question_type_model->get_all();
         $this->display_view('questions/index', $output);
     }
 

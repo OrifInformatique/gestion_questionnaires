@@ -48,7 +48,8 @@ function init() {
 
 function changeselect() {
     var topic = document.getElementById("topic_selected").value;
-    window.location = '?param=' + topic;
+    var type = document.getElementById("question_type_selected").value;
+    window.location = '?topic=' + topic + '&type=' + type;
 }
 
 function updateItem(id, typeItem){
