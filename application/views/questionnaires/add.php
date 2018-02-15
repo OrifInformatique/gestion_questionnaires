@@ -108,8 +108,6 @@ $nbMaxQuestion = 0;
                                     </td>
                                     <td>
                                         <?php echo $nbQuestions[$compteur-1];?>
-                                        <input type="hidden" name="<?php echo $compteur;?>2"
-                                               value="<?php echo $nbQuestions[$compteur-1];?>">
                                     </td>
                                 </tr>
                             <?php
