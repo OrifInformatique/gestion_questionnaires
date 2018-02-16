@@ -90,10 +90,24 @@ class Question extends MY_Controller
 			$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 			$output['name'] = $question->Question;
 			$output['points'] = $question->Points;
+			$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
 
 			if ($question->FK_Question_Type == 1){
 				$this->display_view('multiple_choice/update', $output);
 			} elseif ($question->FK_Question_Type == 2){
+ 
+				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+
+				$i = 1;
+				foreach ($reponses as $reponse) {
+					$noAnswer = "answer".$i;
+					$noAnswerID = "answerID".$i;
+					$output[$noAnswer] = $reponse->Answer;
+					$output[$noAnswerID] = $reponse->ID;
+					$i++;
+				}
+				$output['nbAnswer'] = $i-1;
+
 				$this->display_view('multiple_answer/update', $output);
 			} elseif ($question->FK_Question_Type == 3){
 				// TODO
@@ -1346,6 +1360,113 @@ class Question extends MY_Controller
 				}
 				$this->display_view('free_answers/update', $output);
 			}
+		}
+	}
+
+	public function update_MultipleAnswer()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+		
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				$this->form_validation->set_rules($noAnswer, $this->lang->line('answers_list'), 'required');
+			}
+
+			if ($this->form_validation->run()){
+				$id = $this->input->post('id');
+
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"nb_desired_answers" => $_POST['nb_desired_answers'],
+					"Points" => $_POST['points']
+				);
+				$this->question_model->update($id, $inputQuestion);
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					$noAnswerID = "answerID".$i;
+					
+					$inputAnswer = array(
+						"FK_Question" => $id,
+						"Answer" => $_POST[$noAnswer],
+					);
+					$this->multiple_answer_model->update($_POST[$noAnswerID], $inputAnswer);
+				}
+				
+				redirect('/Question');
+			} else {
+				$output['id'] = $_POST['id'];
+
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['nb_desired_answers'])){
+					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+				}
+				
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					$noAnswerID = "answerID".$i;					
+
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
+						$output[$noAnswerID] = $_POST[$noAnswerID];
+					}
+				}
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
+				$this->display_view('multiple_answer/update', $output);
+			}
+		} else {
+			$output['id'] = $_POST['id'];
+
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			if(isset($_POST['name'])){
+				$output['name'] = $_POST['name'];
+			}
+			if(isset($_POST['points'])){
+				$output['points'] = (int)$_POST['points'];
+			}
+			if(isset($_POST['nb_desired_answers'])){
+				$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+			}
+			
+			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				$noAnswer = "answer".$i;
+				$noAnswerID = "answerID".$i;					
+
+				if(isset($_POST[$noAnswer])){
+					$output[$noAnswer] = $_POST[$noAnswer];
+					$output[$noAnswerID] = $_POST[$noAnswerID];
+				}
+			}
+			$output['nbAnswer'] = $_POST['nbAnswer'];
+			
+			if (isset($_POST['add_answer'])){
+				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+			} elseif (isset($_POST['del_answer'])){
+				if($_POST['nbAnswer']>1){
+					$output['nbAnswer'] = $_POST['nbAnswer']-1;
+				} else {
+					$output['nbAnswer'] = $_POST['nbAnswer'];
+				}
+			}
+		
+			$this->display_view('multiple_answer/update', $output);
 		}
 	}
 }
