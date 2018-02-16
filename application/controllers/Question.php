@@ -85,8 +85,34 @@ class Question extends MY_Controller
         $output['id'] = $id;
 
         if ($id != 0) {
-            $output['question'] = $this->question_model->get_by('ID = ' . $id);
-            $this->display_view('questions/update', $output);
+            $question = $this->question_model->get_by('ID = ' . $id);
+            $output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
+			$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
+			$output['name'] = $question->Question;
+			$output['points'] = $question->Points;
+
+			if ($question->FK_Question_Type == 1){
+				$this->display_view('multiple_choice/update', $output);
+			} elseif ($question->FK_Question_Type == 2){
+				$this->display_view('multiple_answer/update', $output);
+			} elseif ($question->FK_Question_Type == 3){
+				// TODO
+			} elseif ($question->FK_Question_Type == 4){
+				$this->display_view('cloze_text/update', $output);
+			} elseif ($question->FK_Question_Type == 5){
+				// TODO
+			} elseif ($question->FK_Question_Type == 6){
+				$this->display_view('free_answers/update', $output);
+			} elseif ($question->FK_Question_Type == 7){
+				$this->display_view('picture_landmark/file', $output);
+			}
+
+            if($question->FK_Question_Type == 6){
+				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
+				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
+
+				$this->display_view('free_answers/update', $output);
+            }
         } else {
 			$this->index();
         }
@@ -1271,4 +1297,55 @@ class Question extends MY_Controller
             }
         }
     }
+
+	/**
+     * Function for update free answer
+     */
+	public function update_FreeAnswer()
+    {
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
+
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
+			
+			if ($this->form_validation->run()){
+		        $id = $this->input->post('id');
+				
+				$inputQuestion = array(
+					"FK_Topic" => $_POST['focus_topic'],
+					"FK_Question_Type" => $_POST['question_type'],
+					"Question" => $_POST['name'],
+					"Points" => $_POST['points']
+				);
+				$this->question_model->update($id, $inputQuestion);
+				
+				$inputAnswer = array(
+					"FK_Question" => $id,
+					"Answer" => $_POST['answer']
+				);
+				$this->free_answer_model->update($_POST['id_answer'], $inputAnswer);
+				
+				redirect('/Question');
+			} else {
+				$output['id'] = $_POST['id'];
+				$output['id_answer'] = $_POST['id_answer'];
+				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				if(isset($_POST['answer'])){
+					$output['answer'] = $_POST['answer'];
+				}
+				$this->display_view('free_answers/update', $output);
+			}
+		}
+	}
 }
