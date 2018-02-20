@@ -107,6 +107,11 @@ class Question extends MY_Controller
 					$i++;
 				}
 				$output['nbAnswer'] = $i-1;
+				$output['initialNbAnswer'] = $this->multiple_answer_model->count_by('FK_Question = ' . $id);
+
+				for($i = 0; $i < $output['initialNbAnswer']; $i++){
+					$output['listID'.$i] = $reponses[$i]->ID;
+				}
 
 				$this->display_view('multiple_answer/update', $output);
 			} elseif ($question->FK_Question_Type == 3){
@@ -1389,7 +1394,7 @@ class Question extends MY_Controller
 					"Points" => $_POST['points']
 				);
 				$this->question_model->update($id, $inputQuestion);
-				
+
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){
 					$noAnswer = "answer".$i;
 					$noAnswerID = "answerID".$i;
@@ -1400,10 +1405,37 @@ class Question extends MY_Controller
 					);
 					$this->multiple_answer_model->update($_POST[$noAnswerID], $inputAnswer);
 				}
+				if($_POST['nbAnswer'] < $_POST['initialNbAnswer']){
+	
+
+					for($i=$_POST['nbAnswer']; $i < $_POST['initialNbAnswer']; $i++){
+						$noDelete = $_POST['listID'.$i];
+						$this->multiple_answer_model->delete($noDelete);
+					}
+				}
+
+				if($_POST['nbAnswer'] > $_POST['initialNbAnswer']){
+					for($i=$_POST['initialNbAnswer']+1; $i <= $_POST['nbAnswer']; $i++){
+						$noAnswer = "answer".$i;
+						$noAnswerID = "answerID".$i;
+						
+						$inputNewAnswer = array(
+							"FK_Question" => $id,
+							"Answer" => $_POST[$noAnswer],
+						);
+						$this->multiple_answer_model->insert($inputNewAnswer);
+					}
+				}
 				
 				redirect('/Question');
 			} else {
 				$output['id'] = $_POST['id'];
+				$output['initialNbAnswer'] = $_POST['initialNbAnswer'];
+				$output['totalNbAnswer'] = $_POST['totalNbAnswer'];
+
+				for($i=0; $i < $output['initialNbAnswer']; $i++){
+					$output['listID'.$i] = $_POST['listID'.$i];
+				}
 
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -1432,6 +1464,11 @@ class Question extends MY_Controller
 			}
 		} else {
 			$output['id'] = $_POST['id'];
+			$output['initialNbAnswer'] = $_POST['initialNbAnswer'];
+
+			for($i=0; $i < $output['initialNbAnswer']; $i++){
+				$output['listID'.$i] = $_POST['listID'.$i];
+			}
 
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -1445,7 +1482,7 @@ class Question extends MY_Controller
 				$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 			}
 			
-			for($i=1; $i <= $_POST['nbAnswer']; $i++){
+			for($i=0; $i <= $_POST['nbAnswer']; $i++){
 				$noAnswer = "answer".$i;
 				$noAnswerID = "answerID".$i;					
 
@@ -1458,7 +1495,9 @@ class Question extends MY_Controller
 			
 			if (isset($_POST['add_answer'])){
 				$output['nbAnswer'] = $_POST['nbAnswer']+1;
+				$output["answerID".$output['nbAnswer']]=0;
 			} elseif (isset($_POST['del_answer'])){
+				$output['suppr'] = true;
 				if($_POST['nbAnswer']>1){
 					$output['nbAnswer'] = $_POST['nbAnswer']-1;
 				} else {

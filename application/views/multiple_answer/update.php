@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * View of question's details to update
+ * View of question's details to updat
  *
  * @author      Orif, section informatique (BuYa, ViDi)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
@@ -23,6 +23,11 @@
 		echo form_hidden('question_type', $question_type->ID);
 		echo form_hidden('nbAnswer', $nbAnswer);
 		echo form_hidden('id', $id);
+		echo form_hidden('initialNbAnswer', $initialNbAnswer);
+		for($i=0; $i<$initialNbAnswer; $i++){
+			$noListID = 'listID'.$i;
+			echo form_hidden('listID'.$i, $$noListID);
+		}
 		?>
 		
 		<!-- Display buttons and display topic and question type as information -->
@@ -88,15 +93,16 @@
 						echo form_hidden($noAnswerID, $$noAnswerID);
 					}else{
 						echo form_input($noAnswer, '', 'class="form-control" id="answer"');
+						echo form_hidden($noAnswerID, 0);
 					} ?></div>
 			</div>
-		<?php }/* ?>
+		<?php } ?>
 		
 		<div class="row">
 			<div class="col-md-2">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php if(!isset($suppr)){echo form_submit('add_answer', '+', 'class="btn btn-secondary"');} ?>
 				<?php echo form_submit('del_answer', '-', 'class="btn btn-secondary"'); ?>
 			</div>
 		</div>
-	<?php */echo form_close(); ?>
+	<?php echo form_close(); ?>
 </div>
