@@ -22,6 +22,16 @@
 		echo form_hidden('focus_topic', $focus_topic->ID);
 		echo form_hidden('question_type', $question_type->ID);
 		echo form_hidden('nbAnswer', $nbAnswer);
+		if(isset($id)){
+    		echo form_hidden('id', $id);
+    	}
+    	if(isset($id)){
+    		echo form_hidden('initialNbAnswer', $initialNbAnswer);
+	    	for($i=0; $i<$initialNbAnswer; $i++){
+				$noListID = 'listID'.$i;
+				echo form_hidden('listID'.$i, $$noListID);
+			}
+		}
 		?>
 		
 		<!-- Display buttons and display topic and question type as information -->
@@ -46,7 +56,13 @@
 		<div class="row">
 			<div class="form-group col-md-12">
 				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
-				<?php echo form_input('name', set_value('name'), 'class="form-control" id="name"'); ?>
+				<?php
+					if(isset($name)){
+		        		echo form_input('name', $name, 'class="form-control" id="name"');
+		        	} else {
+		        		echo form_input('name', '', 'class="form-control" id="name"');
+		        	}
+		        ?>
 			</div>
 		</div>
 
@@ -55,7 +71,13 @@
 				<?php echo form_label($this->lang->line('points'), 'points'); ?>
 			</div>
 			<div class="form-group col-md-1">
-				<?php echo form_input('points', set_value('points'), 'class="form-control" id="points"'); ?>
+				<?php 
+		        	if(isset($name)){
+		        		echo form_input('points', $points, 'class="form-control" id="name"');
+		        	} else {
+		        		echo form_input('points', '', 'class="form-control" id="name"');
+		        	}
+		        ?>
 			</div>
 		</div>
 		
@@ -66,7 +88,14 @@
 				<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
 			</div>
 			<div class="form-group col-md-1">
-				<?php echo form_input('nb_desired_answers', set_value('nb_desired_answers'), 'class="form-control" id="nb_desired_answers"'); ?></div>
+				<?php 
+		        	if(isset($name)){
+		        		echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="name"');
+		        	} else {
+		        		echo form_input('nb_desired_answers', '', 'class="form-control" id="name"');
+		        	}
+		        ?>
+			</div>
 		</div>
 		
 		
@@ -78,13 +107,16 @@
 		
 		<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
 			$noAnswer = "answer".$i;
+			$noAnswerID = "answerID".$i;
 		?>
 			<div class="row">
 				<div class="form-group col-md-12"><?php
 					if(isset($$noAnswer)){
 						echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');
+						echo form_hidden($noAnswerID, $$noAnswerID);
 					}else{
 						echo form_input($noAnswer, '', 'class="form-control" id="answer"');
+						echo form_hidden($noAnswerID, 0);
 					} ?></div>
 			</div>
 		<?php } ?>
