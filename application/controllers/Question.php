@@ -121,17 +121,13 @@ class Question extends MY_Controller
 			} elseif ($question->FK_Question_Type == 5){
 				// TODO
 			} elseif ($question->FK_Question_Type == 6){
-				$this->display_view('free_answers/update', $output);
-			} elseif ($question->FK_Question_Type == 7){
-				$this->display_view('picture_landmark/file', $output);
-			}
-
-            if($question->FK_Question_Type == 6){
 				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
 				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
 
 				$this->display_view('free_answers/update', $output);
-            }
+			} elseif ($question->FK_Question_Type == 7){
+				$this->display_view('picture_landmark/file', $output);
+			}
         } else {
 			$this->index();
         }

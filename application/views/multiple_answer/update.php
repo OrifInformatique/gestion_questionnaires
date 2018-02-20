@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * View of question's details to updat
+ * View of question's details to update
  *
  * @author      Orif, section informatique (BuYa, ViDi)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
