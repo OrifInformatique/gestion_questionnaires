@@ -407,21 +407,32 @@ class Question extends MY_Controller
 				if(isset($_POST['nb_desired_answers'])){
 					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 				}
+
+				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+				if (isset($_POST['add_answer'])){
+					$output['nbAnswer'] = $output['nbAnswer']+1;
+				}
+
+				for($i=1; $i <= $output['nbAnswer']; $i++){
 					$noAnswer = "answer".$i;
 					if(isset($_POST[$noAnswer])){
 						$output[$noAnswer] = $_POST[$noAnswer];
 					}
 				}
-				
-				if (isset($_POST['add_answer'])){
-					$output['nbAnswer'] = $_POST['nbAnswer']+1;
-				} elseif (isset($_POST['del_answer'])){
-					if($_POST['nbAnswer']>1){
-						$output['nbAnswer'] = $_POST['nbAnswer']-1;
-					} else {
-						$output['nbAnswer'] = $_POST['nbAnswer'];
+
+				for($i=1; $i <= $output['nbAnswer']; $i++){
+					if (isset($_POST['del_answer'.$i])){
+						if($output['nbAnswer']>1){
+							for($j=$i; $j < $output['nbAnswer']; $j++){
+								$noAnswerA = "answer".$j;
+								$noAnswerP = "answer".($j+1);
+								$output[$noAnswerA] = $output[$noAnswerP];
+							}
+							$output['nbAnswer'] = $_POST['nbAnswer']-1;
+						} else {
+							$output['nbAnswer'] = $_POST['nbAnswer'];
+						}
 					}
 				}
 			

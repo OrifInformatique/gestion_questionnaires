@@ -110,21 +110,28 @@
 			$noAnswerID = "answerID".$i;
 		?>
 			<div class="row">
-				<div class="form-group col-md-12"><?php
+				<div class="form-group col-md-11"><?php
 					if(isset($$noAnswer)){
 						echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');
-						echo form_hidden($noAnswerID, $$noAnswerID);
+						if(isset($$noAnswerID)){
+			        		echo form_hidden($noAnswerID, $$noAnswerID);
+			        	}
 					}else{
 						echo form_input($noAnswer, '', 'class="form-control" id="answer"');
-						echo form_hidden($noAnswerID, 0);
-					} ?></div>
+						if(isset($$noAnswerID)){
+							echo form_hidden($noAnswerID, 0);
+						}
+					} ?>
+				</div>
+				<div class="col-md-1">
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"'); ?>
+				</div>
 			</div>
 		<?php } ?>
 		
 		<div class="row">
 			<div class="col-md-2">
 				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
-				<?php echo form_submit('del_answer', '-', 'class="btn btn-secondary"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>
