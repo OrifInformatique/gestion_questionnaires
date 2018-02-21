@@ -25,13 +25,6 @@
 		if(isset($id)){
     		echo form_hidden('id', $id);
     	}
-    	if(isset($id)){
-    		echo form_hidden('initialNbAnswer', $initialNbAnswer);
-	    	for($i=0; $i<$initialNbAnswer; $i++){
-				$noListID = 'listID'.$i;
-				echo form_hidden('listID'.$i, $$noListID);
-			}
-		}
 		?>
 		
 		<!-- Display buttons and display topic and question type as information -->
@@ -85,7 +78,7 @@
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
 			<div class="form-group col-md-3">
-				<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
+				<?php echo form_label($this->lang->line('A_desired_answers'), 'nb_desired_answers'); ?>
 			</div>
 			<div class="form-group col-md-1">
 				<?php 
@@ -105,26 +98,18 @@
 			</div>
 		</div>
 		
-		<?php for ($i = 1; $i <= $nbAnswer; $i++){ 
-			$noAnswer = "answer".$i;
-			$noAnswerID = "answerID".$i;
-		?>
+		<?php
+		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<div class="row">
-				<div class="form-group col-md-11"><?php
-					if(isset($$noAnswer)){
-						echo form_input($noAnswer, $$noAnswer, 'class="form-control" id="answer"');
-						if(isset($$noAnswerID)){
-			        		echo form_hidden($noAnswerID, $$noAnswerID);
-			        	}
-					}else{
-						echo form_input($noAnswer, '', 'class="form-control" id="answer"');
-						if(isset($$noAnswerID)){
-							echo form_hidden($noAnswerID, 0);
-						}
-					} ?>
+				<div class="form-group col-md-11">
+					<?php
+						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
+					?>
 				</div>
 				<div class="col-md-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"'); ?>
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
+					?>
 				</div>
 			</div>
 		<?php } ?>
