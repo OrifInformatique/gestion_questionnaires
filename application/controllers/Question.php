@@ -124,7 +124,22 @@ class Question extends MY_Controller
 			} elseif ($question->FK_Question_Type == 3){
 				// TODO
 			} elseif ($question->FK_Question_Type == 4){
-				$this->display_view('cloze_text/update', $output);
+				// CLOZE TEXT
+				$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+
+				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
+
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['answer'] = $reponse->Answer;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+				$output['cloze_text'] = $cloze_text->Cloze_Text;
+				$output['id_cloze_text'] = $cloze_text->ID;
+				$this->display_view('cloze_text/add', $output);
 			} elseif ($question->FK_Question_Type == 5){
 				// TODO
 			} elseif ($question->FK_Question_Type == 6){
@@ -564,53 +579,104 @@ class Question extends MY_Controller
 		if (isset($_POST['cancel'])){
 			redirect('/Question');
 		}
-		
+
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
-			for($i=1; $i <= $_POST['nbAnswer']; $i++){
-				$noAnswer = "answer".$i;
-				$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+			for($i=0; $i < $_POST['nbAnswer']; $i++){
+				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
 
 			if ($this->form_validation->run()){
-				$inputQuestion = array(
-					"FK_Topic" => $_POST['focus_topic'],
-					"FK_Question_Type" => $_POST['question_type'],
-					"Question" => $_POST['name'],
-					"Points" => $_POST['points']
-				);
-				$idQuestion = $this->question_model->insert($inputQuestion);
-				
-				$inputClozeText = array(
-					"FK_Question" => $idQuestion,
-					"Cloze_Text" => $_POST['cloze_text']
-				);
-				$idClozeText = $this->cloze_text_model->insert($inputClozeText);
-				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					
-					$inputAnswer = array(
-						"FK_Cloze_Text" => $idClozeText,
-						"Answer" => $_POST[$noAnswer],
-						"Answer_Order" => $i
+				if(!isset($_POST['id'])){
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points']
 					);
-					$this->cloze_text_answer_model->insert($inputAnswer);
+					$idQuestion = $this->question_model->insert($inputQuestion);
+
+					$inputClozeText = array(
+						"FK_Question" => $idQuestion,
+						"Cloze_Text" => $_POST['cloze_text']
+					);
+					$idClozeText = $this->cloze_text_model->insert($inputClozeText);
+					
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$inputAnswer = array(
+							"FK_Cloze_Text" => $idClozeText,
+							"Answer" => $_POST['reponses'][$i]['answer']
+						);
+						$this->cloze_text_answer_model->insert($inputAnswer);
+					}
+				} else {
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points']
+					);
+					$this->question_model->update($_POST['id'], $inputQuestion);
+
+					$inputClozeText = array(
+						"FK_Question" => $_POST['id_cloze_text'],
+						"Cloze_Text" => $_POST['cloze_text']
+					);
+					$this->cloze_text_model->update($_POST['id_cloze_text'], $inputClozeText);
+
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					}
+
+					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $_POST['id_cloze_text']);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answersDb[$i] = $reponse->ID;
+						$i++;
+					}
+
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						if($answers[$i]['id'] == 0){
+							$inputQuestion = array(
+								"FK_Cloze_Text" => $_POST['id_cloze_text'],
+								"Answer" => $_POST['reponses'][$i]['answer']
+							);
+							$idQuestion = $this->cloze_text_answer_model->insert($inputQuestion);
+						} else {
+							$inputAnswer = array(
+								"FK_Cloze_Text" => $_POST['id_cloze_text'],
+								"Answer" => $_POST['reponses'][$i]['answer']
+							);
+							$this->cloze_text_answer_model->update($answers[$i]['id'], $inputAnswer);
+
+							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
+						}
+					}
+
+					foreach ($answersDb as $answerDb) {
+						$this->cloze_text_answer_model->delete($answerDb);
+					}
 				}
-				
 				redirect('/Question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				
+				if(isset($_POST['id'])){
+					$output['id'] = $_POST['id'];
+				}
+				if(isset($_POST['id_cloze_text'])){
+					$output['id_cloze_text'] = $_POST['id_cloze_text'];
+				}
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
 					$output['points'] = (int)$_POST['points'];
 				}
-				
 				if(isset($_POST['cloze_text'])){
 					$output['cloze_text'] = $_POST['cloze_text'];
 				}
@@ -628,7 +694,13 @@ class Question extends MY_Controller
 		} else {
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-			
+
+			if(isset($_POST['id'])){
+				$output['id'] = $_POST['id'];
+			}
+			if(isset($_POST['id_cloze_text'])){
+				$output['id_cloze_text'] = $_POST['id_cloze_text'];
+			}
 			if(isset($_POST['name'])){
 				$output['name'] = $_POST['name'];
 			}
@@ -638,23 +710,35 @@ class Question extends MY_Controller
 			if(isset($_POST['cloze_text'])){
 				$output['cloze_text'] = $_POST['cloze_text'];
 			}
-				
-			for($i=1; $i <= $_POST['nbAnswer']; $i++){
-				$noAnswer = "answer".$i;
-				if(isset($_POST[$noAnswer])){
-					$output[$noAnswer] = $_POST[$noAnswer];
-				}
-			}
+
+			$output['nbAnswer'] = $_POST['nbAnswer'];
 			
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+			}
+
 			if (isset($_POST['add_answer'])){
-				$output['nbAnswer'] = $_POST['nbAnswer']+1;
-			} elseif (isset($_POST['del_answer'])){
-				if($_POST['nbAnswer']>1){
-					$output['nbAnswer'] = $_POST['nbAnswer']-1;
-				} else {
-					$output['nbAnswer'] = $_POST['nbAnswer'];
+				$answers[$i]['id'] = 0;
+				$answers[$i]['answer'] = "";
+				$output['nbAnswer'] = $output['nbAnswer']+1;
+			}
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				if (isset($_POST['del_answer'.$i])){
+					if($output['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+						for($j=$i; $j < $output['nbAnswer']; $j++){
+							$answers[$j] = $answers[$j+1];
+						}
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
 				}
 			}
+
+			$output['answers'] = $answers;
 		
 			$this->display_view('cloze_text/add', $output);
 		}
