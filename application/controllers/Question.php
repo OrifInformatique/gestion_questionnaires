@@ -94,7 +94,19 @@ class Question extends MY_Controller
 
 			if ($question->FK_Question_Type == 1){
 				// MUTLIPLE CHOICE
-				$this->display_view('multiple_choice/update', $output);
+				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['question'] = $reponse->Answer;
+					$answers[$i]['answer'] = $reponse->Valid;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+
+				$this->display_view('multiple_choice/add', $output);
 			} elseif ($question->FK_Question_Type == 2){
  				// MUTLIPLE ANSWER
 				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
@@ -228,100 +240,161 @@ class Question extends MY_Controller
      * Function to save a multiple choice question
      */
 	public function add_MultipleChoice()
-    {
+	{
 		if (isset($_POST['cancel'])){
 			redirect('/Question');
 		}
 
 		if (isset($_POST['save'])){
-			// Form validation rules
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-
-			for($i=1; $i <= $_POST['nbAnswer']; $i++){
-				$noQuestion = "question".$i;
-				$noAnswer = "answer".$i;
-				$this->form_validation->set_rules($noQuestion, $this->lang->line('title_question'), 'required');
-				$this->form_validation->set_rules($noAnswer, $this->lang->line('valid_answer'), 'required');
+			for($i=0; $i < $_POST['nbAnswer']; $i++){
+				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
+				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
 			}
 
 			if ($this->form_validation->run()){
-				$inputQuestion = array(
-					"FK_Topic" => $_POST['focus_topic'],
-					"FK_Question_Type" => $_POST['question_type'],
-					"Question" => $_POST['name'],
-					"Points" => $_POST['points']
-				);
-				$idQuestion = $this->question_model->insert($inputQuestion);
-				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noQuestion = "question".$i;
-					$noAnswer = "answer".$i;
-					
-					$inputAnswer = array(
-						"FK_Question" => $idQuestion,
-						"Answer" => $_POST[$noQuestion],
-						"Valid" => $_POST[$noAnswer]
+				if(!isset($_POST['id'])){
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points']
 					);
-					$this->multiple_choice_model->insert($inputAnswer);
+					$idQuestion = $this->question_model->insert($inputQuestion);
+					
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$inputAnswer = array(
+							"FK_Question" => $idQuestion,
+							"Answer" => $_POST['reponses'][$i]['question'],
+							"Valid" => $_POST['reponses'][$i]['answer']
+						);
+						$this->multiple_choice_model->insert($inputAnswer);
+					}
+				} else {
+					$inputQuestion = array(
+						"FK_Topic" => $_POST['focus_topic'],
+						"FK_Question_Type" => $_POST['question_type'],
+						"Question" => $_POST['name'],
+						"Points" => $_POST['points']
+					);
+					$this->question_model->update($_POST['id'], $inputQuestion);
+
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					}
+
+					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $_POST['id']);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answersDb[$i] = $reponse->ID;
+						$i++;
+					}
+
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						if($answers[$i]['id'] == 0){
+							$inputQuestion = array(
+								"FK_Question" => $_POST['id'],
+								"Answer" => $_POST['reponses'][$i]['question'],
+								"Valid" => $_POST['reponses'][$i]['answer']
+							);
+							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+						} else {
+							$inputAnswer = array(
+								"FK_Question" => $_POST['id'],
+								"Answer" => $_POST['reponses'][$i]['question'],
+								"Valid" => $_POST['reponses'][$i]['answer']
+							);
+							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
+
+							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
+						}
+					}
+
+					foreach ($answersDb as $answerDb) {
+						$this->multiple_answer_model->delete($answerDb);
+					}
 				}
-				
 				redirect('/Question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+
+				if(isset($_POST['id'])){
+					$output['id'] = $_POST['id'];
+				}
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
 					$output['points'] = (int)$_POST['points'];
 				}
+
+				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
 				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noQuestion = "question".$i;
 					$noAnswer = "answer".$i;
-					if(isset($_POST[$noQuestion])){
-						$output[$noQuestion] = $_POST[$noQuestion];
-					}
 					if(isset($_POST[$noAnswer])){
 						$output[$noAnswer] = $_POST[$noAnswer];
 					}
 				}
-				$output['nbAnswer'] = $_POST['nbAnswer'];
+
+				for($i=0; $i < $output['nbAnswer']; $i++){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				}
+				
+				$output['answers'] = $answers;
 				
 				$this->display_view('multiple_choice/add', $output);
 			}
 		} else {
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-			
+
+			if(isset($_POST['id'])){
+				$output['id'] = $_POST['id'];
+			}
 			if(isset($_POST['name'])){
 				$output['name'] = $_POST['name'];
 			}
 			if(isset($_POST['points'])){
 				$output['points'] = (int)$_POST['points'];
 			}
+
+			$output['nbAnswer'] = $_POST['nbAnswer'];
 			
-			for($i=1; $i <= $_POST['nbAnswer']; $i++){
-				$noQuestion = "question".$i;
-				$noAnswer = "answer".$i;
-				if(isset($_POST[$noQuestion])){
-					$output[$noQuestion] = $_POST[$noQuestion];
-				}
-				if(isset($_POST[$noAnswer])){
-					$output[$noAnswer] = $_POST[$noAnswer];
-				}
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
 			}
-			
+
 			if (isset($_POST['add_answer'])){
-				$output['nbAnswer'] = $_POST['nbAnswer']+1;
-			} elseif (isset($_POST['del_answer'])){
-				if($_POST['nbAnswer']>1){
-					$output['nbAnswer'] = $_POST['nbAnswer']-1;
-				} else {
-					$output['nbAnswer'] = 1;
+				$answers[$i]['id'] = 0;
+				$answers[$i]['question'] = false;
+				$answers[$i]['answer'] = "";
+				$output['nbAnswer'] = $output['nbAnswer']+1;
+			}
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				if (isset($_POST['del_answer'.$i])){
+					if($output['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+						for($j=$i; $j < $output['nbAnswer']; $j++){
+							$answers[$j] = $answers[$j+1];
+						}
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
 				}
 			}
+
+			$output['answers'] = $answers;
 		
 			$this->display_view('multiple_choice/add', $output);
 		}
@@ -331,21 +404,21 @@ class Question extends MY_Controller
      * Function for save multiple answer
      */
 	public function add_MultipleAnswer()
-    {
-    	if (!isset($_POST['id'])){
-			if (isset($_POST['cancel'])){
-				redirect('/Question');
-			}
-			
-			if (isset($_POST['save'])){
-				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-				$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
-				for($i=0; $i < $_POST['nbAnswer']; $i++){
-					$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
-				}
+	{
+		if (isset($_POST['cancel'])){
+			redirect('/Question');
+		}
 
-				if ($this->form_validation->run()){
+		if (isset($_POST['save'])){
+			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
+			for($i=0; $i < $_POST['nbAnswer']; $i++){
+				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
+			}
+
+			if ($this->form_validation->run()){
+				if(!isset($_POST['id'])){
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
@@ -362,90 +435,7 @@ class Question extends MY_Controller
 						);
 						$this->multiple_answer_model->insert($inputAnswer);
 					}
-					
-					redirect('/Question');
 				} else {
-					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
-					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-					if(isset($_POST['name'])){
-						$output['name'] = $_POST['name'];
-					}
-					if(isset($_POST['points'])){
-						$output['points'] = (int)$_POST['points'];
-					}
-					if(isset($_POST['nb_desired_answers'])){
-						$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
-					}
-					
-					for($i=1; $i <= $_POST['nbAnswer']; $i++){
-						$noAnswer = "answer".$i;
-						if(isset($_POST[$noAnswer])){
-							$output[$noAnswer] = $_POST[$noAnswer];
-						}
-					}
-					$output['nbAnswer'] = $_POST['nbAnswer'];
-					
-					$this->display_view('multiple_answer/add', $output);
-				}
-			} else {
-				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
-				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-			
-				if(isset($_POST['name'])){
-					$output['name'] = $_POST['name'];
-				}
-				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
-				}
-				if(isset($_POST['nb_desired_answers'])){
-					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
-				}
-
-				$output['nbAnswer'] = $_POST['nbAnswer'];
-				
-
-				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
-				}
-
-				if (isset($_POST['add_answer'])){
-					$answers[$i]['id'] = 0;
-					$answers[$i]['answer'] = "";
-					$output['nbAnswer'] = $output['nbAnswer']+1;
-				}
-
-				for($i=0; $i < $output['nbAnswer']; $i++){
-					if (isset($_POST['del_answer'.$i])){
-						if($output['nbAnswer']>1){
-							$output['nbAnswer'] = $_POST['nbAnswer']-1;
-							for($j=$i; $j < $output['nbAnswer']; $j++){
-								$answers[$j] = $answers[$j+1];
-							}
-						} else {
-							$output['nbAnswer'] = $_POST['nbAnswer'];
-						}
-					}
-				}
-
-				$output['answers'] = $answers;
-			
-				$this->display_view('multiple_answer/add', $output);
-			}
-		} else {
-			if (isset($_POST['cancel'])){
-				redirect('/Question');
-			}
-			
-			if (isset($_POST['save'])){
-				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-				$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
-				for($i=0; $i < $_POST['nbAnswer']; $i++){
-					$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
-				}
-
-				if ($this->form_validation->run()){
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
@@ -487,38 +477,15 @@ class Question extends MY_Controller
 					foreach ($answersDb as $answerDb) {
 						$this->multiple_answer_model->delete($answerDb);
 					}
-
-					redirect('/Question');
-				} else {
-					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
-					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-					$output['id'] = $_POST['id'];
-
-					if(isset($_POST['name'])){
-						$output['name'] = $_POST['name'];
-					}
-					if(isset($_POST['points'])){
-						$output['points'] = (int)$_POST['points'];
-					}
-					if(isset($_POST['nb_desired_answers'])){
-						$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
-					}
-
-					$output['nbAnswer'] = $_POST['nbAnswer'];
-
-					for($i=0; $i < $output['nbAnswer']; $i++){
-						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
-					}
-					$output['answers'] = $answers;
-					
-					$this->display_view('multiple_answer/add', $output);
 				}
+				redirect('/Question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-				$output['id'] = $_POST['id'];
 				
+				if(isset($_POST['id'])){
+					$output['id'] = $_POST['id'];
+				}
 				if(isset($_POST['name'])){
 					$output['name'] = $_POST['name'];
 				}
@@ -528,38 +495,64 @@ class Question extends MY_Controller
 				if(isset($_POST['nb_desired_answers'])){
 					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 				}
-
-				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
-
-				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
-				}
-
-				if (isset($_POST['add_answer'])){
-					$answers[$i]['id'] = 0;
-					$answers[$i]['answer'] = "";
-					$output['nbAnswer'] = $output['nbAnswer']+1;
-				}
-
-				for($i=0; $i < $output['nbAnswer']; $i++){
-					if (isset($_POST['del_answer'.$i])){
-						if($output['nbAnswer']>1){
-							$output['nbAnswer'] = $_POST['nbAnswer']-1;
-							for($j=$i; $j < $output['nbAnswer']; $j++){
-								$answers[$j] = $answers[$j+1];
-							}
-						} else {
-							$output['nbAnswer'] = $_POST['nbAnswer'];
-						}
+				for($i=1; $i <= $_POST['nbAnswer']; $i++){
+					$noAnswer = "answer".$i;
+					if(isset($_POST[$noAnswer])){
+						$output[$noAnswer] = $_POST[$noAnswer];
 					}
 				}
-
-				$output['answers'] = $answers;
-			
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
 				$this->display_view('multiple_answer/add', $output);
 			}
+		} else {
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+
+			if(isset($_POST['id'])){
+				$output['id'] = $_POST['id'];
+			}
+			if(isset($_POST['name'])){
+				$output['name'] = $_POST['name'];
+			}
+			if(isset($_POST['points'])){
+				$output['points'] = (int)$_POST['points'];
+			}
+			if(isset($_POST['nb_desired_answers'])){
+				$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+			}
+
+			$output['nbAnswer'] = $_POST['nbAnswer'];
+			
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+			}
+
+			if (isset($_POST['add_answer'])){
+				$answers[$i]['id'] = 0;
+				$answers[$i]['answer'] = "";
+				$output['nbAnswer'] = $output['nbAnswer']+1;
+			}
+
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				if (isset($_POST['del_answer'.$i])){
+					if($output['nbAnswer']>1){
+						$output['nbAnswer'] = $_POST['nbAnswer']-1;
+						for($j=$i; $j < $output['nbAnswer']; $j++){
+							$answers[$j] = $answers[$j+1];
+						}
+					} else {
+						$output['nbAnswer'] = $_POST['nbAnswer'];
+					}
+				}
+			}
+
+			$output['answers'] = $answers;
+		
+			$this->display_view('multiple_answer/add', $output);
 		}
 	}
 	
