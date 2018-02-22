@@ -65,22 +65,30 @@
                         <?php
 
                         //Récupère chaque topics
-                        foreach ($topics as $object => $module) {
-                            if ($module->FK_Parent_Topic == 0) {
-                                //Affiche le topic parent
-                                echo "<optgroup label='$module->Topic' >";
+                        if(empty($_GET['module'])){
+                            foreach ($topics as $object => $module) {
+                                if ($module->FK_Parent_Topic == 0) {
+                                    //Affiche le topic parent
+                                    echo "<optgroup label='$module->Topic' >";
 
-                                //Récupère chaque topic associé au topic parent
-                                for ($i = 0; $i < count($topics); $i++) {
-                                    if ($module->ID == $topics[$i]->FK_Parent_Topic && $_GET['module']==$topics[$i]->FK_Parent_Topic) {
-                                        //Affiche les topics associés
-                                        ?>
-                                        <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
-                                        </option>
-                                        <?php
+                                    //Récupère chaque topic associé au topic parent
+                                    for ($i = 0; $i < count($topics); $i++) {
+                                        if ($module->ID == $topics[$i]->FK_Parent_Topic) {
+                                            //Affiche les topics associés ?>
+                                            <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
+                                            </option><?php
+                                        }
                                     }
                                 }
                                 echo "</optgroup>";
+                            }
+                        } else {
+                            foreach ($topics as $object => $module) {
+                                if ($module->FK_Parent_Topic == $_GET['module']) { ?>
+                                    //Affiche le topic parent
+                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
+                                    </option><?php
+                                }
                             }
                         }
                         ?>
