@@ -94,6 +94,7 @@ $lang['answers_list']                   = 'Liste des réponses';
 $lang['valid_answer']                   = 'Réponse valide';
 $lang['nb_desired_answers']             = 'Nombre de réponses attendues';
 $lang['landmark']                       = 'Liste des repères';
+$lang['change_picture']                 = 'Changer l\'image';
 $lang['cloze_text']                     = 'Texte à trous';
 $lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
 

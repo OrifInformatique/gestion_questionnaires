@@ -20,7 +20,33 @@
 		<?php
 		echo form_hidden('focus_topic', $focus_topic->ID);
 		echo form_hidden('question_type', $question_type->ID);
-		echo form_hidden('nbAnswer', $nbAnswer); ?>
+		echo form_hidden('nbAnswer', $nbAnswer);
+
+		if(isset($id)){
+    		echo form_hidden('id', $id);
+    	}
+    	
+    	if(isset($upload_data)){
+    		echo form_hidden('upload_data', $upload_data);
+    	}
+    	if(isset($picture_name)){
+    		echo form_hidden('picture_name', $picture_name);
+    	}
+    	if(isset($name)){
+    		echo form_hidden('name', $name);
+    	}
+    	if(isset($points)){
+    		echo form_hidden('points', $points);
+    	}
+
+    	if(isset($answers)){
+			for ($i = 0; $i < $nbAnswer; $i++){
+				echo form_hidden('reponses['.$i.'][symbol]', $answers[$i]['symbol']);
+				echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+				echo form_hidden('reponses['.$i.'][answer]', $answers[$i]['answer']);
+			}
+		}
+		?>
 	
 		<!-- Display buttons and display topic and question type as information -->
 		<div class="row">

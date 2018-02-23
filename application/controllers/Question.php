@@ -90,7 +90,6 @@ class Question extends MY_Controller
 			$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 			$output['name'] = $question->Question;
 			$output['points'] = $question->Points;
-			$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
 
 			if ($question->FK_Question_Type == 1){
 				// MUTLIPLE CHOICE
@@ -109,6 +108,7 @@ class Question extends MY_Controller
 				$this->display_view('multiple_choice/add', $output);
 			} elseif ($question->FK_Question_Type == 2){
  				// MUTLIPLE ANSWER
+ 				$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
 				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
 
 				$i = 0;
@@ -149,7 +149,22 @@ class Question extends MY_Controller
 
 				$this->display_view('free_answers/add', $output);
 			} elseif ($question->FK_Question_Type == 7){
-				$this->display_view('picture_landmark/file', $output);
+				// PICTURE LANDMARK
+				$output['picture_name'] = $question->Picture_Name;
+
+				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['symbol'] = $reponse->Symbol;
+					$answers[$i]['answer'] = $reponse->Answer;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+
+				$this->display_view('picture_landmark/add', $output);
 			}
         } else {
 			$this->index();
@@ -230,7 +245,12 @@ class Question extends MY_Controller
 			// Display a specific form for the choosen question type
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-			$output['nbAnswer'] = 0;
+			$output['nbAnswer'] = 1;
+			$answers[0]['id'] = 0;
+			$answers[0]['question'] = false;
+			$answers[0]['answer'] = "";
+			$answers[0]['symbol'] = "";
+			$output['answers'] = $answers;
 		
 			if ($_POST['question_type'] == 1){
 				$this->display_view('multiple_choice/add', $output);
@@ -244,7 +264,7 @@ class Question extends MY_Controller
 				// TODO
 			} elseif ($_POST['question_type'] == 6){
 				$this->display_view('free_answers/add', $output);
-			} elseif ($_POST['question_type'] == 7){
+			} elseif ($_POST['question_type'] == 7){	
 				$this->display_view('picture_landmark/file', $output);
 			}
 		}
@@ -845,20 +865,51 @@ class Question extends MY_Controller
     {
 		if (isset($_POST['cancel'])){
 			redirect('/Question');
-		}
-		
-		if (!isset($_POST['cancel'])){
+		} else {
 			if ($step==1){
+				if(isset($_POST['focus_topic'])){
+					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+				}
+				if(isset($_POST['question_type'])){
+					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+				}
+				if(isset($_POST['id'])){
+					$output['id'] = $_POST['id'];
+				}
+				if(isset($_POST['name'])){
+					$output['name'] = $_POST['name'];
+				}
+				if(isset($_POST['points'])){
+					$output['points'] = (int)$_POST['points'];
+				}
+				
+				if(isset($_POST['picture_name'])){
+		    		$output['picture_name'] = $_POST['picture_name'];
+		    	}
+		    	if(isset($_POST['upload_data'])){
+		    		$output['upload_data'] = $_POST['upload_data'];
+		    	}
+
+		    	if(isset($_POST['nbAnswer'])){
+		    		$output['nbAnswer'] = $_POST['nbAnswer'];
+		    	}
+
+		    	if(isset($_POST['reponses'])){
+					for($i=0; $i < $output['nbAnswer']; $i++){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					}
+				}
+
+				$output['answers'] = $answers;
+
 				if(isset($_FILES['picture'])) {
 					$config['upload_path']          = './uploads/pictures';
 					$config['allowed_types']        = 'gif|jpg|jpeg|png';
 					$config['max_size']				= '2048';
 
 					$this->upload->initialize($config);
-					
-					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
-					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-					$output['nbAnswer'] = 1;
 
 					if ( ! $this->upload->do_upload('picture'))
 					{
@@ -873,43 +924,99 @@ class Question extends MY_Controller
 					}
 				}
 			} elseif($step==2){
+
 				if (isset($_POST['save'])){
 					$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 					$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-					for($i=1; $i <= $_POST['nbAnswer']; $i++){
-						$noSymbol = "symbol".$i;
-						$noAnswer = "answer".$i;
-						$this->form_validation->set_rules($noSymbol, $this->lang->line('landmark'), 'required');
-						$this->form_validation->set_rules($noAnswer, $this->lang->line('title_question'), 'required');
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
+						$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 					}
 
 					if ($this->form_validation->run()){
-						$inputQuestion = array(
-							"FK_Topic" => $_POST['focus_topic'],
-							"FK_Question_Type" => $_POST['question_type'],
-							"Question" => $_POST['name'],
-							"Points" => $_POST['points'],
-							"Picture_Name" => $_POST['upload_data']['file_name']
-						);
-						$idQuestion = $this->question_model->insert($inputQuestion);
-						
-						for($i=1; $i <= $_POST['nbAnswer']; $i++){
-							$noSymbol = "symbol".$i;
-							$noAnswer = "answer".$i;
-							
-							$inputAnswer = array(
-								"FK_Question" => $idQuestion,
-								"Symbol" => $_POST[$noSymbol],
-								"Answer" => $_POST[$noAnswer]
+						if(!isset($_POST['id'])){
+							$inputQuestion = array(
+								"FK_Topic" => $_POST['focus_topic'],
+								"FK_Question_Type" => $_POST['question_type'],
+								"Question" => $_POST['name'],
+								"Points" => $_POST['points'],
+								"Picture_Name" => $_POST['upload_data']['file_name']
 							);
-							$this->picture_landmark_model->insert($inputAnswer);
+							$idQuestion = $this->question_model->insert($inputQuestion);
+							
+							for($i=0; $i < $_POST['nbAnswer']; $i++){
+								$inputAnswer = array(
+									"FK_Question" => $idQuestion,
+									"Symbol" => $_POST['reponses'][$i]['symbol'],
+									"Answer" => $_POST['reponses'][$i]['answer']
+								);
+								$this->picture_landmark_model->insert($inputAnswer);
+							}
+						} else {
+							if(isset($_POST['upload_data'])){
+								$inputQuestion = array(
+									"FK_Topic" => $_POST['focus_topic'],
+									"FK_Question_Type" => $_POST['question_type'],
+									"Question" => $_POST['name'],
+									"Points" => $_POST['points'],
+									"Picture_Name" => $_POST['upload_data']['file_name']
+								);
+							} else {
+								$inputQuestion = array(
+									"FK_Topic" => $_POST['focus_topic'],
+									"FK_Question_Type" => $_POST['question_type'],
+									"Question" => $_POST['name'],
+									"Points" => $_POST['points'],
+									"Picture_Name" => $_POST['picture_name']
+								);
+							}
+							$this->question_model->update($_POST['id'], $inputQuestion);
+
+							for($i=0; $i < $_POST['nbAnswer']; $i++){
+								$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+								$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+								$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+							}
+
+							$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $_POST['id']);
+							$i = 0;
+							foreach ($reponses as $reponse) {
+								$answersDb[$i] = $reponse->ID;
+								$i++;
+							}
+
+							for($i=0; $i < $_POST['nbAnswer']; $i++){
+								if($answers[$i]['id'] == 0){
+									$inputQuestion = array(
+										"FK_Question" => $_POST['id'],
+										"Symbol" => $_POST['reponses'][$i]['symbol'],
+										"Answer" => $_POST['reponses'][$i]['answer']
+									);
+									$idQuestion = $this->picture_landmark_model->insert($inputQuestion);
+								} else {
+									$inputAnswer = array(
+										"FK_Question" => $_POST['id'],
+										"Symbol" => $_POST['reponses'][$i]['symbol'],
+										"Answer" => $_POST['reponses'][$i]['answer']
+									);
+									$this->picture_landmark_model->update($answers[$i]['id'], $inputAnswer);
+
+									unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
+								}
+							}
+
+							foreach ($answersDb as $answerDb) {
+								$this->picture_landmark_model->delete($answerDb);
+							}
 						}
-						
 						redirect('/Question');
 					} else {
-						$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);	
+						$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 						$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-						$output['upload_data'] = $_POST['upload_data'];
+						
+						if(isset($_POST['id'])){
+							$output['id'] = $_POST['id'];
+						}
 						if(isset($_POST['name'])){
 							$output['name'] = $_POST['name'];
 						}
@@ -917,15 +1024,17 @@ class Question extends MY_Controller
 							$output['points'] = (int)$_POST['points'];
 						}
 						
-						for($i=1; $i <= $_POST['nbAnswer']; $i++){
-							$noSymbol = "symbol".$i;
-							$noAnswer = "answer".$i;
-							if(isset($_POST[$noSymbol])){
-								$output[$noSymbol] = $_POST[$noSymbol];
-							}
-							if(isset($_POST[$noAnswer])){
-								$output[$noAnswer] = $_POST[$noAnswer];
-							}
+						if(isset($_POST['picture_name'])){
+				    		$output['picture_name'] = $_POST['picture_name'];
+				    	}
+				    	if(isset($_POST['upload_data'])){
+				    		$output['upload_data'] = $_POST['upload_data'];
+				    	}
+
+						for($i=0; $i < $output['nbAnswer']; $i++){
+							$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+							$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+							$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
 						}
 						$output['nbAnswer'] = $_POST['nbAnswer'];
 						
@@ -934,37 +1043,60 @@ class Question extends MY_Controller
 				} else {
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-					$output['upload_data'] = $_POST['upload_data'];
-					
+
+					if(isset($_POST['id'])){
+						$output['id'] = $_POST['id'];
+					}
 					if(isset($_POST['name'])){
 						$output['name'] = $_POST['name'];
 					}
 					if(isset($_POST['points'])){
 						$output['points'] = (int)$_POST['points'];
 					}
+
+					if(isset($_POST['picture_name'])){
+			    		$output['picture_name'] = $_POST['picture_name'];
+			    	}
+			    	if(isset($_POST['upload_data'])){
+			    		$output['upload_data'] = $_POST['upload_data'];
+			    	}
+
+					$output['nbAnswer'] = $_POST['nbAnswer'];
 					
-					for($i=1; $i <= $_POST['nbAnswer']; $i++){
-						$noSymbol = "symbol".$i;
-						$noAnswer = "answer".$i;
-						if(isset($_POST[$noSymbol])){
-							$output[$noSymbol] = $_POST[$noSymbol];
-						}
-						if(isset($_POST[$noAnswer])){
-							$output[$noAnswer] = $_POST[$noAnswer];
-						}
+
+					for($i=0; $i < $output['nbAnswer']; $i++){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
 					}
-					
+
 					if (isset($_POST['add_answer'])){
-						$output['nbAnswer'] = $_POST['nbAnswer']+1;
-					} elseif (isset($_POST['del_answer'])){
-						if($_POST['nbAnswer']>1){
-							$output['nbAnswer'] = $_POST['nbAnswer']-1;
-						} else {
-							$output['nbAnswer'] = $_POST['nbAnswer'];
+						$answers[$i]['id'] = 0;
+						$answers[$i]['symbol'] = "";
+						$answers[$i]['answer'] = "";
+						$output['nbAnswer'] = $output['nbAnswer']+1;
+					}
+
+					for($i=0; $i < $output['nbAnswer']; $i++){
+						if (isset($_POST['del_answer'.$i])){
+							if($output['nbAnswer']>1){
+								$output['nbAnswer'] = $_POST['nbAnswer']-1;
+								for($j=$i; $j < $output['nbAnswer']; $j++){
+									$answers[$j] = $answers[$j+1];
+								}
+							} else {
+								$output['nbAnswer'] = $_POST['nbAnswer'];
+							}
 						}
 					}
-				
-					$this->display_view('picture_landmark/add', $output);
+
+					$output['answers'] = $answers;
+
+					if(isset($_POST['change_picture'])){
+						$this->display_view('picture_landmark/file', $output);
+					} else {
+						$this->display_view('picture_landmark/add', $output);
+					}
 				}
 			}
 		}
