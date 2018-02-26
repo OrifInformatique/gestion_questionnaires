@@ -97,6 +97,7 @@ $lang['landmark']                       = 'Liste des repères';
 $lang['change_picture']                 = 'Changer l\'image';
 $lang['cloze_text']                     = 'Texte à trous';
 $lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
+$lang['delete_questions_questionnaire_list'] = 'Pour supprimer cette question, veuillez supprimer les questionnaires suivants :';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';

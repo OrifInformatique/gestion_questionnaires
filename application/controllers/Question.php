@@ -20,7 +20,7 @@ class Question extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
+        $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
                             'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
                             'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
         $this->load->helper(array('url', 'form'));
@@ -65,9 +65,45 @@ class Question extends MY_Controller
     public function delete($id = 0)
     {
         if ($id != 0) {
-            $this->question_model->delete($id);
 
-            $this->index();
+        	$nbQuestionnaires = $this->question_questionnaire_model->count_by("FK_Question = ".$id);
+        	if($nbQuestionnaires == 0){
+
+        		$question = $this->question_model->get($id);
+
+        		if ($question->FK_Question_Type == 1){
+					$this->multiple_choice_model->delete_by("FK_Question = ".$id);
+				} elseif ($question->FK_Question_Type == 2){
+					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
+				} elseif ($question->FK_Question_Type == 3){
+					// TODO
+				} elseif ($question->FK_Question_Type == 4){
+					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
+					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
+					$this->cloze_text_model->delete_by("FK_Question = ".$id);
+				} elseif ($question->FK_Question_Type == 5){
+					// TODO
+				} elseif ($question->FK_Question_Type == 6){
+					$this->free_answer_model->delete_by("FK_Question = ".$id);
+				} elseif ($question->FK_Question_Type == 7){
+					$picture = "uploads/pictures/".$question->Picture_Name;
+					if(file_exists($picture)){
+						unlink($picture);
+					}
+					$this->picture_landmark_model->delete_by("FK_Question = ".$id);
+				}
+
+	            $this->question_model->delete($id);
+	            //redirect('/Question');
+	        } else {
+    			$questionnaires = $this->question_questionnaire_model->get_many_by("FK_Question = ".$id);
+    			for($i = 0; $i < $nbQuestionnaires; $i++){
+    				$output['questionnaires'][$i] = $this->questionnaire_model->get($questionnaires[$i]->FK_Questionnaire);
+    			}
+    			$output['error'] = "";
+
+    			$this->display_view('questionnaires/index', $output);
+	        }
         }
     }
 
