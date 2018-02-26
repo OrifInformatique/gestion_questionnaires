@@ -64,6 +64,8 @@
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
 
+                        echo "<option selected disabled hidden></option>";
+
                         //Récupère chaque topics
                         if(empty($_GET['module'])){
                             foreach ($topics as $object => $module) {
@@ -114,14 +116,6 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
-                    <?php
-                    /*if(isset($_GET['topic'])){
-                        echo "<h3>" . $_GET['topic'] . "</h3>";
-                    }
-                    if(isset($_GET['type'])){
-                        echo "<h3>" . $_GET['type'] . "</h3>";
-                    }*/
-                    ?>
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -134,69 +128,8 @@
                         $compteur = 0;
 
                         foreach ($questions as $objet => $question) {
-                            if (!empty($_GET['topic']) && !empty($_GET['type']) && !empty($_GET['module'])){
-                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (!empty($_GET['topic']) && empty($_GET['type']) && empty($_GET['module'])){
-                                if ($question->topic->ID == $_GET['topic']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (empty($_GET['topic']) && !empty($_GET['type']) && empty($_GET['module'])){
-                                if ($question->question_type->ID == $_GET['type']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (empty($_GET['topic']) && empty($_GET['type']) && !empty($_GET['module'])){
-                                if ($question->topic->FK_Parent_Topic == $_GET['module']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (!empty($_GET['topic']) && !empty($_GET['type']) && empty($_GET['module'])){
-                                if ($question->topic->ID == $_GET['topic'] && $question->question_type->ID == $_GET['type']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (!empty($_GET['topic']) && empty($_GET['type']) && !empty($_GET['module'])){
-                                if ($question->topic->ID == $_GET['topic'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (empty($_GET['topic']) && !empty($_GET['type']) && !empty($_GET['module'])){
-                                if ($question->question_type->ID == $_GET['type'] && $question->topic->FK_Parent_Topic == $_GET['module']) {
-                                    $compteur += 1;
-                                    ?>
-                                        <tbody>
-                                    <?php
-                                    displayQuestion($question);
-                                }
-                            } else if (empty($_GET['topic']) && empty($_GET['type']) && empty($_GET['module'])){
-                                $compteur += 1;
-                                ?>
-                                    <tbody>
-                                <?php
-                                displayQuestion($question);
-                            }
+                            $compteur += 1;
+                            displayQuestion($question);
                         }
 
                         if($compteur == 0){
@@ -205,7 +138,6 @@
                         }
 
                         ?>
-                        </tbody>
                     </table>
                 </div>
                 <div class="col-lg-2"></div>
