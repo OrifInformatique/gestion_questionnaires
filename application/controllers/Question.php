@@ -46,8 +46,6 @@ class Question extends MY_Controller
     		$where .= "FK_Question_Type = ".$_GET['type'];
     	}
 
-    	echo $where;
-
         if(empty($where)){
         	$output['questions'] = $this->question_model->with_all()->get_all();
        	} else {
@@ -94,7 +92,7 @@ class Question extends MY_Controller
 				}
 
 	            $this->question_model->delete($id);
-	            //redirect('/Question');
+	            redirect('/Question');
 	        } else {
     			$questionnaires = $this->question_questionnaire_model->get_many_by("FK_Question = ".$id);
     			for($i = 0; $i < $nbQuestionnaires; $i++){
@@ -966,6 +964,11 @@ class Question extends MY_Controller
 					$config['upload_path']          = './uploads/pictures';
 					$config['allowed_types']        = 'gif|jpg|jpeg|png';
 					$config['max_size']				= '2048';
+					if(isset($_POST['id'])){
+						$config['file_name']			= $_POST['id']."_".$_FILES['picture']['name'];
+					} else {
+						$config['file_name']			= $this->question_model->get_next_id()."_".$_FILES['picture']['name'];
+					}
 
 					$this->upload->initialize($config);
 
@@ -1003,7 +1006,14 @@ class Question extends MY_Controller
 							"Picture_Name" => $_POST['upload_data']['file_name']
 						);
 						$idQuestion = $this->question_model->insert($inputQuestion);
-						
+
+						$list = scandir("./uploads/pictures");
+						foreach ($list as $file) {
+							if(strpos($file, $idQuestion."_") !== false && $file != $_POST['upload_data']['file_name']){
+								unlink("uploads/pictures/".$file);
+							}
+						}
+
 						for($i=0; $i < $_POST['nbAnswer']; $i++){
 							$inputAnswer = array(
 								"FK_Question" => $idQuestion,
@@ -1031,6 +1041,13 @@ class Question extends MY_Controller
 							);
 						}
 						$this->question_model->update($_POST['id'], $inputQuestion);
+
+						$list = scandir("./uploads/pictures");
+						foreach ($list as $file) {
+							if(strpos($file, $_POST['id']."_") !== false && $file != $_POST['upload_data']['file_name']){
+								unlink("uploads/pictures/".$file);
+							}
+						}
 
 						for($i=0; $i < $_POST['nbAnswer']; $i++){
 							$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
