@@ -32,6 +32,14 @@ class Question extends MY_Controller
      */
     public function index()
     {
+    	if(isset($_GET['module'], $_GET['topic'], $_GET['type'])){
+    		$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
+    	}
+
+    	if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+    		redirect($_SESSION['filtres']);
+		}
+
     	$where = "";
 
     	$and = false;
