@@ -32,6 +32,13 @@ class Question extends MY_Controller
      */
     public function index()
     {
+    	if(!empty($_GET['module']) && !empty($_GET['topic'])){
+	    	$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
+	    	if($nbTopic==0){
+	    		redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
+	    	}
+	    }
+
     	if(isset($_GET['module'], $_GET['topic'], $_GET['type'])){
     		$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
     	}

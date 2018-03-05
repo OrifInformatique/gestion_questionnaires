@@ -94,8 +94,9 @@
                             }
                         } else {
                             foreach ($topics as $object => $module) {
-                                if ($module->FK_Parent_Topic == $_GET['module']) { ?>
+                                if ($module->FK_Parent_Topic == $_GET['module']) {
                                     //Affiche le topic parent
+                                     ?>
                                     <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
                                     </option>
                                     <?php

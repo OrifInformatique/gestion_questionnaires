@@ -42,10 +42,6 @@ function deleteItem(id, typeItem) {
     }
 }
 
-function init() {
-    document.getElementById("topic_selected").selectedIndex = -1;
-}
-
 function changeselect() {
     var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
