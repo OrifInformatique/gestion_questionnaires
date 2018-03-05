@@ -43,6 +43,7 @@
                         <?php
 
                         echo "<option selected disabled hidden></option>";
+                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
                         //Récupère chaque topics
                         foreach ($topics as $object => $module) {
@@ -56,6 +57,9 @@
                         ?>
                     </select>
                 </div>
+                <div class="col-lg-4" style="height:110px;">
+                    <a href="Question?"><button type="button"><?php echo $this->lang->line('clear_filters'); ?></button></a>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-2"></div>
@@ -65,6 +69,7 @@
                         <?php
 
                         echo "<option selected disabled hidden></option>";
+                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
                         //Récupère chaque topics
                         if(empty($_GET['module'])){
@@ -78,18 +83,22 @@
                                         if ($module->ID == $topics[$i]->FK_Parent_Topic) {
                                             //Affiche les topics associés ?>
                                             <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
-                                            </option><?php
+                                            </option>
+                                            <?php
                                         }
                                     }
+
+                                    echo "</optgroup>";
                                 }
-                                echo "</optgroup>";
+                                
                             }
                         } else {
                             foreach ($topics as $object => $module) {
                                 if ($module->FK_Parent_Topic == $_GET['module']) { ?>
                                     //Affiche le topic parent
                                     <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
-                                    </option><?php
+                                    </option>
+                                    <?php
                                 }
                             }
                         }
@@ -102,6 +111,8 @@
                         <?php
                         
                         echo "<option selected disabled hidden></option>";
+                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
+
 
                         //Récupère chaque topics
                         foreach ($questionTypes as $object => $module) {

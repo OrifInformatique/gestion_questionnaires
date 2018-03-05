@@ -42,17 +42,31 @@ class Question extends MY_Controller
 
     	$where = "";
 
-    	$and = false;
     	if(!empty($_GET['topic'])){
     		$where .= "FK_Topic = ".$_GET['topic'];
-    		$and = true;
     	}
     	if(!empty($_GET['type'])){
-    		if($and){
+    		if(!empty($where)){
     			$where .= " AND ";
     		}
     		$where .= "FK_Question_Type = ".$_GET['type'];
     	}
+    	if(!empty($_GET['module'])){
+    		if(!empty($where)){
+    			$where .= " AND ";
+    		}
+
+    		$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
+
+    		$listIdQuestion = '';
+			foreach ($topics as $topic) {
+				$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
+				
+			}
+			$listIdQuestion = substr($listIdQuestion, 0, -4);
+
+			$where .= "(".$listIdQuestion.")";
+		}
 
         if(empty($where)){
         	$output['questions'] = $this->question_model->with_all()->get_all();

@@ -78,7 +78,7 @@
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
 			<div class="form-group col-md-3">
-				<?php echo form_label($this->lang->line('A_desired_answers'), 'nb_desired_answers'); ?>
+				<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
 			</div>
 			<div class="form-group col-md-1">
 				<?php 
@@ -94,7 +94,7 @@
 		
 		<div class="row">
 			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
+				<?php echo form_label($this->lang->line('valid_answers_list'), 'answer'); ?>
 			</div>
 		</div>
 		
