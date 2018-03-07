@@ -91,11 +91,16 @@ $lang['title_question_add']             = 'Nouvelle question';
 $lang['question_text']                  = 'Texte de la question';
 $lang['answer_question_add']            = 'Réponse attendue';
 $lang['answers_list']                   = 'Liste des réponses';
+$lang['valid_answers_list']             = 'Liste des réponses valides';
 $lang['valid_answer']                   = 'Réponse valide';
 $lang['nb_desired_answers']             = 'Nombre de réponses attendues';
 $lang['landmark']                       = 'Liste des repères';
+$lang['change_picture']                 = 'Changer l\'image';
 $lang['cloze_text']                     = 'Texte à trous';
 $lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
+$lang['delete_questions_questionnaire_list'] = 'Pour supprimer cette question, veuillez supprimer les questionnaires suivants :';
+$lang['clear_filter']                   = 'Supprimer le filtre';
+$lang['clear_filters']                  = 'Supprimer tous les filtres';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
