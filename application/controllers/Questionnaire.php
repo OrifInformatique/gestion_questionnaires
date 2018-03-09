@@ -224,8 +224,6 @@ class Questionnaire extends MY_Controller
         $answers->SetFont('Arial', '', 16);
         $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
 
-
-
        // try
         //{
         foreach ($listRndQuestions as $object => $idQuestion) {
@@ -236,10 +234,18 @@ class Questionnaire extends MY_Controller
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-
+            //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
+            if($pdf->getY()> 225){
+                $pdf->addPage();
+            }
+            
             $pdf->SetFont('Arial','B',14);
             $pdf->MultiCell(0, 5, $Question, 0, "L");
             $pdf->SetFont('', '', 12);
+            
+            if($answers->getY()> 400){
+                $answers->addPage();
+            }
             $answers->SetFont('Arial','B',14);
             $answers->MultiCell(0, 5, $Question, 0, "L");
             $answers->SetFont('', '', 12);
@@ -295,14 +301,16 @@ class Questionnaire extends MY_Controller
 
         }
         $error = false;
-            /*
+        
+        /*
         }catch (Exception $e)
         {
             $error = true;
         }*/
 
-
-        $pdf->MultiCell(0, 20, "Total : .../$totalpoints", 0, "R");
+        $pdf->setTextColor(128,128,128);
+        $pdf->SetFont('Arial','',18);
+        $pdf->MultiCell(0, 20, "Total des points : .../$totalpoints             Note :            ", 0, "C");
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
@@ -496,7 +504,7 @@ class Questionnaire extends MY_Controller
         if(!isset($ClozeText->Cloze_Text))
         {
             return true;
-        }else {
+        } else {
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
             return false;
         }
@@ -513,8 +521,7 @@ class Questionnaire extends MY_Controller
             return true;
         }else {
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
-            return false;
-
+            
             $pdf->setTextColor(255,0,0);
 
             foreach ($ClozeTextAnswers as $ClozeTextAnswer)
@@ -523,6 +530,7 @@ class Questionnaire extends MY_Controller
             }
 
             $pdf->setTextColor(0,0,0);
+            return false;
         }
     }
 
@@ -659,6 +667,7 @@ class Questionnaire extends MY_Controller
             $h=$h/($w/80);
             $w=80;
         }
+
         $pdf->Image($fullPath, null, null, $w, $h);
         $y1 = $pdf->getY();
         $pdf->SetY($y1-$h);
@@ -674,5 +683,8 @@ class Questionnaire extends MY_Controller
             $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer), 0, "L");
             $pdf->setTextColor(0,0,0);
         }
+        $y2 = $pdf->getY();
+        //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
+        ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
     }
 }
