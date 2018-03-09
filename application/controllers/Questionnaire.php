@@ -81,25 +81,25 @@ class Questionnaire extends MY_Controller
      */
     public function delete($id = 0, $action = NULL)
     {
-        if ($id != 0) {
-            $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-            if (is_null($action)) {
-                $output = get_object_vars($this->questionnaire_model->get($id));
-                $output["questionnaires"] = $this->questionnaire_model->get_all();
-                $this->display_view("questionnaires/delete", $output);
-            } else {
-                if (count($questionnaire->question_questionnaires) > 0) {
-                    foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-                        $this->question_questionnaire_model->delete($question_questionnaire->ID);
-                    }
-                }
-                $this->questionnaire_model->delete($id);
-                $this->index();
-            }
-        } else {
-          $this->index();
+      if ($id != 0) {
+       $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
+       if (is_null($action)) {
+        $output = get_object_vars($this->questionnaire_model->get($id));
+        $output["questionnaires"] = $this->questionnaire_model->get_all();
+        $this->display_view("questionnaires/delete", $output);
+    } else {
+        if (count($questionnaire->question_questionnaires) > 0) {
+         foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+          $this->question_questionnaire_model->delete($question_questionnaire->ID);
       }
   }
+  $this->questionnaire_model->delete($id);
+  $this->index();
+}
+} else {
+    $this->index();
+}
+}
 
     /**
      * To add a new questionnaire
@@ -222,6 +222,8 @@ class Questionnaire extends MY_Controller
         $answers->SetTitle('Corrigé', true);
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
         $answers->SetFont('Arial', '', 16);
+        $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
+
 
 
        // try
@@ -237,8 +239,10 @@ class Questionnaire extends MY_Controller
 
             $pdf->SetFont('Arial','B',14);
             $pdf->MultiCell(0, 5, $Question, 0, "L");
-            $answers->MultiCell(0, 5, $Question, 0, "L");
             $pdf->SetFont('', '', 12);
+            $answers->SetFont('Arial','B',14);
+            $answers->MultiCell(0, 5, $Question, 0, "L");
+            $answers->SetFont('', '', 12);
 
 
             switch ($rndQuestion->FK_Question_Type) {
@@ -265,8 +269,16 @@ class Questionnaire extends MY_Controller
                 case 6:
                         // answer in red for a simple kind of question
                 $answers->setTextColor(255,0,0);
-                        //Answer put
-                $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer), 0, "L");
+
+                //Answer put
+                $thisAnswer = $this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer;
+                $answers->MultiCell(0, 5, iconv('UTF-8', 'windows-1252', "\n".$thisAnswer), 0, "L");
+                
+                $pdf->Ln();
+                //calcul du nombre de lignes accordée en fonction de la réponse attendue.
+                for ($i=0; $i < ceil(strlen($thisAnswer)/60); $i++) { 
+                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "______________________________________________________________________________"), 0, "L");     
+                } 
                 $answers->setTextColor(0,0,0);
 
                 break;
@@ -423,151 +435,151 @@ class Questionnaire extends MY_Controller
                 //Cross if the answer is true
                 $cross = "";
                 if ($m->Valid == 1) {
-                  $cross = "x";
-              }
+                    $cross = "x";
+                }
+                $pdf->setTextColor(255,0,0);
+                $pdf->MultiCell(5, 5, $cross, 1);
+                $pdf->SetY($y + 7.7);
+                $pdf->setTextColor(0,0,0);
+            }
 
-              $pdf->setTextColor(255,0,0);
+            return false;
 
-              $pdf->MultiCell(5, 5, $cross, 1);
-
-              $pdf->setTextColor(0,0,0);
-          }
-
-          return false;
-
-      }catch(Exception $e)
-      {
-        return true;
-    }
-}
-
-private function displayMultipleAnswers($Question, $pdf)
-{
-    $nbAskedAnswers = $Question->Nb_Desired_Answers;
-    $pdf->Ln();
-    for($i = 0; $i < $nbAskedAnswers; $i++)
-    {
-        $pdf->MultiCell(80, 8, "___________________________", 0);
-    }
-}
-
-private function answerMultipleAnswers($Question, $pdf)
-{
-    $pdf->setTextColor(255,0,0);
-
-    $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = $Question->ID");
-    foreach ($possible_answers as $possible_answer)
-    {
-        $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
-    }
-
-    $pdf->setTextColor(0,0,0);
-}
-
-private function displayAnswerDistribution($Question, $pdf)
-{
-    $An_Distrib_Questions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
-
-    foreach ($An_Distrib_Questions as $an_Distrib_Question)
-    {
-        $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$an_Distrib_Question->Question_Part), 1, "C");
-        $pdf->Cell(20,20, "", 0, "C");
-        $pdf->MultiCell(80,20, "", 1, "C");
-
-    }
-}
-
-    //if error return true
-private function displayClozeText($Question, $pdf)
-{
-    $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
-
-    if(!isset($ClozeText->Cloze_Text))
-    {
-        return true;
-    }else {
-        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
-        return false;
-    }
-}
-
-    //if error return true
-private function answerClozeText($Question, $pdf)
-{
-    $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
-    $ClozeTextAnswers = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
-
-    if(!isset($ClozeText->Cloze_Text))
-    {
-        return true;
-    }else {
-        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
-        return false;
-
-        $pdf->setTextColor(255,0,0);
-
-        foreach ($ClozeTextAnswers as $ClozeTextAnswer)
+        }
+        catch(Exception $e)
         {
-            $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $ClozeTextAnswer->Answer, 0), "L");
+            return true;
+        }
+    }
+
+    private function displayMultipleAnswers($Question, $pdf)
+    {
+        $nbAskedAnswers = $Question->Nb_Desired_Answers;
+        $pdf->Ln();
+        for($i = 0; $i < $nbAskedAnswers; $i++)
+        {
+            $pdf->MultiCell(80, 8, "___________________________", 0);
+        }
+    }
+
+    private function answerMultipleAnswers($Question, $pdf)
+    {
+        $pdf->setTextColor(255,0,0);
+        $pdf->Ln();
+        $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = $Question->ID");
+        foreach ($possible_answers as $possible_answer)
+        {
+            $pdf->MultiCell(80, 8, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
         }
 
         $pdf->setTextColor(0,0,0);
     }
-}
 
-private function displayTable($Question, $pdf)
-{
-    $tableCells = $this->table_cell_model->get_many_by("FK_Question = $Question->ID");
-    var_dump($tableCells);
-    $maxColumn = 0;
-    $maxRow = 0;
-    for($i = 0;$i < count($tableCells); $i++)
+    private function displayAnswerDistribution($Question, $pdf)
     {
-        if($maxColumn < $tableCells[$i]->Column_Nb) $maxColumn = $tableCells[$i]->Column_Nb;
-        if($maxRow < $tableCells[$i]->Row_Nb) $maxRow = $tableCells[$i]->Row_Nb;
+        $An_Distrib_Questions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
+
+        foreach ($An_Distrib_Questions as $an_Distrib_Question)
+        {
+            $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$an_Distrib_Question->Question_Part), 1, "C");
+            $pdf->Cell(20,20, "", 0, "C");
+            $pdf->MultiCell(80,20, "", 1, "C");
+
+        }
     }
 
-    for($j = 1;$j <= $maxColumn; $j++)
+    //if error return true
+    private function displayClozeText($Question, $pdf)
     {
-        foreach($tableCells as $tableCellColumn)
+        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+
+        if(!isset($ClozeText->Cloze_Text))
         {
-            if($tableCellColumn->Column_Nb == $j)
+            return true;
+        }else {
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            return false;
+        }
+    }
+
+    //if error return true
+    private function answerClozeText($Question, $pdf)
+    {
+        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+        $ClozeTextAnswers = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
+
+        if(!isset($ClozeText->Cloze_Text))
+        {
+            return true;
+        }else {
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            return false;
+
+            $pdf->setTextColor(255,0,0);
+
+            foreach ($ClozeTextAnswers as $ClozeTextAnswer)
             {
-                for($j = 1;$j <= $maxRow; $j++)
+                $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $ClozeTextAnswer->Answer, 0), "L");
+            }
+
+            $pdf->setTextColor(0,0,0);
+        }
+    }
+
+    private function displayTable($Question, $pdf)
+    {
+        $tableCells = $this->table_cell_model->get_many_by("FK_Question = $Question->ID");
+        var_dump($tableCells);
+        $maxColumn = 0;
+        $maxRow = 0;
+        for($i = 0;$i < count($tableCells); $i++)
+        {
+            if($maxColumn < $tableCells[$i]->Column_Nb) $maxColumn = $tableCells[$i]->Column_Nb;
+            if($maxRow < $tableCells[$i]->Row_Nb) $maxRow = $tableCells[$i]->Row_Nb;
+        }
+
+        for($j = 1;$j <= $maxColumn; $j++)
+        {
+            foreach($tableCells as $tableCellColumn)
+            {
+                if($tableCellColumn->Column_Nb == $j)
                 {
-                    foreach($tableCells as $tableCellRow)
+                    for($j = 1;$j <= $maxRow; $j++)
                     {
-                        if($tableCellRow->Row_Nb == $j)
+                        foreach($tableCells as $tableCellRow)
                         {
-                            if($tableCellRow->Header)
+                            if($tableCellRow->Row_Nb == $j)
                             {
-                                $pdf->SetFont('Arial','B',16);
-                                if($tableCellRow->Column_Nb < $maxColumn)
+                                if($tableCellRow->Header)
                                 {
-                                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
-                                }else
-                                {
-                                    $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    $pdf->SetFont('Arial','B',16);
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+                                        $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }
+                                    $pdf->SetFont('Arial', '',16);
                                 }
-                                $pdf->SetFont('Arial', '',16);
-                            }
-                            else if($tableCellRow->Display_In_Question)
-                            {
-                                if($tableCellRow->Column_Nb < $maxColumn)
+                                else if($tableCellRow->Display_In_Question)
                                 {
-                                    $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+                                        $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
+                                    }
                                 }else
                                 {
-                                    $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
-                                }
-                            }else
-                            {
-                                if($tableCellRow->Column_Nb < $maxColumn)
-                                {
-                                    $pdf->Cell(40,10, '', 1, "C");
-                                }else
-                                {
-                                    $pdf->MultiCell(40,10, '', 1, "C");
+                                    if($tableCellRow->Column_Nb < $maxColumn)
+                                    {
+                                        $pdf->Cell(40,10, '', 1, "C");
+                                    }else
+                                    {
+                                        $pdf->MultiCell(40,10, '', 1, "C");
+                                    }
                                 }
                             }
                         }
@@ -575,41 +587,18 @@ private function displayTable($Question, $pdf)
                 }
             }
         }
+
     }
 
-}
-
-private function displayPictureLandmarks($Question, $pdf)
-{
-
-        /*
-        $url = base_url() .'uploads/pictures/';
-        $width = getimagesize($fullPath)[0];
-        $height = getimagesize($fullPath)[1];
-
-
-        $image_p = imagecreatetruecolor(100, 100);
-        $image = imagecreatefromjpeg($fullPath);
-
-
-        imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
-
-        imagedestroy($image);
-        imagejpeg($image_p, $fullPath, 100);*/
+    private function displayPictureLandmarks($Question, $pdf)
+    {
 
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        $imageUrl = 'uploads/pictures/'. $picture;
-
-
-        if(is_file($imageUrl)){
-            $fullPath = $imageUrl;
-        } else {
-            $fullPath = base_url().'application/img/not-found.png';
-        }
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
         $pdf->Ln();
-        
+
 
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];
@@ -634,7 +623,7 @@ private function displayPictureLandmarks($Question, $pdf)
         $y2 = $pdf->getY();
         //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
         ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
-        
+
 
     }
 
@@ -659,15 +648,26 @@ private function displayPictureLandmarks($Question, $pdf)
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
         $imageUrl = 'uploads/pictures/'. $picture;
-        if(is_file($imageUrl)){
-            $fullPath = $imageUrl;
-        } else {
-            $fullPath = base_url() .'application/img/not-found.png';
+
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
+        $pdf->Ln();
+        $w = getimagesize($fullPath)[0];
+        $h = getimagesize($fullPath)[1];
+
+            //l'image ne dépasse pas 80 en largeur
+        if($w>80) {
+            $h=$h/($w/80);
+            $w=80;
         }
-        $pdf->Image($fullPath, 10,5,62);
+        $pdf->Image($fullPath, null, null, $w, $h);
+        $y1 = $pdf->getY();
+        $pdf->SetY($y1-$h);
+
 
         foreach ($pictureLandmarks as $pictureLandmark)
         {
+
+            $pdf->Cell(100);
             $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
 
             $pdf->setTextColor(255,0,0);
@@ -675,5 +675,4 @@ private function displayPictureLandmarks($Question, $pdf)
             $pdf->setTextColor(0,0,0);
         }
     }
-
 }
