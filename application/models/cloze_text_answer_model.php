@@ -12,8 +12,7 @@ class cloze_text_answer_model extends MY_Model
     protected $_table = 't_cloze_text_answer';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
-    protected $belongs_to = ['question' => ['primary_key' => 'FK_Cloze_Text',
-        'model' => 'cloze_text_model']];
+    protected $belongs_to = ['question' => ['primary_key' => 'FK_Cloze_Text', 'model' => 'cloze_text_model']];
 
     /**
      * Constructor

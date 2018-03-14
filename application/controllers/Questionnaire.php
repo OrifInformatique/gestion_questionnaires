@@ -238,17 +238,21 @@ class Questionnaire extends MY_Controller
             if($pdf->getY()> 225){
                 $pdf->addPage();
             }
-            
-            $pdf->SetFont('Arial','B',14);
-            $pdf->MultiCell(0, 5, $Question, 0, "L");
-            $pdf->SetFont('', '', 12);
-            
-            if($answers->getY()> 400){
-                $answers->addPage();
+            if($answers->getY()> 225){
+               $answers->addPage();
             }
+            $pdf->SetFont('Arial','B',14);
             $answers->SetFont('Arial','B',14);
-            $answers->MultiCell(0, 5, $Question, 0, "L");
+            
+            if($rndQuestion->FK_Question_Type != 4){
+                $pdf->MultiCell(0, 5, $Question, 0, "L");
+                $answers->MultiCell(0, 5, $Question, 0, "L");
+            }
+
+            $pdf->SetFont('', '', 12);
             $answers->SetFont('', '', 12);
+                
+                
 
 
             switch ($rndQuestion->FK_Question_Type) {
@@ -415,7 +419,6 @@ class Questionnaire extends MY_Controller
                 $pdf->SetX(100);
                 $pdf->MultiCell(5, 5, " ", 1);
                 $pdf->SetY($y + 7.7);
-                
             }
 
             return false;
@@ -492,45 +495,70 @@ class Questionnaire extends MY_Controller
             $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$an_Distrib_Question->Question_Part), 1, "C");
             $pdf->Cell(20,20, "", 0, "C");
             $pdf->MultiCell(80,20, "", 1, "C");
-
         }
     }
 
-    //if error return true
     private function displayClozeText($Question, $pdf)
     {
-        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
+        try{
+            $outputText = preg_split("#\[.+\]#", $Question->Question,-1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+  
+            $nbrAnswer = count($outputText)-1;
+            $result="";
+            foreach ($outputText as $key => $value) {
+               $result=$result.$value.(($key!=$nbrAnswer)?$key+1:'');
+            }
+            $pdf->SetFont('Arial','B',14);
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
+            $pdf->SetFont('', '', 12);
 
-        if(!isset($ClozeText->Cloze_Text))
-        {
-            return true;
-        } else {
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
+            for ($i=0; $i < $nbrAnswer; $i++) {
+                $pdf->MultiCell(0, 10, '['.($i+1).'] : ________________________', 0);
+            }
+
             return false;
         }
+        catch(Exception $e){
+            return true;
+        }
     }
+
 
     //if error return true
     private function answerClozeText($Question, $pdf)
     {
-        $ClozeText = $this->cloze_text_model->with_all()->get_by("FK_Question = $Question->ID");
-        $ClozeTextAnswers = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
-
-        if(!isset($ClozeText->Cloze_Text))
-        {
-            return true;
-        }else {
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text), 0, "J");
-            
-            $pdf->setTextColor(255,0,0);
-
-            foreach ($ClozeTextAnswers as $ClozeTextAnswer)
-            {
-                $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $ClozeTextAnswer->Answer, 0), "L");
+        try{
+            $outputText = preg_split("#\[.+\]#", $Question->Question,-1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+            $answers = ["réponse", "vie", "42"];//todo get array of answer $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = $Question->ID");//
+        
+            $nbrAnswer = count($outputText)-1;
+            $result="";
+            foreach ($outputText as $key => $value) {
+               $result=$result.$value.(($key!=$nbrAnswer)?$key+1:'');
+            }
+            $pdf->SetFont('Arial','B',14);
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
+            $pdf->SetFont('', '', 12);
+            if ($nbrAnswer == count($answers)){
+                for ($i=0; $i < $nbrAnswer; $i++) {
+                $pdf->Cell(10, 10, '['.($i+1).'] : ', 0);
+                $pdf->setTextColor(255,0,0);
+                $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $answers[$i]) , 0);
+                $pdf->setTextColor(0,0,0);
+                
+                }
+            }else{
+                $pdf->setTextColor(255,0,0);
+                foreach ($answers as $value) {
+                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252',$value), 0);
+                }
+                $pdf->setTextColor(0,0,0);
             }
 
-            $pdf->setTextColor(0,0,0);
             return false;
+        }
+        catch(Exception $e){
+            return true;
         }
     }
 
@@ -600,13 +628,11 @@ class Questionnaire extends MY_Controller
 
     private function displayPictureLandmarks($Question, $pdf)
     {
-
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
         (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
         $pdf->Ln();
-
 
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];
@@ -631,8 +657,6 @@ class Questionnaire extends MY_Controller
         $y2 = $pdf->getY();
         //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
         ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
-
-
     }
 
     private function answerPictureLandmarks($Question, $pdf)
@@ -662,7 +686,7 @@ class Questionnaire extends MY_Controller
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];
 
-            //l'image ne dépasse pas 80 en largeur
+        //l'image ne dépasse pas 80 en largeur
         if($w>80) {
             $h=$h/($w/80);
             $w=80;
@@ -671,7 +695,6 @@ class Questionnaire extends MY_Controller
         $pdf->Image($fullPath, null, null, $w, $h);
         $y1 = $pdf->getY();
         $pdf->SetY($y1-$h);
-
 
         foreach ($pictureLandmarks as $pictureLandmark)
         {
