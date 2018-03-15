@@ -241,6 +241,7 @@ class Questionnaire extends MY_Controller
             if($answers->getY()> 225){
                $answers->addPage();
             }
+
             $pdf->SetFont('Arial','B',14);
             $answers->SetFont('Arial','B',14);
             
@@ -277,7 +278,7 @@ class Questionnaire extends MY_Controller
                 $this->answerTable($rndQuestion, $answers);
                 break;
                 case 6:
-                        // answer in red for a simple kind of question
+                // answer in red for a simple kind of question
                 $answers->setTextColor(255,0,0);
 
                 //Answer put
@@ -299,7 +300,6 @@ class Questionnaire extends MY_Controller
                 default:
                 break;
             }
-
             $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
             $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
 
@@ -315,6 +315,9 @@ class Questionnaire extends MY_Controller
         $pdf->setTextColor(128,128,128);
         $pdf->SetFont('Arial','',18);
         $pdf->MultiCell(0, 20, "Total des points : .../$totalpoints             Note :            ", 0, "C");
+        $answers->setTextColor(128,128,128);
+        $answers->SetFont('Arial','',18);
+        $answers->MultiCell(0, 20, "Total des points : $totalpoints                                   ", 0, "C");
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
@@ -506,7 +509,7 @@ class Questionnaire extends MY_Controller
             $nbrAnswer = count($outputText)-1;
             $result="";
             foreach ($outputText as $key => $value) {
-               $result=$result.$value.(($key!=$nbrAnswer)?$key+1:'');
+               $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
             $pdf->SetFont('Arial','B',14);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
@@ -534,7 +537,7 @@ class Questionnaire extends MY_Controller
             $nbrAnswer = count($outputText)-1;
             $result="";
             foreach ($outputText as $key => $value) {
-               $result=$result.$value.(($key!=$nbrAnswer)?$key+1:'');
+               $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
             $pdf->SetFont('Arial','B',14);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
@@ -623,7 +626,6 @@ class Questionnaire extends MY_Controller
                 }
             }
         }
-
     }
 
     private function displayPictureLandmarks($Question, $pdf)
@@ -644,6 +646,7 @@ class Questionnaire extends MY_Controller
         }
         $pdf->Image($fullPath, null, null, $w, $h);
         $y1 = $pdf->getY();
+        $pagenum1 = $pdf->PageNo();
         $pdf->SetY($y1-$h);
 
         foreach ($pictureLandmarks as $pictureLandmark)
@@ -655,8 +658,14 @@ class Questionnaire extends MY_Controller
 
         }
         $y2 = $pdf->getY();
+        $pagenum2 = $pdf->PageNo();
         //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
-        ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        
+        if($pagenum1==$pagenum2){
+            ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        }else{
+            ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        }
     }
 
     private function answerPictureLandmarks($Question, $pdf)
@@ -694,6 +703,7 @@ class Questionnaire extends MY_Controller
 
         $pdf->Image($fullPath, null, null, $w, $h);
         $y1 = $pdf->getY();
+        $pagenum1 = $pdf->PageNo();
         $pdf->SetY($y1-$h);
 
         foreach ($pictureLandmarks as $pictureLandmark)
@@ -707,7 +717,12 @@ class Questionnaire extends MY_Controller
             $pdf->setTextColor(0,0,0);
         }
         $y2 = $pdf->getY();
+        $pagenum2 = $pdf->PageNo();
         //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
-        ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
+          if($pagenum1==$pagenum2){
+            ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        }else{
+            ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        }
     }
 }
