@@ -244,7 +244,7 @@ class Questionnaire extends MY_Controller
 
             $pdf->SetFont('Arial','B',14);
             $answers->SetFont('Arial','B',14);
-            
+
             if($rndQuestion->FK_Question_Type != 4){
                 $pdf->MultiCell(0, 5, $Question, 0, "L");
                 $answers->MultiCell(0, 5, $Question, 0, "L");
@@ -252,9 +252,6 @@ class Questionnaire extends MY_Controller
 
             $pdf->SetFont('', '', 12);
             $answers->SetFont('', '', 12);
-                
-                
-
 
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
@@ -278,20 +275,8 @@ class Questionnaire extends MY_Controller
                 $this->answerTable($rndQuestion, $answers);
                 break;
                 case 6:
-                // answer in red for a simple kind of question
-                $answers->setTextColor(255,0,0);
-
-                //Answer put
-                $thisAnswer = $this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer;
-                $answers->MultiCell(0, 5, iconv('UTF-8', 'windows-1252', "\n".$thisAnswer), 0, "L");
-                
-                $pdf->Ln();
-                //calcul du nombre de lignes accordée en fonction de la réponse attendue.
-                for ($i=0; $i < ceil(strlen($thisAnswer)/60); $i++) { 
-                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "______________________________________________________________________________"), 0, "L");     
-                } 
-                $answers->setTextColor(0,0,0);
-
+                $this->displaySimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $pdf);
+                $this->answerSimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $answers);
                 break;
                 case 7:
                 $this->displayPictureLandmarks($rndQuestion, $pdf);
@@ -410,7 +395,6 @@ class Questionnaire extends MY_Controller
     private function displayMultipleChoices($Question, $pdf)
     {
         try{
-
             $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
 
             foreach ($multi_Choice_Questions as $m)
@@ -435,7 +419,6 @@ class Questionnaire extends MY_Controller
     private function answerMultipleChoices($Question, $pdf)
     {
         try{
-
             $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
 
             foreach ($multi_Choice_Questions as $m)
@@ -571,6 +554,7 @@ class Questionnaire extends MY_Controller
         var_dump($tableCells);
         $maxColumn = 0;
         $maxRow = 0;
+
         for($i = 0;$i < count($tableCells); $i++)
         {
             if($maxColumn < $tableCells[$i]->Column_Nb) $maxColumn = $tableCells[$i]->Column_Nb;
@@ -627,7 +611,24 @@ class Questionnaire extends MY_Controller
             }
         }
     }
-
+    private function displaySimpleQuestion($Answer, $pdf)
+    {
+        
+        $pdf->Ln();
+        //calculation of the number of lines granted according to the expected answer.
+        for ($i=0; $i < ceil(strlen($Answer)/60); $i++) { 
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "____________________________________________________________________________"), 0, "L");     
+        } 
+        
+    }
+    private function answerSimpleQuestion($Answer, $pdf){
+        
+        // answer in red for a simple kind of question
+        $pdf->setTextColor(255,0,0);
+        //Answer put
+        $pdf->MultiCell(0, 7.5, iconv('UTF-8', 'windows-1252', "\n".$Answer), 0, "L");
+        $pdf->setTextColor(0,0,0);
+    }
     private function displayPictureLandmarks($Question, $pdf)
     {
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
@@ -655,7 +656,6 @@ class Questionnaire extends MY_Controller
             $pdf->Cell(7,5, "$pictureLandmark->Symbol: ", 0, "C");
             $pdf->MultiCell(100,5, '___________________', 0, "L");
             $pdf->Ln();
-
         }
         $y2 = $pdf->getY();
         $pagenum2 = $pdf->PageNo();
@@ -670,22 +670,6 @@ class Questionnaire extends MY_Controller
 
     private function answerPictureLandmarks($Question, $pdf)
     {
-
-        /*
-        $url = base_url() .'uploads/pictures/';
-        $width = getimagesize($fullPath)[0];
-        $height = getimagesize($fullPath)[1];
-
-
-        $image_p = imagecreatetruecolor(100, 100);
-        $image = imagecreatefromjpeg($fullPath);
-
-
-        imagecopyresampled($image_p, $image, 0, 0, 0, 0, 100, 100, $width, $height);
-
-        imagedestroy($image);
-        imagejpeg($image_p, $fullPath, 100);*/
-
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
         $imageUrl = 'uploads/pictures/'. $picture;
@@ -708,10 +692,8 @@ class Questionnaire extends MY_Controller
 
         foreach ($pictureLandmarks as $pictureLandmark)
         {
-
             $pdf->Cell(100);
             $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
-
             $pdf->setTextColor(255,0,0);
             $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer), 0, "L");
             $pdf->setTextColor(0,0,0);
@@ -719,7 +701,7 @@ class Questionnaire extends MY_Controller
         $y2 = $pdf->getY();
         $pagenum2 = $pdf->PageNo();
         //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
-          if($pagenum1==$pagenum2){
+        if($pagenum1==$pagenum2){
             ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
         }else{
             ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
