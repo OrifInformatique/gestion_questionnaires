@@ -9,7 +9,9 @@
  */
 class Questionnaire extends MY_Controller
 {
-
+    CONST TITLEFONT_SIZE = 18;
+    CONST QUESTIONFONT_SIZE = 12;
+   
     /* MY_Controller variables definition */
     protected $access_level = "2";
 
@@ -21,10 +23,12 @@ class Questionnaire extends MY_Controller
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
             'question_model', 'question_type_model', 'answer_distribution_model',
-            'multiple_choice_model', 'cloze_text_model', 'table_cell_model',
+            'multiple_choice_model', 'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
+
+        
     }
 
     /**
@@ -194,6 +198,9 @@ class Questionnaire extends MY_Controller
 
     public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
     {
+
+            
+    
         if($idQuestionnaire == -1){
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         } else {
@@ -206,30 +213,27 @@ class Questionnaire extends MY_Controller
         $answers = new FPDF();
 
         $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetFont('Arial', 'B', self::TITLEFONT_SIZE);
         $pdf->SetTitle("Questionnaire", true);
         $pdf->MultiCell(0, 20, 'Questionnaire', 1, "C");
-        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
         $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
-        $pdf->SetFont('Arial', '', 16);
+        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $pdf->Ln();
 
 
         // Title of the answered document
         $answers->AddPage();
-        $answers->SetFont('Arial', 'B', 16);
+        $answers->SetFont('Arial', 'B',  self::TITLEFONT_SIZE);
         $answers->SetTitle('Corrigé', true);
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
-        $answers->SetFont('Arial', '', 16);
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
 
-       // try
-        //{
         foreach ($listRndQuestions as $object => $idQuestion) {
 
             $rndQuestion = $this->question_model->get($idQuestion);
-                //var_dump($rndQuestion);
             $Question = $rndQuestion->Question;
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
@@ -242,13 +246,11 @@ class Questionnaire extends MY_Controller
                $answers->addPage();
             }
 
-            $pdf->SetFont('Arial','B',14);
-            $answers->SetFont('Arial','B',14);
+            $pdf->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
+            $answers->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
 
-            if($rndQuestion->FK_Question_Type != 4){
-                $pdf->MultiCell(0, 5, $Question, 0, "L");
-                $answers->MultiCell(0, 5, $Question, 0, "L");
-            }
+            $pdf->MultiCell(0, 5, $Question, 0, "L");
+            $answers->MultiCell(0, 5, $Question, 0, "L");
 
             $pdf->SetFont('', '', 12);
             $answers->SetFont('', '', 12);
@@ -298,16 +300,16 @@ class Questionnaire extends MY_Controller
         }*/
 
         $pdf->setTextColor(128,128,128);
-        $pdf->SetFont('Arial','',18);
+        $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
         $pdf->MultiCell(0, 20, "Total des points : .../$totalpoints             Note :            ", 0, "C");
         $answers->setTextColor(128,128,128);
-        $answers->SetFont('Arial','',18);
+        $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 20, "Total des points : $totalpoints                                   ", 0, "C");
         if ($error) {
             echo $this->lang->line('pdf_error');
         }else{
             if($idQuestionnaire == -1){
-                //$pdf->Output('I', 'Questionnaire', true);
+                $pdf->Output('I', 'Questionnaire', true);
                 $title = $tableTopics->getTitle();
                 $title_const = $title;
                 $i = 1;
@@ -487,16 +489,16 @@ class Questionnaire extends MY_Controller
     private function displayClozeText($Question, $pdf)
     {
         try{
-            $outputText = preg_split("#\[.+\]#", $Question->Question,-1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-  
+            $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
+            $outputText = preg_split("#\[\.*\]#", $ClozeText->Cloze_Text,-1,PREG_SPLIT_DELIM_CAPTURE);
             $nbrAnswer = count($outputText)-1;
-            $result="";
+            $result='';
+
             foreach ($outputText as $key => $value) {
                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
-            $pdf->SetFont('Arial','B',14);
+            $pdf->SetFont('','',self::QUESTIONFONT_SIZE);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
-            $pdf->SetFont('', '', 12);
 
             for ($i=0; $i < $nbrAnswer; $i++) {
                 $pdf->MultiCell(0, 10, '['.($i+1).'] : ________________________', 0);
@@ -514,33 +516,36 @@ class Questionnaire extends MY_Controller
     private function answerClozeText($Question, $pdf)
     {
         try{
-            $outputText = preg_split("#\[.+\]#", $Question->Question,-1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-            $answers = ["réponse", "vie", "42"];//todo get array of answer $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = $Question->ID");//
-        
+            $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
+            $outputText = preg_split("#\[\.*\]#", $ClozeText->Cloze_Text,-1,PREG_SPLIT_DELIM_CAPTURE);
+            $allAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = $ClozeText->ID");
+            $answers = array(); 
+
+            foreach ($allAnswers as $key) {
+                array_push($answers, $key->Answer);
+            }
+
+
             $nbrAnswer = count($outputText)-1;
-            $result="";
+            $result='';
             foreach ($outputText as $key => $value) {
                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
-            $pdf->SetFont('Arial','B',14);
+            $pdf->SetFont('Arial','',self::QUESTIONFONT_SIZE);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
-            $pdf->SetFont('', '', 12);
+
+                $pdf->setTextColor(255,0,0);
             if ($nbrAnswer == count($answers)){
                 for ($i=0; $i < $nbrAnswer; $i++) {
-                $pdf->Cell(10, 10, '['.($i+1).'] : ', 0);
-                $pdf->setTextColor(255,0,0);
-                $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $answers[$i]) , 0);
-                $pdf->setTextColor(0,0,0);
-                
+                    $pdf->Cell(10, 10, '['.($i+1).'] : ', 0);
+                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $answers[$i]) , 0);
                 }
             }else{
-                $pdf->setTextColor(255,0,0);
                 foreach ($answers as $value) {
                     $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252',$value), 0);
                 }
-                $pdf->setTextColor(0,0,0);
             }
-
+            $pdf->setTextColor(0,0,0);
             return false;
         }
         catch(Exception $e){
@@ -575,7 +580,7 @@ class Questionnaire extends MY_Controller
                             {
                                 if($tableCellRow->Header)
                                 {
-                                    $pdf->SetFont('Arial','B',16);
+                                    $pdf->SetFont('Arial','B', self::TITLEFONT_SIZE);
                                     if($tableCellRow->Column_Nb < $maxColumn)
                                     {
                                         $pdf->Cell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
@@ -583,7 +588,7 @@ class Questionnaire extends MY_Controller
                                     {
                                         $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252',$tableCellRow->Content), 1, "C");
                                     }
-                                    $pdf->SetFont('Arial', '',16);
+                                    $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
                                 }
                                 else if($tableCellRow->Display_In_Question)
                                 {
