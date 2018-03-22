@@ -12,8 +12,7 @@ class table_cell_model extends MY_Model
     protected $_table = 't_table_cell';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
-    protected $belongs_to = ['question' => ['primary_key' => 'FK_Question',
-        'model' => 'question_model']];
+    protected $belongs_to = ['question' => ['primary_key' => 'FK_Question', 'model' => 'question_model']];
 
     /**
      * Constructor
