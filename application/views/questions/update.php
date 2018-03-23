@@ -8,7 +8,7 @@
  */
 ?>
 <div class="container">
-    <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_question_update'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
 <div class="row">
     <div class="col-lg-2"></div>
     <div class="col-lg-8">

@@ -103,13 +103,13 @@ class Question extends MY_Controller
 				} elseif ($question->FK_Question_Type == 2){
 					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 3){
-					// TODO
+					// TODO 
 				} elseif ($question->FK_Question_Type == 4){
 					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
 					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
 					$this->cloze_text_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 5){
-					// TODO
+					// TODO 
 				} elseif ($question->FK_Question_Type == 6){
 					$this->free_answer_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 7){

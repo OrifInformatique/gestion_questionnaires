@@ -23,6 +23,5 @@
     <!--SideBar-->
     <link rel="stylesheet" href="<?=base_url()?>application/style/sidebar.css">
   </head>
-  <body  style="border-top: 0;background-image: url(<?=base_url()?>application/img/mooning.png);
-   padding-top: 50px; height: 1000px">
+  <body>
   <script src="<?=base_url()?>application/js/javascript.js"></script>

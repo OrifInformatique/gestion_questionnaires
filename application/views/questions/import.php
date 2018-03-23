@@ -9,8 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 style="padding-top: 12%; padding-bottom: 5%"
-        class="text-center"><?php echo $this->lang->line('title_import_questions'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_import_questions'); ?></h1>
 
     <?php
     $attributes = array("class" => "form-group",
@@ -53,7 +52,7 @@
         <div class="col-lg-2"></div>
     </div>
     <h1 style="padding-top: 12%; padding-bottom: 5%"
-        class="text-center"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
+        class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
     $attributes = array("class" => "form-group",

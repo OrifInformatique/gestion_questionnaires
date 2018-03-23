@@ -9,7 +9,7 @@
 ?>
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_questionnaire');?></h1>
+        <h1 class="text-center title-section"><?php echo $this->lang->line('title_questionnaire');?></h1>
 
         <?php
 			if($error == true) {
@@ -18,9 +18,8 @@
         ?>
 
         <div class="row">
-            <div class="col-lg-2"></div>
-            <div class="col-lg-8">
-                <table class="table table-hover" id="table">
+            <div class="table-responsive">
+                <table class="table table-hover" >
                     <thead>
                     <tr>
                         <th><?php echo $this->lang->line('questionnaire');?></th>
@@ -49,10 +48,8 @@
                     </tbody>
                 </table>
 
-				<a href="<?php echo base_url(); ?>Questionnaire/add/" class="btn btn-primary">Nouveau…</a>
-
             </div>
-            <div class="col-lg-2"></div>
+			<a href="<?php echo base_url(); ?>Questionnaire/add/" class="btn btn-primary">Nouveau…</a>
         </div>
     </div>
 </div>

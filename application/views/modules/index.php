@@ -9,7 +9,7 @@
 ?>
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_module'); ?></h1>
+        <h1 class="title-section"><?php echo $this->lang->line('title_module'); ?></h1>
         <?php
 			if($error == true) {
 				echo "<p class='alert alert-danger'>" . $error . "</p>";

@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");

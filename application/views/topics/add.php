@@ -8,7 +8,7 @@
  */
 ?>
 <div class="container jumbotron well" style="background-color: lavender">
-    <h2 class="text-center"><?php echo $this->lang->line('title_topic_add'); ?></h2>
+    <h2 class="title-section"><?php echo $this->lang->line('title_topic_add'); ?></h2>
 
 
     <div class="row">

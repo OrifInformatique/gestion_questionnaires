@@ -8,7 +8,7 @@
  */
 ?>
 <div class="container">
-    <h1 style="padding-top: 12%; padding-bottom: 5%" class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
     <div class="row">
         <?php
         $attributes = array("class" => "form-group",

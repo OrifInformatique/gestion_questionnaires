@@ -115,4 +115,37 @@
         position: relative;
         margin-right: 0;
     }
+
+    .title-section {
+        margin-top: 140px;
+        text-align: center;
+    }
+    
+}
+
+@media(max-width:768px) {
+    .title-section {
+        margin-top: 80px;
+        text-align: center;
+
+    }
+}
+
+#logo {
+    display:inline-block; 
+    margin: 3px;
+}
+#toggle-button{
+    margin:20px 0;
+
+}
+.navbar-default{
+    background-color: white;
+}
+.navbar-default .navbar-nav li a{
+    color: #337ab7;
+}
+.navbar-default .navbar-nav li a:focus , .navbar-default .navbar-nav li a:hover {
+    color: #23527c;
+    text-decoration: underline;
 }
