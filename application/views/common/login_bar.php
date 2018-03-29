@@ -7,7 +7,6 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
-
 /**
  * Test the pattern to find the active page
  * @param $pattern = related tab
@@ -51,7 +50,8 @@ function checkactive($page){
     if(isset($_SESSION['logged_in']))
     {
         ?>
-        <div style="min-width: 210px" class="navbar navbar-fixed-top navbar-default">
+        <div style="min-width: 230px" class="container navbar navbar-fixed-top navbar-default">
+            
             <div class="col-xs-12 col-sm-3 xs-center">
                 <a  id="logo" href="<?php echo base_url(); ?>">
                     <img  style="display: inline-block; text-align: right; margin: 10px;" src="<?=base_url()?>application/img/logo.jpg">
@@ -70,7 +70,8 @@ function checkactive($page){
                     <span class="icon-bar"></span>
                 </button>
             </div>
-            <div class="row col-xs-12">
+    
+            <div class="col-xs-12">
                 <div class="collapse navbar-collapse" id="myNavbar"> 
                     <ul class="nav navbar-nav">
                         <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
@@ -90,10 +91,10 @@ function checkactive($page){
                             </a>
                         </li>
                     </ul>
-                </div>
             </div>
         </div>
-        <div id="space-up"></div>
+        </div> 
+        <hr id="space-up"></hr>
 <?php
     }
 ?>

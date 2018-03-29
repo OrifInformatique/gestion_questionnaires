@@ -146,8 +146,8 @@
                                 <th><?= $this->lang->line('question'); ?></th>
                                 <th><?= $this->lang->line('question_type'); ?></th>
                                 <th><?= $this->lang->line('points'); ?></th>
-                                <th><?= $this->lang->line('edit'); ?></th>
-                                <th><?= $this->lang->line('remove'); ?></th>
+                                <th style="text-align: center;"><?= $this->lang->line('edit'); ?></th>
+                                <th style="text-align: center;"><?= $this->lang->line('remove'); ?></th>
                             </tr>
                         </thead>
                         <?php
