@@ -50,7 +50,7 @@ function checkactive($page){
     if(isset($_SESSION['logged_in']))
     {
         ?>
-        <div style="min-width: 230px" class="container navbar navbar-fixed-top navbar-default">
+        <div style="min-width: 270px" class="container navbar navbar-fixed-top navbar-default">
             
             <div class="col-xs-12 col-sm-3 xs-center">
                 <a  id="logo" href="<?php echo base_url(); ?>">
@@ -94,7 +94,8 @@ function checkactive($page){
             </div>
         </div>
         </div> 
-        <hr id="space-up"></hr>
+        <hr style="width: 100%; position: fixed; margin: 0;"></hr>
+        <div class="space-up"></div>
 <?php
     }
 ?>

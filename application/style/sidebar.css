@@ -116,9 +116,8 @@
         margin-right: 0;
     }
 
-    #space-up {
+    .space-up {
         margin-top: 146px;
-        text-align: center;
     }
     .title-section{
         text-align: left;
@@ -127,9 +126,8 @@
 }
 
 @media(max-width:768px) {
-    #space-up {
+    .space-up {
         margin-top: 177px;
-        text-align: center;
     }
     h1 {
         font-size: 25px;
@@ -141,7 +139,11 @@
         text-align: center;
     }
 }
+.space-up{
 
+        margin-bottom: 0;
+        text-align: center;
+}
 #logo {
     display:inline-block; 
     margin: 3px;
