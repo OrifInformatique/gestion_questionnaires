@@ -30,13 +30,18 @@ function displayTopics($topics){
 }
 function displayTableBody($topic){
     ?>
-	<tr><td>
-		<a href="<?php echo base_url(); ?>Topic/update/<?php echo $topic->ID; ?>"><?php echo $topic->Topic; ?></a>
-		<a href="<?php echo base_url(); ?>Topic/delete/<?php echo $topic->ID; ?>" class="close">×</a>
-	</td></tr>
+	<tr>
+        <td>
+        <a href="<?php echo base_url(); ?>Topic/update/<?php echo $topic->ID; ?>"><?php echo $topic->Topic; ?></a>
+       </td>   
+       <td>
+    	<a href="<?php echo base_url(); ?>Topic/delete/<?php echo $topic->ID; ?>" class="close">×</a>
+    	</td>
+    </tr>
 	<?php
 }
 ?>
+
 <div id="page-content-wrapper">
     <div class="container">
         <h1 class="title-section"><?php echo $this->lang->line('title_topic'); ?></h1>			
@@ -46,8 +51,7 @@ function displayTableBody($topic){
 			}
 		?>
         <div class="row">
-            <div class="col-lg-2"></div>
-            <div class="col-lg-4" style="height:110px;">
+            <div style="height:110px;">
                 <h4><?php echo $this->lang->line('focus_module'); ?></h4>
                 <select onchange="changeselect()" class="form-control" id="topic_selected">
                     <?php
@@ -62,51 +66,43 @@ function displayTableBody($topic){
                     ?>
                 </select>
             </div>
-            <div class="col-lg-6"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-2"></div>
-                <div class="col-lg-8">
+            <div class="table-responsive">
+                <?php
+                if(isset($_GET['param'])){
+                    echo "<h3>" . $_GET['param'] . "</h3>";
+                }
+                ?>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th><?php echo $this->lang->line('topic'); ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <?php
-                    if(isset($_GET['param'])){
-                        echo "<h3>" . $_GET['param'] . "</h3>";
-                    }
-                    ?>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th><?php echo $this->lang->line('topic'); ?></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-                        $compteur = displayTopics($topics);
-                        if($compteur == 0)
+                    $compteur = displayTopics($topics);
+                    if($compteur == 0)
+                    {
+                        foreach ($topics as $topic)
                         {
-                            foreach ($topics as $topic)
-                            {
-								if(isset($_GET['param'])){
-									if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
-									{
-										displayTableBody($topic);
-									}
-								} else {
-									if($topic->FK_Parent_Topic != 0)
-									{
-										displayTableBody($topic);
-									}
-
+							if(isset($_GET['param'])){
+								if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
+								{
+									displayTableBody($topic);
 								}
-                            }
-                        }?>
-                        </tbody>
-                    </table>
+							} else {
+								if($topic->FK_Parent_Topic != 0)
+								{
+									displayTableBody($topic);
+								}
 
-					<a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>										
-					
-                </div>
-                <div class="col-lg-2"></div>
+							}
+                        }
+                    }?>
+                    </tbody>
+                </table>
             </div>
+            <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>
         </div>
     </div>
     <script>

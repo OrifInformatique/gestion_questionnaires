@@ -116,18 +116,29 @@
         margin-right: 0;
     }
 
-    .title-section {
-        margin-top: 140px;
+    #space-up {
+        margin-top: 146px;
         text-align: center;
+    }
+    .title-section{
+        text-align: left;
     }
     
 }
 
 @media(max-width:768px) {
-    .title-section {
-        margin-top: 80px;
+    #space-up {
+        margin-top: 176px;
         text-align: center;
-
+    }
+    h1 {
+        font-size: 25px;
+    }
+    .title-section{
+        text-align: center;
+    }
+    .xs-center{
+        text-align: center;
     }
 }
 
@@ -148,4 +159,13 @@
 .navbar-default .navbar-nav li a:focus , .navbar-default .navbar-nav li a:hover {
     color: #23527c;
     text-decoration: underline;
+}
+.align-center{
+    text-align: center;
+}
+.btn_square{
+    height: 27px;
+    width: 27px;
+    padding: 0;
+    padding-top: 2px;
 }

@@ -101,13 +101,13 @@
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<div class="row">
-				<div class="form-group col-md-11">
+				<div class="form-group col-xs-11">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
 					?>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-1">
 					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
 					?>
 				</div>

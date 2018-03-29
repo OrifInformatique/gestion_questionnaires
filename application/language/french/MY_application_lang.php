@@ -2,8 +2,8 @@
 /**
  * Application's texts
  * 
- * @author		Orif Pomy, section informatique (UlSi, ViDi)
- * @copyright	Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
+ * @author      Orif Pomy, section informatique (UlSi, ViDi)
+ * @copyright   Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
 
 $lang['app_title']                      = 'Gestion questionnaire';
@@ -30,8 +30,8 @@ $lang['field_password']                 = 'Mot de passe';
 //Log Error
 $lang['invalid_id']                     = 'Les identifiants ne sont pas valides !';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
-$lang['msg_err_access_denied_header']	= 'Accès interdit';
-$lang['msg_err_access_denied_message']	= 'Vous n\'avez pas accès à cette partie du programme';
+$lang['msg_err_access_denied_header']   = 'Accès interdit';
+$lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
 
 //Unlog
 $lang['unlog']                          = ' Déconnexion';
@@ -45,10 +45,10 @@ $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_import']                     = 'Importer';
 $lang['btn_import_questions']           = 'Importer';
-$lang['btn_next']           			= 'Suivant';
-$lang['yes']          					= 'Oui';
-$lang['no']          					= 'Non';
-$lang['ouinon']          				= 'Oui/Non';
+$lang['btn_next']                       = 'Suivant';
+$lang['yes']                            = 'Oui';
+$lang['no']                             = 'Non';
+$lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
 $lang['cancel']                         = 'Annuler';
 
@@ -81,14 +81,14 @@ $lang['title_import_pictures']          = 'Importez vos images';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
-$lang['edit']							= 'Modifier';
-$lang['remove']							= 'Supprimer';
+$lang['edit']                           = 'Modifier';
+$lang['remove']                         = 'Supprimer';
 $lang['focus_topic']                    = 'Sujet concerné';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
 $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
-$lang['question_type']           		= 'Type de question';
+$lang['question_type']                  = 'Type de question';
 $lang['title_question_add']             = 'Nouvelle question';
 $lang['question_text']                  = 'Texte de la question';
 $lang['answer_question_add']            = 'Réponse attendue';

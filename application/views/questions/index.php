@@ -180,12 +180,12 @@
 function displayQuestion($question)
 {
     ?>
-    <tr id="<?php echo $question->ID; ?>" onclick="getID(<?php echo $question->ID;?>, 2)">
+    <tr id="<?php echo $question->ID; ?>" >
         <td><a href="./Question/detail/<?php echo $question->ID;?>"><?php echo $question->Question; ?></a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
-        <td style="text-align: right;""><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="btn btn-warning" id="btn_update">✎</a></td>
-        <td style="text-align: center;"><a class="btn btn-danger" id="btn_del">X</a></td>
+        <td style="text-align: right;"><?php echo $question->Points; ?></td>
+        <td style="text-align: center;"><a class="btn btn-warning btn_square" id="btn_update" onclick="updateItem(<?=$question->ID?>,2)">✎</a></td>
+        <td style="text-align: center;"><a class="btn btn-danger btn_square" id="btn_del" onclick="deleteItem(<?=$question->ID?>,2)">X</a></td>
     </tr>
     <?php
 }
