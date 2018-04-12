@@ -12,42 +12,38 @@
 
 
     <div class="row">
-        <div class="well">
-            <?php
-            $attributes = array("class" => "form-group",
-                "id" => "addTopicForm",
-                "name" => "addTopicForm");
-            echo form_open('Topic/form_add', $attributes);
+        <?php
+        $attributes = array("class" => "form-group",
+            "id" => "addTopicForm",
+            "name" => "addTopicForm");
+        echo form_open('Topic/form_add', $attributes);
+        if($error == true) {
+            echo "<p class='alert alert-warning'>" . $this->lang->line('add_topic_form_err') . "</p>";
+        }
+        ?>
+
+        <div class="col-xs-12">
+            <h4 for="module"><?php echo $this->lang->line('focus_module'); ?></h4>
+            <select  class="form-control" name="module_selected" id="module_selected">
+             <?php
+    			//Récupère chaque module
+                foreach ($topics as $object => $topic) {
+                    var_dump($topic);
+                    if($topic->FK_Parent_Topic == 0) {
+    				    //Affiche les modules
+                        echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
+                    }
+                }
             ?>
-            <?php
-            if($error == true) {
-                echo "<p class='alert alert-warning'>" . $this->lang->line('add_topic_form_err') . "</p>";
-            }
-            ?>
-            <div class="form-group">
-			
-				<label for="module"><?php echo $this->lang->line('focus_module'); ?></label>
-				<select  class="form-control" name="module_selected" id="module_selected">
-					<?php
-					//Récupère chaque module
-					foreach ($topics as $object => $topic) {
-						var_dump($topic);
-						if($topic->FK_Parent_Topic == 0)
-						{
-							//Affiche les modules
-							echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
-						}
-					}
-					?>
-				</select>
-				<h2></h2>
-			
-                <label for="title"><?php echo $this->lang->line('update_title_topic'); ?></label>
-                <div class="row">
-                    <div class="col-lg-4"><input type="text" name="title" class="form-control" id="title" value=""></div>
-                </div>
-            </div>
-            <input type="submit" class="btn btn-primary" />
-            <?php echo form_close(); ?>
+            </select>
         </div>
+        <div class="col-xs-12 col-sm-8">
+            <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
+            <input type="text" name="title" class="form-control" id="title" value="">
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <input type="submit" class="btn btn-success col-xs-12 xs-space" />
+        </div>
+        <?php echo form_close(); ?>
     </div>
+</div>

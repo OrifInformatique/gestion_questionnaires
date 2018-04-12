@@ -51,7 +51,7 @@ function displayTableBody($topic){
 			}
 		?>
         <div class="row">
-            <div style="height:110px;">
+            <div class="col-xs-12 col-sm-8">
                 <h4><?php echo $this->lang->line('focus_module'); ?></h4>
                 <select onchange="changeselect()" class="form-control" id="topic_selected">
                     <?php
@@ -65,8 +65,12 @@ function displayTableBody($topic){
                     }
                     ?>
                 </select>
+            </div>  
+            <div class="col-xs-12 col-sm-4" style="margin-bottom: 10px">
+                <h4><br/></h4>
+                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12"><?php echo $this->lang->line('btn_add_topic'); ?></a>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive col-xs-12">
                 <?php
                 if(isset($_GET['param'])){
                     echo "<h3>" . $_GET['param'] . "</h3>";
@@ -85,24 +89,23 @@ function displayTableBody($topic){
                     {
                         foreach ($topics as $topic)
                         {
-							if(isset($_GET['param'])){
-								if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
-								{
-									displayTableBody($topic);
-								}
-							} else {
-								if($topic->FK_Parent_Topic != 0)
-								{
-									displayTableBody($topic);
-								}
+                            if(isset($_GET['param'])){
+                                if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
+                                {
+                                    displayTableBody($topic);
+                                }
+                            } else {
+                                if($topic->FK_Parent_Topic != 0)
+                                {
+                                    displayTableBody($topic);
+                                }
 
-							}
+                            }
                         }
                     }?>
                     </tbody>
                 </table>
             </div>
-            <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-primary">Nouveau…</a>
         </div>
     </div>
     <script>

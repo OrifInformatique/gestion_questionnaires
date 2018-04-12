@@ -7,42 +7,14 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-    <div id="wrapper">
-
-        <!-- Sidebar 
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#"><?php echo $this->lang->line('nav_question');?></a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add');?></a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import');?></a>
-                </li>
-                <li>
-                    <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
-                </li>
-                <li>
-                    <a id="btn_del"><?php echo $this->lang->line('btn_del');?></a>
-                </li>
-            </ul>
-        </div>-->
-    </div>
     <div id="page-content-wrapper">
         <div class="container">
             <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
             <div class="row">
-                <div class="col-lg-4">
-                    <h4><br/></h4>
-                    <a href="Question?" class="button-align" ><button style="width: 100%" class="btn btn-danger" type="button"><?php echo $this->lang->line('clear_filters'); ?></button></a>
-                </div>
-                <div class="col-lg-8">
+               <div class="col-lg-4">
                     <h4><?php echo $this->lang->line('focus_module'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="module_selected">
                         <?php
-
                         echo "<option selected disabled hidden></option>";
                         echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
@@ -54,27 +26,6 @@
                                     </option>
                                 <?php
                             }
-                        }
-                        ?>
-                    </select>
-                </div>
-
-            </div>
-            <div class="row">
-                 <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
-                    <select onchange="changeselect()" class="form-control" id="question_type_selected">
-                        <?php
-                        
-                        echo "<option selected disabled hidden></option>";
-                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
-
-
-                        //Récupère chaque topics
-                        foreach ($questionTypes as $object => $module) {
-                                ?>
-                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
-                                <?php
                         }
                         ?>
                     </select>
@@ -122,23 +73,42 @@
                         ?>
                     </select>
                 </div>
-               
+                <div class="col-lg-8 col-sm-6">
+                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
+                    <select onchange="changeselect()" class="form-control" id="question_type_selected">
+                        <?php
+                        
+                        echo "<option selected disabled hidden></option>";
+                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
+
+
+                        //Récupère chaque topics
+                        foreach ($questionTypes as $object => $module) {
+                                ?>
+                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
+                                <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-sm-4 col-sm-offset-2 col-lg-offset-0 col-xs-12">
+                    <a href="Question?" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                </div>
+
             </div>
-                <br />
+                <hr></hr>
             <div class="row">
-                <div class="col-sm-6">
-                    <h4><br/></h4>
-                    <a class="btn btn-success" style="width: 100%" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add');?></a>
-                </div> 
-                <div class="col-sm-6">
-                    <h4><br/></h4>
-                    <a class="btn btn-info" style="width: 100%" href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import');?></a>
-                </div> 
+                <div class="col-xs-12 col-sm-4">
+                    <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
+                </div>
+                <div class="col-xs-12 col-sm-offset-4 col-sm-4">
+                    <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
+                </div>
             </div>
 
             <div class="row">
 
-                <br />
+                <br>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -169,13 +139,13 @@
                     }
                     ?>
                 </div>
-                <div class="col-lg-2"></div>
             </div>
         </div>
     </div>
     <script>
         window.onload = init();
     </script>
+
 <?php
 function displayQuestion($question)
 {

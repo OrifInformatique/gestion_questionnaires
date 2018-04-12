@@ -19,40 +19,27 @@
     echo form_open_multipart('Question/import', $attributes);
     ?>
     <div class="row">
-        <div class="col-lg-4"></div>
         <div class="form-group">
-            <div class="col-lg-4" style="height:110px;">
+            <div class="col-sm-8">
                 <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
-
                 <?php echo form_dropdown('topic_selected', $topics, NULL, 'id="topic_selected" class="form-control"'); ?>
             </div>
-            <div class="col-lg-2">
-                </br>
-                </br>
-                <div class="form-group">
-                    <a href="../Topic" class="btn btn-info"><?php echo $this->lang->line('btn_add');?></a>
-                </div>
+            <div class="col-sm-4">
+                
+                <a href="../Topic" class="btn btn-info col-xs-12 xs-space"><?php echo $this->lang->line('btn_add_topic');?></a>
             </div>
         </div>
     </div>
+    <br>
     <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-8">
-            <div class="form-group">
-                <input class="form-control-file" type="file" name="excelfile" id="excelfile"
-                       accept=".xlsx">
-            </div>
-            <div class="form-group">
-                <input class="btn btn-success" type="submit"
-                       value="<?php echo $this->lang->line('btn_import_questions'); ?>" name="submitExcel">
-            </div>
-            </form>
-
+        <div class="col-xs-12 col-sm-8 xs-space"> 
+            <input class="form-control-file" type="file" name="excelfile" id="excelfile" accept=".xlsx">
+         </div>
+        <div class="col-xs-12 col-sm-4 xs-space"> 
+            <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_question'); ?>" name="submitExcel">
         </div>
-        <div class="col-lg-2"></div>
     </div>
-    <h1 style="padding-top: 12%; padding-bottom: 5%"
-        class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
     $attributes = array("class" => "form-group",
@@ -61,17 +48,12 @@
         "enctype" => "multipart/form-data");
     echo form_open('Question/import', $attributes);
     ?>
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile"
-                       accept="image/*" multiple>
-            </div>
-            <div class="form-group">
-                <input class="btn btn-success" type="submit"
-                       value="<?php echo $this->lang->line('btn_import'); ?>" name="submitPictures">
-            </div>
+    <div class="row"> 
+        <div class="col-xs-12 col-sm-8 xs-space">
+                <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile" accept="image/*" multiple>
+        </div> 
+        <div class="col-xs-12 col-sm-4 xs-space">
+                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import'); ?>" name="submitPictures">
         </div>
     </div>
 </div>

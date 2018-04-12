@@ -34,7 +34,7 @@ function checkactive($page){
             test_regex('/\/Questionnaire/');
             break;
         case 2:
-            test_regex('/\/Question$|Question\//');
+            test_regex('/\/Question[^n]/');
             break;
         case 3:
             test_regex('/\/Module/');
@@ -91,8 +91,8 @@ function checkactive($page){
                             </a>
                         </li>
                     </ul>
+                </div>
             </div>
-        </div>
         </div> 
         <hr style="width: 100%; position: fixed; margin: 0;"></hr>
         <div class="space-up"></div>

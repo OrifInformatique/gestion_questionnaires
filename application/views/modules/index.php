@@ -16,7 +16,10 @@
 			}
 		?>
 		<div class="row">
-			<div class="table-responsive">
+			<div class="col-xs-12 col-sm-4">
+				<a href="<?php echo base_url(); ?>Module/add/" class="btn btn-success col-xs-12"><?php echo $this->lang->line('btn_add_module'); ?></a>
+			</div>
+			<div class="col-xs-12 table-responsive">
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -42,7 +45,6 @@
 					</tbody>
 				</table>
 			</div>
-			<a href="<?php echo base_url(); ?>Module/add/" class="btn btn-primary">Nouveau…</a>
 		</div>
 	</div>
 </div>
