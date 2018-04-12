@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
     <?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -60,10 +60,10 @@
 		</div>
 
 		<div class="row">
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-8">
 				<?php echo form_label($this->lang->line('points'), 'points'); ?>
 			</div>
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-4">
 				<?php 
 		        	if(isset($name)){
 		        		echo form_input('points', $points, 'class="form-control" id="name"');
@@ -77,10 +77,10 @@
 		
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
-			<div class="form-group col-md-3">
+			<div class="form-group col-sm-8">
 				<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
 			</div>
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-4">
 				<?php 
 		        	if(isset($name)){
 		        		echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="name"');

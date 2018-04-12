@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
     <?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -58,9 +58,9 @@
 				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 				<?php
 					if(isset($name)){
-		        		echo form_input('name', $name, 'class="form-control" id="name"');
+		        		echo form_long_input('name', $name, 'class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('name', '', 'class="form-control" id="name"');
+		        		echo form_long_input('name', '', 'class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -109,19 +109,19 @@
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<div class="row">
-				<div class="form-group col-md-1">
+				<div class="col-md-1">
 					<?php
 						echo form_input('reponses['.$i.'][symbol]', $answers[$i]['symbol'], 'class="form-control" id="answer"');
 					?>
 				</div>
-				<div class="form-group col-md-10">
+				<div class="col-md-10">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
 					?>
 				</div>
-				<div class="col-md-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
+				<div class="form-group col-md-1">
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-danger"');
 					?>
 				</div>
 			</div>
@@ -129,7 +129,7 @@
 		
 		<div class="row">
 			<div class="col-md-1">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-success"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>

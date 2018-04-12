@@ -171,7 +171,9 @@
     padding: 0;
     padding-top: 2px;
 }
-
+.inline{
+    display: inline;
+}
 @media(min-width:768px) {
     .xs-space{
      margin-top: 40px;

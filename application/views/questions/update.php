@@ -8,10 +8,9 @@
  */
 ?>
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
-<div class="row">
-    <div class="col-lg-2"></div>
-    <div class="col-lg-8">
+    <h1 class="title-section"><?php echo $this->lang->line('question_type'); ?></h1>
+    <div style="background:red;" class="row">
+        <div class="col-lg-8">
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "updateQuestionForm",
@@ -36,6 +35,6 @@
             </div>
             <input type="submit" class="btn btn-primary" />
             <?php echo form_close(); ?>
-    </div>
-    <div class="col-lg-2"></div>
-</div>
+        </div>
+    </div>  
+</div>  

@@ -111,8 +111,8 @@ $lang['clear_filters']                  = 'Supprimer tous les filtres';
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
 $lang['focus_module']                   = 'Module concerné :';
-$lang['title_topic_update']             = 'Modifier un topic';
-$lang['title_topic_add']                = 'Ajouter un topic';
+$lang['title_topic_update']             = 'Modifier un sujet';
+$lang['title_topic_add']                = 'Ajouter un sujet';
 $lang['topic']                          = 'Sujet(s)';
 $lang['update_title_topic']             = 'Titre :';
 $lang['add_title_topic']                = 'Titre :';

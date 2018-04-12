@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
     <?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -87,9 +87,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-		        		echo form_input('cloze_text', $cloze_text, 'class="form-control" id="cloze_text"');
+		        		echo form_long_input('cloze_text', $cloze_text, 'class="form-control" id="cloze_text"');
 		        	} else {
-		        		echo form_input('cloze_text', '', 'class="form-control" id="cloze_text"');
+		        		echo form_long_input('cloze_text', '', 'class="form-control" id="cloze_text"');
 		        	}
 		        ?>
 			</div>

@@ -11,7 +11,6 @@
     <h2 class="title-section"><?php echo $this->lang->line('title_topic_update'); ?></h2>
     <div class="row">
    
-        <div class="well">
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "updateTopicForm",
@@ -23,15 +22,15 @@
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_topic_form_err') . "</p>";
             }
             ?>
-            <div class="form-group">
-                <label for="title"><?php echo $this->lang->line('update_title_topic'); ?></label>
-                <div class="row">
-                    <input type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>">
-                </div>
-                <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
+            <div class="col-xs-12 col-sm-8">
+                <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
+                <input type="text" name="title" class="form-control col-xs-12" id="title" value="<?php echo $title; ?>">
             </div>
-            <input type="submit" class="btn btn-primary" />
+            <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
+            <div class="col-xs-12 col-sm-4">
+                <input type="submit" class="btn btn-success xs-space col-xs-12" />
+            </div>
+
             <?php echo form_close(); ?>
-        </div>
     </div>
 </div>

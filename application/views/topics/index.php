@@ -67,8 +67,7 @@ function displayTableBody($topic){
                 </select>
             </div>  
             <div class="col-xs-12 col-sm-4" style="margin-bottom: 10px">
-                <h4><br/></h4>
-                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12"><?php echo $this->lang->line('btn_add_topic'); ?></a>
+                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12 xs-space"><?php echo $this->lang->line('btn_add_topic'); ?></a>
             </div>
             <div class="table-responsive col-xs-12">
                 <?php
@@ -78,9 +77,9 @@ function displayTableBody($topic){
                 ?>
                 <table class="table table-hover">
                     <thead>
-                    <tr>
-                        <th><?php echo $this->lang->line('topic'); ?></th>
-                    </tr>
+                        <tr>
+                            <th><?php echo $this->lang->line('topic'); ?></th>
+                        </tr>
                     </thead>
                     <tbody>
                     <?php
