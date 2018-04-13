@@ -97,31 +97,34 @@
 		
 		<!-- ANSWERS FIELDS -->
 		
-		<div class="row">
-			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
-			</div>
-		</div>
-		
+		<div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="2"><?php echo form_label($this->lang->line('answers_list'), 'answer') ?></th>
+                   	</tr>
+                </thead>
+                <tbody> 
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
-			<div class="row">
-				<div class="form-group col-xs-11">
+			<tr>
+				<td class="form-group col-xs-11">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
 					?>
-				</div>
-				<div class="col-xs-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
+				</td>
+				<td class="form-group col-xs-1">
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-danger"');
 					?>
-				</div>
-			</div>
+				</td>
+			</tr>
 		<?php } ?>
-		
+			</table>
+		</div>
 		<div class="row">
 			<div class="col-md-2">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-success"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>
