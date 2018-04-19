@@ -129,13 +129,14 @@
     .space-up {
         margin-top: 177px;
     }
+
     h1 {
         font-size: 25px;
     }
-    .title-section{
+    #logo {
         text-align: center;
     }
-    .xs-center{
+     .xs-center{
         text-align: center;
     }
 }
@@ -148,10 +149,6 @@
     display:inline-block; 
     margin: 3px;
 }
-#toggle-button{
-    margin:20px 0;
-
-}
 .navbar-default{
     background-color: white;
 }
@@ -161,26 +158,4 @@
 .navbar-default .navbar-nav li a:focus , .navbar-default .navbar-nav li a:hover {
     color: #23527c;
     text-decoration: underline;
-}
-.align-center{
-    text-align: center;
-}
-.btn_square{
-    height: 27px;
-    width: 27px;
-    padding: 0;
-    padding-top: 2px;
-}
-.inline{
-    display: inline;
-}
-@media(min-width:768px) {
-    .xs-space{
-     margin-top: 40px;
-    }
-}
-@media(max-width:768px) {
-    .xs-space{
-     margin-top: 10px;
-    }
 }

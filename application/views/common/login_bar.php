@@ -53,7 +53,7 @@ function checkactive($page){
         <div style="min-width: 270px" class="container navbar navbar-fixed-top navbar-default">
             
             <div class="col-xs-12 col-sm-3 xs-center">
-                <a  id="logo" href="<?php echo base_url(); ?>">
+                <a id="logo" href="<?php echo base_url(); ?>">
                     <img  style="display: inline-block; text-align: right; margin: 10px;" src="<?=base_url()?>application/img/logo.jpg">
                 </a>
             </div>

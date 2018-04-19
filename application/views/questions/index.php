@@ -116,8 +116,6 @@
                                 <th><?= $this->lang->line('question'); ?></th>
                                 <th><?= $this->lang->line('question_type'); ?></th>
                                 <th><?= $this->lang->line('points'); ?></th>
-                                <th style="text-align: center;"><?= $this->lang->line('edit'); ?></th>
-                                <th style="text-align: center;"><?= $this->lang->line('remove'); ?></th>
                             </tr>
                         </thead>
                         <?php
@@ -140,7 +138,7 @@
                     ?>
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
     <script>
         window.onload = init();
@@ -154,8 +152,8 @@ function displayQuestion($question)
         <td><a href="./Question/detail/<?php echo $question->ID;?>"><?php echo $question->Question; ?></a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="btn btn-warning btn_square" id="btn_update" onclick="updateItem(<?=$question->ID?>,2)">✎</a></td>
-        <td style="text-align: center;"><a class="btn btn-danger btn_square" id="btn_del" onclick="deleteItem(<?=$question->ID?>,2)">X</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_update" onclick="updateItem(<?=$question->ID?>,2)">✎</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_del" onclick="deleteItem(<?=$question->ID?>,2)">×</a></td>
     </tr>
     <?php
 }

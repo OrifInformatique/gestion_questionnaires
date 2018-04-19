@@ -22,6 +22,7 @@
 
     <!--SideBar-->
     <link rel="stylesheet" href="<?=base_url()?>application/style/sidebar.css">
+    <link rel="stylesheet" href="<?=base_url()?>application/views/css/mystyle.css">
   </head>
   <body>
   <script src="<?=base_url()?>application/js/javascript.js"></script>

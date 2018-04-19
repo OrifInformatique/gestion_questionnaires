@@ -1,0 +1,31 @@
+#toggle-button{
+    margin:20px 0;
+
+}
+
+.align-center{
+    text-align: center;
+}
+.btn_square{
+    height: 27px;
+    width: 27px;
+    padding: 0;
+    padding-top: 2px;
+}
+.inline{
+    display: inline;
+}
+@media(min-width:768px) {
+    .xs-space{
+     margin-top: 40px;
+    }
+}
+@media(max-width:768px) {
+    .xs-space{
+     margin-top: 10px;
+    }
+
+    .title-section{
+        text-align: center;
+    }
+}
