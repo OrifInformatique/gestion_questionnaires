@@ -51,7 +51,7 @@ function displayTableBody($topic){
 			}
 		?>
         <div class="row">
-            <div class="col-xs-12 col-sm-8">
+            <div class="col-xs-12">
                 <h4><?php echo $this->lang->line('focus_module'); ?></h4>
                 <select onchange="changeselect()" class="form-control" id="topic_selected">
                     <?php
@@ -67,7 +67,7 @@ function displayTableBody($topic){
                 </select>
             </div>  
             <div class="col-xs-12 col-sm-4" style="margin-bottom: 10px">
-                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12 xs-space"><?php echo $this->lang->line('btn_add_topic'); ?></a>
+                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12"><?php echo $this->lang->line('btn_add_topic'); ?></a>
             </div>
             <div class="table-responsive col-xs-12">
                 <?php

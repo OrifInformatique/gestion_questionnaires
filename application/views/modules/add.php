@@ -20,13 +20,16 @@
                 echo "<p class='alert alert-warning'>" . $this->lang->line('add_module_form_err') . "</p>";
             }
         ?>
-        <div class="form-group col-xs-12 col-sm-8">
+        <div class="form-group col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('add_title_module'); ?></h4>
             <input type="text" name="title" class="form-control" id="title" value="">
             <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
         </div>
-        <div class="col-xs-12 col-sm-4">
-            <input type="submit" class="btn btn-success col-xs-12 xs-space" />
+        <div class="col-xs-12">
+       
+           <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\'/gestion_questionnaires/Module\'"'); ?>
+            <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
+                     
         </div>
         <?php echo form_close(); ?>
     </div>

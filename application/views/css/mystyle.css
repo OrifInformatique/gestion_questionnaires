@@ -15,6 +15,10 @@
 .inline{
     display: inline;
 }
+.btn{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 @media(min-width:768px) {
     .xs-space{
      margin-top: 40px;
@@ -28,4 +32,7 @@
     .title-section{
         text-align: center;
     }
+}
+.no-border{
+    margin: 0;
 }

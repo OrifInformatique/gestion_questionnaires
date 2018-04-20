@@ -55,6 +55,7 @@ $lang['no']                             = 'Non';
 $lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
 $lang['cancel']                         = 'Annuler';
+$lang['return']                         = 'Retour';
 
 
 // Questionnaires pages
@@ -73,7 +74,6 @@ $lang['add_title_questionnaire']        = 'Titre :';
 $lang['add_topic_questionnaire']        = 'Sujet :';
 $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
-$lang['generatePDF_btn']                = 'Enregistrer';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
 

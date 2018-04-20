@@ -157,7 +157,7 @@ class Questionnaire extends MY_Controller
         $tableTopics->setTitle($this->input->post('title'));
 
         //If the user want to validate his pdf
-        if (!isset($_POST[$this->lang->line('generatePDF_btn')]))
+        if (!isset($_POST[$this->lang->line('save')]))
         {
             $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
             $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');

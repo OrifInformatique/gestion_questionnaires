@@ -27,14 +27,14 @@ $nbMaxQuestion = 0;
             }
             ?>
             <div class="form-group col-xs-12 col-sm-6">
-                <label for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></label>
+                <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12"><input type="text" name="title" class="form-control" id="title"
                         value="<?php echo $title;?>"></div>
                 </div>
             </div>
             <div class="form-group col-xs-12 col-sm-6">
-                <label for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></label>
+                <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
                         <select class="form-control" id="topic_selected" 
@@ -64,12 +64,11 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-sm-4 colxs-12">
-                <label for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></label>
+                <h4 for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></h4>
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-md-4 col-sm-8 col-xs-12">
-                <label for="nb_questions"><br></label>
-                <input type="submit" class="btn btn-success col-xs-12"  value="<?php echo $this->lang->line('add_form')?>"/>
+                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>"/>
             </div>
         </div>
         <div class="row">
@@ -112,9 +111,19 @@ $nbMaxQuestion = 0;
                     ?>
                     </tbody>
                 </table>
-                <input type="submit" class="btn btn-success col-xs-12 col-sm-8 col-md-4 " name="<?php echo $this->lang->line('generatePDF_btn');?>" value="<?php echo $this->lang->line('generatePDF_btn');?>">
-                <?php echo form_close(); ?>
+               
+
+                
             </div>
+            <div class="col-sm-4 col-xs-12" > 
+                <?php 
+                echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12" onclick="location.href=\'/gestion_questionnaires/Questionnaire\'"'); ?>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4 col-xs-12">
+                 <input type="submit" class="btn btn-success col-xs-12" name="<?php echo $this->lang->line('save');?>" value="<?php echo $this->lang->line('save');?>">
+            </div>
+
+            <?php echo form_close(); ?>
         </div>
     </div>
 </div>
