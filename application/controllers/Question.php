@@ -59,22 +59,26 @@ class Question extends MY_Controller
     		$where .= "FK_Question_Type = ".$_GET['type'];
     	}
     	if(!empty($_GET['module'])){
-    		if(!empty($where)){
-    			$where .= " AND ";
-    		}
 
     		$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
 
     		$listIdQuestion = '';
-			foreach ($topics as $topic) {
-				$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
-				
+			if ($topics != false) {
+				foreach ($topics as $topic) {
+					$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
+				}
+				$listIdQuestion = substr($listIdQuestion, 0, -4);
+			} else {
+				// There is no topic for the selected module (parent topic)
+				$listIdQuestion .= 'FK_Topic = 0';
 			}
-			$listIdQuestion = substr($listIdQuestion, 0, -4);
 
+			if(!empty($where)){
+    			$where .= " AND ";
+    		}
 			$where .= "(".$listIdQuestion.")";
 		}
-
+		
         if(empty($where)){
         	$output['questions'] = $this->question_model->with_all()->get_all();
        	} else {
@@ -103,13 +107,13 @@ class Question extends MY_Controller
 				} elseif ($question->FK_Question_Type == 2){
 					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 3){
-					// TODO
+					// TODO 
 				} elseif ($question->FK_Question_Type == 4){
 					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
 					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
 					$this->cloze_text_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 5){
-					// TODO
+					// TODO 
 				} elseif ($question->FK_Question_Type == 6){
 					$this->free_answer_model->delete_by("FK_Question = ".$id);
 				} elseif ($question->FK_Question_Type == 7){

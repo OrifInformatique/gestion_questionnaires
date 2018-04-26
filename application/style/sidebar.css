@@ -115,4 +115,47 @@
         position: relative;
         margin-right: 0;
     }
+
+    .space-up {
+        margin-top: 146px;
+    }
+    .title-section{
+        text-align: left;
+    }
+    
+}
+
+@media(max-width:768px) {
+    .space-up {
+        margin-top: 177px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+    #logo {
+        text-align: center;
+    }
+     .xs-center{
+        text-align: center;
+    }
+}
+.space-up{
+
+        margin-bottom: 0;
+        text-align: center;
+}
+#logo {
+    display:inline-block; 
+    margin: 3px;
+}
+.navbar-default{
+    background-color: white;
+}
+.navbar-default .navbar-nav li a{
+    color: #337ab7;
+}
+.navbar-default .navbar-nav li a:focus , .navbar-default .navbar-nav li a:hover {
+    color: #23527c;
+    text-decoration: underline;
 }

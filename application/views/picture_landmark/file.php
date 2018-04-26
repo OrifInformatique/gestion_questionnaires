@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
 	<?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -50,9 +50,10 @@
 	
 		<!-- Display buttons and display topic and question type as information -->
 		<div class="row">
-			<div class="form-group col-md-4">
-				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success"'); ?>
-				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger"'); ?>
+			<div class="form-group">
+				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); ?>
+				<?php echo form_submit('btn_next', $this->lang->line('btn_next'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); ?>
+			
 			</div>
 	        <div class="form-group col-md-8 text-right">
 				<h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>

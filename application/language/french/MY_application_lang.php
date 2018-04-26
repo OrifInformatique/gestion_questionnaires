@@ -2,8 +2,8 @@
 /**
  * Application's texts
  * 
- * @author		Orif Pomy, section informatique (UlSi, ViDi)
- * @copyright	Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
+ * @author      Orif Pomy, section informatique (UlSi, ViDi)
+ * @copyright   Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
 
 $lang['app_title']                      = 'Gestion questionnaire';
@@ -30,8 +30,8 @@ $lang['field_password']                 = 'Mot de passe';
 //Log Error
 $lang['invalid_id']                     = 'Les identifiants ne sont pas valides !';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
-$lang['msg_err_access_denied_header']	= 'Accès interdit';
-$lang['msg_err_access_denied_message']	= 'Vous n\'avez pas accès à cette partie du programme';
+$lang['msg_err_access_denied_header']   = 'Accès interdit';
+$lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
 
 //Unlog
 $lang['unlog']                          = ' Déconnexion';
@@ -43,14 +43,19 @@ $lang['indic_login']                    = 'Enregistrez-vous pour accéder à l\'
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
+$lang['btn_add_topic']                  = 'Ajouter un sujet';
+$lang['btn_add_module']                 = 'Ajouter un module';
+$lang['btn_add_question']               = 'Ajouter une question';
+$lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
 $lang['btn_import']                     = 'Importer';
-$lang['btn_import_questions']           = 'Importer';
-$lang['btn_next']           			= 'Suivant';
-$lang['yes']          					= 'Oui';
-$lang['no']          					= 'Non';
-$lang['ouinon']          				= 'Oui/Non';
+$lang['btn_import_question']            = 'Importer une question';
+$lang['btn_next']                       = 'Suivant';
+$lang['yes']                            = 'Oui';
+$lang['no']                             = 'Non';
+$lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
 $lang['cancel']                         = 'Annuler';
+$lang['return']                         = 'Retour';
 
 
 // Questionnaires pages
@@ -69,7 +74,6 @@ $lang['add_title_questionnaire']        = 'Titre :';
 $lang['add_topic_questionnaire']        = 'Sujet :';
 $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
-$lang['generatePDF_btn']                = 'Enregistrer';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
 
@@ -81,12 +85,14 @@ $lang['title_import_pictures']          = 'Importez vos images';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
+$lang['edit']                           = 'Modifier';
+$lang['remove']                         = 'Supprimer';
 $lang['focus_topic']                    = 'Sujet concerné';
 $lang['no_question']                    = 'Aucune question n\'est définie pour ce sujet';
 $lang['title_question_update']          = 'Modifier la question';
 $lang['update_name_question']           = 'Nom de la question :';
 $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soient remplis';
-$lang['question_type']           		= 'Type de question';
+$lang['question_type']                  = 'Type de question';
 $lang['title_question_add']             = 'Nouvelle question';
 $lang['question_text']                  = 'Texte de la question';
 $lang['answer_question_add']            = 'Réponse attendue';
@@ -105,8 +111,8 @@ $lang['clear_filters']                  = 'Supprimer tous les filtres';
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
 $lang['focus_module']                   = 'Module concerné :';
-$lang['title_topic_update']             = 'Modifier un topic';
-$lang['title_topic_add']                = 'Ajouter un topic';
+$lang['title_topic_update']             = 'Modifier un sujet';
+$lang['title_topic_add']                = 'Ajouter un sujet';
 $lang['topic']                          = 'Sujet(s)';
 $lang['update_title_topic']             = 'Titre :';
 $lang['add_title_topic']                = 'Titre :';

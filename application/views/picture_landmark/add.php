@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
     <?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -36,9 +36,10 @@
 		
 		<!-- Display buttons and display topic and question type as information -->
 		<div class="row">
-			<div class="form-group col-md-4">
-				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success"'); ?>
-				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger"'); ?>
+			<div class="form-group">
+				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); ?>
+				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); ?>
+			
 			</div>
 			<div class="form-group col-md-8 text-right">
 				<h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>
@@ -58,9 +59,9 @@
 				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 				<?php
 					if(isset($name)){
-		        		echo form_input('name', $name, 'class="form-control" id="name"');
+		        		echo form_long_input('name', $name, 'class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('name', '', 'class="form-control" id="name"');
+		        		echo form_long_input('name', '', 'class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -99,37 +100,40 @@
 		</div>
 
 		<!-- ANSWERS FIELDS -->
-		
-		<div class="row">
-			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
-			</div>
+		<div class="table-responsive">
+			<table class="table table-hover">
+	            <thead>
+	                <tr>
+	                    <th colspan="3"><?php echo form_label($this->lang->line('answers_list'), 'answer'); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+			
+				<?php for ($i = 0; $i < $nbAnswer; $i++){ ?>
+					<tr>
+						<td class="form-group col-xs-1" style="min-width: 60px">
+							<?php
+								echo form_input('reponses['.$i.'][symbol]', $answers[$i]['symbol'], 'class="form-control" id="answer"');
+							?>
+						</td>
+						<td class="form-group col-xs-10">
+							<?php
+								echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+								echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
+							?>
+						</td>
+						<td class="form-group col-xs-1">
+							<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-danger"');
+							?>
+						</tr>
+					</tr>
+				<?php } ?>
+				</tbody>
+			</table>
 		</div>
-		
-		<?php
-		for ($i = 0; $i < $nbAnswer; $i++){ ?>
-			<div class="row">
-				<div class="form-group col-md-1">
-					<?php
-						echo form_input('reponses['.$i.'][symbol]', $answers[$i]['symbol'], 'class="form-control" id="answer"');
-					?>
-				</div>
-				<div class="form-group col-md-10">
-					<?php
-						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
-					?>
-				</div>
-				<div class="col-md-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
-					?>
-				</div>
-			</div>
-		<?php } ?>
-		
-		<div class="row">
-			<div class="col-md-1">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+		<div>
+			<div class="col-xs-1">
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-success"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>

@@ -9,7 +9,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
     <?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
@@ -29,9 +29,10 @@
 		
 		<!-- Display buttons and display topic and question type as information -->
 		<div class="row">
-			<div class="form-group col-md-4">
-				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success"'); ?>
-				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger"'); ?>
+			<div class="form-group">
+				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); ?>
+				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); ?>
+			
 			</div>
 			<div class="form-group col-md-8 text-right">
 				<h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>
@@ -60,10 +61,10 @@
 		</div>
 
 		<div class="row">
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-8">
 				<?php echo form_label($this->lang->line('points'), 'points'); ?>
 			</div>
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-4">
 				<?php 
 		        	if(isset($name)){
 		        		echo form_input('points', $points, 'class="form-control" id="name"');
@@ -77,10 +78,10 @@
 		
 		<!-- ANSWERS FIELDS -->
 		<div class="row">
-			<div class="form-group col-md-3">
+			<div class="form-group col-sm-8">
 				<?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
 			</div>
-			<div class="form-group col-md-1">
+			<div class="form-group col-sm-4">
 				<?php 
 		        	if(isset($name)){
 		        		echo form_input('nb_desired_answers', $nb_desired_answers, 'class="form-control" id="name"');
@@ -101,13 +102,13 @@
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<div class="row">
-				<div class="form-group col-md-11">
+				<div class="form-group col-xs-11">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
 					?>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-1">
 					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
 					?>
 				</div>

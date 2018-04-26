@@ -98,7 +98,7 @@ function getID(id, typeItem) {
     document.getElementById("btn_del").setAttribute("onclick", "deleteItem(" + id + "," + typeItem + ")");
     document.getElementById("btn_update").setAttribute("onclick", "updateItem(" + id + "," + typeItem + ")");
     document.getElementById(id).setAttribute("style", "border: 3px solid black;");
-
+   
     if(oldid != '' && oldid != id){
         document.getElementById(oldid).setAttribute("style", "border: none;");
     }
