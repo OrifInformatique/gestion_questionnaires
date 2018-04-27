@@ -116,7 +116,7 @@
 					?>
 				</td>
 				<td class="form-group col-xs-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-danger no-border"');
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"');
 					?>
 				</td>
 			</tr>
@@ -125,7 +125,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-2">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-success"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-default"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>
