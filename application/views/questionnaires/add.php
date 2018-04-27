@@ -37,8 +37,8 @@ $nbMaxQuestion = 0;
                 <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
-                        <select class="form-control" id="topic_selected" 
-                                name="topic_selected">
+                        <select class="form-control" id="topic_selected" name="topic_selected">
+                            <option selected disabled hidden></option>
                             <?php
 
                             //Récupère chaque topics
