@@ -22,7 +22,7 @@
         ?>
         <div class="form-group col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('add_title_module'); ?></h4>
-            <input type="text" name="title" class="form-control" id="title" value="">
+            <input maxlength="45" type="text" name="title" class="form-control" id="title" value="">
             <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
         </div>
         <div class="col-xs-12">

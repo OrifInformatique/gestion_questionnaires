@@ -39,7 +39,7 @@
         </div>
         <div class="col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
-            <input type="text" name="title" class="form-control" id="title" value="">
+            <input maxlength="70" type="text" name="title" class="form-control" id="title" value="">
         </div>
         <div class="col-xs-12">
               <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\'/gestion_questionnaires/Topic\'"'); ?>

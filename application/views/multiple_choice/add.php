@@ -54,9 +54,9 @@
 	        	<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 	        	<?php
 					if(isset($name)){
-		        		echo form_long_input('name', $name, 'class="form-control" id="name"');
+		        		echo form_long_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
 		        	} else {
-		        		echo form_long_input('name', '', 'class="form-control" id="name"');
+		        		echo form_long_input('name', '', 'maxlength="65535" class="form-control" id="name"');
 		        	}
 		        ?>
 	        </div>
@@ -69,9 +69,9 @@
 	        <div class="form-group col-md-1 col-xs-3">
 	        	<?php 
 		        	if(isset($name)){
-		        		echo form_input('points', $points, 'class="form-control" id="name"');
+		        		echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('points', '', 'class="form-control" id="name"');
+		        		echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -87,14 +87,14 @@
 
                    	</tr>
                 </thead>
-                <tbody> 
+                <tbody>
 				<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<tr>
 				<td class="form-group col-xs-9">
 					<?php
 						//echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][question]', $answers[$i]['question'], 'class="form-control" id="question"');
+						echo form_input('reponses['.$i.'][question]', $answers[$i]['question'], 'maxlength="250" class="form-control" id="question"');
 					?>
 				</td>
 				

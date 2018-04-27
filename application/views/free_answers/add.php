@@ -53,9 +53,9 @@
 	        	<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 	        	<?php 
 		        	if(isset($name)){
-		        		echo form_input('name', $name, 'class="form-control" id="name"');
+		        		echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('name', '', 'class="form-control" id="name"');
+		        		echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
 		        	}
 		        ?>
 	        </div>
@@ -68,9 +68,9 @@
 	        <div class="form-group col-md-1">
 	        	<?php 
 		        	if(isset($name)){
-		        		echo form_input('points', $points, 'class="form-control" id="name"');
+		        		echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('points', '', 'class="form-control" id="name"');
+		        		echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -87,9 +87,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($name)){
-		        		echo form_input('answer', $answer, 'class="form-control" id="name"');
+		        		echo form_input('answer', $answer, 'maxlength="65535" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('answer', '', 'class="form-control" id="name"');
+		        		echo form_input('answer', '', 'maxlength="65535" class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>

@@ -55,9 +55,9 @@
 				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 				<?php
 					if(isset($name)){
-		        		echo form_input('name', $name, 'class="form-control" id="name"');
+		        		echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('name', '', 'class="form-control" id="name"');
+		        		echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -70,9 +70,9 @@
 			<div class="form-group col-md-1">
 				<?php 
 		        	if(isset($name)){
-		        		echo form_input('points', $points, 'class="form-control" id="name"');
+		        		echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
 		        	} else {
-		        		echo form_input('points', '', 'class="form-control" id="name"');
+		        		echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
 		        	}
 		        ?>
 			</div>
@@ -88,9 +88,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-		        		echo form_long_input('cloze_text', $cloze_text, 'class="form-control" id="cloze_text"');
+		        		echo form_long_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
 		        	} else {
-		        		echo form_long_input('cloze_text', '', 'class="form-control" id="cloze_text"');
+		        		echo form_long_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
 		        	}
 		        ?>
 			</div>
@@ -112,7 +112,7 @@
 				<td class="form-group col-xs-11">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
+						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer"');
 					?>
 				</td>
 				<td class="form-group col-xs-1">

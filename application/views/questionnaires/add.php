@@ -26,14 +26,16 @@ $nbMaxQuestion = 0;
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
             }
             ?>
-            <div class="form-group col-xs-12 col-sm-6">
+            <div class="form-group col-xs-12">
                 <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
                 <div class="row">
-                    <div class="col-xs-12"><input type="text" name="title" class="form-control" id="title"
-                        value="<?php echo $title;?>"></div>
+                    <div class="col-xs-12">
+                        <input maxlength="100" type="text" name="title" class="form-control" id="title"
+                        value="<?php echo $title;?>">
+                    </div>
                 </div>
             </div>
-            <div class="form-group col-xs-12 col-sm-6">
+            <div class="form-group col-xs-12 col-sm-4">
                 <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
@@ -67,7 +69,7 @@ $nbMaxQuestion = 0;
                 <h4 for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></h4>
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
-            <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="col-sm-4 col-xs-12">
                 <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>"/>
             </div>
         </div>
