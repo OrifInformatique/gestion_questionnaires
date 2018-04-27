@@ -49,6 +49,12 @@ function changeselect() {
     window.location = '?module=' + module + '&topic=' + topic + '&type=' + type;
 }
 
+
+function changeselectTopic() {
+    var topic_selected = document.getElementById("topic_selected").value;
+    window.location = '?topic_selected=' + topic_selected;
+}
+
 function updateItem(id, typeItem){
 
     switch (typeItem){
