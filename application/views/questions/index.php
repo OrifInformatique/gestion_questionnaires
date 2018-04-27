@@ -149,7 +149,13 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td><a href="./Question/detail/<?php echo $question->ID;?>"><?php echo $question->Question; ?></a></td>
+        <td><a href="./Question/detail/<?php echo $question->ID;?>">
+            <?php 
+            //cut and add "..." if number of letters exceeds 300
+            echo substr($question->Question, 0,300);
+            echo (strlen($question->Question)>=300)?"...":"";
+            ?>
+        </a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" onclick="updateItem(<?=$question->ID?>,2)">✎</a></td>
