@@ -149,7 +149,7 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td><a href="./Question/detail/<?php echo $question->ID;?>">
+        <td style="max-width:50em;word-wrap: break-word;"><a href="./Question/detail/<?php echo $question->ID;?>">
             <?php 
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
