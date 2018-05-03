@@ -36,9 +36,11 @@
 	    </div>
 		<div class="row">	
 			<div class="form-group col-xs-12 ">
-				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); ?>
-				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); ?>
-				
+				<?php 
+					echo form_submit('test', '', 'style="visibility: hidden;"');//for cancel "Enter" key in form 
+					echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); 
+					echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
+				?>				
 			</div>
 	    </div>
 
