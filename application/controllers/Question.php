@@ -368,6 +368,7 @@ class Question extends MY_Controller
 		}
 
 		if (isset($_POST['save'])){
+			$_SESSION['filtres'] = "Question?module=&topic=&type=";
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
@@ -532,6 +533,7 @@ class Question extends MY_Controller
 		}
 
 		if (isset($_POST['save'])){
+			$_SESSION['filtres'] = "Question?module=&topic=&type=";
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
@@ -688,6 +690,7 @@ class Question extends MY_Controller
 		}
 
 		if (isset($_POST['save'])){
+			$_SESSION['filtres'] = "Question?module=&topic=&type=";
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
@@ -862,6 +865,7 @@ class Question extends MY_Controller
 			}
 
 			if (isset($_POST['save'])){
+				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
@@ -903,6 +907,7 @@ class Question extends MY_Controller
 			}
 
 			if (isset($_POST['save'])){
+				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
