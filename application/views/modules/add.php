@@ -17,7 +17,7 @@
             echo form_open('Module/form_validate', $attributes);
                 
             if($error == true) {
-                echo "<p class='alert alert-warning'>" . $this->lang->line('add_module_form_err') . "</p>";
+                echo "<p class='alert alert-danger'>" . $this->lang->line('add_module_form_err') . "</p>";
             }
         ?>
         <div class="form-group col-xs-12">

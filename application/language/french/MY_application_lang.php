@@ -116,8 +116,8 @@ $lang['title_topic_add']                = 'Ajouter un sujet';
 $lang['topic']                          = 'Sujet(s)';
 $lang['update_title_topic']             = 'Titre :';
 $lang['add_title_topic']                = 'Titre :';
-$lang['update_topic_form_err']          = 'Veillez à ce que tous les champs soient remplis';
-$lang['add_topic_form_err']             = 'Veillez à ce que tous les champs soient remplis';
+$lang['update_topic_form_err']          = 'Le champ titre du sujet est requis';
+$lang['add_topic_form_err']             = 'Le champ titre du sujet est requis';
 $lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
 $lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
 
@@ -129,11 +129,11 @@ $lang['title_module_update']            = 'Modifier un module';
 $lang['title_module_add']               = 'Ajouter un module';
 $lang['update_title_module']            = 'Titre :';
 $lang['add_title_module']               = 'Titre :';
-$lang['update_module_form_err']         = 'Veillez à ce que tous les champs soient remplis';
-$lang['add_module_form_err']            = 'Veillez à ce que tous les champs soient remplis';
+$lang['update_module_form_err']         = 'Le champ titre du module est requis';
+$lang['add_module_form_err']            = 'Le champ titre du module est requis';
 $lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
-                                           plusieurs des questions soi(en)t mal enregistrée(s)";
+										   plusieurs des questions soi(en)t mal enregistrée(s)";

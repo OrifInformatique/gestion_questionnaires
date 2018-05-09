@@ -18,7 +18,7 @@
             "name" => "addTopicForm");
         echo form_open('Topic/form_add', $attributes);
         if($error == true) {
-            echo "<p class='alert alert-warning'>" . $this->lang->line('add_topic_form_err') . "</p>";
+            echo "<p class='alert alert-danger'>" . $this->lang->line('add_topic_form_err') . "</p>";
         }
         ?>
 
