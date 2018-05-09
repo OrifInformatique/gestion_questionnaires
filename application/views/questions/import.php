@@ -42,6 +42,14 @@
     <h1 class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
+    if(isset($error)){
+        if($error == 0){
+            echo '<div class="alert alert-success">'.$this->lang->line('import_image_success').'</div>';
+        } else {
+            echo '<div class="alert alert-danger">'.$this->lang->line('import_image_error').'</div>';
+        }
+    }
+
     $attributes = array("class" => "form-group",
         "id" => "updatePicturesForm",
         "name" => "updatePicturesForm",
