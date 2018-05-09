@@ -456,18 +456,23 @@ class Question extends MY_Controller
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
-				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
-					}
-				}
 
 				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['question'])){
+						$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+					} else {
+						$answers[$i]['question'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
+					}
 				}
 				
 				$output['answers'] = $answers;
@@ -492,9 +497,21 @@ class Question extends MY_Controller
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['question'])){
+					$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+				} else {
+					$answers[$i]['question'] = "";
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -619,14 +636,28 @@ class Question extends MY_Controller
 				if(isset($_POST['nb_desired_answers'])){
 					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
 				}
+
+				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
+				for($i=0; $i < $output['nbAnswer']; $i++){
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['question'])){
+						$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+					} else {
+						$answers[$i]['question'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
 					}
 				}
-				$output['nbAnswer'] = $_POST['nbAnswer'];
+
+				$output['answers'] = $answers;
 				
 				$this->display_view('multiple_answer/add', $output);
 			}
@@ -651,8 +682,16 @@ class Question extends MY_Controller
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -791,13 +830,22 @@ class Question extends MY_Controller
 					$output['cloze_text'] = $_POST['cloze_text'];
 				}
 				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+
+				for($i=0; $i < $output['nbAnswer']; $i++){
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
 					}
 				}
-				$output['nbAnswer'] = $_POST['nbAnswer'];
+
+				$output['answers'] = $answers;
 				
 				$this->display_view('cloze_text/add', $output);
 			}
@@ -825,8 +873,16 @@ class Question extends MY_Controller
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -983,11 +1039,21 @@ class Question extends MY_Controller
 	    		$output['nbAnswer'] = $_POST['nbAnswer'];
 	    	}
 
-	    	if(isset($_POST['reponses'])){
-				for($i=0; $i < $output['nbAnswer']; $i++){
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				if(!empty($_POST['reponses'][$i]['id'])){
 					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['symbol'])){
 					$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+				} else {
+					$answers[$i]['symbol'] = "";
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
 					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
 				}
 			}
 
@@ -1146,13 +1212,27 @@ class Question extends MY_Controller
 			    		$output['upload_data'] = $_POST['upload_data'];
 			    	}
 
-					for($i=0; $i < $output['nbAnswer']; $i++){
-						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
-						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
-					}
 					$output['nbAnswer'] = $_POST['nbAnswer'];
-					
+
+					for($i=0; $i < $output['nbAnswer']; $i++){
+						if(!empty($_POST['reponses'][$i]['id'])){
+							$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						} else {
+							$answers[$i]['id'] = 0;
+						}
+						if(!empty($_POST['reponses'][$i]['symbol'])){
+							$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+						} else {
+							$answers[$i]['symbol'] = "";
+						}
+						if(!empty($_POST['reponses'][$i]['answer'])){
+							$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+						} else {
+							$answers[$i]['answer'] = "";
+						}
+					}
+					$output['answers'] = $answers;
+
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
@@ -1180,9 +1260,21 @@ class Question extends MY_Controller
 				
 
 				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['symbol'])){
+						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+					} else {
+						$answers[$i]['symbol'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
+					}
 				}
 
 				if (isset($_POST['add_answer'])){
