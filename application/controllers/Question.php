@@ -1404,8 +1404,13 @@ class Question extends MY_Controller
 
             if(!isset($error))
             {
-                redirect("./Question/import");
+                $output['error'] = 0;
+            } else {
+            	$output['error'] = 1;
             }
+            $output['questions'] = $this->question_model->with_all()->get_all();
+            $output['topics'] = $this->topic_model->get_tree();
+            $this->display_view('questions/import', $output);
         }else
         {
             $output['questions'] = $this->question_model->with_all()->get_all();
