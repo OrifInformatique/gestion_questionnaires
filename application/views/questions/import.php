@@ -12,6 +12,14 @@
     <h1 class="title-section"><?php echo $this->lang->line('title_import_questions'); ?></h1>
 
     <?php
+    if(isset($excel_error)){
+        if($excel_error == false){
+            echo '<div class="alert alert-success">'.$this->lang->line('import_image_success').'</div>';
+        } else {
+            echo '<div class="alert alert-danger">'.$excel_message.'</div>';
+        }
+    }
+
     $attributes = array("class" => "form-group",
                         "id" => "importQuestionForm",
                         "name" => "importQuestionForm");
@@ -42,11 +50,11 @@
     <h1 class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
-    if(isset($error)){
-        if($error == 0){
+    if(isset($image_error)){
+        if($image_error == false){
             echo '<div class="alert alert-success">'.$this->lang->line('import_image_success').'</div>';
         } else {
-            echo '<div class="alert alert-danger">'.$this->lang->line('import_image_error').'</div>';
+            echo '<div class="alert alert-danger">'.$image_message.'</div>';
         }
     }
 

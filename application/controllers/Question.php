@@ -84,7 +84,7 @@ class Question extends MY_Controller
        	} else {
        		$output['questions'] = $this->question_model->with_all()->get_many_by($where);
        	}
-        $output['topics'] = $this->topic_model->get_tree();
+        $output['topics'] = $this->topic_model->get_all();
         $output['questionTypes'] = $this->question_type_model->get_all();
         $this->display_view('questions/index', $output);
     }
@@ -309,7 +309,6 @@ class Question extends MY_Controller
 					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
 				}				
 			}
-			//var_dump($reponses);
 			$this->display_view('questions/detail', $output);
         } else {
 			$this->index();
@@ -1326,57 +1325,34 @@ class Question extends MY_Controller
             $this->upload->initialize($config);
 
             if (!$this->upload->do_upload('excelfile')) {
-                $error = array('error' => $this->upload->display_errors());
-                var_dump($error);
+            	$output['excel_error'] = true;
+                $output['excel_message'] = $this->upload->display_errors();
 
             } else {
+            	$output['excel_error'] = false;
 
                 $data = array('upload_data' => $this->upload->data());
-
                 $inputFileName = $data['upload_data']['full_path'];
 
                 $topic = $this->input->post('topic_selected');
-                $topic = str_replace("'", "''", $topic);
-                $idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
 
                 $inputFileType = 'Excel2007';
 
                 /**  Create a new Reader of the type defined in $inputFileType  **/
                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
 
-                $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
-                $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
-                $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
-                $this->Import_ClozeText($idTopic, $objReader, $inputFileName);
-                $this->Import_TableCell($idTopic, $objReader, $inputFileName);
-                $this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
-                $this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
+                $this->Import_MultipleChoices($topic, $objReader, $inputFileName);
+                $this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
+                $this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
+                $this->Import_ClozeText($topic, $objReader, $inputFileName);
+                $this->Import_TableCell($topic, $objReader, $inputFileName);
+                $this->Import_FreeAnswer($topic, $objReader, $inputFileName);
+                $this->Import_PictureLandmark($topic, $objReader, $inputFileName);
 
-                redirect("./Question");
-
+               // redirect("./Question");
             }
-
-
-            if (isset($_FILES['excelfile'])) {
-                if ($_FILES['excelfile']['error'] == 0 &&
-                    $_FILES['excelfile']['type'] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                ) {
-
-                } else {
-                    $output['error'] = true;
-                    $output['questions'] = $this->question_model->with_all()->get_all();
-                    $output['topics'] = $this->topic_model->get_tree();
-                    $this->display_view('questions/import', $output);
-                }
-            } else {
-                $output['questions'] = $this->question_model->with_all()->get_all();
-                $output['topics'] = $this->topic_model->get_tree();
-                $this->display_view('questions/import', $output);
-            }
-
-        }else if(isset($_POST['submitPictures']))
+        } else if(isset($_POST['submitPictures']))
         {
-
             $files = $_FILES;
             $countfile = count($_FILES['picturesfile']['name']);
 
@@ -1398,26 +1374,17 @@ class Question extends MY_Controller
 
                 if (!$this->upload->do_upload('picturesfile'))
                 {
-                    $error = array('error' => $this->upload->display_errors());
+                    $output['image_error'] = true;
+                    $output['image_message'] = $this->upload->display_errors();
+                } else {
+                	$output['image_error'] = false;
                 }
             }
-
-            if(!isset($error))
-            {
-                $output['error'] = 0;
-            } else {
-            	$output['error'] = 1;
-            }
-            $output['questions'] = $this->question_model->with_all()->get_all();
-            $output['topics'] = $this->topic_model->get_tree();
-            $this->display_view('questions/import', $output);
-        }else
-        {
-            $output['questions'] = $this->question_model->with_all()->get_all();
-            $output['topics'] = $this->topic_model->get_tree();
-            $this->display_view('questions/import', $output);
         }
 
+        $output['questions'] = $this->question_model->with_all()->get_all();
+        $output['topics'] = $this->topic_model->get_tree();
+        $this->display_view('questions/import', $output);
     }
 
 
