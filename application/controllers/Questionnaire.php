@@ -309,7 +309,7 @@ class Questionnaire extends MY_Controller
             echo $this->lang->line('pdf_error');
         }else{
             if($idQuestionnaire == -1){
-                $pdf->Output('I', 'Questionnaire', true);
+                //$pdf->Output('I', 'Questionnaire', true);
                 $title = $tableTopics->getTitle();
                 $title_const = $title;
                 $i = 1;
