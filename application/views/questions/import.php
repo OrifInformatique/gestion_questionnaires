@@ -69,7 +69,7 @@
                 <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile" accept="image/*" multiple>
         </div> 
         <div class="col-xs-12 col-sm-4 xs-space">
-                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_image'); ?>" name="submitPictures">
+                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import'); ?>" name="submitPictures">
         </div>
     </div>
 </div>
