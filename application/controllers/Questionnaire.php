@@ -184,7 +184,7 @@ class Questionnaire extends MY_Controller
             $this->form_validation->set_rules('title', 'Title', 'required');
 
             //Check form validation
-            if($this->form_validation->run() == true)
+            if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
