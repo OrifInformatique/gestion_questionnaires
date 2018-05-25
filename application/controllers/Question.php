@@ -31,6 +31,12 @@ class Question extends MY_Controller
 	/**
 	 * Display question list
 	 */
+	public function index()
+	{
+		if(!empty($_GET['module']) && !empty($_GET['topic'])){
+			$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
+			if($nbTopic==0){
+				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
 			}
 		}
 
@@ -38,16 +44,14 @@ class Question extends MY_Controller
 			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
 		}
 
+		if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+			redirect($_SESSION['filtres']);
+		}
 
+		$where = "";
 
 		if(!empty($_GET['topic'])){
 			$where .= "FK_Topic = ".$_GET['topic'];
-    	if(!empty($_GET['module']) && !empty($_GET['topic'])){
-	    	$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
-	    	if($nbTopic==0){
-	    		redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
-	    	}
-	    }
 		}
 		if(!empty($_GET['type'])){
 			if(!empty($where)){
