@@ -103,21 +103,28 @@ class Question extends MY_Controller
 
 				$question = $this->question_model->get($id);
 
-				if ($question->FK_Question_Type == 1){
+				switch ($question->FK_Question_Type){
+				case 1:
 					$this->multiple_choice_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 2){
+					break;
+				case 2:
 					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 3){
+					break;
+				case 3:
 					// TODO 
-				} elseif ($question->FK_Question_Type == 4){
+					break;
+				case 4:
 					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
 					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
 					$this->cloze_text_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 5){
+					break;
+				case 5:
 					// TODO 
-				} elseif ($question->FK_Question_Type == 6){
+					break;
+				case 6:
 					$this->free_answer_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 7){
+					break;
+				case 7:
 					$picture = "uploads/pictures/".$question->Picture_Name;
 					if(file_exists($picture)){
 						unlink($picture);
@@ -179,10 +186,10 @@ class Question extends MY_Controller
 			$output['name'] = $question->Question;
 			$output['points'] = $question->Points;
 
-			if ($question->FK_Question_Type == 1){
+			switch ($question->FK_Question_Type){
+			case 1:
 				// MUTLIPLE CHOICE
 				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-
 				$i = 0;
 				foreach ($reponses as $reponse) {
 					$answers[$i]['id'] = $reponse->ID;
@@ -192,13 +199,12 @@ class Question extends MY_Controller
 				}
 				$output['nbAnswer'] = count($reponses);
 				$output['answers'] = $answers;
-
 				$this->display_view('multiple_choice/add', $output);
-			} elseif ($question->FK_Question_Type == 2){
+				break;
+			case 2:
 				// MUTLIPLE ANSWER
 				$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
 				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-
 				$i = 0;
 				foreach ($reponses as $reponse) {
 					$answers[$i]['id'] = $reponse->ID;
@@ -207,16 +213,15 @@ class Question extends MY_Controller
 				}
 				$output['nbAnswer'] = count($reponses);
 				$output['answers'] = $answers;
-
 				$this->display_view('multiple_answer/add', $output);
-			} elseif ($question->FK_Question_Type == 3){
+				break;
+			case 3:
 				// TODO
-			} elseif ($question->FK_Question_Type == 4){
+				break;
+			case 4:
 				// CLOZE TEXT
 				$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-
 				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
-
 				$i = 0;
 				foreach ($reponses as $reponse) {
 					$answers[$i]['id'] = $reponse->ID;
@@ -228,20 +233,20 @@ class Question extends MY_Controller
 				$output['cloze_text'] = $cloze_text->Cloze_Text;
 				$output['id_cloze_text'] = $cloze_text->ID;
 				$this->display_view('cloze_text/add', $output);
-			} elseif ($question->FK_Question_Type == 5){
+				break;
+			case 5:
 				// TODO
-			} elseif ($question->FK_Question_Type == 6){
+				break;
+			case 6:
 				// FREE ANSWER
 				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
 				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
-
 				$this->display_view('free_answers/add', $output);
-			} elseif ($question->FK_Question_Type == 7){
+				break;
+			case 7:
 				// PICTURE LANDMARK
 				$output['picture_name'] = $question->Picture_Name;
-
 				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-
 				$i = 0;
 				foreach ($reponses as $reponse) {
 					$answers[$i]['id'] = $reponse->ID;
@@ -269,49 +274,60 @@ class Question extends MY_Controller
 			$output['question'] = $question;
 			$output['image'] = "";
 			$output['reponse'] = "";
-			if ($question->FK_Question_Type == 7) {
-				$output['image'] = $question->Picture_Name;
-				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 1) {
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					if ($reponse->Valid == '1'){
-						$cocher = $this->lang->line('yes');
-					} else {
-						$cocher = $this->lang->line('no');
+			if (!is_null($question)){
+				switch ($question->FK_Question_Type){ 
+				case 1:
+					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						if ($reponse->Valid == '1'){
+							$cocher = $this->lang->line('yes');
+						} else {
+							$cocher = $this->lang->line('no');
+						}
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 					}
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
+					break;
+				case 2:
+					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
+					}				
+					break;
+				case 3:
+					$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
+					}				
+					break;
+				case 4:
+					$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+					$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
+					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
+					}				
+					break;
+				case 5:
+					$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
+					break;
+				case 6:
+					$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+					}		
+					break;			
+				case 7:
+					$output['image'] = $question->Picture_Name;
+					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
+					}			
 				}
-			} elseif ($question->FK_Question_Type == 2) {
-				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 3) {
-				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
-				}				
-			} elseif ($question->FK_Question_Type == 4) {
-				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-				$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
-				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 5) {
-				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
-			} elseif ($question->FK_Question_Type == 6) {
-				$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
-				}				
+				//var_dump($reponses);
+				$this->display_view('questions/detail', $output);
+			} else {
+				//todo déclancher la page 404 
 			}
-			//var_dump($reponses);
-			$this->display_view('questions/detail', $output);
 		} else {
 			$this->index();
 		}
@@ -340,19 +356,26 @@ class Question extends MY_Controller
 			$answers[0]['symbol'] = "";
 			$output['answers'] = $answers;
 		
-			if ($_POST['question_type'] == 1){
+			switch ($_POST['question_type']){
+			case 1:
 				$this->display_view('multiple_choice/add', $output);
-			} elseif ($_POST['question_type'] == 2){
+				break;
+			case 2:
 				$this->display_view('multiple_answer/add', $output);
-			} elseif ($_POST['question_type'] == 3){
+				break;
+			case 3:
 				// TODO
-			} elseif ($_POST['question_type'] == 4){
+				break;
+			case 4:
 				$this->display_view('cloze_text/add', $output);
-			} elseif ($_POST['question_type'] == 5){
+				break;
+			case 5:
 				// TODO
-			} elseif ($_POST['question_type'] == 6){
+				break;
+			case 6:
 				$this->display_view('free_answers/add', $output);
-			} elseif ($_POST['question_type'] == 7){	
+				break;
+			case 7:	
 				$this->display_view('picture_landmark/file', $output);
 			}
 		}
