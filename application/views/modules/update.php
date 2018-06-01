@@ -26,7 +26,7 @@
             
             <input maxlength="45" type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>">
             <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
-			<input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
+            <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
         </div>
         <div class="col-xs-12">
 

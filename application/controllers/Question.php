@@ -1,4 +1,3 @@
-
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
@@ -64,7 +63,7 @@ class Question extends MY_Controller
 			$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
 
 			$listIdQuestion = '';
-    	$where = "";
+    		$where = "";
 			if ($topics != false) {
 				foreach ($topics as $topic) {
 					$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
@@ -80,12 +79,26 @@ class Question extends MY_Controller
 			}
 			$where .= "(".$listIdQuestion.")";
 		}
-		
+		if (!empty($_GET['sort'])){
+				switch ($_GET['sort']){
+					case 'question_asc': $where .= " ORDER BY Question ASC";break;
+					case 'question_desc': $where .= " ORDER BY Question DESC";break;
+					case 'question_type_asc': $where .= " ORDER BY FK_Question_Type ASC";break;
+					case 'question_type_desc': $where .= " ORDER BY FK_Question_Type DESC";break;
+					case 'points_asc': $where .= " ORDER BY Points ASC";break;
+					case 'points_desc': $where .= " ORDER BY Points DESC";break;
+					default:$where .= " ORDER BY ID ASC";
+				}	
+			}
 		if(empty($where)){
+
 			$output['questions'] = $this->question_model->with_all()->get_all();
 		} else {
+			
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
+
+		
 		$output['topics'] = $this->topic_model->get_all();
 		$output['questionTypes'] = $this->question_type_model->get_all();
 		$this->display_view('questions/index', $output);

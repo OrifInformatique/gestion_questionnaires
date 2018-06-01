@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-lg-12"><input maxlength="65535" type="text" name="name" class="form-control" id="name" value="<?php echo $question->Question; ?>"></div>
                 </div>
-				<label for="points">Point(s) :</label>
+                <label for="points">Point(s) :</label>
                 <div class="row">
                     <div class="col-lg-12"><input type="number" name="points" class="form-control" id="points" value="<?php echo $question->Points; ?>"></div>
                 </div>

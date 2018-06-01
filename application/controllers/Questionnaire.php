@@ -11,7 +11,7 @@ class Questionnaire extends MY_Controller
 {
     CONST TITLEFONT_SIZE = 18;
     CONST QUESTIONFONT_SIZE = 12;
-   
+    
     /* MY_Controller variables definition */
     protected $access_level = "2";
 
@@ -85,25 +85,25 @@ class Questionnaire extends MY_Controller
      */
     public function delete($id = 0, $action = NULL)
     {
-      if ($id != 0) {
-       $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-       if (is_null($action)) {
-        $output = get_object_vars($this->questionnaire_model->get($id));
-        $output["questionnaires"] = $this->questionnaire_model->get_all();
-        $this->display_view("questionnaires/delete", $output);
-    } else {
-        if (count($questionnaire->question_questionnaires) > 0) {
-         foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-          $this->question_questionnaire_model->delete($question_questionnaire->ID);
-      }
-  }
-  $this->questionnaire_model->delete($id);
-  $this->index();
-}
-} else {
-    $this->index();
-}
-}
+        if ($id != 0) {
+            $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
+            if (is_null($action)) {
+                $output = get_object_vars($this->questionnaire_model->get($id));
+                $output["questionnaires"] = $this->questionnaire_model->get_all();
+                $this->display_view("questionnaires/delete", $output);
+            } else {
+                if (count($questionnaire->question_questionnaires) > 0) {
+                    foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+                        $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                    }
+                }
+                $this->questionnaire_model->delete($id);
+                $this->index();
+            }
+        } else {
+            $this->index();
+        }
+    }
 
     /**
      * To add a new questionnaire
@@ -199,8 +199,8 @@ class Questionnaire extends MY_Controller
     public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
     {
 
-            
-    
+        
+        
         if($idQuestionnaire == -1){
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         } else {
@@ -243,7 +243,7 @@ class Questionnaire extends MY_Controller
                 $pdf->addPage();
             }
             if($answers->getY()> 225){
-               $answers->addPage();
+                $answers->addPage();
             }
 
             $pdf->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
@@ -495,7 +495,7 @@ class Questionnaire extends MY_Controller
             $result='';
 
             foreach ($outputText as $key => $value) {
-               $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
+                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
             $pdf->SetFont('','',self::QUESTIONFONT_SIZE);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
@@ -529,12 +529,12 @@ class Questionnaire extends MY_Controller
             $nbrAnswer = count($outputText)-1;
             $result='';
             foreach ($outputText as $key => $value) {
-               $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
+                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
             $pdf->SetFont('Arial','',self::QUESTIONFONT_SIZE);
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
 
-                $pdf->setTextColor(255,0,0);
+            $pdf->setTextColor(255,0,0);
             if ($nbrAnswer == count($answers)){
                 for ($i=0; $i < $nbrAnswer; $i++) {
                     $pdf->Cell(10, 10, '['.($i+1).'] : ', 0);
@@ -618,7 +618,6 @@ class Questionnaire extends MY_Controller
     }
     private function displaySimpleQuestion($Answer, $pdf)
     {
-        
         $pdf->Ln();
         //calculation of the number of lines granted according to the expected answer.
         for ($i=0; $i < ceil(strlen($Answer)/60); $i++) { 
@@ -626,8 +625,8 @@ class Questionnaire extends MY_Controller
         } 
         
     }
-    private function answerSimpleQuestion($Answer, $pdf){
-        
+    private function answerSimpleQuestion($Answer, $pdf)
+    {
         // answer in red for a simple kind of question
         $pdf->setTextColor(255,0,0);
         //Answer put
