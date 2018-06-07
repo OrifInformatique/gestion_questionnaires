@@ -63,7 +63,7 @@ class Question extends MY_Controller
 			$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
 
 			$listIdQuestion = '';
-    		$where = "";
+
 			if ($topics != false) {
 				foreach ($topics as $topic) {
 					$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
@@ -79,22 +79,23 @@ class Question extends MY_Controller
 			}
 			$where .= "(".$listIdQuestion.")";
 		}
-		if (!empty($_GET['sort'])){
-				switch ($_GET['sort']){
-					case 'question_asc': $where .= " ORDER BY Question ASC";break;
-					case 'question_desc': $where .= " ORDER BY Question DESC";break;
-					case 'question_type_asc': $where .= " ORDER BY FK_Question_Type ASC";break;
-					case 'question_type_desc': $where .= " ORDER BY FK_Question_Type DESC";break;
-					case 'points_asc': $where .= " ORDER BY Points ASC";break;
-					case 'points_desc': $where .= " ORDER BY Points DESC";break;
-					default:$where .= " ORDER BY ID ASC";
-				}	
-			}
-		if(empty($where)){
 
+
+		$where="($where)";
+		if (!empty($_GET['sort'])){
+			switch ($_GET['sort']){
+				case 'question_asc': $where .= " ORDER BY Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";break;
+				case 'question_desc': $where .= " ORDER BY Question DESC, FK_Question_Type ASC, Points ASC, ID ASC";break;
+				case 'question_type_asc': $where .= " ORDER BY FK_Question_Type ASC, Question ASC, Points ASC, ID ASC";break;
+				case 'question_type_desc': $where .= " ORDER BY FK_Question_Type DESC, Question ASC, Points ASC, ID ASC";break;
+				case 'points_asc': $where .= " ORDER BY Points ASC, Question ASC, FK_Question_Type ASC, ID ASC";break;
+				case 'points_desc': $where .= " ORDER BY Points DESC, Question ASC, FK_Question_Type ASC, ID ASC";break;
+				default:$where .= " ORDER BY Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
+			}	
+		}else{$where .= " ORDER BY Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";}
+		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
 		} else {
-			
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
 
