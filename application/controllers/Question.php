@@ -1485,7 +1485,14 @@ class Question extends MY_Controller
 				//Current question
 				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
 
-				$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+				{
+					$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				}else
+				{
+					$points = 1;
+				}
+
 
 				//Data to insert to the table 'T_Question'
 				$inputQuestion = array(
@@ -1554,7 +1561,13 @@ class Question extends MY_Controller
 				//Nb of answers needed
 				$nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 				//Nb of points of the question
-				$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+				if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
+				{
+					$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+				}else
+				{
+					$nbPoints = 1;
+				}
 
 				//Data to insert to the table 'T_Question'
 				$inputQuestion = array(
@@ -1682,7 +1695,13 @@ class Question extends MY_Controller
 					//Current question
 					$question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
 
-					$points = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+					if($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+					{
+						$points = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+					}else
+					{
+						$points = 1;
+					}
 
 					//Data to insert to the table 'T_Question'
 					$inputQuestion = array(
@@ -1916,7 +1935,13 @@ class Question extends MY_Controller
 
 			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
 				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-				$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+				{
+					$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				}else
+				{
+					$points = 1;
+				}
 				//$pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 				$pictureName = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
 
