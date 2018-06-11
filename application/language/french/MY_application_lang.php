@@ -109,6 +109,9 @@ $lang['clear_filter']                   = 'Supprimer le filtre';
 $lang['clear_filters']                  = 'Supprimer tous les filtres';
 $lang['import_image_success']           = 'Les images ont été importées avec succès.';
 $lang['import_image_error']             = 'Erreur lors de l\'importion des images.';
+$lang['import_question_success']        = 'Les questions ont été importées avec succès.';
+$lang['import_question_error']          = 'Erreur lors de l\'importion des questions.';
+
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';

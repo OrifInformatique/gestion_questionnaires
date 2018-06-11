@@ -14,7 +14,7 @@
     <?php
     if(isset($excel_error)){
         if($excel_error == false){
-            echo '<div class="alert alert-success">'.$this->lang->line('import_image_success').'</div>';
+            echo '<div class="alert alert-success">'.$this->lang->line('import_question_success').'</div>';
         } else {
             echo '<div class="alert alert-danger">'.$excel_message.'</div>';
         }
