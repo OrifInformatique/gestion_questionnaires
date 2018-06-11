@@ -1485,21 +1485,24 @@ class Question extends MY_Controller
 				//Current question
 				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
 
+				$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
 				//Data to insert to the table 'T_Question'
 				$inputQuestion = array(
 								"FK_Topic" => $idTopic,
 								"FK_Question_Type" => $questionType,
 								"Question" => $question,
+								"Points" => $points,
 								"Creation_Date" => date("Y-m-d H:i:s")
 				);
 
 				$idQuestion = $this->question_model->insert($inputQuestion);
 
 				//Take next to the question the data to insert to 'T_Multiple_Choice'
-				while($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+				while($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
 				{
-					$answerField = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-					$validField = $worksheet->getCellByColumnAndRow($column + 1, $row + 1)->getValue();
+					$answerField = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+					$validField = $worksheet->getCellByColumnAndRow($column + 2, $row + 1)->getValue();
 
 					if($validField == "x")$valid = true;
 					else $valid = false;
@@ -1672,25 +1675,28 @@ class Question extends MY_Controller
 			$row = 3;
 			$answerOrder = 0;
 
-			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+			while($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
 			{
 				if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
 				{
 					//Current question
 					$question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
 
+					$points = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+
 					//Data to insert to the table 'T_Question'
 					$inputQuestion = array(
 						"FK_Topic" => $idTopic,
 						"FK_Question_Type" => $questionType,
 						"Question" => $question,
+						"Points" => $points,
 						"Creation_Date" => date("Y-m-d H:i:s")
 					);
 
 					$idQuestion = $this->question_model->insert($inputQuestion);
 				}
 
-				$clozeText = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$clozeText = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 
 				$inputClozeText = array(
 					"FK_Question" => $idQuestion,
@@ -1700,7 +1706,7 @@ class Question extends MY_Controller
 
 				$idClozeText = $this->cloze_text_model->insert($inputClozeText);
 
-				$column = 2;
+				$column = 3;
 
 				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 				{
@@ -1910,20 +1916,22 @@ class Question extends MY_Controller
 
 			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
 				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 				//$pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-				$pictureName = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				$pictureName = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
 
 				$inputQuestion = array(
 					"FK_Topic" => $idTopic,
 					"FK_Question_Type" => $questionType,
 					"Question" => $question,
+					"Points" => $points,
 					"Picture_Name" => $pictureName,
 					"Creation_Date" => date("Y-m-d H:i:s")
 				);
 
 				$idQuestion = $this->question_model->insert($inputQuestion);
 
-				$column = 2;
+				$column = 3;
 
 				while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 				{
