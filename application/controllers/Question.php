@@ -39,7 +39,7 @@ class Question extends MY_Controller
 			}
 		}
 
-		if(isset($_GET['module'], $_GET['topic'], $_GET['type'])){
+		if(isset($_GET['module']) && isset($_GET['topic']) && isset($_GET['type'])){
 			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
 		}
 
@@ -1376,9 +1376,7 @@ class Question extends MY_Controller
 
 				$inputFileName = $data['upload_data']['full_path'];
 
-				$topic = $this->input->post('topic_selected');
-				$topic = str_replace("'", "''", $topic);
-				$idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
+				$idTopic = $this->input->post('topic_selected');
 
 				$inputFileType = 'Excel2007';
 
@@ -1393,7 +1391,7 @@ class Question extends MY_Controller
 				$this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
 				$this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
 
-				redirect("./Question");
+				redirect("./Question?");
 
 			}
 
