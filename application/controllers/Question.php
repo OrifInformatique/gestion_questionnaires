@@ -1443,7 +1443,7 @@ class Question extends MY_Controller
 			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 			{
 				//Current question
-				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 
 				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
 				{
@@ -1468,7 +1468,7 @@ class Question extends MY_Controller
 				//Take next to the question the data to insert to 'T_Multiple_Choice'
 				while($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
 				{
-					$answerField = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+					$answerField = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue());
 					$validField = $worksheet->getCellByColumnAndRow($column + 2, $row + 1)->getValue();
 
 					if($validField == "x")$valid = true;
@@ -1517,7 +1517,7 @@ class Question extends MY_Controller
 			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 			{
 				//Current question
-				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 				//Nb of answers needed
 				$nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 				//Nb of points of the question
@@ -1546,7 +1546,7 @@ class Question extends MY_Controller
 				//Take next to the question the data to insert to 'T_Multiple_Answer'
 				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 				{
-					$answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 
 					$inputMultipleAnswer = array(
 						"FK_Question" => $idQuestion,
@@ -1653,7 +1653,7 @@ class Question extends MY_Controller
 				if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
 				{
 					//Current question
-					$question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+					$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue());
 
 					if($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 					{
@@ -1675,7 +1675,7 @@ class Question extends MY_Controller
 					$idQuestion = $this->question_model->insert($inputQuestion);
 				}
 
-				$clozeText = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				$clozeText = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue());
 
 				$inputClozeText = array(
 					"FK_Question" => $idQuestion,
@@ -1690,7 +1690,7 @@ class Question extends MY_Controller
 				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 				{
 					$answerOrder++;
-					$answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 
 					$inputClozeTextAnswer = array(
 						"FK_Cloze_Text" => $idClozeText,
@@ -1836,7 +1836,7 @@ class Question extends MY_Controller
 
 			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
 
-				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 
 				if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
 				{
@@ -1855,7 +1855,7 @@ class Question extends MY_Controller
 				);
 
 				$idQuestion = $this->question_model->insert($inputQuestion);
-				$answer = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue());
 
 				$inputFreeAnswer = array(
 					"FK_Question" => $idQuestion,
@@ -1894,7 +1894,7 @@ class Question extends MY_Controller
 			$row = 3;
 
 			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
-				$question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
 				{
 					$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
@@ -1920,8 +1920,8 @@ class Question extends MY_Controller
 
 				while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
 				{
-					$symbol = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-					$answer = $worksheet->getCellByColumnAndRow($column, $row + 1)->getValue();
+					$symbol = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row + 1)->getValue());
 
 					$inputPictureLandmarks = array(
 						"FK_Question" => $idQuestion,

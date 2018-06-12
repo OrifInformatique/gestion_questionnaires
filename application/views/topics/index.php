@@ -109,5 +109,5 @@ function displayTableBody($topic){
         </div>
     </div>
     <script>
-        window.onload = init();
+        //window.onload = init();
     </script>
