@@ -90,7 +90,9 @@ class topic_model extends MY_Model
                 else
                 {
                     // This is a "leaf" topic. The ID of the current topic is used as array's key.
-                    $topics_tree[$topic->ID] = $topic->Topic;
+                    if(!is_null($parent_topic)){
+                        $topics_tree[$topic->ID] = $topic->Topic;
+                    }
                 }
             }
         }
