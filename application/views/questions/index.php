@@ -183,14 +183,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-1">
+                <div class="col-xs-6 col-sm-4">
                     <?php if($page_previous > 0){
-                        echo '<a onclick="changePage('.$page_previous.')">←</a>';
+                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_previous.')">◀</a>';
                     } ?>
                 </div>
-                <div class="col-md-1">
+                <div class="col-sm-offset-4 col-xs-6 col-sm-4">
                     <?php if($page_next <= $page_limit){
-                        echo '<a onclick="changePage('.$page_next.')">→</a>';
+                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_next.')">▶ </a>';
                     } ?>
                 </div>
             </div>
