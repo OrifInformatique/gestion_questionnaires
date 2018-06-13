@@ -182,6 +182,18 @@
                     ?>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <?php if($page_previous > 0){
+                        echo '<a onclick="changePage('.$page_previous.')">←</a>';
+                    } ?>
+                </div>
+                <div class="col-md-1">
+                    <?php if($page_next <= $page_limit){
+                        echo '<a onclick="changePage('.$page_next.')">→</a>';
+                    } ?>
+                </div>
+            </div>
         </div> 
     </div>
     <script>

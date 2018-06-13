@@ -68,6 +68,9 @@ function sortClick(actual_sort, sort_click){
     window.location =  updateURLParameter(window.location.toString(), "sort", sort);
 
 }
+function changePage(page){
+    window.location =  updateURLParameter(window.location.toString(), "page", page);
+}
 function updateURLParameter(url, param, paramVal){
  var newAdditionalURL = "";
     var tempArray = url.split("?");

@@ -101,7 +101,21 @@ class Question extends MY_Controller
 			$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
 		}
 
+		if(isset($_GET['page'])){
+			$page = $_GET['page'];
+		} else {
+			$page = 1;
+		}
+		$output['page_next'] = $page + 1;
+		$output['page_previous'] = $page - 1;
+		if(empty($where)){
+			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_all())/20);
+		} else {
+			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_many_by($where))/20);
+		}
+
 		$this->db->order_by($orderby);
+		$this->db->limit(20, ($page-1)*20);
 		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
 
