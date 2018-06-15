@@ -108,7 +108,6 @@ function updateItem(id, typeItem){
     }
 }
 
-/*
 $(document).ready(function(){
     $("#topic_selected").change(function(){
 
@@ -134,7 +133,6 @@ $(document).ready(function(){
             });;
     });
 });
-*/
 
 function getID(id, typeItem) {
 
