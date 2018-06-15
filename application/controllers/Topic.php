@@ -48,14 +48,13 @@ class Topic extends MY_Controller
         $outputs['error'] = $error;
         if($id != 0){
             $topic = $this->topic_model->get($id);
+            if (!is_null($topic)){
+                $outputs["id"] = $topic->ID;
+                $outputs["title"] = $topic->Topic;
             
-            $outputs["id"] = $topic->ID;
-            $outputs["title"] = $topic->Topic;
-            
-            $this->display_view("topics/update", $outputs);
-        }else{
-            $this->index();
-        }
+                $this->display_view("topics/update", $outputs);
+            } else show_error($this->lang->line('topic_error_404_message'), 404, $this->lang->line('topic_error_404_heading'));
+        } else $this->index();
     }
 
     /**
@@ -69,7 +68,7 @@ class Topic extends MY_Controller
         if($this->form_validation->run() == true){
             $this->topic_model->update($id, $title);
             $this->index();
-        }else{;
+        }else{
             $this->update($id, 1);
         }   
     }

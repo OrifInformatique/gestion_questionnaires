@@ -220,83 +220,87 @@ class Question extends MY_Controller
 
 		if ($id != 0) {
 			$question = $this->question_model->get($id);
-			$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
-			$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
-			$output['name'] = $question->Question;
-			$output['points'] = $question->Points;
+			if (!is_null($question)){
+				$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
+				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
+				$output['name'] = $question->Question;
+				$output['points'] = $question->Points;
 
-			switch ($question->FK_Question_Type){
-			case 1:
-				// MUTLIPLE CHOICE
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['question'] = $reponse->Answer;
-					$answers[$i]['answer'] = $reponse->Valid;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-				$this->display_view('multiple_choice/add', $output);
-				break;
-			case 2:
-				// MUTLIPLE ANSWER
-				$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
-				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-				$this->display_view('multiple_answer/add', $output);
-				break;
-			case 3:
-				// TODO
-				break;
-			case 4:
-				// CLOZE TEXT
-				$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-				$output['cloze_text'] = $cloze_text->Cloze_Text;
-				$output['id_cloze_text'] = $cloze_text->ID;
-				$this->display_view('cloze_text/add', $output);
-				break;
-			case 5:
-				// TODO
-				break;
-			case 6:
-				// FREE ANSWER
-				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
-				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
-				$this->display_view('free_answers/add', $output);
-				break;
-			case 7:
-				// PICTURE LANDMARK
-				$output['picture_name'] = $question->Picture_Name;
-				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['symbol'] = $reponse->Symbol;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
+				switch ($question->FK_Question_Type){
+				case 1:
+					// MUTLIPLE CHOICE
+					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['question'] = $reponse->Answer;
+						$answers[$i]['answer'] = $reponse->Valid;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$this->display_view('multiple_choice/add', $output);
+					break;
+				case 2:
+					// MUTLIPLE ANSWER
+					$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
+					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$this->display_view('multiple_answer/add', $output);
+					break;
+				case 3:
+					// TODO
+					break;
+				case 4:
+					// CLOZE TEXT
+					$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$output['cloze_text'] = $cloze_text->Cloze_Text;
+					$output['id_cloze_text'] = $cloze_text->ID;
+					$this->display_view('cloze_text/add', $output);
+					break;
+				case 5:
+					// TODO
+					break;
+				case 6:
+					// FREE ANSWER
+					$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
+					$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
+					$this->display_view('free_answers/add', $output);
+					break;
+				case 7:
+					// PICTURE LANDMARK
+					$output['picture_name'] = $question->Picture_Name;
+					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['symbol'] = $reponse->Symbol;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
 
-				$this->display_view('picture_landmark/add', $output);
+					$this->display_view('picture_landmark/add', $output);
+				}
+			}else{
+				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
 			}
 		} else {
 			$this->index();
@@ -365,7 +369,7 @@ class Question extends MY_Controller
 				//var_dump($reponses);
 				$this->display_view('questions/detail', $output);
 			} else {
-				//todo déclancher la page 404 
+				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
 			}
 		} else {
 			$this->index();
