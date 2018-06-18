@@ -8,7 +8,33 @@
  */
 $nbMaxQuestion = 0;
 ?>
+<script>
+    $(document).ready(function(){
+        $("#topic_selected").change(function(){
 
+            var topic = $( "#topic_selected" ).val();
+
+            topic = topic.replace("'", "_apostrophe_");
+
+            $.post("./add/", {topic: topic}, function (nbQuestion) {
+
+                $("#nb_questions")
+                    .find('option')
+                    .remove()
+                    .end()
+
+                var i;
+                for (i = 0; i < nbQuestion; i++){
+                    $("#nb_questions")
+                        .append('<option>' + (i+1) + '</option>')
+
+                }
+            }).fail(function(xhr, status, error) {
+                    alert(error);
+                });;
+        });
+    });
+</script>
 <div id="page-content-wrapper">
     <div class="container">
         <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire_title'); ?></h1>

@@ -108,32 +108,6 @@ function updateItem(id, typeItem){
     }
 }
 
-$(document).ready(function(){
-    $("#topic_selected").change(function(){
-
-        var topic = $( "#topic_selected" ).val();
-
-        topic = topic.replace("'", "_apostrophe_");
-
-        $.post("./add/", {topic: topic}, function (nbQuestion) {
-
-            $("#nb_questions")
-                .find('option')
-                .remove()
-                .end()
-
-            var i;
-            for (i = 0; i < nbQuestion; i++){
-                $("#nb_questions")
-                    .append('<option>' + (i+1) + '</option>')
-
-            }
-        }).fail(function(xhr, status, error) {
-                alert(error);
-            });;
-    });
-});
-
 function getID(id, typeItem) {
 
     document.getElementById("btn_del").setAttribute("onclick", "deleteItem(" + id + "," + typeItem + ")");
