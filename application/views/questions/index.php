@@ -109,28 +109,28 @@
 
             <div class="row">
                 <?php 
-                    $question_sort='&#11205;&#11206;';
-                    $question_type_sort='&#11205;&#11206;';
-                    $points_sort='&#11205;&#11206;';
+                    $question_sort='▲▼';
+                    $question_type_sort='▲▼';
+                    $points_sort='▲▼';
                     if (isset($_GET['sort'])){
                         switch ($_GET['sort']){
                             case 'question_asc':
-                                $question_sort='&#11206;';
+                                $question_sort='▼';
                                 break;
                             case 'question_desc':
-                                $question_sort='&#11205;';
+                                $question_sort='▲';
                                 break;
                             case 'question_type_asc':
-                                $question_type_sort='&#11206;';
+                                $question_type_sort='▼';
                                 break;
                             case 'question_type_desc':
-                                $question_type_sort='&#11205;';
+                                $question_type_sort='▲';
                                 break;
                             case 'points_asc':
-                                $points_sort='&#11206;';
+                                $points_sort='▼';
                                 break;
                             case 'points_desc':
-                                $points_sort='&#11205;';
+                                $points_sort='▲';
                                 break;
                         }
                     }
@@ -185,12 +185,12 @@
             <div class="row">
                 <div class="col-xs-6 col-sm-4">
                     <?php if($page_previous > 0){
-                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_previous.')">&#11207;</a>';
+                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_previous.')">◀</a>';
                     } ?>
                 </div>
                 <div class="col-sm-offset-4 col-xs-6 col-sm-4">
                     <?php if($page_next <= $page_limit){
-                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_next.')">&#11208;</a>';
+                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_next.')">▶</a>';
                     } ?>
                 </div>
             </div>
