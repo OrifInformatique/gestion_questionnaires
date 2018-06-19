@@ -16,6 +16,7 @@ var oldid = '';
  * 3 = Module
  * 4 = Topic
  */
+ /*
 function deleteItem(id, typeItem) {
 
     switch(typeItem){
@@ -40,7 +41,7 @@ function deleteItem(id, typeItem) {
             }
             break;
     }
-}
+}*/
 
 function changeselect() {
     var module = document.getElementById("module_selected").value;
@@ -90,6 +91,8 @@ function updateURLParameter(url, param, paramVal){
     var rows_txt = temp + "" + param + "=" + paramVal;
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
+
+/*
 function updateItem(id, typeItem){
 
     switch (typeItem){
@@ -106,8 +109,9 @@ function updateItem(id, typeItem){
             document.location.href = "./Topic/update/" + id;
             break;
     }
-}
+}*/
 
+/*
 function getID(id, typeItem) {
 
     document.getElementById("btn_del").setAttribute("onclick", "deleteItem(" + id + "," + typeItem + ")");
@@ -119,4 +123,4 @@ function getID(id, typeItem) {
     }
 
     oldid = id;
-}
+}*/

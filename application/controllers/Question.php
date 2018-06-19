@@ -133,46 +133,51 @@ class Question extends MY_Controller
 	 * @param int $id = id of the question
 	 * Delete selected question
 	 */
-	public function delete($id = 0)
+	public function delete($id = 0, $action = NULL)
 	{
 		if ($id != 0) {
 
 			$nbQuestionnaires = $this->question_questionnaire_model->count_by("FK_Question = ".$id);
 			if($nbQuestionnaires == 0){
+				if (is_null($action)) {
+					$output = get_object_vars($this->question_model->get($id));
+					$output["question"] = $this->question_model->get_all();
+	                $this->display_view("questions/confirm", $output);
+				} else {
+					$question = $this->question_model->get($id);
 
-				$question = $this->question_model->get($id);
-
-				switch ($question->FK_Question_Type){
-				case 1:
-					$this->multiple_choice_model->delete_by("FK_Question = ".$id);
-					break;
-				case 2:
-					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
-					break;
-				case 3:
-					// TODO 
-					break;
-				case 4:
-					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
-					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
-					$this->cloze_text_model->delete_by("FK_Question = ".$id);
-					break;
-				case 5:
-					// TODO 
-					break;
-				case 6:
-					$this->free_answer_model->delete_by("FK_Question = ".$id);
-					break;
-				case 7:
-					$picture = "uploads/pictures/".$question->Picture_Name;
-					if(file_exists($picture)){
-						unlink($picture);
+					switch ($question->FK_Question_Type){
+					case 1:
+						$this->multiple_choice_model->delete_by("FK_Question = ".$id);
+						break;
+					case 2:
+						$this->multiple_answer_model->delete_by("FK_Question = ".$id);
+						break;
+					case 3:
+						// TODO 
+						break;
+					case 4:
+						$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
+						$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
+						$this->cloze_text_model->delete_by("FK_Question = ".$id);
+						break;
+					case 5:
+						// TODO 
+						break;
+					case 6:
+						$this->free_answer_model->delete_by("FK_Question = ".$id);
+						break;
+					case 7:
+						$picture = "uploads/pictures/".$question->Picture_Name;
+						if(file_exists($picture)){
+							unlink($picture);
+						}
+						$this->picture_landmark_model->delete_by("FK_Question = ".$id);
 					}
-					$this->picture_landmark_model->delete_by("FK_Question = ".$id);
-				}
 
-				$this->question_model->delete($id);
-				redirect('/Question');
+					$this->question_model->delete($id);
+					redirect('/Question');
+				}
 			} else {
 				$questionnaires = $this->question_questionnaire_model->get_many_by("FK_Question = ".$id);
 				for($i = 0; $i < $nbQuestionnaires; $i++){

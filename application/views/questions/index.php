@@ -214,8 +214,8 @@ function displayQuestion($question)
         </a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="close" id="btn_update" onclick="updateItem(<?=$question->ID?>,2)">✎</a></td>
-        <td style="text-align: center;"><a class="close" id="btn_del" onclick="deleteItem(<?=$question->ID?>,2)">×</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_update" href="./Question/update/<?php echo $question->ID ?>">✎</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_del" href="./Question/delete/<?php echo $question->ID ?>">×</a></td>
     </tr>
     <?php
 }

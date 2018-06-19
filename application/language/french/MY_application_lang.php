@@ -111,8 +111,9 @@ $lang['import_image_success']           = 'Les images ont été importées avec 
 $lang['import_image_error']             = 'Erreur lors de l\'importion des images.';
 $lang['import_question_success']        = 'Les questions ont été importées avec succès.';
 $lang['import_question_error']          = 'Erreur lors de l\'importion des questions.';
-$lang['question_error_404_message']		= 'Vous essayer d\'accéder à une question qui n\'existe pas .';
-$lang['question_error_404_heading']		= 'Question inexistante';
+$lang['question_error_404_message']     = 'Vous essayer d\'accéder à une question qui n\'existe pas .';
+$lang['question_error_404_heading']     = 'Question inexistante';
+$lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
 
 
 
