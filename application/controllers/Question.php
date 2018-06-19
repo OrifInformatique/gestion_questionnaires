@@ -392,7 +392,7 @@ class Question extends MY_Controller
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
@@ -569,7 +569,7 @@ class Question extends MY_Controller
 	{
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required|integer|greater_than[0]');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
@@ -745,7 +745,7 @@ class Question extends MY_Controller
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
@@ -937,7 +937,7 @@ class Question extends MY_Controller
 			if (isset($_POST['save'])){
 				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 				
 				if ($this->form_validation->run()){
@@ -978,7 +978,7 @@ class Question extends MY_Controller
 			if (isset($_POST['save'])){
 				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 				
 				if ($this->form_validation->run()){
@@ -1107,7 +1107,7 @@ class Question extends MY_Controller
 				redirect('/Question');
 			} elseif (isset($_POST['save'])){
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				for($i=0; $i < $_POST['nbAnswer']; $i++){
 					$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
 					$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
