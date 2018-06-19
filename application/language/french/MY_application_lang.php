@@ -111,7 +111,7 @@ $lang['import_image_success']           = 'Les images ont été importées avec 
 $lang['import_image_error']             = 'Erreur lors de l\'importion des images.';
 $lang['import_question_success']        = 'Les questions ont été importées avec succès.';
 $lang['import_question_error']          = 'Erreur lors de l\'importion des questions.';
-$lang['question_error_404_message']     = 'Vous essayer d\'accéder à une question qui n\'existe pas .';
+$lang['question_error_404_message']     = 'Vous essayez d\'accéder à une question qui n\'existe pas .';
 $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
 
@@ -129,8 +129,8 @@ $lang['update_topic_form_err']          = 'Le champ titre du sujet est requis';
 $lang['add_topic_form_err']             = 'Le champ titre du sujet est requis';
 $lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
 $lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
-$lang['topic_error_404_message']		= 'Vous essayer d\'accéder à un sujet qui n\'existe pas .';
-$lang['topic_error_404_heading']		= 'Sujet inexistante';
+$lang['topic_error_404_message']		= 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
+$lang['topic_error_404_heading']		= 'Sujet inexistant';
 
 
 //Modules pages
@@ -144,8 +144,8 @@ $lang['update_module_form_err']         = 'Le champ titre du module est requis';
 $lang['add_module_form_err']            = 'Le champ titre du module est requis';
 $lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
-$lang['module_error_404_message']		= 'Vous essayer d\'accéder à un module qui n\'existe pas .';
-$lang['module_error_404_heading']		= 'Module inexistante';
+$lang['module_error_404_message']		= 'Vous essayez d\'accéder à un module qui n\'existe pas .';
+$lang['module_error_404_heading']		= 'Module inexistant';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
