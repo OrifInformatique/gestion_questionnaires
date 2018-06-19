@@ -116,9 +116,6 @@ class Questionnaire extends MY_Controller
     {
         $output['error'] = ($error == NULL ? NULL : true);
         $output['topicsList'] = $this->topic_model->get_all();
-        $output['questions'] = $this->question_model->with_all()->get_all();
-        $output['question_types'] = $this->question_type_model->get_all();
-        $output['nbLines'] = 5;
         $output['title'] = $title;
         $output['topics'] = $topics;
         $output['nbQuestions'] = $nbQuestions;
