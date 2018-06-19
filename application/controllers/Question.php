@@ -47,16 +47,13 @@ class Question extends MY_Controller
 			redirect($_SESSION['filtres']);
 		}
 
-		$where = "";
+		$where = "Archive = 0";
 
 		if(!empty($_GET['topic'])){
-			$where .= "FK_Topic = ".$_GET['topic'];
+			$where .= " AND FK_Topic = ".$_GET['topic'];
 		}
 		if(!empty($_GET['type'])){
-			if(!empty($where)){
-				$where .= " AND ";
-			}
-			$where .= "FK_Question_Type = ".$_GET['type'];
+			$where .= " AND FK_Question_Type = ".$_GET['type'];
 		}
 		if(!empty($_GET['module'])){
 
@@ -74,10 +71,7 @@ class Question extends MY_Controller
 				$listIdQuestion .= 'FK_Topic = 0';
 			}
 
-			if(!empty($where)){
-				$where .= " AND ";
-			}
-			$where .= "(".$listIdQuestion.")";
+			$where .= " AND (".$listIdQuestion.")";
 		}
 
 		$orderby="";
@@ -136,56 +130,13 @@ class Question extends MY_Controller
 	public function delete($id = 0, $action = NULL)
 	{
 		if ($id != 0) {
-
-			$nbQuestionnaires = $this->question_questionnaire_model->count_by("FK_Question = ".$id);
-			if($nbQuestionnaires == 0){
-				if (is_null($action)) {
-					$output = get_object_vars($this->question_model->get($id));
-					$output["question"] = $this->question_model->get_all();
-	                $this->display_view("questions/confirm", $output);
-				} else {
-					$question = $this->question_model->get($id);
-
-					switch ($question->FK_Question_Type){
-					case 1:
-						$this->multiple_choice_model->delete_by("FK_Question = ".$id);
-						break;
-					case 2:
-						$this->multiple_answer_model->delete_by("FK_Question = ".$id);
-						break;
-					case 3:
-						// TODO 
-						break;
-					case 4:
-						$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
-						$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
-						$this->cloze_text_model->delete_by("FK_Question = ".$id);
-						break;
-					case 5:
-						// TODO 
-						break;
-					case 6:
-						$this->free_answer_model->delete_by("FK_Question = ".$id);
-						break;
-					case 7:
-						$picture = "uploads/pictures/".$question->Picture_Name;
-						if(file_exists($picture)){
-							unlink($picture);
-						}
-						$this->picture_landmark_model->delete_by("FK_Question = ".$id);
-					}
-
-					$this->question_model->delete($id);
-					redirect('/Question');
-				}
+			if (is_null($action)) {
+				$output = get_object_vars($this->question_model->get($id));
+				$output["question"] = $this->question_model->get_all();
+                $this->display_view("questions/confirm", $output);
 			} else {
-				$questionnaires = $this->question_questionnaire_model->get_many_by("FK_Question = ".$id);
-				for($i = 0; $i < $nbQuestionnaires; $i++){
-					$output['questionnaires'][$i] = $this->questionnaire_model->get($questionnaires[$i]->FK_Questionnaire);
-				}
-				$output['error'] = "";
-
-				$this->display_view('questionnaires/index', $output);
+				$this->question_model->update($id, array("Archive" => 1));
+				redirect('/Question');
 			}
 		}
 	}
