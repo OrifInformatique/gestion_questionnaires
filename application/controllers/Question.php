@@ -616,10 +616,6 @@ class Question extends MY_Controller
 	 */
 	public function add_MultipleAnswer()
 	{
-		if (isset($_POST['cancel'])){
-			redirect('/Question');
-		}
-
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than[0]');
