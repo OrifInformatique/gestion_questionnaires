@@ -31,8 +31,8 @@
         <!-- Display buttons and display topic and question type as information -->
         <div class="row">
             <div class="form-group">
-                <?php 
-                    echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4"'); 
+                <a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url('/Question')?>"><?=$this->lang->line('cancel')?></a>
+                <?php
                     echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
                     echo form_submit('test', '', 'style="visibility: hidden; height:0;"');//for cancel "Enter" key in form 
                 ?>
