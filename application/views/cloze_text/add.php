@@ -9,8 +9,8 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center"><?php echo $this->lang->line('title_question_add'); ?></h1>
-    <?php
+	<h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
+	<?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
 	echo form_open('Question/add_ClozeText', $attributes);
@@ -23,18 +23,21 @@
 		echo form_hidden('question_type', $question_type->ID);
 		echo form_hidden('nbAnswer', $nbAnswer);
 		if(isset($id)){
-    		echo form_hidden('id', $id);
-    	}
-    	if(isset($id_cloze_text)){
-    		echo form_hidden('id_cloze_text', $id_cloze_text);
-    	}
+			echo form_hidden('id', $id);
+		}
+		if(isset($id_cloze_text)){
+			echo form_hidden('id_cloze_text', $id_cloze_text);
+		}
 		?>
 		
 		<!-- Display buttons and display topic and question type as information -->
 		<div class="row">
-			<div class="form-group col-md-4">
-				<?php echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success"'); ?>
-				<?php echo form_submit('cancel', $this->lang->line('cancel'), 'class="btn btn-danger"'); ?>
+			<div class="form-group">
+				<a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url('/Question')?>"><?=$this->lang->line('cancel')?></a>
+                <?php
+					echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
+					echo form_submit('test', '', 'style="visibility: hidden; height:0;"');//for cancel "Enter" key in form 
+				?>
 			</div>
 			<div class="form-group col-md-8 text-right">
 				<h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>
@@ -54,11 +57,11 @@
 				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
 				<?php
 					if(isset($name)){
-		        		echo form_input('name', $name, 'class="form-control" id="name"');
-		        	} else {
-		        		echo form_input('name', '', 'class="form-control" id="name"');
-		        	}
-		        ?>
+						echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
+					} else {
+						echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
+					}
+				?>
 			</div>
 		</div>
 
@@ -68,12 +71,12 @@
 			</div>
 			<div class="form-group col-md-1">
 				<?php 
-		        	if(isset($name)){
-		        		echo form_input('points', $points, 'class="form-control" id="name"');
-		        	} else {
-		        		echo form_input('points', '', 'class="form-control" id="name"');
-		        	}
-		        ?>
+					if(isset($name)){
+						echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
+					} else {
+						echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
+					}
+				?>
 			</div>
 		</div>
 
@@ -87,41 +90,44 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-		        		echo form_input('cloze_text', $cloze_text, 'class="form-control" id="cloze_text"');
-		        	} else {
-		        		echo form_input('cloze_text', '', 'class="form-control" id="cloze_text"');
-		        	}
-		        ?>
+						echo form_long_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
+					} else {
+						echo form_long_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
+					}
+				?>
 			</div>
 		</div>
 		
 		<!-- ANSWERS FIELDS -->
 		
-		<div class="row">
-			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('answers_list'), 'answer'); ?>
-			</div>
-		</div>
-		
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th colspan="2"><?php echo form_label($this->lang->line('answers_list'), 'answer') ?></th>
+					</tr>
+				</thead>
+				<tbody> 
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
-			<div class="row">
-				<div class="form-group col-md-11">
+			<tr>
+				<td class="form-group col-xs-11">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'class="form-control" id="answer"');
+						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer"');
 					?>
-				</div>
-				<div class="col-md-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary"');
+				</td>
+				<td class="form-group col-xs-1">
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"');
 					?>
-				</div>
-			</div>
+				</td>
+			</tr>
 		<?php } ?>
-		
+			</table>
+		</div>
 		<div class="row">
 			<div class="col-md-2">
-				<?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?>
+				<?php echo form_submit('add_answer', '+', 'class="btn btn-default"'); ?>
 			</div>
 		</div>
 	<?php echo form_close(); ?>

@@ -16,6 +16,7 @@ var oldid = '';
  * 3 = Module
  * 4 = Topic
  */
+ /*
 function deleteItem(id, typeItem) {
 
     switch(typeItem){
@@ -40,15 +41,58 @@ function deleteItem(id, typeItem) {
             }
             break;
     }
-}
+}*/
 
 function changeselect() {
     var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
+
     window.location = '?module=' + module + '&topic=' + topic + '&type=' + type;
 }
 
+
+function changeselectTopic() {
+    var topic_selected = document.getElementById("topic_selected").value;
+    window.location = '?topic_selected=' + topic_selected;
+}
+function sortClick(actual_sort, sort_click){
+    var sort = "";
+    if(actual_sort == sort_click + '_asc')
+    {
+        sort = sort_click + '_desc';
+    }
+    else
+    {
+        sort = sort_click + '_asc';
+    }
+    window.location =  updateURLParameter(window.location.toString(), "sort", sort);
+
+}
+function changePage(page){
+    window.location =  updateURLParameter(window.location.toString(), "page", page);
+}
+function updateURLParameter(url, param, paramVal){
+ var newAdditionalURL = "";
+    var tempArray = url.split("?");
+    var baseURL = tempArray[0];
+    var additionalURL = tempArray[1];
+    var temp = "";
+    if (additionalURL) {
+        tempArray = additionalURL.split("&");
+        for (var i=0; i<tempArray.length; i++){
+            if(tempArray[i].split('=')[0] != param){
+                newAdditionalURL += temp + tempArray[i];
+                temp = "&";
+            }
+        }
+    }
+
+    var rows_txt = temp + "" + param + "=" + paramVal;
+    return baseURL + "?" + newAdditionalURL + rows_txt;
+}
+
+/*
 function updateItem(id, typeItem){
 
     switch (typeItem){
@@ -65,43 +109,18 @@ function updateItem(id, typeItem){
             document.location.href = "./Topic/update/" + id;
             break;
     }
-}
+}*/
 
-$(document).ready(function(){
-    $("#topic_selected").change(function(){
-
-        var topic = $( "#topic_selected" ).val();
-
-        topic = topic.replace("'", "_apostrophe_");
-
-        $.post("./add/", {topic: topic}, function (nbQuestion) {
-
-            $("#nb_questions")
-                .find('option')
-                .remove()
-                .end()
-
-            var i;
-            for (i = 0; i < nbQuestion; i++){
-                $("#nb_questions")
-                    .append('<option>' + (i+1) + '</option>')
-
-            }
-        }).fail(function(xhr, status, error) {
-                alert(error);
-            });;
-    });
-});
-
+/*
 function getID(id, typeItem) {
 
     document.getElementById("btn_del").setAttribute("onclick", "deleteItem(" + id + "," + typeItem + ")");
     document.getElementById("btn_update").setAttribute("onclick", "updateItem(" + id + "," + typeItem + ")");
     document.getElementById(id).setAttribute("style", "border: 3px solid black;");
-
+   
     if(oldid != '' && oldid != id){
         document.getElementById(oldid).setAttribute("style", "border: none;");
     }
 
     oldid = id;
-}
+}*/

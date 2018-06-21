@@ -214,6 +214,29 @@ if ( ! function_exists('form_input'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('form_long_input'))
+{
+	/**
+	 * Text Input Field
+	 *
+	 * @param	mixed
+	 * @param	string
+	 * @param	mixed
+	 * @return	string
+	 */
+	function form_long_input($data = '', $value = '', $extra = '')
+	{
+		$defaults = array(
+			'type' => 'text',
+			'name' => is_array($data) ? '' : $data			
+		);
+
+		return "<textarea "._parse_form_attributes($data, $defaults)._attributes_to_string($extra)." >$value</textarea>\n";
+	}
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('form_password'))
 {
 	/**
@@ -378,7 +401,7 @@ if ( ! function_exists('form_dropdown'))
 
 		$multiple = (count($selected) > 1 && stripos($extra, 'multiple') === FALSE) ? ' multiple="multiple"' : '';
 
-		$form = '<select '.rtrim(_parse_form_attributes($data, $defaults)).$extra.$multiple.">\n";
+		$form = '<select class="form-control" '.rtrim(_parse_form_attributes($data, $defaults)).$extra.$multiple.">\n";
 
 		foreach ($options as $key => $val)
 		{
@@ -571,10 +594,13 @@ if ( ! function_exists('form_label'))
 	 * @param	string	Additional attributes
 	 * @return	string
 	 */
-	function form_label($label_text = '', $id = '', $attributes = array())
+	function form_label($label_text = '', $id = '', $attributes = array(), $inline = false)
 	{
 
-		$label = '<label';
+		$label = '<h4 ';
+		if ($inline) {
+			$label.='class="inline" ';
+		}
 
 		if ($id !== '')
 		{
@@ -589,8 +615,9 @@ if ( ! function_exists('form_label'))
 			}
 		}
 
-		return $label.'>'.$label_text.'</label>';
+		return $label.'>'.$label_text.'</h4>';
 	}
+	
 }
 
 // ------------------------------------------------------------------------

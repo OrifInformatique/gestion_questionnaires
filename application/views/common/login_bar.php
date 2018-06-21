@@ -7,7 +7,6 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
-
 /**
  * Test the pattern to find the active page
  * @param $pattern = related tab
@@ -35,7 +34,7 @@ function checkactive($page){
             test_regex('/\/Questionnaire/');
             break;
         case 2:
-            test_regex('/\/Question$|Question\//');
+            test_regex('/\/(Question[^n]|Question$)/');
             break;
         case 3:
             test_regex('/\/Module/');
@@ -51,17 +50,29 @@ function checkactive($page){
     if(isset($_SESSION['logged_in']))
     {
         ?>
-        <nav class="navbar navbar-inverse navbar navbar-fixed-top" style="border-bottom: 0;">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a href="<?php echo base_url('Home');?>" class="navbar-brand"><?php echo $this->lang->line('nav_home');?></a>
-                </div>
-                <div class="collapse navbar-collapse" id="myNavbar">
+        <div style="min-width: 270px" class="container navbar navbar-fixed-top navbar-default">
+            
+            <div class="col-xs-12 col-sm-3 xs-center">
+                <a id="logo" href="<?php echo base_url(); ?>">
+                    <img  style="display: inline-block; text-align: right; margin: 10px;" src="<?=base_url()?>application/img/logo.jpg">
+                </a>
+            </div>
+                
+            <div class="col-xs-9 col-sm-9" >
+                <h1 style="display: inline-block; vertical-align: middle;" ><?php echo $this->lang->line('page_login');?></h1>
+            </div>
+
+            <div class="col-xs-3">
+                <button  type="button" class="navbar-toggle"  id="toggle-button" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+    
+            <div class="col-xs-12">
+                <div class="collapse navbar-collapse" id="myNavbar"> 
                     <ul class="nav navbar-nav">
                         <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
                                 <?php echo $this->lang->line('nav_questionnaire');?></a></li>
@@ -73,11 +84,18 @@ function checkactive($page){
                                 <?php echo $this->lang->line('nav_topic');?></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="<?php echo base_url('Auth/unlog');?>"><span class="glyphicon glyphicon-log-in"></span><?php echo $this->lang->line('unlog');?></a></li>
+                        <li>
+                            <a href="<?php echo base_url('Auth/unlog');?>">
+                                <span class="glyphicon glyphicon-log-in"></span>
+                                <?php echo $this->lang->line('unlog');?>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-        </nav>
+        </div> 
+        <hr style="width: 100%; position: fixed; margin: 0;"></hr>
+        <div class="space-up"></div>
 <?php
     }
 ?>
