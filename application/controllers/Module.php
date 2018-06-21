@@ -41,17 +41,23 @@ class Module extends MY_Controller
      */
     public function update($id = 0, $error = 0){
         $outputs['error'] = $error;
+    
         if($id != 0){
 			$topic = $this->topic_model->get($id);
-			
-			$outputs["id"] = $topic->ID;
-			$outputs["title"] = $topic->Topic;
-			$outputs["action"] = "update";
-			
-            $this->display_view("modules/update", $outputs);
+			if (!is_null($topic)){
+    			$outputs["id"] = $topic->ID;
+    			$outputs["title"] = $topic->Topic;
+    			$outputs["action"] = "update";
+    			
+                $this->display_view("modules/update", $outputs); 
+            }
+            else
+                show_error($this->lang->line('module_error_404_message'), 404, $this->lang->line('module_error_404_heading'));
+            
         }else{
             $this->index();
         }
+  
     }
 
     /**

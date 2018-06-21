@@ -53,14 +53,15 @@ function displayTableBody($topic){
         <div class="row">
             <div class="col-xs-12">
                 <h4><?php echo $this->lang->line('focus_module'); ?></h4>
-                <select onchange="changeselect()" class="form-control" id="topic_selected">
+                <select onchange="changeselectTopic()" class="form-control" id="topic_selected">
                     <?php
+                    echo "<option selected disabled hidden></option>";
                     //Récupère chaque module
-                    foreach ($topics as $object => $topic) {
-                        if($topic->FK_Parent_Topic == 0)
+                    foreach ($modules as $object => $module) {
+                        if($module->FK_Parent_Topic == 0)
                         {
                             //Affiche les modules
-                            echo "<option>" . $topic->Topic . "</option>";
+                            echo "<option value='" . $module->ID . "'>" . $module->Topic . "</option>";
                         }
                     }
                     ?>
@@ -108,5 +109,5 @@ function displayTableBody($topic){
         </div>
     </div>
     <script>
-        window.onload = init();
+        //window.onload = init();
     </script>

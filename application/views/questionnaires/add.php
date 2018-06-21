@@ -8,6 +8,33 @@
  */
 $nbMaxQuestion = 0;
 ?>
+<script>
+    $(document).ready(function(){
+        $("#topic_selected").change(function(){
+
+            var topic = $( "#topic_selected" ).val();
+
+            topic = topic.replace("'", "_apostrophe_");
+
+            $.post("./add/", {topic: topic}, function (nbQuestion) {
+
+                $("#nb_questions")
+                    .find('option')
+                    .remove()
+                    .end()
+
+                var i;
+                for (i = 0; i < nbQuestion; i++){
+                    $("#nb_questions")
+                        .append('<option>' + (i+1) + '</option>')
+
+                }
+            }).fail(function(xhr, status, error) {
+                    alert(error);
+                });;
+        });
+    });
+</script>
 
 <div id="page-content-wrapper">
     <div class="container">
@@ -26,19 +53,21 @@ $nbMaxQuestion = 0;
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
             }
             ?>
-            <div class="form-group col-xs-12 col-sm-6">
+            <div class="form-group col-xs-12">
                 <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
                 <div class="row">
-                    <div class="col-xs-12"><input type="text" name="title" class="form-control" id="title"
-                        value="<?php echo $title;?>"></div>
+                    <div class="col-xs-12">
+                        <input maxlength="100" type="text" name="title" class="form-control" id="title"
+                        value="<?php echo $title;?>">
+                    </div>
                 </div>
             </div>
-            <div class="form-group col-xs-12 col-sm-6">
+            <div class="form-group col-xs-12 col-sm-4">
                 <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
-                        <select class="form-control" id="topic_selected" 
-                                name="topic_selected">
+                        <select class="form-control" id="topic_selected" name="topic_selected">
+                            <option selected disabled hidden></option>
                             <?php
 
                             //Récupère chaque topics
@@ -67,7 +96,7 @@ $nbMaxQuestion = 0;
                 <h4 for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></h4>
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
-            <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="col-sm-4 col-xs-12">
                 <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>"/>
             </div>
         </div>

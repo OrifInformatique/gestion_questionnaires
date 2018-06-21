@@ -23,14 +23,21 @@
     .xs-space{
      margin-top: 40px;
     }
+    #question{
+        max-width:50em;
+        word-wrap: break-word;
+    }
 }
 @media(max-width:768px) {
     .xs-space{
      margin-top: 10px;
     }
-
     .title-section{
         text-align: center;
+    }
+    #question{
+        max-width:50em;
+        overflow: hidden;
     }
 }
 .no-border{

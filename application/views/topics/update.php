@@ -24,7 +24,7 @@
             ?>
             <div class="col-xs-12">
                 <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
-                <input type="text" name="title" class="form-control col-xs-12" id="title" value="<?php echo $title; ?>">
+                <input maxlength="70" type="text" name="title" class="form-control col-xs-12" id="title" value="<?php echo $title; ?>">
             </div>
             <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
             <div class="col-xs-12">

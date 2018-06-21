@@ -40,7 +40,7 @@ class question_model extends MY_Model
         $query = $this->_database
                         ->select($this->primary_key)
                         ->limit($nbQuestion)
-                        ->where("FK_Topic = $idTopic")
+                        ->where("FK_Topic = $idTopic AND Archive = 0")
                         ->order_by("RAND()")
                         ->get($this->_table);
 
@@ -51,7 +51,7 @@ class question_model extends MY_Model
     {
         $query = $this->_database
                         ->select($this->primary_key)
-                        ->where("FK_Topic = $idTopic")
+                        ->where("FK_Topic = $idTopic AND Archive = 0")
                         ->get($this->_table);
 
         return $query->num_rows();

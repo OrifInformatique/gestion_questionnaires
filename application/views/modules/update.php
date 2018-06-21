@@ -24,9 +24,9 @@
         <div class="col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('update_title_module'); ?></h4>
             
-            <input type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>">
+            <input maxlength="45" type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>">
             <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
-			<input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
+            <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
         </div>
         <div class="col-xs-12">
 

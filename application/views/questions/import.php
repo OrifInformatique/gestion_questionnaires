@@ -12,6 +12,14 @@
     <h1 class="title-section"><?php echo $this->lang->line('title_import_questions'); ?></h1>
 
     <?php
+    if(isset($excel_error)){
+        if($excel_error == false){
+            echo '<div class="alert alert-success">'.$this->lang->line('import_question_success').'</div>';
+        } else {
+            echo '<div class="alert alert-danger">'.$excel_message.'</div>';
+        }
+    }
+
     $attributes = array("class" => "form-group",
                         "id" => "importQuestionForm",
                         "name" => "importQuestionForm");
@@ -42,6 +50,14 @@
     <h1 class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
+    if(isset($image_error)){
+        if($image_error == false){
+            echo '<div class="alert alert-success">'.$this->lang->line('import_image_success').'</div>';
+        } else {
+            echo '<div class="alert alert-danger">'.$image_message.'</div>';
+        }
+    }
+
     $attributes = array("class" => "form-group",
         "id" => "updatePicturesForm",
         "name" => "updatePicturesForm",
@@ -53,7 +69,7 @@
                 <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile" accept="image/*" multiple>
         </div> 
         <div class="col-xs-12 col-sm-4 xs-space">
-                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import'); ?>" name="submitPictures">
+                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_image'); ?>" name="submitPictures">
         </div>
     </div>
 </div>

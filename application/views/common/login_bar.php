@@ -34,7 +34,7 @@ function checkactive($page){
             test_regex('/\/Questionnaire/');
             break;
         case 2:
-            test_regex('/\/Question[^n]/');
+            test_regex('/\/(Question[^n]|Question$)/');
             break;
         case 3:
             test_regex('/\/Module/');

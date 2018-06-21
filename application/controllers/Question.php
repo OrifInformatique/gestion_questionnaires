@@ -10,59 +10,57 @@
 
 class Question extends MY_Controller
 {
-    /* MY_Controller variables definition */
-    protected $access_level = "2";
+	/* MY_Controller variables definition */
+	protected $access_level = "2";
 
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
-                            'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
-                            'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-        $this->load->helper(array('url', 'form'));
-        $this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
+							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
+							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
+		$this->load->helper(array('url', 'form'));
+		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
+	}
 
-    /**
-     * Display question list
-     */
-    public function index()
-    {
-    	if(!empty($_GET['module']) && !empty($_GET['topic'])){
-	    	$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
-	    	if($nbTopic==0){
-	    		redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
-	    	}
-	    }
-
-    	if(isset($_GET['module'], $_GET['topic'], $_GET['type'])){
-    		$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
-    	}
-
-    	if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
-    		redirect($_SESSION['filtres']);
+	/**
+	 * Display question list
+	 */
+	public function index()
+	{
+		if(!empty($_GET['module']) && !empty($_GET['topic'])){
+			$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
+			if($nbTopic==0){
+				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
+			}
+		}
+    
+		if(isset($_GET['module']) && isset($_GET['topic']) && isset($_GET['type'])){
+			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
 		}
 
-    	$where = "";
+		if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+			redirect($_SESSION['filtres']);
+		}
 
-    	if(!empty($_GET['topic'])){
-    		$where .= "FK_Topic = ".$_GET['topic'];
-    	}
-    	if(!empty($_GET['type'])){
-    		if(!empty($where)){
-    			$where .= " AND ";
-    		}
-    		$where .= "FK_Question_Type = ".$_GET['type'];
-    	}
-    	if(!empty($_GET['module'])){
+		$where = "Archive = 0";
 
-    		$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
+		if(!empty($_GET['topic'])){
+			$where .= " AND FK_Topic = ".$_GET['topic'];
+		}
+		if(!empty($_GET['type'])){
+			$where .= " AND FK_Question_Type = ".$_GET['type'];
+		}
+		if(!empty($_GET['module'])){
 
-    		$listIdQuestion = '';
+			$topics = $this->topic_model->get_many_by("FK_Parent_Topic = ".$_GET['module']);
+
+			$listIdQuestion = '';
+
 			if ($topics != false) {
 				foreach ($topics as $topic) {
 					$listIdQuestion .= 'FK_Topic = '.$topic->ID.' OR ';
@@ -73,255 +71,273 @@ class Question extends MY_Controller
 				$listIdQuestion .= 'FK_Topic = 0';
 			}
 
-			if(!empty($where)){
-    			$where .= " AND ";
-    		}
-			$where .= "(".$listIdQuestion.")";
+			$where .= " AND (".$listIdQuestion.")";
 		}
+
+		$orderby="";
+
+		if (!empty($where)){
+			$where ="($where)";
+		}
+
+		if (!empty($_GET['sort'])){
+			switch ($_GET['sort']){
+				case 'question_asc': $orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";break;
+				case 'question_desc': $orderby = "Question DESC, FK_Question_Type ASC, Points ASC, ID ASC";break;
+				case 'question_type_asc': $orderby = "FK_Question_Type ASC, Question ASC, Points ASC, ID ASC";break;
+				case 'question_type_desc': $orderby = "FK_Question_Type DESC, Question ASC, Points ASC, ID ASC";break;
+				case 'points_asc': $orderby = "Points ASC, Question ASC, FK_Question_Type ASC, ID ASC";break;
+				case 'points_desc': $orderby = "Points DESC, Question ASC, FK_Question_Type ASC, ID ASC";break;
+				default:$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
+			}	
+		}
+		else{
+			$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
+		}
+
+		if(isset($_GET['page'])){
+			$page = $_GET['page'];
+		} else {
+			$page = 1;
+		}
+		$output['page_next'] = $page + 1;
+		$output['page_previous'] = $page - 1;
+		if(empty($where)){
+			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_all())/20);
+		} else {
+			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_many_by($where))/20);
+		}
+
+		$this->db->order_by($orderby);
+		$this->db->limit(20, ($page-1)*20);
+		if(empty($where)){
+			$output['questions'] = $this->question_model->with_all()->get_all();
+
+		} else {
+			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
+		}
+
 		
-        if(empty($where)){
-        	$output['questions'] = $this->question_model->with_all()->get_all();
-       	} else {
-       		$output['questions'] = $this->question_model->with_all()->get_many_by($where);
-       	}
-        $output['topics'] = $this->topic_model->get_all();
-        $output['questionTypes'] = $this->question_type_model->get_all();
-        $this->display_view('questions/index', $output);
-    }
+		$output['topics'] = $this->topic_model->get_all();
+		$output['questionTypes'] = $this->question_type_model->get_all();
+		$this->display_view('questions/index', $output);
+	}
 
-    /**
-     * @param int $id = id of the question
-     * Delete selected question
-     */
-    public function delete($id = 0)
-    {
-        if ($id != 0) {
+	/**
+	 * @param int $id = id of the question
+	 * Delete selected question
+	 */
+	public function delete($id = 0, $action = NULL)
+	{
+		if ($id != 0) {
+			if (is_null($action)) {
+				$output = get_object_vars($this->question_model->get($id));
+				$output["question"] = $this->question_model->get_all();
+                $this->display_view("questions/confirm", $output);
+			} else {
+				$this->question_model->update($id, array("Archive" => 1));
+				redirect('/Question');
+			}
+		}
+	}
 
-        	$nbQuestionnaires = $this->question_questionnaire_model->count_by("FK_Question = ".$id);
-        	if($nbQuestionnaires == 0){
-
-        		$question = $this->question_model->get($id);
-
-        		if ($question->FK_Question_Type == 1){
-					$this->multiple_choice_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 2){
-					$this->multiple_answer_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 3){
-					// TODO 
-				} elseif ($question->FK_Question_Type == 4){
-					$cloze_text = $this->cloze_text_model->get_by("FK_Question = ".$id);
-					$this->cloze_text_answer_model->delete_by("FK_Cloze_Text = ".$cloze_text->ID);
-					$this->cloze_text_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 5){
-					// TODO 
-				} elseif ($question->FK_Question_Type == 6){
-					$this->free_answer_model->delete_by("FK_Question = ".$id);
-				} elseif ($question->FK_Question_Type == 7){
-					$picture = "uploads/pictures/".$question->Picture_Name;
-					if(file_exists($picture)){
-						unlink($picture);
-					}
-					$this->picture_landmark_model->delete_by("FK_Question = ".$id);
-				}
-
-	            $this->question_model->delete($id);
-	            redirect('/Question');
-	        } else {
-    			$questionnaires = $this->question_questionnaire_model->get_many_by("FK_Question = ".$id);
-    			for($i = 0; $i < $nbQuestionnaires; $i++){
-    				$output['questionnaires'][$i] = $this->questionnaire_model->get($questionnaires[$i]->FK_Questionnaire);
-    			}
-    			$output['error'] = "";
-
-    			$this->display_view('questionnaires/index', $output);
-	        }
-        }
-    }
-
-    /**
-     * Form validation to update question
-     */
-    public function form_update()
-    {
+	/**
+	 * Form validation to update question
+	 */
+	public function form_update()
+	{
 		$this->form_validation->set_rules('name', 'Title', 'required');
 		$this->form_validation->set_rules('points', 'Points', 'required');
 		
-        $id = $this->input->post('id');
+		$id = $this->input->post('id');
 		$title = array(	'Question' => $this->input->post('name'),
 						'Points' => $this->input->post('points'));
 		
-        if ($this->form_validation->run() == true) {
+		if ($this->form_validation->run() == true) {
 			$this->question_model->update($id, $title);
-            $this->index();
-        } else {
-            $this->update($id, 1);
-        }
-    }
-
-    /**
-     * @param int $id = selected question id
-     * @param int $error = Type of error :
-     * 0 = no error
-     * 1 = wrong identifiers
-     * 2 = field(s) empty
-     * Display the detailed view to update a question
-     */
-    public function update($id = 0, $error = 0)
-    {
-        $output['error'] = $error;
-        $output['id'] = $id;
-
-        if ($id != 0) {
-            $question = $this->question_model->get($id);
-            $output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
-			$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
-			$output['name'] = $question->Question;
-			$output['points'] = $question->Points;
-
-			if ($question->FK_Question_Type == 1){
-				// MUTLIPLE CHOICE
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['question'] = $reponse->Answer;
-					$answers[$i]['answer'] = $reponse->Valid;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-
-				$this->display_view('multiple_choice/add', $output);
-			} elseif ($question->FK_Question_Type == 2){
- 				// MUTLIPLE ANSWER
- 				$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
-				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-
-				$this->display_view('multiple_answer/add', $output);
-			} elseif ($question->FK_Question_Type == 3){
-				// TODO
-			} elseif ($question->FK_Question_Type == 4){
-				// CLOZE TEXT
-				$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-
-				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
-
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-				$output['cloze_text'] = $cloze_text->Cloze_Text;
-				$output['id_cloze_text'] = $cloze_text->ID;
-				$this->display_view('cloze_text/add', $output);
-			} elseif ($question->FK_Question_Type == 5){
-				// TODO
-			} elseif ($question->FK_Question_Type == 6){
-				// FREE ANSWER
-				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
-				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
-
-				$this->display_view('free_answers/add', $output);
-			} elseif ($question->FK_Question_Type == 7){
-				// PICTURE LANDMARK
-				$output['picture_name'] = $question->Picture_Name;
-
-				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-
-				$i = 0;
-				foreach ($reponses as $reponse) {
-					$answers[$i]['id'] = $reponse->ID;
-					$answers[$i]['symbol'] = $reponse->Symbol;
-					$answers[$i]['answer'] = $reponse->Answer;
-					$i++;
-				}
-				$output['nbAnswer'] = count($reponses);
-				$output['answers'] = $answers;
-
-				$this->display_view('picture_landmark/add', $output);
-			}
-        } else {
 			$this->index();
-        }
-    }
+		} else {
+			$this->update($id, 1);
+		}
+	}
 
-    public function detail($id = 0, $error = 0)
-    {
-        $output['error'] = $error;
-        $output['id'] = $id;
+	/**
+	 * @param int $id = selected question id
+	 * @param int $error = Type of error :
+	 * 0 = no error
+	 * 1 = wrong identifiers
+	 * 2 = field(s) empty
+	 * Display the detailed view to update a question
+	 */
+	public function update($id = 0, $error = 0)
+	{
+		$output['error'] = $error;
+		$output['id'] = $id;
 
-        if ($id != 0) {
+		if ($id != 0) {
+			$question = $this->question_model->get($id);
+			if (!is_null($question)){
+				$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
+				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
+				$output['name'] = $question->Question;
+				$output['points'] = $question->Points;
+
+				switch ($question->FK_Question_Type){
+				case 1:
+					// MUTLIPLE CHOICE
+					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['question'] = $reponse->Answer;
+						$answers[$i]['answer'] = $reponse->Valid;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$this->display_view('multiple_choice/add', $output);
+					break;
+				case 2:
+					// MUTLIPLE ANSWER
+					$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
+					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$this->display_view('multiple_answer/add', $output);
+					break;
+				case 3:
+					// TODO
+					break;
+				case 4:
+					// CLOZE TEXT
+					$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+					$output['cloze_text'] = $cloze_text->Cloze_Text;
+					$output['id_cloze_text'] = $cloze_text->ID;
+					$this->display_view('cloze_text/add', $output);
+					break;
+				case 5:
+					// TODO
+					break;
+				case 6:
+					// FREE ANSWER
+					$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
+					$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
+					$this->display_view('free_answers/add', $output);
+					break;
+				case 7:
+					// PICTURE LANDMARK
+					$output['picture_name'] = $question->Picture_Name;
+					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+					$i = 0;
+					foreach ($reponses as $reponse) {
+						$answers[$i]['id'] = $reponse->ID;
+						$answers[$i]['symbol'] = $reponse->Symbol;
+						$answers[$i]['answer'] = $reponse->Answer;
+						$i++;
+					}
+					$output['nbAnswer'] = count($reponses);
+					$output['answers'] = $answers;
+
+					$this->display_view('picture_landmark/add', $output);
+				}
+			}else{
+				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
+			}
+		} else {
+			$this->index();
+		}
+	}
+
+	public function detail($id = 0, $error = 0)
+	{
+		$output['error'] = $error;
+		$output['id'] = $id;
+
+		if ($id != 0) {
 			$question = $this->question_model->with_all()->get_by('ID = ' . $id);
-            $output['question'] = $question;
+			$output['question'] = $question;
 			$output['image'] = "";
 			$output['reponse'] = "";
-			if ($question->FK_Question_Type == 7) {
-				$output['image'] = $question->Picture_Name;
-				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 1) {
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					if ($reponse->Valid == '1'){
-						$cocher = $this->lang->line('yes');
-					} else {
-						$cocher = $this->lang->line('no');
+			if (!is_null($question)){
+				switch ($question->FK_Question_Type){ 
+				case 1:
+					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						if ($reponse->Valid == '1'){
+							$cocher = $this->lang->line('yes');
+						} else {
+							$cocher = $this->lang->line('no');
+						}
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 					}
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
+					break;
+				case 2:
+					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
+					}				
+					break;
+				case 3:
+					$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
+					}				
+					break;
+				case 4:
+					$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+					$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
+					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
+					}				
+					break;
+				case 5:
+					$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
+					break;
+				case 6:
+					$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+					}		
+					break;			
+				case 7:
+					$output['image'] = $question->Picture_Name;
+					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+					foreach ($reponses as $reponse) {
+						$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
+					}			
 				}
-			} elseif ($question->FK_Question_Type == 2) {
-				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 3) {
-				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
-				}				
-			} elseif ($question->FK_Question_Type == 4) {
-				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-				$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
-				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
-				}				
-			} elseif ($question->FK_Question_Type == 5) {
-				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
-			} elseif ($question->FK_Question_Type == 6) {
-				$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
-				}				
+				//var_dump($reponses);
+				$this->display_view('questions/detail', $output);
+			} else {
+				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
 			}
-			//var_dump($reponses);
-			$this->display_view('questions/detail', $output);
-        } else {
+		} else {
 			$this->index();
-        }
-    }
+		}
+	}
 	
 	
-    /**
-     * Display form to add a question
-     */
-    public function add($step=1)
-    {
+	/**
+	 * Display form to add a question
+	 */
+	public function add($step=1)
+	{
 		if ($step==1){
 			// Display a form to choose a topic and a question type
 			$output['topics'] = $this->topic_model->get_tree();
@@ -339,19 +355,26 @@ class Question extends MY_Controller
 			$answers[0]['symbol'] = "";
 			$output['answers'] = $answers;
 		
-			if ($_POST['question_type'] == 1){
+			switch ($_POST['question_type']){
+			case 1:
 				$this->display_view('multiple_choice/add', $output);
-			} elseif ($_POST['question_type'] == 2){
+				break;
+			case 2:
 				$this->display_view('multiple_answer/add', $output);
-			} elseif ($_POST['question_type'] == 3){
+				break;
+			case 3:
 				// TODO
-			} elseif ($_POST['question_type'] == 4){
+				break;
+			case 4:
 				$this->display_view('cloze_text/add', $output);
-			} elseif ($_POST['question_type'] == 5){
+				break;
+			case 5:
 				// TODO
-			} elseif ($_POST['question_type'] == 6){
+				break;
+			case 6:
 				$this->display_view('free_answers/add', $output);
-			} elseif ($_POST['question_type'] == 7){	
+				break;
+			case 7:	
 				$this->display_view('picture_landmark/file', $output);
 			}
 		}
@@ -359,8 +382,8 @@ class Question extends MY_Controller
 	
 
 	/**
-     * Function to save a multiple choice question
-     */
+	 * Function to save a multiple choice question
+	 */
 	public function add_MultipleChoice()
 	{
 		if (isset($_POST['cancel'])){
@@ -369,7 +392,7 @@ class Question extends MY_Controller
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
@@ -451,22 +474,27 @@ class Question extends MY_Controller
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
+					$output['points'] = $_POST['points'];
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
-					}
-				}
-
 				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['question'])){
+						$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+					} else {
+						$answers[$i]['question'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
+					}
 				}
 				
 				$output['answers'] = $answers;
@@ -484,16 +512,28 @@ class Question extends MY_Controller
 				$output['name'] = $_POST['name'];
 			}
 			if(isset($_POST['points'])){
-				$output['points'] = (int)$_POST['points'];
+				$output['points'] = $_POST['points'];
 			}
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['question'])){
+					$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+				} else {
+					$answers[$i]['question'] = "";
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -523,18 +563,14 @@ class Question extends MY_Controller
 	}
 
 	/**
-     * Function for save multiple answer
-     */
+	 * Function for save multiple answer
+	 */
 	public function add_MultipleAnswer()
 	{
-		if (isset($_POST['cancel'])){
-			redirect('/Question');
-		}
-
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
-			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required|integer|greater_than[0]');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
@@ -612,19 +648,31 @@ class Question extends MY_Controller
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
+					$output['points'] = $_POST['points'];
 				}
 				if(isset($_POST['nb_desired_answers'])){
-					$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
-				}
-				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
-					}
+					$output['nb_desired_answers'] = $_POST['nb_desired_answers'];
 				}
 				$output['nbAnswer'] = $_POST['nbAnswer'];
+				
+				for($i=0; $i < $output['nbAnswer']; $i++){
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['question'])){
+						$answers[$i]['question'] = $_POST['reponses'][$i]['question'];
+					} else {
+						$answers[$i]['question'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
+					}
+				}
+				$output['answers'] = $answers;
 				
 				$this->display_view('multiple_answer/add', $output);
 			}
@@ -639,18 +687,26 @@ class Question extends MY_Controller
 				$output['name'] = $_POST['name'];
 			}
 			if(isset($_POST['points'])){
-				$output['points'] = (int)$_POST['points'];
+				$output['points'] = $_POST['points'];
 			}
 			if(isset($_POST['nb_desired_answers'])){
-				$output['nb_desired_answers'] = (int)$_POST['nb_desired_answers'];
+				$output['nb_desired_answers'] = $_POST['nb_desired_answers'];
 			}
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -679,17 +735,17 @@ class Question extends MY_Controller
 	}
 	
 	/**
-     * Function for save cloze text
-     */
+	 * Function for save cloze text
+	 */
 	public function add_ClozeText()
-    {
+	{
 		if (isset($_POST['cancel'])){
 			redirect('/Question');
 		}
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
@@ -714,7 +770,8 @@ class Question extends MY_Controller
 					for($i=0; $i < $_POST['nbAnswer']; $i++){
 						$inputAnswer = array(
 							"FK_Cloze_Text" => $idClozeText,
-							"Answer" => $_POST['reponses'][$i]['answer']
+							"Answer" => $_POST['reponses'][$i]['answer'],
+							"Answer_Order" => $i
 						);
 						$this->cloze_text_answer_model->insert($inputAnswer);
 					}
@@ -749,13 +806,15 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Cloze_Text" => $_POST['id_cloze_text'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $_POST['reponses'][$i]['answer'],
+								"Answer_Order" => $i
 							);
 							$idQuestion = $this->cloze_text_answer_model->insert($inputQuestion);
 						} else {
 							$inputAnswer = array(
 								"FK_Cloze_Text" => $_POST['id_cloze_text'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $_POST['reponses'][$i]['answer'],
+								"Answer_Order" => $i
 							);
 							$this->cloze_text_answer_model->update($answers[$i]['id'], $inputAnswer);
 
@@ -782,19 +841,26 @@ class Question extends MY_Controller
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
+					$output['points'] = $_POST['points'];
 				}
 				if(isset($_POST['cloze_text'])){
 					$output['cloze_text'] = $_POST['cloze_text'];
 				}
 				
-				for($i=1; $i <= $_POST['nbAnswer']; $i++){
-					$noAnswer = "answer".$i;
-					if(isset($_POST[$noAnswer])){
-						$output[$noAnswer] = $_POST[$noAnswer];
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+				for($i=0; $i < $output['nbAnswer']; $i++){
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
 					}
 				}
-				$output['nbAnswer'] = $_POST['nbAnswer'];
+				$output['answers'] = $answers;
 				
 				$this->display_view('cloze_text/add', $output);
 			}
@@ -812,7 +878,7 @@ class Question extends MY_Controller
 				$output['name'] = $_POST['name'];
 			}
 			if(isset($_POST['points'])){
-				$output['points'] = (int)$_POST['points'];
+				$output['points'] = $_POST['points'];
 			}
 			if(isset($_POST['cloze_text'])){
 				$output['cloze_text'] = $_POST['cloze_text'];
@@ -822,8 +888,16 @@ class Question extends MY_Controller
 			
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
-				$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-				$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($_POST['reponses'][$i]['id'])){
+					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
+					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
+				}
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -852,18 +926,18 @@ class Question extends MY_Controller
 	} 
 	
 	/**
-     * Function for save free answer
-     */
+	 * Function for save free answer
+	 */
 	public function add_FreeAnswer()
-    {
-    	if (!isset($_POST['id'])){
+	{
+		if (!isset($_POST['id'])){
 			if (isset($_POST['cancel'])){
 				redirect('/Question');
 			}
-
 			if (isset($_POST['save'])){
+				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 				
 				if ($this->form_validation->run()){
@@ -889,7 +963,7 @@ class Question extends MY_Controller
 						$output['name'] = $_POST['name'];
 					}
 					if(isset($_POST['points'])){
-						$output['points'] = (int)$_POST['points'];
+						$output['points'] = $_POST['points'];
 					}
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
@@ -901,14 +975,14 @@ class Question extends MY_Controller
 			if (isset($_POST['cancel'])){
 				redirect('/Question');
 			}
-
 			if (isset($_POST['save'])){
+				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 				
 				if ($this->form_validation->run()){
-			        $id = $this->input->post('id');
+					$id = $this->input->post('id');
 					
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
@@ -934,7 +1008,7 @@ class Question extends MY_Controller
 						$output['name'] = $_POST['name'];
 					}
 					if(isset($_POST['points'])){
-						$output['points'] = (int)$_POST['points'];
+						$output['points'] = $_POST['points'];
 					}
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
@@ -946,10 +1020,10 @@ class Question extends MY_Controller
 	}
 	
 	/**
-     * Function for save picture landmark
-     */
+	 * Function for save picture landmark
+	 */
 	public function add_PictureLandmark($step=1)
-    {
+	{
 		if ($step==1){
 			if(isset($_POST['focus_topic'])){
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
@@ -964,25 +1038,35 @@ class Question extends MY_Controller
 				$output['name'] = $_POST['name'];
 			}
 			if(isset($_POST['points'])){
-				$output['points'] = (int)$_POST['points'];
+				$output['points'] = $_POST['points'];
 			}
 			
 			if(isset($_POST['picture_name'])){
-	    		$output['picture_name'] = $_POST['picture_name'];
-	    	}
-	    	if(isset($_POST['upload_data'])){
-	    		$output['upload_data'] = $_POST['upload_data'];
-	    	}
+				$output['picture_name'] = $_POST['picture_name'];
+			}
+			if(isset($_POST['upload_data'])){
+				$output['upload_data'] = $_POST['upload_data'];
+			}
 
-	    	if(isset($_POST['nbAnswer'])){
-	    		$output['nbAnswer'] = $_POST['nbAnswer'];
-	    	}
+			if(isset($_POST['nbAnswer'])){
+				$output['nbAnswer'] = $_POST['nbAnswer'];
+			}
 
-	    	if(isset($_POST['reponses'])){
-				for($i=0; $i < $output['nbAnswer']; $i++){
+			for($i=0; $i < $output['nbAnswer']; $i++){
+				if(!empty($_POST['reponses'][$i]['id'])){
 					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				} else {
+					$answers[$i]['id'] = 0;
+				}
+				if(!empty($_POST['reponses'][$i]['symbol'])){
 					$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+				} else {
+					$answers[$i]['symbol'] = "";
+				}
+				if(!empty($_POST['reponses'][$i]['answer'])){
 					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				} else {
+					$answers[$i]['answer'] = "";
 				}
 			}
 
@@ -1023,7 +1107,7 @@ class Question extends MY_Controller
 				redirect('/Question');
 			} elseif (isset($_POST['save'])){
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				for($i=0; $i < $_POST['nbAnswer']; $i++){
 					$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
 					$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
@@ -1131,23 +1215,34 @@ class Question extends MY_Controller
 						$output['name'] = $_POST['name'];
 					}
 					if(isset($_POST['points'])){
-						$output['points'] = (int)$_POST['points'];
+						$output['points'] = $_POST['points'];
 					}
 					
 					if(isset($_POST['picture_name'])){
-			    		$output['picture_name'] = $_POST['picture_name'];
-			    	}
-			    	if(isset($_POST['upload_data'])){
-			    		$output['upload_data'] = $_POST['upload_data'];
-			    	}
+						$output['picture_name'] = $_POST['picture_name'];
+					}
+					if(isset($_POST['upload_data'])){
+						$output['upload_data'] = $_POST['upload_data'];
+					}
 
 					for($i=0; $i < $output['nbAnswer']; $i++){
-						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
-						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+						if(!empty($_POST['reponses'][$i]['id'])){
+							$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+						} else {
+							$answers[$i]['id'] = 0;
+						}
+						if(!empty($_POST['reponses'][$i]['symbol'])){
+							$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+						} else {
+							$answers[$i]['symbol'] = "";
+						}
+						if(!empty($_POST['reponses'][$i]['answer'])){
+							$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+						} else {
+							$answers[$i]['answer'] = "";
+						}
 					}
-					$output['nbAnswer'] = $_POST['nbAnswer'];
-					
+					$output['answers'] = $answers;
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
@@ -1161,23 +1256,35 @@ class Question extends MY_Controller
 					$output['name'] = $_POST['name'];
 				}
 				if(isset($_POST['points'])){
-					$output['points'] = (int)$_POST['points'];
+					$output['points'] = $_POST['points'];
 				}
 
 				if(isset($_POST['picture_name'])){
-		    		$output['picture_name'] = $_POST['picture_name'];
-		    	}
-		    	if(isset($_POST['upload_data'])){
-		    		$output['upload_data'] = $_POST['upload_data'];
-		    	}
+					$output['picture_name'] = $_POST['picture_name'];
+				}
+				if(isset($_POST['upload_data'])){
+					$output['upload_data'] = $_POST['upload_data'];
+				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
 				
 
 				for($i=0; $i < $output['nbAnswer']; $i++){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
-					$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					if(!empty($_POST['reponses'][$i]['id'])){
+						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+					} else {
+						$answers[$i]['id'] = 0;
+					}
+					if(!empty($_POST['reponses'][$i]['symbol'])){
+						$answers[$i]['symbol'] = $_POST['reponses'][$i]['symbol'];
+					} else {
+						$answers[$i]['symbol'] = "";
+					}
+					if(!empty($_POST['reponses'][$i]['answer'])){
+						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					} else {
+						$answers[$i]['answer'] = "";
+					}
 				}
 
 				if (isset($_POST['add_answer'])){
@@ -1211,13 +1318,12 @@ class Question extends MY_Controller
 		}
 	}
 	
-    /**
-     * ON BUILDING
-     * Useful to import all questions already written on Excel
-     */
-    public function import()
+	/**
+	 * ON BUILDING
+	 * Useful to import all questions already written on Excel
+	 */
+	public function import()
     {
-
         if(isset($_POST['submitExcel']))
         {
             $config['upload_path'] = './uploads/excel';
@@ -1225,65 +1331,32 @@ class Question extends MY_Controller
             $config['max_size'] = 100;
             $config['max_width'] = 1024;
             $config['max_height'] = 768;
-
             $this->load->library('upload', $config);
             $this->upload->initialize($config);
-
             if (!$this->upload->do_upload('excelfile')) {
-                $error = array('error' => $this->upload->display_errors());
-                var_dump($error);
-
+            	$output['excel_error'] = true;
+                $output['excel_message'] = $this->upload->display_errors();
             } else {
-
+            	$output['excel_error'] = false;
                 $data = array('upload_data' => $this->upload->data());
-
                 $inputFileName = $data['upload_data']['full_path'];
-
                 $topic = $this->input->post('topic_selected');
-                $topic = str_replace("'", "''", $topic);
-                $idTopic = $this->topic_model->get_by("Topic = '" . $topic . "'")->ID;
-
                 $inputFileType = 'Excel2007';
-
                 /**  Create a new Reader of the type defined in $inputFileType  **/
                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-
-                $this->Import_MultipleChoices($idTopic, $objReader, $inputFileName);
-                $this->Import_MultipleAnswers($idTopic, $objReader, $inputFileName);
-                $this->Import_AnswerDistribution($idTopic, $objReader, $inputFileName);
-                $this->Import_ClozeText($idTopic, $objReader, $inputFileName);
-                $this->Import_TableCell($idTopic, $objReader, $inputFileName);
-                $this->Import_FreeAnswer($idTopic, $objReader, $inputFileName);
-                $this->Import_PictureLandmark($idTopic, $objReader, $inputFileName);
-
-                redirect("./Question");
-
+                $this->Import_MultipleChoices($topic, $objReader, $inputFileName);
+                $this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
+                $this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
+                $this->Import_ClozeText($topic, $objReader, $inputFileName);
+                $this->Import_TableCell($topic, $objReader, $inputFileName);
+                $this->Import_FreeAnswer($topic, $objReader, $inputFileName);
+                $this->Import_PictureLandmark($topic, $objReader, $inputFileName);
+               // redirect("./Question");
             }
-
-
-            if (isset($_FILES['excelfile'])) {
-                if ($_FILES['excelfile']['error'] == 0 &&
-                    $_FILES['excelfile']['type'] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                ) {
-
-                } else {
-                    $output['error'] = true;
-                    $output['questions'] = $this->question_model->with_all()->get_all();
-                    $output['topics'] = $this->topic_model->get_all();
-                    $this->display_view('questions/import', $output);
-                }
-            } else {
-                $output['questions'] = $this->question_model->with_all()->get_all();
-                $output['topics'] = $this->topic_model->get_all();
-                $this->display_view('questions/import', $output);
-            }
-
-        }else if(isset($_POST['submitPictures']))
+        } else if(isset($_POST['submitPictures']))
         {
-
             $files = $_FILES;
             $countfile = count($_FILES['picturesfile']['name']);
-
             for($i = 0; $i < $countfile; $i++)
             {
                 //More optimal object
@@ -1292,524 +1365,549 @@ class Question extends MY_Controller
                 $_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
                 $_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
                 $_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
-
                 $config['upload_path'] = './uploads/pictures';
                 $config['allowed_types'] = 'png|jpg|jpeg';
                 $config['max_size'] = 0;
-
                 $this->load->library('upload', $config);
                 $this->upload->initialize($config);
-
                 if (!$this->upload->do_upload('picturesfile'))
                 {
-                    $error = array('error' => $this->upload->display_errors());
+                    $output['image_error'] = true;
+                    $output['image_message'] = $this->upload->display_errors();
+                } else {
+                	$output['image_error'] = false;
                 }
             }
-
-            if(!isset($error))
-            {
-                redirect("./Question/import");
-            }
-        }else
-        {
-            $output['questions'] = $this->question_model->with_all()->get_all();
-            $output['topics'] = $this->topic_model->get_tree();
-            $this->display_view('questions/import', $output);
         }
-
+        $output['questions'] = $this->question_model->with_all()->get_all();
+        $output['topics'] = $this->topic_model->get_tree();
+        $this->display_view('questions/import', $output);
     }
 
 
-    /**
-     * Import 'Multiple_Choice' question type by Excel sheet 'ChoixMultiple'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'ChoixMultiple'
-     */
-    private function Import_MultipleChoices($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'ChoixMultiples';
-        $questionType = 1;
+	/**
+	 * Import 'Multiple_Choice' question type by Excel sheet 'ChoixMultiple'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'ChoixMultiple'
+	 */
+	private function Import_MultipleChoices($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'ChoixMultiples';
+		$questionType = 1;
 
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
 
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
-        {
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+		{
 
-            $column = 0;
-            $row = 3;
+			$column = 0;
+			$row = 3;
 
-            //Browse the sheet
-            //0 is the start column
-            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-            {
-                //Current question
-                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+			//Browse the sheet
+			//0 is the start column
+			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+			{
+				//Current question
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
 
-                //Data to insert to the table 'T_Question'
-                $inputQuestion = array(
-                                "FK_Topic" => $idTopic,
-                                "FK_Question_Type" => $questionType,
-                                "Question" => $question,
-                                "Creation_Date" => date("Y-m-d H:i:s")
-                );
+				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+				{
+					$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				}else
+				{
+					$points = 1;
+				}
 
-                $idQuestion = $this->question_model->insert($inputQuestion);
 
-                //Take next to the question the data to insert to 'T_Multiple_Choice'
-                while($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
-                {
-                    $answerField = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-                    $validField = $worksheet->getCellByColumnAndRow($column + 1, $row + 1)->getValue();
+				//Data to insert to the table 'T_Question'
+				$inputQuestion = array(
+								"FK_Topic" => $idTopic,
+								"FK_Question_Type" => $questionType,
+								"Question" => $question,
+								"Points" => $points,
+								"Creation_Date" => date("Y-m-d H:i:s")
+				);
 
-                    if($validField == "x")$valid = true;
-                    else $valid = false;
-                    
-                    $inputMultipleChoice = array(
-                        "FK_Question" => $idQuestion,
-                        "Answer" => $answerField,
-                        "Valid" => $valid,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
+				$idQuestion = $this->question_model->insert($inputQuestion);
 
-                    $this->multiple_choice_model->insert($inputMultipleChoice);
-                    $column += 1;
-                }
-                $row += 2;
-                $column = 0;
-            }
-        }
-    }
+				//Take next to the question the data to insert to 'T_Multiple_Choice'
+				while($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
+				{
+					$answerField = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue());
+					$validField = $worksheet->getCellByColumnAndRow($column + 2, $row + 1)->getValue();
 
-    /**
-     * Import 'Multiple_Answer' question type by Excel sheet 'ReponsesMultiple'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'ReponsesMultiple'
-     */
-    private function Import_MultipleAnswers($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'ReponsesMultiples';
-        $questionType = 2;
+					if($validField == "x")$valid = true;
+					else $valid = false;
+					
+					$inputMultipleChoice = array(
+						"FK_Question" => $idQuestion,
+						"Answer" => $answerField,
+						"Valid" => $valid,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
 
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
+					$this->multiple_choice_model->insert($inputMultipleChoice);
+					$column += 1;
+				}
+				$row += 2;
+				$column = 0;
+			}
+		}
+	}
 
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
-        {
-            $column = 0;
-            $row = 3;
+	/**
+	 * Import 'Multiple_Answer' question type by Excel sheet 'ReponsesMultiple'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'ReponsesMultiple'
+	 */
+	private function Import_MultipleAnswers($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'ReponsesMultiples';
+		$questionType = 2;
 
-            //Browse the sheet
-            //0 is the start column
-            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-            {
-                //Current question
-                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                //Nb of answers needed
-                $nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+		{
+			$column = 0;
+			$row = 3;
+
+			//Browse the sheet
+			//0 is the start column
+			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+			{
+				//Current question
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+				//Nb of answers needed
+				$nbAnswerDesired = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
 				//Nb of points of the question
-				$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+				if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
+				{
+					$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+				}else
+				{
+					$nbPoints = 1;
+				}
 
-                //Data to insert to the table 'T_Question'
-                $inputQuestion = array(
-                    "FK_Topic" => $idTopic,
-                    "FK_Question_Type" => $questionType,
-                    "Question" => $question,
-                    "Nb_Desired_Answers" => $nbAnswerDesired,
+				//Data to insert to the table 'T_Question'
+				$inputQuestion = array(
+					"FK_Topic" => $idTopic,
+					"FK_Question_Type" => $questionType,
+					"Question" => $question,
+					"Nb_Desired_Answers" => $nbAnswerDesired,
 					"Points" => $nbPoints,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $idQuestion = $this->question_model->insert($inputQuestion);
-
-                $column += 3;
-
-                //Take next to the question the data to insert to 'T_Multiple_Answer'
-                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-                {
-                    $answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-
-                    $inputMultipleAnswer = array(
-                        "FK_Question" => $idQuestion,
-                        "Answer" => $answer,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $this->multiple_answer_model->insert($inputMultipleAnswer);
-
-                    $column += 1;
-                }
-
-                $column = 0;
-                $row++;
-            }
-
-        }
-
-    }
-
-    /**
-     * Import 'Answer_Distribution' question type by Excel sheet 'DistributionReponses'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'DistributionReponses'
-     */
-    private function Import_AnswerDistribution($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'DistributionReponses';
-        $questionType = 3;
-
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
-
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
-        {
-            $column = 1;
-            $row = 3;
-
-            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-            {
-                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
-                {
-                    //Current question
-                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
-
-                    //Data to insert to the table 'T_Question'
-                    $inputQuestion = array(
-                        "FK_Topic" => $idTopic,
-                        "FK_Question_Type" => $questionType,
-                        "Question" => $question,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $idQuestion = $this->question_model->insert($inputQuestion);
-                }
-
-                $questionElement = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                $answerElement = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-
-                $inputAnswerDistribution = array(
-                    "FK_Question" => $idQuestion,
-                    "Question_Part" => $questionElement,
-                    "Answer_Part" => $answerElement,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $this->answer_distribution_model->insert($inputAnswerDistribution);
-
-                $row++;
-            }
-
-        }
-    }
-
-    /**
-     * Import 'Cloze_Text' question type by Excel sheet 'TexteATrous'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'TexteATrous'
-     */
-    private function Import_ClozeText($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'TexteATrous';
-        $questionType = 4;
-
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
-
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
-        {
-            $column = 1;
-            $row = 3;
-            $answerOrder = 0;
-
-            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-            {
-                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
-                {
-                    //Current question
-                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
-
-                    //Data to insert to the table 'T_Question'
-                    $inputQuestion = array(
-                        "FK_Topic" => $idTopic,
-                        "FK_Question_Type" => $questionType,
-                        "Question" => $question,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $idQuestion = $this->question_model->insert($inputQuestion);
-                }
-
-                $clozeText = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-
-                $inputClozeText = array(
-                    "FK_Question" => $idQuestion,
-                    "Cloze_Text" => $clozeText,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $idClozeText = $this->cloze_text_model->insert($inputClozeText);
-
-                $column = 2;
-
-                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-                {
-                    $answerOrder++;
-                    $answer = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-
-                    $inputClozeTextAnswer = array(
-                        "FK_Cloze_Text" => $idClozeText,
-                        "Answer" => $answer,
-                        "Answer_Order" => $answerOrder,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $this->cloze_text_answer_model->insert($inputClozeTextAnswer);
-
-                    $column++;
-                }
-
-                $answerOrder = 0;
-                $row++;
-                $column = 1;
-            }
-
-
-        }
-    }
-
-    /**
-     * Import 'Table_Cell' question type by Excel sheet 'Tableaux'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'Tableaux'
-     */
-    private function Import_TableCell($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'Tableaux';
-        $questionType = 5;
-        $tableDefinition = false;
-
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
-
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
-        {
-            $column = 1;
-            $row = 3;
-            $regPattern = '/^\[.*\]$/';
-
-            while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-            {
-                if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL &&
-                    $worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue() != NULL)
-                {
-                    //Current question
-                    $question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
-                    $tableType = $worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue();
-
-                    if($tableType == 'simple')
-                        $tableDefinition = false;
-                    else
-                        $tableDefinition = true;
-
-
-                    //Data to insert to the table 'T_Question'
-                    $inputQuestion = array(
-                        "FK_Topic" => $idTopic,
-                        "FK_Question_Type" => $questionType,
-                        "Question" => $question,
-                        "Table_With_Definition" => $tableDefinition,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $idQuestion = $this->question_model->insert($inputQuestion);
-
-                    $nbColumn = 1;
-                    $nbRow = 1;
-                    $d = 1;
-                }
-
-                while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
-
-                    $tableCell = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-
-                    //Test if the field is in bold
-                    if ($worksheet->getCellByColumnAndRow($column, $row)->getStyle()->getFont()->getBold())
-                    {
-                        $header = true;
-                    }else
-                    {
-                        $header = false;
-                    }
-
-                    //Test if the field need to be displayed
-                    if (preg_match($regPattern, $tableCell))
-                        $displayOnQuestion = true;
-                    else
-                        $displayOnQuestion = false;
-
-                    $inputTableCell = array(
-                        "FK_Question" => $idQuestion,
-                        "Content" => $tableCell,
-                        "Column_Nb" => $nbColumn,
-                        "Row_Nb" => $nbRow,
-                        "Header" => $header,
-                        "Display_In_Question" => $displayOnQuestion,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $this->table_cell_model->insert($inputTableCell);
-
-                    $nbColumn++;
-                    $column++;
-                }
-
-                $nbColumn = 1;
-                $nbRow++;
-                $row++;
-                $column = 1;
-            }
-        }
-    }
-
-    /**
-     * Import 'Free_Answer' question type by Excel sheet 'ReponsesLibre'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'ReponsesLibre'
-     */
-    private function Import_FreeAnswer($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'ReponsesLibre';
-        $questionType = 6;
-
-
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
-
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
-            $column = 0;
-            $row = 3;
-
-
-            while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
-
-                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-
-                if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
-                {
-                    $nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
-                }else
-                {
-                    $nbPoints = 1;
-                }
-
-                $inputQuestion = array(
-                    "FK_Topic" => $idTopic,
-                    "FK_Question_Type" => $questionType,
-                    "Question" => $question,
-                    "Points" => $nbPoints,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $idQuestion = $this->question_model->insert($inputQuestion);
-                $answer = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-
-                $inputFreeAnswer = array(
-                    "FK_Question" => $idQuestion,
-                    "Answer" => $answer,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $this->free_answer_model->insert($inputFreeAnswer);
-
-                $row++;
-            }
-        }
-    }
-
-    /**
-     * Import 'Picture_Landmark' question type by Excel sheet 'ImageReperes'
-     * @param $idTopic = the topic select on the select attribute
-     * @param $objReader = the object that allow we to read the excel sheet
-     * @param $inputFileName = the name of sheet 'ImageReperes'
-     */
-    private function Import_PictureLandmark($idTopic, $objReader, $inputFileName)
-    {
-        $sheetName = 'ImageReperes';
-        $questionType = 7;
-        $salt = 'f56ih58g0e';
-
-
-        /**  Advise the Reader of which WorkSheets we want to load  **/
-        $objReader->setLoadSheetsOnly($sheetName);
-        $objReader->setReadDataOnly(true);
-        /**  Load $inputFileName to a PHPExcel Object  **/
-        $objPHPExcel = $objReader->load($inputFileName);
-
-        foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
-            $column = 0;
-            $row = 3;
-
-            while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
-                $question = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                //$pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-				$pictureName = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-
-                $inputQuestion = array(
-                    "FK_Topic" => $idTopic,
-                    "FK_Question_Type" => $questionType,
-                    "Question" => $question,
-                    "Picture_Name" => $pictureName,
-                    "Creation_Date" => date("Y-m-d H:i:s")
-                );
-
-                $idQuestion = $this->question_model->insert($inputQuestion);
-
-                $column = 2;
-
-                while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
-                {
-                    $symbol = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                    $answer = $worksheet->getCellByColumnAndRow($column, $row + 1)->getValue();
-
-                    $inputPictureLandmarks = array(
-                        "FK_Question" => $idQuestion,
-                        "Symbol" => $symbol,
-                        "Answer" => $answer,
-                        "Creation_Date" => date("Y-m-d H:i:s")
-                    );
-
-                    $this->picture_landmark_model->insert($inputPictureLandmarks);
-
-                    $column++;
-                }
-
-                $column = 0;
-                $row += 2;
-            }
-        }
-    }
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$idQuestion = $this->question_model->insert($inputQuestion);
+
+				$column += 3;
+
+				//Take next to the question the data to insert to 'T_Multiple_Answer'
+				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+				{
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+
+					$inputMultipleAnswer = array(
+						"FK_Question" => $idQuestion,
+						"Answer" => $answer,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$this->multiple_answer_model->insert($inputMultipleAnswer);
+
+					$column += 1;
+				}
+
+				$column = 0;
+				$row++;
+			}
+
+		}
+
+	}
+
+	/**
+	 * Import 'Answer_Distribution' question type by Excel sheet 'DistributionReponses'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'DistributionReponses'
+	 */
+	private function Import_AnswerDistribution($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'DistributionReponses';
+		$questionType = 3;
+
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+		{
+			$column = 1;
+			$row = 3;
+
+			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+			{
+				if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
+				{
+					//Current question
+					$question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+
+					//Data to insert to the table 'T_Question'
+					$inputQuestion = array(
+						"FK_Topic" => $idTopic,
+						"FK_Question_Type" => $questionType,
+						"Question" => $question,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$idQuestion = $this->question_model->insert($inputQuestion);
+				}
+
+				$questionElement = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+				$answerElement = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+
+				$inputAnswerDistribution = array(
+					"FK_Question" => $idQuestion,
+					"Question_Part" => $questionElement,
+					"Answer_Part" => $answerElement,
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$this->answer_distribution_model->insert($inputAnswerDistribution);
+
+				$row++;
+			}
+
+		}
+	}
+
+	/**
+	 * Import 'Cloze_Text' question type by Excel sheet 'TexteATrous'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'TexteATrous'
+	 */
+	private function Import_ClozeText($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'TexteATrous';
+		$questionType = 4;
+
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+		{
+			$column = 1;
+			$row = 3;
+			$answerOrder = 0;
+
+			while($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+			{
+				if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL)
+				{
+					//Current question
+					$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue());
+
+					if($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+					{
+						$points = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+					}else
+					{
+						$points = 1;
+					}
+
+					//Data to insert to the table 'T_Question'
+					$inputQuestion = array(
+						"FK_Topic" => $idTopic,
+						"FK_Question_Type" => $questionType,
+						"Question" => $question,
+						"Points" => $points,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$idQuestion = $this->question_model->insert($inputQuestion);
+				}
+
+				$clozeText = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue());
+
+				$inputClozeText = array(
+					"FK_Question" => $idQuestion,
+					"Cloze_Text" => $clozeText,
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$idClozeText = $this->cloze_text_model->insert($inputClozeText);
+
+				$column = 3;
+
+				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+				{
+					$answerOrder++;
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+
+					$inputClozeTextAnswer = array(
+						"FK_Cloze_Text" => $idClozeText,
+						"Answer" => $answer,
+						"Answer_Order" => $answerOrder,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$this->cloze_text_answer_model->insert($inputClozeTextAnswer);
+
+					$column++;
+				}
+
+				$answerOrder = 0;
+				$row++;
+				$column = 1;
+			}
+
+
+		}
+	}
+
+	/**
+	 * Import 'Table_Cell' question type by Excel sheet 'Tableaux'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'Tableaux'
+	 */
+	private function Import_TableCell($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'Tableaux';
+		$questionType = 5;
+		$tableDefinition = false;
+
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet)
+		{
+			$column = 1;
+			$row = 3;
+			$regPattern = '/^\[.*\]$/';
+
+			while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+			{
+				if($worksheet->getCellByColumnAndRow($column - 1, $row)->getValue() != NULL &&
+					$worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue() != NULL)
+				{
+					//Current question
+					$question = $worksheet->getCellByColumnAndRow($column - 1, $row)->getValue();
+					$tableType = $worksheet->getCellByColumnAndRow($column - 1, $row + 1)->getValue();
+
+					if($tableType == 'simple')
+						$tableDefinition = false;
+					else
+						$tableDefinition = true;
+
+
+					//Data to insert to the table 'T_Question'
+					$inputQuestion = array(
+						"FK_Topic" => $idTopic,
+						"FK_Question_Type" => $questionType,
+						"Question" => $question,
+						"Table_With_Definition" => $tableDefinition,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$idQuestion = $this->question_model->insert($inputQuestion);
+
+					$nbColumn = 1;
+					$nbRow = 1;
+					$d = 1;
+				}
+
+				while($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+
+					$tableCell = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+
+					//Test if the field is in bold
+					if ($worksheet->getCellByColumnAndRow($column, $row)->getStyle()->getFont()->getBold())
+					{
+						$header = true;
+					}else
+					{
+						$header = false;
+					}
+
+					//Test if the field need to be displayed
+					if (preg_match($regPattern, $tableCell))
+						$displayOnQuestion = true;
+					else
+						$displayOnQuestion = false;
+
+					$inputTableCell = array(
+						"FK_Question" => $idQuestion,
+						"Content" => $tableCell,
+						"Column_Nb" => $nbColumn,
+						"Row_Nb" => $nbRow,
+						"Header" => $header,
+						"Display_In_Question" => $displayOnQuestion,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$this->table_cell_model->insert($inputTableCell);
+
+					$nbColumn++;
+					$column++;
+				}
+
+				$nbColumn = 1;
+				$nbRow++;
+				$row++;
+				$column = 1;
+			}
+		}
+	}
+
+	/**
+	 * Import 'Free_Answer' question type by Excel sheet 'ReponsesLibre'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'ReponsesLibre'
+	 */
+	private function Import_FreeAnswer($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'ReponsesLibre';
+		$questionType = 6;
+
+
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+			$column = 0;
+			$row = 3;
+
+
+			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+
+				if($worksheet->getCellByColumnAndRow($column + 2, $row)->getValue() != NULL)
+				{
+					$nbPoints = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+				}else
+				{
+					$nbPoints = 1;
+				}
+
+				$inputQuestion = array(
+					"FK_Topic" => $idTopic,
+					"FK_Question_Type" => $questionType,
+					"Question" => $question,
+					"Points" => $nbPoints,
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$idQuestion = $this->question_model->insert($inputQuestion);
+				$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue());
+
+				$inputFreeAnswer = array(
+					"FK_Question" => $idQuestion,
+					"Answer" => $answer,
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$this->free_answer_model->insert($inputFreeAnswer);
+
+				$row++;
+			}
+		}
+	}
+
+	/**
+	 * Import 'Picture_Landmark' question type by Excel sheet 'ImageReperes'
+	 * @param $idTopic = the topic select on the select attribute
+	 * @param $objReader = the object that allow we to read the excel sheet
+	 * @param $inputFileName = the name of sheet 'ImageReperes'
+	 */
+	private function Import_PictureLandmark($idTopic, $objReader, $inputFileName)
+	{
+		$sheetName = 'ImageReperes';
+		$questionType = 7;
+		$salt = 'f56ih58g0e';
+
+
+		/**  Advise the Reader of which WorkSheets we want to load  **/
+		$objReader->setLoadSheetsOnly($sheetName);
+		$objReader->setReadDataOnly(true);
+		/**  Load $inputFileName to a PHPExcel Object  **/
+		$objPHPExcel = $objReader->load($inputFileName);
+
+		foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+			$column = 0;
+			$row = 3;
+
+			while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL) {
+				$question = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+				if($worksheet->getCellByColumnAndRow($column + 1, $row)->getValue() != NULL)
+				{
+					$points = $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				}else
+				{
+					$points = 1;
+				}
+				//$pictureName = uniqid($salt).$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+				$pictureName = $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+
+				$inputQuestion = array(
+					"FK_Topic" => $idTopic,
+					"FK_Question_Type" => $questionType,
+					"Question" => $question,
+					"Points" => $points,
+					"Picture_Name" => $pictureName,
+					"Creation_Date" => date("Y-m-d H:i:s")
+				);
+
+				$idQuestion = $this->question_model->insert($inputQuestion);
+
+				$column = 3;
+
+				while ($worksheet->getCellByColumnAndRow($column, $row)->getValue() != NULL)
+				{
+					$symbol = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row)->getValue());
+					$answer = htmlspecialchars($worksheet->getCellByColumnAndRow($column, $row + 1)->getValue());
+
+					$inputPictureLandmarks = array(
+						"FK_Question" => $idQuestion,
+						"Symbol" => $symbol,
+						"Answer" => $answer,
+						"Creation_Date" => date("Y-m-d H:i:s")
+					);
+
+					$this->picture_landmark_model->insert($inputPictureLandmarks);
+
+					$column++;
+				}
+
+				$column = 0;
+				$row += 2;
+			}
+		}
+	}
 }
