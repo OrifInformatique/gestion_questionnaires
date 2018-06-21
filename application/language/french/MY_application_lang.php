@@ -150,5 +150,3 @@ $lang['module_error_404_heading']		= 'Module inexistant';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
-$lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou 
-										   plusieurs des questions soi(en)t mal enregistrée(s)";
