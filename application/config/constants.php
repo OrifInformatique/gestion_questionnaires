@@ -3,6 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
+| My application constants
+|--------------------------------------------------------------------------
+*/
+defined('PASSWORD_MIN_LENGTH') OR define('PASSWORD_MIN_LENGTH', 6);
+defined('USERNAME_MIN_LENGTH') OR define('USERNAME_MIN_LENGTH', 2);
+
+/*
+|--------------------------------------------------------------------------
 | Display Debug backtrace
 |--------------------------------------------------------------------------
 |

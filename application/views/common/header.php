@@ -5,9 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    
-    <title><?php echo $this->lang->line('app_title'); ?></title>
 
+    <title>
+        <?php
+        echo $this->lang->line('app_title');
+        if (isset($title) && $title!='') {
+          echo " - ".$title;
+        }
+        ?>
+    </title>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?=base_url()?>application/img/logo/favicon.ico" />
     
