@@ -6,7 +6,6 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
-
 ?>
     <div id="page-content-wrapper">
         <div class="container">
@@ -168,9 +167,6 @@
                                 $compteur ++;
                                 displayQuestion($question);
                             }
-
-                            
-
                             ?>
                         </tbody>
                     </table>

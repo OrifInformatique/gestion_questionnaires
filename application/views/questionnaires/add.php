@@ -35,6 +35,7 @@ $nbMaxQuestion = 0;
         });
     });
 </script>
+
 <div id="page-content-wrapper">
     <div class="container">
         <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire_title'); ?></h1>

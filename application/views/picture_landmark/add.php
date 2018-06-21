@@ -100,7 +100,7 @@
                 <?php echo form_submit('change_picture', $this->lang->line('change_picture'), 'class="btn btn-secondary"'); ?>
             </div>
         </div>
-
+  
         <!-- ANSWERS FIELDS -->
         <div class="table-responsive">
             <table class="table table-hover">

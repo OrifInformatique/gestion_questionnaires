@@ -49,7 +49,6 @@
         if (!empty(validation_errors())) {
             echo '<div class="alert alert-danger">'.validation_errors().'</div>';}
         ?>
-
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
@@ -135,7 +134,5 @@
         </tr>
 
     </tbody>
-
-        
     <?php echo form_close(); ?>
 </div>
