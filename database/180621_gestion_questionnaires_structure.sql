@@ -33,7 +33,7 @@ CREATE TABLE `t_answer_distribution` (
   `FK_Question` int(11) NOT NULL,
   `Question_Part` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   `Answer_Part` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -46,7 +46,7 @@ CREATE TABLE `t_cloze_text` (
   `ID` int(11) NOT NULL,
   `FK_Question` int(11) NOT NULL,
   `Cloze_Text` text COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -60,7 +60,7 @@ CREATE TABLE `t_cloze_text_answer` (
   `FK_Cloze_Text` int(11) NOT NULL,
   `Answer` text COLLATE utf8_unicode_ci NOT NULL,
   `Answer_Order` int(11) DEFAULT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -73,7 +73,7 @@ CREATE TABLE `t_free_answer` (
   `ID` int(11) NOT NULL,
   `FK_Question` int(11) NOT NULL,
   `Answer` text COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -86,7 +86,7 @@ CREATE TABLE `t_multiple_answer` (
   `ID` int(11) NOT NULL,
   `FK_Question` int(11) NOT NULL,
   `Answer` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -100,7 +100,7 @@ CREATE TABLE `t_multiple_choice` (
   `FK_Question` int(11) NOT NULL,
   `Answer` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   `Valid` tinyint(1) DEFAULT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -114,7 +114,7 @@ CREATE TABLE `t_picture_landmark` (
   `FK_Question` int(11) NOT NULL,
   `Symbol` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
   `Answer` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -132,7 +132,7 @@ CREATE TABLE `t_question` (
   `Table_With_Definition` tinyint(1) DEFAULT NULL,
   `Picture_Name` text COLLATE utf8_unicode_ci,
   `Points` int(11) DEFAULT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP,
   `Archive` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -147,7 +147,7 @@ CREATE TABLE `t_questionnaire` (
   `Questionnaire_Name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `PDF` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `Corrige_PDF` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Creation_Date` datetime DEFAULT NULL
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -187,7 +187,7 @@ CREATE TABLE `t_table_cell` (
   `Row_Nb` int(11) DEFAULT NULL,
   `Header` tinyint(1) DEFAULT NULL,
   `Display_In_Question` tinyint(1) DEFAULT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -233,7 +233,7 @@ CREATE TABLE `t_topic` (
   `ID` int(11) NOT NULL,
   `FK_Parent_Topic` int(11) DEFAULT NULL,
   `Topic` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `Creation_Date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `Creation_Date` timestamp DEFAULT CURRENT_TIMESTAMP,
   `Archive` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
