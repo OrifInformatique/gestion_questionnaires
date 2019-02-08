@@ -11,6 +11,8 @@ $lang['app_title']                      = 'Gestion questionnaires';
 // Page titles
 $lang['page_login']                     = 'Connexion';
 $lang['page_item_list']                 = 'Liste des objets';
+$lang['page_login']                     = 'Connexion';
+$lang['page_password_change']           = 'Modification du mot de passe';
 
 // Date and time formats
 $lang['date_format_short']              = 'd.m.Y';
@@ -26,6 +28,9 @@ $lang['nav_topic']                      = 'Sujets';
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
 $lang['field_password']                 = 'Mot de passe';
+$lang['field_password_confirm']         = 'Confirmer mot de passe';
+$lang['field_new_password']             = 'Nouveau mot de passe';
+$lang['field_old_password']             = 'Ancien mot de passe';
 
 //Log Error
 $lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides';
@@ -33,14 +38,11 @@ $lang['no_id']                          = 'Veuillez insérer des identifiants';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
 $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
 
-//Unlog
-$lang['login']                          = 'Connexion';
-$lang['unlog']                          = 'Déconnexion';
-
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
 
 // Buttons 
+$lang['btn_cancel']                     = 'Annuler';
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
@@ -57,7 +59,17 @@ $lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
 $lang['cancel']                         = 'Annuler';
 $lang['return']                         = 'Retour';
+$lang['btn_change_password']            = 'Modifier le mot de passe';
+$lang['btn_login']                      = 'Se connecter';
+$lang['btn_logout']                     = 'Se déconnecter';
+$lang['btn_login']                      = 'Se connecter';
+$lang['btn_logout']                     = 'Se déconnecter';
 
+// Messages
+$lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne sont pas valides';
+$lang['msg_err_invalid_new_password']   = 'Le nouveau mot de passe et la confirmation ne correspondent pas';
+$lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas valide';
+$lang['msg_err_access_denied']          = 'Accès refusé';
 
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
