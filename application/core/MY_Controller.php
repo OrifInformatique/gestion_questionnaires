@@ -6,6 +6,7 @@
  * @link        https://github.com/OrifInformatique/stock
  * @copyright   Copyright (c) 2016, Orif <http://www.orif.ch>
  */
+
 class MY_Controller extends CI_Controller
 {
 
@@ -19,8 +20,6 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('session');
-        $this->load->helper('url');
         
         /* Check permission on construct */
         if (!$this->check_permission()) {
@@ -28,6 +27,18 @@ class MY_Controller extends CI_Controller
         }
     }
 
+    
+    /**
+     * Display the login form.
+     * Store the current URL in session to be able to redirect after login.
+     */
+    protected function ask_for_login()
+    {
+        $_SESSION['after_login_redirect'] = current_url();
+        redirect("auth/login");
+    }
+
+    
     /**
     * Check if user access level matches the required access level.
     * Required level can be the controller's default level or a custom
@@ -50,8 +61,8 @@ class MY_Controller extends CI_Controller
         else {
             // check if user is logged in
             // if not, redirect to login page
-            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
-                redirect("auth");
+            if ($_SESSION['logged_in'] != true) {
+                $this->ask_for_login();
             }
             // check if page is accessible for all logged in users
             elseif ($required_level == "@") {
@@ -85,6 +96,7 @@ class MY_Controller extends CI_Controller
         // Display common headers
         $this->load->view('common/header', $data);
         $this->load->view('common/login_bar');
+        $this->load->view('common/nav_menu');
 
         if (is_array($view_parts)) {
             // Display multiple view parts defined in $data

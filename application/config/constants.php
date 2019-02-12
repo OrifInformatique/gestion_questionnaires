@@ -3,11 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
-| My application constants
+| Inculde separate custom constants file
 |--------------------------------------------------------------------------
 */
-defined('PASSWORD_MIN_LENGTH') OR define('PASSWORD_MIN_LENGTH', 6);
-defined('USERNAME_MIN_LENGTH') OR define('USERNAME_MIN_LENGTH', 2);
+include'MY_constants.php';
 
 /*
 |--------------------------------------------------------------------------

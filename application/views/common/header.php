@@ -16,20 +16,16 @@
     </title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?=base_url()?>application/img/logo/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?=base_url()?>assets/images/logo/favicon.ico" />
     
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>" />
+    <script type="text/javascript" src="<?php echo base_url("assets/js/jquery.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 
-    <!--SideBar-->
-    <link rel="stylesheet" href="<?=base_url()?>application/style/sidebar.css">
-    <link rel="stylesheet" href="<?=base_url()?>application/views/css/mystyle.css">
+    <!-- Application styles -->
+    <link rel="stylesheet" href="<?=base_url()?>assets/css/sidebar.css" />
+    <link rel="stylesheet" href="<?php echo base_url("assets/css/MY_styles.css"); ?>" />
   </head>
   <body>
-  <script src="<?=base_url()?>application/js/javascript.js"></script>
+  <script src="<?=base_url()?>assets/js/javascript.js"></script>
