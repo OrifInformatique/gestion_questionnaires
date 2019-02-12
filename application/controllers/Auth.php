@@ -70,7 +70,7 @@ class Auth extends MY_Controller
                 if ($this->user_model->check_password($username, $password)) {
                     // Login success
                     $user = $this->user_model->with('user_type')
-                                             ->get_by('username', $username);
+                                             ->get_by('User', $username);
 
                     // Set session variables
                     $_SESSION['user_id'] = (int)$user->user_id;
