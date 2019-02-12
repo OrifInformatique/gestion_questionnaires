@@ -89,9 +89,9 @@
             <div class="form-group col-md-12">
                 <?php
                 if(isset($upload_data)){
-                    echo "<img src='/gestion_questionnaires/uploads/pictures/" . $upload_data['file_name'] . "' alt='" . $upload_data['file_name'] . "'>";
+                    echo "<img src='".base_url('uploads/pictures/') . $upload_data['file_name'] . "' alt='" . $upload_data['file_name'] . "'>";
                 } else {
-                    echo "<img src='/gestion_questionnaires/uploads/pictures/" . $picture_name . "' alt='" . $picture_name . "'>";
+                    echo "<img src='".base_url('uploads/pictures/') . $picture_name . "' alt='" . $picture_name . "'>";
                 } ?>
             </div>
         </div>

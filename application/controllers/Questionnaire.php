@@ -635,7 +635,7 @@ class Questionnaire extends MY_Controller
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
         $pdf->Ln();
 
         $w = getimagesize($fullPath)[0];
@@ -675,7 +675,7 @@ class Questionnaire extends MY_Controller
         $picture = $Question->Picture_Name;
         $imageUrl = 'uploads/pictures/'. $picture;
 
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
         $pdf->Ln();
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];

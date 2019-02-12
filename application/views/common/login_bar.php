@@ -2,7 +2,7 @@
   <div class="row xs-center">
     <a href="<?= base_url(); ?>" style="color:inherit">
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
-        <img src="<?= base_url("application/img/logo/logo_64.png"); ?>" >
+        <img src="<?= base_url("assets/images/logo/logo_64.png"); ?>" >
       </div>
       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
         <h1><?= $this->lang->line('app_title'); ?></h1>
@@ -36,4 +36,3 @@
     </div>
   </div>
 </div>
-<hr />

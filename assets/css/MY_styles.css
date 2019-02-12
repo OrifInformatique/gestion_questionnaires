@@ -1,6 +1,12 @@
+/* Nav menu style */
+#myNavbar li.active {
+    border-bottom: 3px #1a661a solid;
+}
+
+
+/* Other styles */
 #toggle-button{
     margin:20px 0;
-
 }
 
 .align-center{
