@@ -1,101 +1,38 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * Question Type model is used to get different types for each question.
- * question is used to get related question type for each question.
- *
- * @author      Orif, section informatique (UlSi, ViDi)
- * @link        https://github.com/OrifInformatique/gestion_questionnaires
- * @copyright   Copyright (c) Orif (http://www.orif.ch)
- */
-/**
- * Test the pattern to find the active page
- * @param $pattern = related tab
- */
-function test_regex($pattern)
-{
+<div class="container" >
+  <div class="row xs-center">
+    <a href="<?= base_url(); ?>" style="color:inherit">
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
+        <img src="<?= base_url("assets/images/logo/logo_64.png"); ?>" >
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <h1><?= $this->lang->line('app_title'); ?></h1>
+      </div>
+    </a>
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" >
+      <div class="nav nav-pills" style="margin-top:20px;">
+        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
+          
+          <!-- ADMIN ACCESS ONLY -->
+          <?php if ($_SESSION['user_access'] >= ACCESS_LVL_MSP) { ?>
+              <a href="<?= base_url("admin/"); ?>" ><?= $this->lang->line('btn_admin'); ?></a><br />
+          <?php } ?>
+          <!-- END OF ADMIN ACCESS -->
 
-    $subject = $_SERVER['REQUEST_URI'];
+          <!-- Password change -->
+          <a href="<?= base_url("auth/change_password"); ?>"><?= $this->lang->line('btn_change_password') ?></a><br />
+          
+          <!-- Logged in, display a "logout" button -->
+          <a href="<?= base_url("auth/logout"); ?>" ><?= $this->lang->line('btn_logout'); ?></a>
 
-    if (preg_match($pattern, $subject)) {
-        echo "class='active'";
-    }
-}
-/**
- * Test of the current active page
- * @param $page =
- * 1 => Questionnaire
- * 2 => Question
- * 3 => Module
- * 4 => Topic
- * **/
-function checkactive($page){
-    switch ($page){
-        case 1;
-            test_regex('/\/Questionnaire/');
-            break;
-        case 2:
-            test_regex('/\/(Question[^n]|Question$)/');
-            break;
-        case 3:
-            test_regex('/\/Module/');
-            break;
-        case 4:
-            test_regex('/\/Topic/');
-            break;
-        default:
-            break;
-    }
-}
-
-    if(isset($_SESSION['logged_in']))
-    {
-        ?>
-        <div style="min-width: 270px" class="container navbar navbar-fixed-top navbar-default">
-            
-            <div class="col-xs-12 col-sm-3 xs-center">
-                <a id="logo" href="<?php echo base_url(); ?>">
-                    <img  style="display: inline-block; text-align: right; margin: 10px;" src="<?=base_url()?>application/img/logo.jpg">
-                </a>
-            </div>
-                
-            <div class="col-xs-9 col-sm-9" >
-                <h1 style="display: inline-block; vertical-align: middle;" ><?php echo $this->lang->line('page_login');?></h1>
-            </div>
-
-            <div class="col-xs-3">
-                <button  type="button" class="navbar-toggle"  id="toggle-button" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-    
-            <div class="col-xs-12">
-                <div class="collapse navbar-collapse" id="myNavbar"> 
-                    <ul class="nav navbar-nav">
-                        <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
-                                <?php echo $this->lang->line('nav_questionnaire');?></a></li>
-                        <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
-                                <?php echo $this->lang->line('nav_question');?></a></li>
-                        <li <?php checkactive(3); ?>><a href="<?php echo base_url('Module');?>">
-                                <?php echo $this->lang->line('nav_module');?></a></li>
-                        <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
-                                <?php echo $this->lang->line('nav_topic');?></a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="<?php echo base_url('Auth/unlog');?>">
-                                <span class="glyphicon glyphicon-log-in"></span>
-                                <?php echo $this->lang->line('unlog');?>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div> 
-        <hr style="width: 100%; position: fixed; margin: 0;"></hr>
-        <div class="space-up"></div>
-<?php
-    }
-?>
+        <?php } else { ?>
+          <!-- Not logged in, display a "login" form -->
+          <form action="<?= base_url("auth/login"); ?>" method="post" >
+              <input type="hidden" id="after_login_redirect" name="after_login_redirect" value="<?= current_url() ?>">
+              <input type="submit" class="btn btn-link"
+                     value="<?= $this->lang->line('btn_login'); ?>" >
+          </form>
+        <?php } ?>
+      </div>
+    </div>
+  </div>
+</div>

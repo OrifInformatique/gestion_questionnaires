@@ -26,7 +26,7 @@ class Questionnaire extends MY_Controller
             'multiple_choice_model', 'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/fpdf', 'upload'));
+        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'upload'));
 
         
     }
@@ -635,7 +635,7 @@ class Questionnaire extends MY_Controller
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
         $picture = $Question->Picture_Name;
 
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
         $pdf->Ln();
 
         $w = getimagesize($fullPath)[0];
@@ -675,7 +675,7 @@ class Questionnaire extends MY_Controller
         $picture = $Question->Picture_Name;
         $imageUrl = 'uploads/pictures/'. $picture;
 
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'application/img/not-found.png');
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
         $pdf->Ln();
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];

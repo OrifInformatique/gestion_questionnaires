@@ -36,9 +36,13 @@ class user_model extends MY_Model
     {
         $user = $this->get_by('User', $username);
 
-        if (!is_null($user) && password_verify($password, $user->Password)) {
-            return true;
-        }else{
+        if (!is_null($user) && $user->is_active == true) {
+            // A corresponding active user has been found
+            // Check password
+            return password_verify($password, $user->Password);
+        }
+        else {
+            // No corresponding active user
             return false;
         }
     }
