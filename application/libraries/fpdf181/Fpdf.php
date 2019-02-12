@@ -1,7 +1,6 @@
 <?php
 /*******************************************************************************
 * FPDF                                                                         *
-* fixed case sensitive error by renaming file Fpdf (formerly fpdf)             *
 *                                                                              *
 * Version: 1.81                                                                *
 * Date:    2015-12-20                                                          *
