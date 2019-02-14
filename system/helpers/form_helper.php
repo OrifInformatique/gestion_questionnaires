@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2016, British Columbia Institute of Technology
+ * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2016, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
+ * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
@@ -90,18 +90,47 @@ if ( ! function_exists('form_open'))
 
 		$form = '<form action="'.$action.'"'.$attributes.">\n";
 
-		// Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
-		if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
-		{
-			$hidden[$CI->security->get_csrf_token_name()] = $CI->security->get_csrf_hash();
-		}
-
 		if (is_array($hidden))
 		{
 			foreach ($hidden as $name => $value)
 			{
-				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value).'" style="display:none;" />'."\n";
+				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value).'" />'."\n";
 			}
+		}
+
+		// Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
+		if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
+		{
+			// Prepend/append random-length "white noise" around the CSRF
+			// token input, as a form of protection against BREACH attacks
+			if (FALSE !== ($noise = $CI->security->get_random_bytes(1)))
+			{
+				list(, $noise) = unpack('c', $noise);
+			}
+			else
+			{
+				$noise = mt_rand(-128, 127);
+			}
+
+			// Prepend if $noise has a negative value, append if positive, do nothing for zero
+			$prepend = $append = '';
+			if ($noise < 0)
+			{
+				$prepend = str_repeat(" ", abs($noise));
+			}
+			elseif ($noise > 0)
+			{
+				$append  = str_repeat(" ", $noise);
+			}
+
+			$form .= sprintf(
+				'%s<input type="hidden" name="%s" value="%s" />%s%s',
+				$prepend,
+				$CI->security->get_csrf_token_name(),
+				$CI->security->get_csrf_hash(),
+				$append,
+				"\n"
+			);
 		}
 
 		return $form;
@@ -209,29 +238,6 @@ if ( ! function_exists('form_input'))
 		);
 
 		return '<input '._parse_form_attributes($data, $defaults)._attributes_to_string($extra)." />\n";
-	}
-}
-
-// ------------------------------------------------------------------------
-
-if ( ! function_exists('form_long_input'))
-{
-	/**
-	 * Text Input Field
-	 *
-	 * @param	mixed
-	 * @param	string
-	 * @param	mixed
-	 * @return	string
-	 */
-	function form_long_input($data = '', $value = '', $extra = '')
-	{
-		$defaults = array(
-			'type' => 'text',
-			'name' => is_array($data) ? '' : $data			
-		);
-
-		return "<textarea "._parse_form_attributes($data, $defaults)._attributes_to_string($extra)." >$value</textarea>\n";
 	}
 }
 
@@ -401,7 +407,7 @@ if ( ! function_exists('form_dropdown'))
 
 		$multiple = (count($selected) > 1 && stripos($extra, 'multiple') === FALSE) ? ' multiple="multiple"' : '';
 
-		$form = '<select class="form-control" '.rtrim(_parse_form_attributes($data, $defaults)).$extra.$multiple.">\n";
+		$form = '<select '.rtrim(_parse_form_attributes($data, $defaults)).$extra.$multiple.">\n";
 
 		foreach ($options as $key => $val)
 		{
@@ -591,33 +597,23 @@ if ( ! function_exists('form_label'))
 	 *
 	 * @param	string	The text to appear onscreen
 	 * @param	string	The id the label applies to
-	 * @param	string	Additional attributes
+	 * @param	mixed	Additional attributes
 	 * @return	string
 	 */
-	function form_label($label_text = '', $id = '', $attributes = array(), $inline = false)
+	function form_label($label_text = '', $id = '', $attributes = array())
 	{
 
-		$label = '<h4 ';
-		if ($inline) {
-			$label.='class="inline" ';
-		}
+		$label = '<label';
 
 		if ($id !== '')
 		{
 			$label .= ' for="'.$id.'"';
 		}
 
-		if (is_array($attributes) && count($attributes) > 0)
-		{
-			foreach ($attributes as $key => $val)
-			{
-				$label .= ' '.$key.'="'.$val.'"';
-			}
-		}
+		$label .= _attributes_to_string($attributes);
 
-		return $label.'>'.$label_text.'</h4>';
+		return $label.'>'.$label_text.'</label>';
 	}
-	
 }
 
 // ------------------------------------------------------------------------
