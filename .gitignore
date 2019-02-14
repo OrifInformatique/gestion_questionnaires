@@ -30,4 +30,4 @@ application/config/config.php
 *.jpeg
 
 pdf_files/
-uploads/pictures/
+uploads/
