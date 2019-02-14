@@ -281,6 +281,12 @@ CREATE TABLE `t_user_type` (
 --
 
 --
+-- Index pour la table `ci_sessions`
+--
+ALTER TABLE `ci_sessions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `t_answer_distribution`
 --
 ALTER TABLE `t_answer_distribution`
