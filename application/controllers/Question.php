@@ -363,12 +363,14 @@ class Question extends MY_Controller
 				$this->display_view('multiple_answer/add', $output);
 				break;
 			case 3:
+				$this->display_view('questions/noimplemented');
 				// TODO
 				break;
 			case 4:
 				$this->display_view('cloze_text/add', $output);
 				break;
 			case 5:
+				$this->display_view('questions/noimplemented');
 				// TODO
 				break;
 			case 6:

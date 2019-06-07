@@ -120,7 +120,8 @@ class Topic extends MY_Controller
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
         
-        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required');
+        $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero');
 
         $title = array(
             'Topic' => $this->input->post('title'),

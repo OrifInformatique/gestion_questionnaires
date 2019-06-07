@@ -127,6 +127,7 @@ $lang['import_question_error']          = 'Erreur lors de l\'importion des quest
 $lang['question_error_404_message']     = 'Vous essayez d\'accéder à une question qui n\'existe pas .';
 $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
+$lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 
 
 
@@ -144,6 +145,9 @@ $lang['del_topic_form_err']             = 'Ce sujet possède des questions liée
 $lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
 $lang['topic_error_404_message']		= 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
 $lang['topic_error_404_heading']		= 'Sujet inexistant';
+$lang['topic_title_error']				= 'titre';
+$lang['topic_module_selected_error']	= 'module conercné';
+$lang['topic_no_module_error']			= 'Vous devez d\'abord créer un module avant de créer un sujer.';
 
 
 //Modules pages

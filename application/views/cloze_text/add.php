@@ -90,9 +90,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-						echo form_long_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
 					} else {
-						echo form_long_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
 					}
 				?>
 			</div>
