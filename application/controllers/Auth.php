@@ -73,8 +73,8 @@ class Auth extends MY_Controller
                                              ->get_by('User', $username);
 
                     // Set session variables
-                    $_SESSION['user_id'] = (int)$user->user_id;
-                    $_SESSION['username'] = (string)$user->username;
+                    $_SESSION['user_id'] = (int)$user->ID;
+                    $_SESSION['username'] = (string)$user->User;
                     $_SESSION['user_access'] = (int)$user->user_type->access_level;
                     $_SESSION['logged_in'] = (bool)true;
                     
