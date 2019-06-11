@@ -30,7 +30,7 @@ class Question extends MY_Controller
 	/**
 	 * Display question list
 	 */
-	public function index()
+	public function index($page = 1)
 	{
 		if(!empty($_GET['module']) && !empty($_GET['topic'])){
 			$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
@@ -95,27 +95,48 @@ class Question extends MY_Controller
 			$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
 		}
 
-		if(isset($_GET['page'])){
-			$page = $_GET['page'];
-		} else {
-			$page = 1;
-		}
-		$output['page_next'] = $page + 1;
-		$output['page_previous'] = $page - 1;
-		if(empty($where)){
-			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_all())/20);
-		} else {
-			$output['page_limit'] = ceil(count($this->question_model->with_all()->get_many_by($where))/20);
-		}
-
 		$this->db->order_by($orderby);
-		$this->db->limit(20, ($page-1)*20);
 		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
 
 		} else {
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
+
+		$this->load->library('pagination');
+
+	    $config['base_url'] = base_url('/question/index/');
+	    $config['total_rows'] = count($output['questions']);
+	    $config['per_page'] = ITEMS_PER_PAGE;
+	    $config['use_page_numbers'] = TRUE;
+	    $config['reuse_query_string'] = TRUE;
+	    
+	    $config['full_tag_open'] = '<ul class="pagination">';
+	    $config['full_tag_close'] = '</ul>';
+	    
+	    $config['first_link'] = '&laquo;';
+	    $config['first_tag_open'] = '<li>';
+	    $config['first_tag_close'] = '</li>';
+	    
+	    $config['last_link'] = '&raquo;';
+	    $config['last_tag_open'] = '<li>';
+	    $config['last_tag_close'] = '</li>';
+	    
+	    $config['next_link'] = FALSE;
+	    $config['prev_link'] = FALSE;
+	    
+	    $config['cur_tag_open'] = '<li class="active"><a>';
+	    $config['cur_tag_close'] = '</li></a>';
+	    $config['num_links'] = 5;
+	    
+	    $config['num_tag_open'] = '<li>';
+	    $config['num_tag_close'] = '</li>';
+	    
+	    $this->pagination->initialize($config);
+
+	    $output['pagination'] = $this->pagination->create_links();
+
+	    $output['questions'] = array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE);
 
 		
 		$output['topics'] = $this->topic_model->get_all();
@@ -269,7 +290,7 @@ class Question extends MY_Controller
 		$output['id'] = $id;
 
 		if ($id != 0) {
-			$question = $this->question_model->with_all()->get_by('ID = ' . $id);
+			$question = $this->question_model->with_all()->get($id);
 			$output['question'] = $question;
 			$output['image'] = "";
 			$output['reponse'] = "";

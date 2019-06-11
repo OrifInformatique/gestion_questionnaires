@@ -96,7 +96,7 @@
                 </div>
 
             </div>
-                <hr></hr>
+                <hr>
             <div class="row">
                 <div class="col-xs-12 col-sm-4">
                     <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
@@ -105,7 +105,7 @@
                     <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
                 </div>
             </div>
-
+            <div id="pagination_top"><?=$pagination?></div>
             <div class="row">
                 <?php 
                     $question_sort='▲▼';
@@ -178,18 +178,7 @@
                     ?>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-6 col-sm-4">
-                    <?php if($page_previous > 0){
-                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_previous.')">◀</a>';
-                    } ?>
-                </div>
-                <div class="col-sm-offset-4 col-xs-6 col-sm-4">
-                    <?php if($page_next <= $page_limit){
-                        echo '<a class="btn btn-default col-xs-12" onclick="changePage('.$page_next.')">▶</a>';
-                    } ?>
-                </div>
-            </div>
+            <div id="pagination_top"><?=$pagination?></div>
         </div> 
     </div>
     <script>
@@ -201,7 +190,7 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td id="question"><a href="./Question/detail/<?php echo $question->ID;?>">
+        <td id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
             <?php 
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
@@ -210,8 +199,8 @@ function displayQuestion($question)
         </a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="close" id="btn_update" href="./Question/update/<?php echo $question->ID ?>">✎</a></td>
-        <td style="text-align: center;"><a class="close" id="btn_del" href="./Question/delete/<?php echo $question->ID ?>">×</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
+        <td style="text-align: center;"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
     </tr>
     <?php
 }
