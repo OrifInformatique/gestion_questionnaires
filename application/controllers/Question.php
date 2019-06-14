@@ -202,6 +202,7 @@ class Question extends MY_Controller
 		if ($id != 0) {
 			$question = $this->question_model->get($id);
 			if (!is_null($question)){
+				$output['topics'] = $this->topic_model->get_tree();
 				$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
 				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 				$output['name'] = $question->Question;
@@ -371,6 +372,7 @@ class Question extends MY_Controller
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
+			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 			$output['nbAnswer'] = 1;
@@ -525,7 +527,8 @@ class Question extends MY_Controller
 				}
 				
 				$output['answers'] = $answers;
-				
+
+				$output['topics'] = $this->topic_model->get_tree();				
 				$this->display_view('multiple_choice/add', $output);
 			}
 		} else {
@@ -584,7 +587,8 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
-		
+
+			$output['topics'] = $this->topic_model->get_tree();	
 			$this->display_view('multiple_choice/add', $output);
 		}
 	}
@@ -701,6 +705,7 @@ class Question extends MY_Controller
 				}
 				$output['answers'] = $answers;
 				
+				$output['topics'] = $this->topic_model->get_tree();
 				$this->display_view('multiple_answer/add', $output);
 			}
 		} else {
@@ -757,6 +762,7 @@ class Question extends MY_Controller
 
 			$output['answers'] = $answers;
 		
+			$output['topics'] = $this->topic_model->get_tree();
 			$this->display_view('multiple_answer/add', $output);
 		}
 	}
@@ -889,6 +895,7 @@ class Question extends MY_Controller
 				}
 				$output['answers'] = $answers;
 				
+				$output['topics'] = $this->topic_model->get_tree();
 				$this->display_view('cloze_text/add', $output);
 			}
 		} else {
@@ -948,6 +955,7 @@ class Question extends MY_Controller
 
 			$output['answers'] = $answers;
 		
+			$output['topics'] = $this->topic_model->get_tree();
 			$this->display_view('cloze_text/add', $output);
 		}
 	} 
@@ -984,6 +992,7 @@ class Question extends MY_Controller
 					
 					redirect('/Question');
 				} else {
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 					if(isset($_POST['name'])){
@@ -1098,6 +1107,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
+			$output['topics'] = $this->topic_model->get_tree();
 
 			if (isset($_POST['cancel']) & isset($_POST['id'])){
 				$this->display_view('picture_landmark/add', $output);
@@ -1273,6 +1283,7 @@ class Question extends MY_Controller
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
+				$output['topics'] = $this->topic_model->get_tree();
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 
