@@ -26,11 +26,12 @@ class Topic extends MY_Controller
      */
     public function index($error = "")
     {
-        $output['module_selected'] = $_GET['topic_selected'];
         if(isset($_GET['topic_selected'])){
             $output['topics'] = $this->topic_model->get_many_by("FK_Parent_Topic = " . $_GET['topic_selected']);
+            $output['module_selected'] = $_GET['topic_selected'];
         } else {
             $output['topics'] = $this->topic_model->get_all();
+            $output['module_selected'] = -1;
         }
         $output['modules'] = $this->topic_model->get_all();
         $output['error'] = $error;
