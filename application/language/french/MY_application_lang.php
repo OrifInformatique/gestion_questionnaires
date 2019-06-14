@@ -128,7 +128,8 @@ $lang['question_error_404_message']     = 'Vous essayez d\'accéder à une quest
 $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
-
+$lang['search']							= 'Recherche';
+$lang['filter']							= 'Filtrer';
 
 
 // Topics pages

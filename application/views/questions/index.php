@@ -30,7 +30,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-4">
                     <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
@@ -73,7 +73,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-8 col-sm-6">
+                <div class="col-lg-4">
                     <h4><?php echo $this->lang->line('question_type'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
@@ -91,10 +91,26 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-sm-4 col-sm-offset-2 col-lg-offset-0 col-xs-12">
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <h4><?php echo $this->lang->line('search'); ?></h4>
+                    <?php
+                        if(isset($_GET['search'])){
+                            echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
+                        } else {
+                            echo form_input('search', '', ' class="form-control" id="search"');
+                        }
+                    ?>
+                </div>
+                <div class="col-lg-4">
+                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
                     <a href="Question?" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
                 </div>
-
             </div>
                 <hr>
             <div class="row">

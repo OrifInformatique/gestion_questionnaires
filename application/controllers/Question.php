@@ -74,6 +74,10 @@ class Question extends MY_Controller
 			$where .= " AND (".$listIdQuestion.")";
 		}
 
+		if(!empty($_GET['search'])){
+			$where .= ' AND Question LIKE "%'.$_GET['search'].'%"';
+		}
+
 		$orderby="";
 
 		if (!empty($where)){

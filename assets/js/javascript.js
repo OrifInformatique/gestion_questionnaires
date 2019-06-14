@@ -47,8 +47,9 @@ function changeselect() {
     var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
+    var search = document.getElementById("search").value;
 
-    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type;
+    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search;
 }
 
 
@@ -73,7 +74,7 @@ function changePage(page){
     window.location =  updateURLParameter(window.location.toString(), "page", page);
 }
 function updateURLParameter(url, param, paramVal){
- var newAdditionalURL = "";
+    var newAdditionalURL = "";
     var tempArray = url.split("?");
     var baseURL = tempArray[0];
     var additionalURL = tempArray[1];

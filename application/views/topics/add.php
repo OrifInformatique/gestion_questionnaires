@@ -34,7 +34,6 @@
              <?php
     			//Récupère chaque module
                 foreach ($topics as $object => $topic) {
-                    var_dump($topic);
                     if($topic->FK_Parent_Topic == 0) {
     				    //Affiche les modules
                         echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
