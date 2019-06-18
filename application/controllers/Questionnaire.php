@@ -238,7 +238,7 @@ class Questionnaire extends MY_Controller
             // A page is ~300 high, so create a new one after 225
             // Landmarks are type 7 and have images of (at most) 80 high,
             // so create a new page earlier than we should
-            $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 150 : 225);
+            $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 125 : 225);
             if($pdf->getY() > $maxHeight) {
                 $pdf->addPage();
             }
