@@ -27,8 +27,6 @@ class Questionnaire extends MY_Controller
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'upload'));
-
-        
     }
 
     /**
@@ -114,8 +112,16 @@ class Questionnaire extends MY_Controller
      */
     public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
+        $already = "NOT (";
+        foreach($topics as $topic) {
+            $already .= " ID = ".$topic->ID." OR";
+        }
+        $already = substr($already, 0, -3).")";
         $output['error'] = ($error == NULL ? NULL : true);
-        $output['topicsList'] = $this->topic_model->get_all();
+        if(strlen($already) < 4)
+            $output['topicsList'] = $this->topic_model->get_all();
+        else
+            $output['topicsList'] = $this->topic_model->get_many_by($already);
         $output['title'] = $title;
         $output['topics'] = $topics;
         $output['nbQuestions'] = $nbQuestions;
@@ -158,7 +164,7 @@ class Questionnaire extends MY_Controller
         //If the user want to validate his pdf
         if (isset($_POST[$this->lang->line('cancel')]))
         {
-            unset ($_SESSION["temp_tableTopics"]);
+            unset($_SESSION["temp_tableTopics"]);
             redirect('/Questionnaire');
         }
         else if (isset($_POST['delete_topic']))
@@ -184,6 +190,14 @@ class Questionnaire extends MY_Controller
                 //Save each elements already seen on the topic list
                 //$tableTopics = $this->saveTopicElements($tableTopics, 1);
 
+                $arrayTopics = $tableTopics->getArrayTopics();
+                for($i = 0; $i < count($arrayTopics); $i++) {
+                    if($arrayTopics[$i]->ID == $topic->ID) {
+                        $nbQuestions--;
+                        $tableTopics->removeArrayTopics($i);
+                    }
+                }
+
                 //And take with him the last inputs
                 $tableTopics->setArrayTopics($topic);
                 $tableTopics->setArrayNbQuestion($nbQuestions);
@@ -201,7 +215,7 @@ class Questionnaire extends MY_Controller
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
-                $this->generatePDF(-1, $tableTopics);
+                //$this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
                 $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
