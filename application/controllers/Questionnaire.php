@@ -82,8 +82,9 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * @param int $id = id of the selected questionnaire
      * Delete selected questionnaire and redirect to questionnaire list
+     * @param int $id = id of the selected questionnaire
+     * @param any $action = If null, ask for confirmation, otherwise delete
      */
     public function delete($id = 0, $action = NULL)
     {
@@ -186,14 +187,6 @@ class Questionnaire extends MY_Controller
                 $this->add(1);
             }
         }
-    }
-
-    /**
-     * Cancels adding a new questionnaire
-     */
-    public function cancel_add() {
-        if(isset($_SESSION['temp_tableTopics'])) unset($_SESSION['temp_tableTopics']);
-        redirect('Questionnaire');
     }
 
     /**

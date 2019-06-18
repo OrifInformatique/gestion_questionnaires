@@ -149,7 +149,7 @@ $nbMaxQuestion = 0;
                 echo form_button('annuler', $this->lang->line('cancel'),
                 array(
                     'class' => 'btn btn-danger col-xs-12',
-                    'onclick' => 'location.href=`'.base_url('Questionnaire/cancel_add').'`'
+                    'onclick' => 'location.href=`'.base_url('Questionnaire').'`'
                 )); ?>
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
