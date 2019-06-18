@@ -125,7 +125,16 @@ class Questionnaire extends MY_Controller
             'nbQuestions' => $nbQuestions
         );
 
-        $this->display_view('questionnaires/add', $output);
+        // Removing this will make it so that you can't set the amount of questions
+        if(isset($_POST['topic'])) {
+            $Topic = urldecode($_POST['topic']);
+            $Topic = str_replace("_apostrophe_", "\'", $Topic);
+            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
+            $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
+            echo $nbQuestion;
+        } else {
+            $this->display_view('questionnaires/add', $output);
+        }
     }
 
     /**
