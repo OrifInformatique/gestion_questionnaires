@@ -384,17 +384,25 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 
 			switch ($_POST['question_type']){
-			case 1: case 2:
-			case 4: case 6:
+			case 1:
 				$this->display_view('multiple_choice/add', $output);
+				break;
+			case 2:
+				$this->display_view('multiple_answer/add', $output);
 				break;
 			case 3:
 				$this->display_view('questions/noimplemented');
 				// TODO
 				break;
+			case 4:
+				$this->display_view('cloze_text/add', $output);
+				break;
 			case 5:
 				$this->display_view('questions/noimplemented');
 				// TODO
+				break;
+			case 6:
+				$this->display_view('free_answers/add', $output);
 				break;
 			case 7:
 				$this->display_view('picture_landmark/file', $output);
