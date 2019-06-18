@@ -199,12 +199,20 @@ class Questionnaire extends MY_Controller
     }
 
     /**
+     * Cancels adding a new questionnaire
+     */
+    public function cancel_add() {
+        if(isset($_SESSION['temp_tableTopics'])) unset($_SESSION['temp_tableTopics']);
+        redirect('Questionnaire');
+    }
+
+    /**
      * Generates a PDF from a questionnaire
      *
      * @param integer $idQuestionnaire = The questionnaire's id
      * @param TableTopics $tableTopics = The topics
      */
-    public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
+    public function generatePDF($idQuestionnaire = -1, $tableTopics = NULL)
     {
         if($idQuestionnaire == -1){
             // Prevent calling the function without any argument
