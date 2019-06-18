@@ -97,7 +97,7 @@ $nbMaxQuestion = 0;
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-sm-4 col-xs-12">
-                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>"/>
+                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="<?php echo $this->lang->line('add_form')?>"/>
             </div>
         </div>
         <div class="row">
@@ -122,7 +122,7 @@ $nbMaxQuestion = 0;
                     <?php
                     $compteur = 1;
                     //Display each row of topic and number answer asked
-                    foreach($topics as $topic)
+                    foreach($topics as $key => $topic)
                     {
                         ?>
                         <tr>
@@ -131,7 +131,10 @@ $nbMaxQuestion = 0;
                                     <?php echo $topic->Topic ;?>
                             </td>
                             <td>
-                                <?php echo $nbQuestions[$compteur-1];?>
+                                <?php echo $nbQuestions[$key];?>
+                            </td>
+                            <td>
+                                <input type="submit" value="×" class="close" id="btn_del" name="delete_topic[<?=$key?>]">
                             </td>
                         </tr>
                     <?php
@@ -145,8 +148,7 @@ $nbMaxQuestion = 0;
                 
             </div>
             <div class="col-sm-4 col-xs-12" > 
-                <?php 
-                echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12" onclick="location.href=\''.base_url('Questionnaire').'\'"'); ?>
+                <input type="submit" class="btn btn-danger col-xs-12" name="<?php echo $this->lang->line('cancel');?>" value="<?php echo $this->lang->line('cancel');?>">
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
                  <input type="submit" class="btn btn-success col-xs-12" name="<?php echo $this->lang->line('save');?>" value="<?php echo $this->lang->line('save');?>">

@@ -151,10 +151,26 @@ class Questionnaire extends MY_Controller
         }
 
         //Store title if defined
-        $tableTopics->setTitle($this->input->post('title'));
+        if(!empty($this->input->post('title'))){
+            $tableTopics->setTitle($this->input->post('title'));
+        }
 
         //If the user want to validate his pdf
-        if (!isset($_POST[$this->lang->line('save')]))
+        if (isset($_POST[$this->lang->line('cancel')]))
+        {
+            unset ($_SESSION["temp_tableTopics"]);
+            redirect('/Questionnaire');
+        }
+        else if (isset($_POST['delete_topic']))
+        {
+            foreach ($_POST['delete_topic'] as $key => $topic) {
+                $tableTopics->removeArrayTopics($key);
+                $tableTopics->removeArrayNbQuestion($key);
+            }
+            $_SESSION['temp_tableTopics'] = serialize($tableTopics);
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+        }
+        else if (isset($_POST[$this->lang->line('add_form')]))
         {
             $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
             $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
@@ -175,7 +191,7 @@ class Questionnaire extends MY_Controller
             }
             $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
         }
-        else
+        else if(isset($_POST[$this->lang->line('save')]))
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
@@ -188,9 +204,11 @@ class Questionnaire extends MY_Controller
                 $this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
-                $this->add(1);
+                $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
             }
-        }        
+        } else {
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+        }
     }
 
     public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
