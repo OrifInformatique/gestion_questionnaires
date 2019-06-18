@@ -112,16 +112,8 @@ class Questionnaire extends MY_Controller
      */
     public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
-        $already = "NOT (";
-        foreach($topics as $topic) {
-            $already .= " ID = ".$topic->ID." OR";
-        }
-        $already = substr($already, 0, -3).")";
         $output['error'] = ($error == NULL ? NULL : true);
-        if(strlen($already) < 4)
-            $output['topicsList'] = $this->topic_model->get_all();
-        else
-            $output['topicsList'] = $this->topic_model->get_many_by($already);
+        $output['topicsList'] = $this->topic_model->get_all();
         $output['title'] = $title;
         $output['topics'] = $topics;
         $output['nbQuestions'] = $nbQuestions;
