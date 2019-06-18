@@ -88,12 +88,12 @@ class Questionnaire extends MY_Controller
     public function delete($id = 0, $action = NULL)
     {
         if ($id != 0) {
-            $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
             if (is_null($action)) {
                 $output = get_object_vars($this->questionnaire_model->get($id));
                 $output["questionnaires"] = $this->questionnaire_model->get_all();
                 $this->display_view("questionnaires/delete", $output);
             } else {
+                $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
                 if (count($questionnaire->question_questionnaires) > 0) {
                     foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
                         $this->question_questionnaire_model->delete($question_questionnaire->ID);
@@ -116,25 +116,15 @@ class Questionnaire extends MY_Controller
      */
     public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
-        if(isset($_POST['topic']))
-        {
-            $Topic = urldecode($_POST['topic']);
-            $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $nbQuestion = $this->question_model->getNbQuestionByTopic($Topic);
-            echo $nbQuestion;
+        $output = array(
+            'error' => ($error == NULL ? NULL : true),
+            'topicsList' => $this->topic_model->get_all(),
+            'title' => $title,
+            'topics' => $topics,
+            'nbQuestions' => $nbQuestions
+        );
 
-        }else
-        {
-            $output = array(
-                'error' => ($error == NULL ? NULL : true),
-                'topicsList' => $this->topic_model->get_all(),
-                'title' => $title,
-                'topics' => $topics,
-                'nbQuestions' => $nbQuestions
-            );
-
-            $this->display_view('questionnaires/add', $output);
-        }
+        $this->display_view('questionnaires/add', $output);
     }
 
     /**
