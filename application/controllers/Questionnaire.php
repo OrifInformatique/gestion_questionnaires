@@ -235,11 +235,14 @@ class Questionnaire extends MY_Controller
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-            //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
-            if($pdf->getY()> 225){
+            // A page is ~300 high, so create a new one after 225
+            // Landmarks are type 7 and have images of (at most) 80 high,
+            // so create a new page earlier than we should
+            $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 150 : 225);
+            if($pdf->getY() > $maxHeight) {
                 $pdf->addPage();
             }
-            if($answers->getY()> 225){
+            if($answers->getY() > $maxHeight) {
                 $answers->addPage();
             }
 
