@@ -102,10 +102,13 @@ class Question extends MY_Controller
 		$this->db->order_by($orderby);
 		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
-
 		} else {
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
+
+	    if(($page - 1) * ITEMS_PER_PAGE > count($output['questions'])) {
+	    	redirect('question/index/1');
+	    }
 
 		$this->load->library('pagination');
 
