@@ -1,7 +1,7 @@
 <?php
 /**
  * Application's texts
- * 
+ *
  * @author      Orif Pomy, section informatique (UlSi, ViDi)
  * @copyright   Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
@@ -41,7 +41,7 @@ $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette part
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
 
-// Buttons 
+// Buttons
 $lang['btn_cancel']                     = 'Annuler';
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
