@@ -11,7 +11,7 @@ class Questionnaire extends MY_Controller
 {
     CONST TITLEFONT_SIZE = 18;
     CONST QUESTIONFONT_SIZE = 12;
-    
+
     /* MY_Controller variables definition */
     protected $access_level = ACCESS_LVL_ADMIN;
 
@@ -22,13 +22,11 @@ class Questionnaire extends MY_Controller
     {
         parent::__construct();
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
-            'question_model', 'question_type_model', 'answer_distribution_model',
-            'multiple_choice_model', 'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
+            'question_model', 'answer_distribution_model', 'multiple_choice_model',
+            'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'upload'));
-
-        
     }
 
     /**
@@ -36,8 +34,10 @@ class Questionnaire extends MY_Controller
      */
     public function index($error = "")
     {
-        $outputs['questionnaires'] = $this->questionnaire_model->get_all();
-        $outputs['error'] = $error;
+        $outputs = array(
+            'questionnaires' => $this->questionnaire_model->get_all(),
+            'error' => $error
+        );
         $this->display_view('questionnaires/index', $outputs);
     }
 
@@ -49,14 +49,16 @@ class Questionnaire extends MY_Controller
      * 2 = field(s) empty
      * Display the update questionnaire view
      */
-    public function update($id = 0, $error = 0)
+    public function update($id = 0, $error = FALSE)
     {
-        $outputs['error'] = $error;
         if ($id != 0) {
-            $outputs["id"] = $id;
+            $outputs = array(
+                'error' => $error,
+                'id' => $id
+            );
             $this->display_view("questionnaires/update", $outputs);
         } else {
-            $this->index();
+            redirect('Questionnaire');
         }
     }
 
@@ -73,7 +75,7 @@ class Questionnaire extends MY_Controller
         if ($this->form_validation->run() == true) {
 
             $this->questionnaire_model->update($id, $title);
-            $this->index();
+            redirect('Questionnaire');
         } else {
             $this->update($id, true);
         }
@@ -98,10 +100,10 @@ class Questionnaire extends MY_Controller
                     }
                 }
                 $this->questionnaire_model->delete($id);
-                $this->index();
+                redirect('Questionnaire');
             }
         } else {
-            $this->index();
+            redirect('Questionnaire');
         }
     }
 
@@ -114,27 +116,30 @@ class Questionnaire extends MY_Controller
      */
     public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
-        $output['error'] = ($error == NULL ? NULL : true);
-        $output['topicsList'] = $this->topic_model->get_all();
-        $output['title'] = $title;
-        $output['topics'] = $topics;
-        $output['nbQuestions'] = $nbQuestions;
-
-
         if(isset($_POST['topic']))
         {
             $Topic = urldecode($_POST['topic']);
             $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
-            $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
+            $nbQuestion = $this->question_model->getNbQuestionByTopic($Topic);
             echo $nbQuestion;
 
         }else
         {
+            $output = array(
+                'error' => ($error == NULL ? NULL : true),
+                'topicsList' => $this->topic_model->get_all(),
+                'title' => $title,
+                'topics' => $topics,
+                'nbQuestions' => $nbQuestions
+            );
+
             $this->display_view('questionnaires/add', $output);
         }
     }
 
+    /**
+     * Adds a new topic to a questionnaire or saves it on the database
+     */
     public function form_add()
     {
         // If temporary tableTopics does not exist, create it
@@ -190,15 +195,20 @@ class Questionnaire extends MY_Controller
                 // Form validation error
                 $this->add(1);
             }
-        }        
+        }
     }
 
+    /**
+     * Generates a PDF from a questionnaire
+     *
+     * @param integer $idQuestionnaire = The questionnaire's id
+     * @param TableTopics $tableTopics = The topics
+     */
     public function generatePDF($idQuestionnaire = -1, $tableTopics = null)
     {
-
-        
-        
         if($idQuestionnaire == -1){
+            // Prevent calling the function without any argument
+            if(is_null($tableTopics)) redirect('Questionnaire');
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         } else {
             $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
@@ -214,7 +224,9 @@ class Questionnaire extends MY_Controller
         $pdf->SetTitle("Questionnaire", true);
         $pdf->MultiCell(0, 20, 'Questionnaire', 1, "C");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
+        $pdf->Cell(80, 10, "Nom :", 0, "L");
+        $pdf->Cell(80, 10, "Date :", 0, "C");
+        $pdf->Ln();
         $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $pdf->Ln();
@@ -228,7 +240,7 @@ class Questionnaire extends MY_Controller
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
 
-        foreach ($listRndQuestions as $object => $idQuestion) {
+        foreach ($listRndQuestions as $idQuestion) {
 
             $rndQuestion = $this->question_model->get($idQuestion);
             $Question = $rndQuestion->Question;
@@ -236,10 +248,10 @@ class Questionnaire extends MY_Controller
             $totalpoints += $rndQuestion->Points;
 
             //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
-            if($pdf->getY()> 225){
+            if($pdf->getY() > 225){
                 $pdf->addPage();
             }
-            if($answers->getY()> 225){
+            if($answers->getY() > 225){
                 $answers->addPage();
             }
 
@@ -254,121 +266,132 @@ class Questionnaire extends MY_Controller
 
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
-                $this->displayMultipleChoices($rndQuestion, $pdf);
-                $this->answerMultipleChoices($rndQuestion, $answers);
-                break;
+                    $this->multipleChoicesPdf($rndQuestion, $pdf);
+                    $this->multipleChoicesPdf($rndQuestion, $answers, true);
+                    break;
                 case 2:
-                $this->displayMultipleAnswers($rndQuestion, $pdf);
-                $this->answerMultipleAnswers($rndQuestion, $answers);
-                break;
+                    $this->multipleAnswersPdf($rndQuestion, $pdf);
+                    $this->multipleAnswersPdf($rndQuestion, $answers, true);
+                    break;
                 case 3:
-                $this->displayAnswerDistribution($rndQuestion, $pdf);
-                $this->answerAnswerDistribution($rndQuestion, $answers);
-                break;
+                    $this->answerDistributionPdf($rndQuestion, $pdf);
+                    $this->answerDistributionPdf($rndQuestion, $answers, true); // /!\ This part of the function does nothing /!\
+                    break;
                 case 4:
-                $this->displayClozeText($rndQuestion, $pdf);
-                $this->answerClozeText($rndQuestion, $answers);
-                break;
+                    $this->clozeTextPdf($rndQuestion, $pdf);
+                    $this->clozeTextPdf($rndQuestion, $answers, true);
+                    break;
                 case 5:
-                $this->displayTable($rndQuestion, $pdf);
-                $this->answerTable($rndQuestion, $answers);
-                break;
+                    $this->tablePdf($rndQuestion, $pdf);
+                    $this->tablePdf($rndQuestion, $answers, false); // /!\ This part of the function does nothing /!\
+                    break;
                 case 6:
-                $this->displaySimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $pdf);
-                $this->answerSimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $answers);
-                break;
+                    $this->simpleQuestionPdf($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $pdf);
+                    $this->simpleQuestionPdf($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $answers, true);
+                    break;
                 case 7:
-                $this->displayPictureLandmarks($rndQuestion, $pdf);
-                $this->answerPictureLandmarks($rndQuestion, $answers);
-                break;
+                    $this->pictureLandmarkPdf($rndQuestion, $pdf);
+                    $this->pictureLandmarkPdf($rndQuestion, $answers, true);
+                    break;
                 default:
-                break;
+                    break;
             }
-            $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
-            $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+            $pdf->MultiCell(0, 20, ".../".$rndQuestion->Points, 0, "R");
+            $answers->MultiCell(0, 20, ".../".$rndQuestion->Points, 0, "R");
 
         }
-        $error = false;
-        
-        /*
-        }catch (Exception $e)
-        {
-            $error = true;
-        }*/
 
         $pdf->setTextColor(128,128,128);
         $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
-        $pdf->MultiCell(0, 20, "Total des points : .../$totalpoints             Note :            ", 0, "C");
+        $pdf->Cell(30); // Padding
+        $pdf->Cell(90, 20, "Total des points : .../".$totalpoints, 0, "R");
+        $pdf->Cell(90, 20, "Note :", 0, "R");
+        $pdf->Ln();
         $answers->setTextColor(128,128,128);
         $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
-        $answers->MultiCell(0, 20, "Total des points : $totalpoints                                   ", 0, "C");
-        if ($error) {
-            echo $this->lang->line('pdf_error');
-        }else{
-            if($idQuestionnaire == -1){
-                //$pdf->Output('I', 'Questionnaire', true);
-                $title = $tableTopics->getTitle();
-                $title_const = $title;
+        $answers->MultiCell(0, 20, "Total des points : ".$totalpoints, 0, "C");
+
+        if($idQuestionnaire == -1){
+            //$pdf->Output('I', 'Questionnaire', true);
+            $title = $tableTopics->getTitle();
+
+            if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
                 $i = 1;
-                while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
-                    $title = $title_const .'-'. $i;
+                while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
                     $i++;
                 }
-
-                $pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
-                $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
-            } else {
-                $pdf->Output('F', "pdf_files/questionnaires/" . $this->getQuestionnaireName($idQuestionnaire)['PDF'], true);
-                $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire)['corrige'], true);
+                $title .= '-'.$i;
             }
-            $this->index();
+
+            $pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
+            $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
+        } else {
+            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+            $pdf->Output('F', "pdf_files/questionnaires/" . $questionnaire->PDF, true);
+            $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         }
+        redirect('Questionnaire');
     }
 
-
+    /**
+     * Creates a new questionnaire in pdf format
+     *
+     * @param TableTopics $tableTopics = The questionnaire topics
+     */
     private function InsertNewQuestionnaire($tableTopics)
     {
         $listIDQuestions = array();
-        //Insert new Questionnaire
-        $title = $tableTopics->getTitle();
-        $newQuestionnaire = array("Questionnaire_Name" => $title);
+        // Prepare the questionnaire name and save the original
+        $title_original = $title = $tableTopics->getTitle();
 
-        $title_const = $title;
-        $i = 1;
-
-        while(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title.".pdf")){
-            $title = $title_const .'-'. $i;
-            $i++;
+        // In case the questionnaire's pdf already exists, change the file's name
+        if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
+            $i = 1;
+            while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
+                $i++;
+            }
+            $title .= '-'.$i;
         }
-        $newQuestionnaire['PDF'] = $title.".pdf";
-        $newQuestionnaire['Corrige_PDF'] = $title."_corrige.pdf";
 
-        $this->questionnaire_model->insert($newQuestionnaire);
-        $idQuestionnaire = $this->db->insert_id();
+        // Insert new questionnaire
+        $newQuestionnaire = array(
+            "Questionnaire_Name" => $title_original,
+            "PDF" => $title.".pdf",
+            "Corrige_PDF" => $title."_corrige.pdf"
+        );
+
+        $idQuestionnaire = $this->questionnaire_model->insert($newQuestionnaire);
 
         //Insert each question about the questionnaire
         for ($index = 0; $index < count($tableTopics->getArrayTopics()); $index++)
         {
             //Get ID for each topic asked
-            $topic = $tableTopics->getArrayTopics()[$index];
             $nbQuestion = $tableTopics->getArrayNbQuestion()[$index];
-            $idTopic = $topic->ID;
+            $idTopic = $tableTopics->getArrayTopics()[$index]->ID;
 
             //load randoms questions about the topic
             $rndQuestions = $this->question_model->getRNDQuestions($idTopic, $nbQuestion);
 
-            for($number = 0; $number < count($rndQuestions);$number++)
+            for($number = 0; $number < count($rndQuestions); $number++)
             {
-                $row = array("FK_Question" => intval($rndQuestions[$number]["ID"]), "FK_Questionnaire" => $idQuestionnaire);
+                $row = array(
+                    "FK_Question" => intval($rndQuestions[$number]["ID"]),
+                    "FK_Questionnaire" => $idQuestionnaire
+                );
                 $this->question_questionnaire_model->insert($row);
-                array_push($listIDQuestions, intval($rndQuestions[$number]["ID"]));
+                $listIDQuestions[] = intval($rndQuestions[$number]["ID"]);
 
             }
         }
-        
+
         return $listIDQuestions;
     }
 
+    /**
+     * Obtains all the questions in a questionnaire
+     *
+     * @param integer $idQuestionnaire = The questionnaire's id
+     */
     private function findQuestionByQuestionnaire($idQuestionnaire){
         $listIDQuestions = array();
         $rndQuestions = array();
@@ -376,184 +399,216 @@ class Questionnaire extends MY_Controller
         //load randoms questions about the topic
         $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
 
-        for($number = 0; $number < count($rndQuestions);$number++)
+        for($number = 0; $number < count($rndQuestions); $number++)
         {
-            array_push($listIDQuestions, $rndQuestions[$number]->FK_Question);
+            $listIDQuestions[] = $rndQuestions[$number]->FK_Question;
         }
 
         return $listIDQuestions;
     }
 
-    private function getQuestionnaireName($idQuestionnaire){
-        $PDF['name'] = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
-        $PDF['PDF'] = $this->questionnaire_model->get($idQuestionnaire)->PDF;
-        $PDF['corrige'] = $this->questionnaire_model->get($idQuestionnaire)->Corrige_PDF;
-        return $PDF;
-    }
+    /**
+     * Adds a multiple choices question to a questionnaire's pdf
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function multipleChoicesPdf($question, $pdf, $answerPdf = false) {
+        $multiChoiceQuestions = $this->multiple_choice_model->get_many_by("FK_Question = ".$question->ID);
 
-    private function displayMultipleChoices($Question, $pdf)
-    {
-        try{
-            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+        foreach($multiChoiceQuestions as $question) {
+            $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $question->Answer), 0, 'L');
+            $y = $pdf->Gety() + 7.7;
+            $pdf->SetY($y);
+            $pdf->SetX(100);
 
-            foreach ($multi_Choice_Questions as $m)
-            {
-                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
-
-                $y = $pdf->Gety();
-                $pdf->SetY($y + 7.7);
-                $pdf->SetX(100);
-                $pdf->MultiCell(5, 5, " ", 1);
-                $pdf->SetY($y + 7.7);
-            }
-
-            return false;
-
-        }catch(Exception $e)
-        {
-            return true;
-        }
-    }
-
-    private function answerMultipleChoices($Question, $pdf)
-    {
-        try{
-            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
-
-            foreach ($multi_Choice_Questions as $m)
-            {
-                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
-
-                $y = $pdf->Gety();
-                $pdf->SetY($y + 7.7);
-                $pdf->SetX(100);
-
-                //Cross if the answer is true
-                $cross = "";
-                if ($m->Valid == 1) {
-                    $cross = "x";
-                }
-                $pdf->setTextColor(255,0,0);
-                $pdf->MultiCell(5, 5, $cross, 1);
-                $pdf->SetY($y + 7.7);
-                $pdf->setTextColor(0,0,0);
-            }
-
-            return false;
-
-        }
-        catch(Exception $e)
-        {
-            return true;
-        }
-    }
-
-    private function displayMultipleAnswers($Question, $pdf)
-    {
-        $nbAskedAnswers = $Question->Nb_Desired_Answers;
-        $pdf->Ln();
-        for($i = 0; $i < $nbAskedAnswers; $i++)
-        {
-            $pdf->MultiCell(80, 8, "___________________________", 0);
-        }
-    }
-
-    private function answerMultipleAnswers($Question, $pdf)
-    {
-        $pdf->setTextColor(255,0,0);
-        $pdf->Ln();
-        $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = $Question->ID");
-        foreach ($possible_answers as $possible_answer)
-        {
-            $pdf->MultiCell(80, 8, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
-        }
-
-        $pdf->setTextColor(0,0,0);
-    }
-
-    private function displayAnswerDistribution($Question, $pdf)
-    {
-        $An_Distrib_Questions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
-
-        foreach ($An_Distrib_Questions as $an_Distrib_Question)
-        {
-            $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$an_Distrib_Question->Question_Part), 1, "C");
-            $pdf->Cell(20,20, "", 0, "C");
-            $pdf->MultiCell(80,20, "", 1, "C");
-        }
-    }
-
-    private function displayClozeText($Question, $pdf)
-    {
-        try{
-            $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
-            $outputText = preg_split("#\[\.*\]#", $ClozeText->Cloze_Text,-1,PREG_SPLIT_DELIM_CAPTURE);
-            $nbrAnswer = count($outputText)-1;
-            $result='';
-
-            foreach ($outputText as $key => $value) {
-                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
-            }
-            $pdf->SetFont('','',self::QUESTIONFONT_SIZE);
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
-
-            for ($i=0; $i < $nbrAnswer; $i++) {
-                $pdf->MultiCell(0, 10, '['.($i+1).'] : ________________________', 0);
-            }
-
-            return false;
-        }
-        catch(Exception $e){
-            return true;
-        }
-    }
+            // Only show answers for the answer sheet
+            $cross = ($answerPdf && $question->Valid ? "x" : " ");
+            if($answerPdf) $pdf->setTextColor(255, 0, 0);
 
 
-    //if error return true
-    private function answerClozeText($Question, $pdf)
-    {
-        try{
-            $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
-            $outputText = preg_split("#\[\.*\]#", $ClozeText->Cloze_Text,-1,PREG_SPLIT_DELIM_CAPTURE);
-            $allAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = $ClozeText->ID");
-            $answers = array(); 
-
-            foreach ($allAnswers as $key) {
-                array_push($answers, $key->Answer);
-            }
-
-
-            $nbrAnswer = count($outputText)-1;
-            $result='';
-            foreach ($outputText as $key => $value) {
-                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
-            }
-            $pdf->SetFont('Arial','',self::QUESTIONFONT_SIZE);
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
-
-            $pdf->setTextColor(255,0,0);
-            if ($nbrAnswer == count($answers)){
-                for ($i=0; $i < $nbrAnswer; $i++) {
-                    $pdf->Cell(10, 10, '['.($i+1).'] : ', 0);
-                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $answers[$i]) , 0);
-                }
-            }else{
-                foreach ($answers as $value) {
-                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252',$value), 0);
-                }
-            }
+            $pdf->MultiCell(5, 5, $cross, 1);
+            $pdf->SetY($y);
             $pdf->setTextColor(0,0,0);
-            return false;
-        }
-        catch(Exception $e){
-            return true;
         }
     }
 
+    /**
+     * Adds a multiple answers question to a questionnaire's pdf
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function multipleAnswersPdf($question, $pdf, $answerPdf = false) {
+        $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
+        $pdf->Ln();
+
+        if($answerPdf) {
+            $pdf->setTextColor(255, 0, 0);
+
+            foreach($possible_answers as $possible_answer) {
+                $pdf->MultiCell(80, 8, iconv('UTF-8', 'windows-1252', $possible_answer->Answer), 0);
+            }
+        } else {
+            $nbAskedAnswers = $question->Nb_Desired_Answers;
+            // Get the longest answer so that the person who answers has enough room to write the correct answer
+            $longest_answer = array_reduce($possible_answers, function($a, $b) {
+                return strlen($a->Answer) > strlen($b->Answer) ? $a : $b;
+            }, (object) ['Answer' => '']);
+            $line = str_repeat("_", 30); // Repeating it any more will result in the line going on the next line
+            for($i = 0; $i < $nbAskedAnswers; $i++) {
+                $pdf->MultiCell(80, 8, $line, 0);
+            }
+        }
+        $pdf->setTextColor(0, 0, 0);
+    }
+
+    /**
+     * @todo The logic for the answer part
+     *
+     * Adds a distribution question to a questionnaire's pdf
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function answerDistributionPdf($question, $pdf, $answerPdf = false) {
+        if($answerPdf) {
+            /**
+             * @todo
+             * The function did not exist,
+             * there are no distribution questions and
+             * the page to create them has yet to be coded
+            */
+        } else {
+            $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
+
+            foreach ($anDistributionQuestions as $anDistributionQuestion) {
+                $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$anDistributionQuestion->Question_Part), 1, "C");
+                $pdf->Cell(20,20, "", 0, "C");
+                $pdf->MultiCell(80,20, "", 1, "C");
+            }
+        }
+        $pdf->setTextColor(0, 0, 0);
+    }
+
+    /**
+     * Adds a cloze text question to a questionnaire's pdf
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function clozeTextPdf($question, $pdf, $answerPdf = false) {
+        $clozeText = $this->cloze_text_model->get_by("FK_Question = ".$question->ID);
+        // Sometimes you can find … mixed with .
+        $outputText = preg_split("/\[[…\.]*\]/", $clozeText->Cloze_Text, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $nbrAnswer = count($outputText)-1;
+        $result = '';
+        $allAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = ".$clozeText->ID);
+
+        // How the question is written, after processing
+        foreach ($outputText as $key => $value) {
+            $result .= $value . '['.($key+1).']';
+        }
+        // Remove the last [number] from the result
+        $lastC = strrpos($result, '[');
+        $result = substr($result, 0, $lastC);
+
+        $pdf->SetFont(($answerPdf ? 'Arial' : ''), '', self::QUESTIONFONT_SIZE);
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
+
+        if($answerPdf) {
+            // Put all answers in an array
+            $answers = array();
+            foreach($allAnswers as $a) {
+                $answers[] = $a->Answer;
+            }
+
+            $pdf->setTextColor(255, 0, 0);
+            if($nbrAnswer == count($answers)) {
+                for($i = 0; $i < $nbrAnswer; $i++) {
+                    $pdf->Cell(10, 10, '['.($i + 1).'] : ', 0);
+                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $answers[$i]), 0);
+                }
+            } else {
+                foreach($answers as $a) {
+                    $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $a));
+                }
+            }
+        } else {
+            // Get the longest answer so that the person who answers has enough room to write the correct answer
+            $longest_answer = array_reduce($allAnswers, function($a, $b) {
+                return strlen($a->Answer) > strlen($b->Answer) ? $a : $b;
+            }, (object) ['Answer' => '']); // Put an object with the only value we request
+            $line = str_repeat("_", strlen($longest_answer->Answer) + 10);
+
+            for($i = 1; $i <= $nbrAnswer; $i++) {
+                $pdf->MultiCell(0, 10, '['.$i.'] : '.$line, 0);
+            }
+        }
+        $pdf->setTextColor(0, 0, 0);
+    }
+
+    /**
+     * @todo The logic for the answer part
+     *
+     * Adds a table question to a questionnaire's pdf
+     * Might work as expected
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function tablePdf($question, $pdf, $answerPdf = false) {
+        if($answerPdf) {
+            /**
+             * @todo
+             * The function did not exist,
+             * there are no table questions and
+             * the page to create them has yet to be coded
+            */
+        } else {
+            $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
+
+            // Sort tableCells by amount of columns
+            usort($tcCol, function($a, $b) {
+                return $a->Column_Nb <=> $b->Column_Nb;
+            });
+            // Sort tableCells by amount of rows
+            usort($tcRow, function($a, $b) {
+                return $a->Row_Nb <=> $b->Row_Nb;
+            });
+
+            foreach($tcCol as $col) {
+                foreach($tcRow as $row) {
+                    if($row->Header) {
+                        $pdf->SetFont('Arial', 'B', self::TITLEFONT_SIZE);
+                        $pdf->Cell(40, 10, iconv('Used', 'windows-1252', $row->Content), 1, "C");
+                        $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
+                    } elseif($row->Display_In_Question)
+                        $pdf->Cell(40, 10, iconv('Used', 'windows-1252', $row->Content), 1, "C");
+                    else
+                        $pdf->Cell(40, 10, '', 1, "C");
+                }
+                // New line at the end of the table
+                $pdf->Ln();
+            }
+        }
+        $pdf->setTextColor(0, 0, 0);
+    }
+
+    /**
+     * @deprecated use tablePdf($Question, $pdf, false)
+     * This is kept as a reference in case there is a table question that appears
+     *
+     * I don't recommend looking at this one
+     */
     private function displayTable($Question, $pdf)
     {
-        $tableCells = $this->table_cell_model->get_many_by("FK_Question = $Question->ID");
-        var_dump($tableCells);
+        $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
         $maxColumn = 0;
         $maxRow = 0;
 
@@ -613,99 +668,72 @@ class Questionnaire extends MY_Controller
             }
         }
     }
-    private function displaySimpleQuestion($Answer, $pdf)
-    {
-        $pdf->Ln();
-        //calculation of the number of lines granted according to the expected answer.
-        for ($i=0; $i < ceil(strlen($Answer)/60); $i++) { 
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "____________________________________________________________________________"), 0, "L");     
-        } 
-        
-    }
-    private function answerSimpleQuestion($Answer, $pdf)
-    {
-        // answer in red for a simple kind of question
-        $pdf->setTextColor(255,0,0);
-        //Answer put
-        $pdf->MultiCell(0, 7.5, iconv('UTF-8', 'windows-1252', "\n".$Answer), 0, "L");
-        $pdf->setTextColor(0,0,0);
-    }
-    private function displayPictureLandmarks($Question, $pdf)
-    {
-        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
-        $picture = $Question->Picture_Name;
 
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
-        $pdf->Ln();
-
-        $w = getimagesize($fullPath)[0];
-        $h = getimagesize($fullPath)[1];
-
-        //l'image ne dépasse pas 80 en largeur
-        if($w>80) {
-            $h=$h/($w/80);
-            $w=80;
+    /**
+     * Adds a text question to a questionnaire's pdf
+     *
+     * @param string $answer = The answer of the question
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function simpleQuestionPdf($answer, $pdf, $answerPdf = false) {
+        if($answerPdf) {
+            $pdf->setTextColor(255, 0, 0);
+            $pdf->MultiCell(0, 7.5, iconv('UTF-8', 'windows-1252', $answer), 0, "L");
+        } else {
+            // Put enough lines to answer
+            for ($i = 0; $i < ceil(strlen($answer) / 60); $i++) {
+                $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', str_repeat("_", 75)), 0, "L");
+            }
         }
-        $pdf->Image($fullPath, null, null, $w, $h);
-        $y1 = $pdf->getY();
-        $pagenum1 = $pdf->PageNo();
-        $pdf->SetY($y1-$h);
+        $pdf->setTextColor(0, 0, 0);
+    }
 
-        foreach ($pictureLandmarks as $pictureLandmark)
-        {
+    /**
+     * Adds a picture landmark question to a questionnaire's pdf
+     *
+     * @param Question $question = The question to add
+     * @param FPDF $pdf = The pdf to update
+     * @param boolean $answerPdf = Whether or not the pdf is for correction
+     */
+    private function pictureLandmarkPdf($question, $pdf, $answerPdf = false) {
+        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = ".$question->ID);
+        $picture = $question->Picture_Name;
+        $fullPath = base_url((is_file('uploads/pictures/'.$picture) ? 'uploads/pictures/'.$picture : 'assets/images/not-found.png'));
+        $pdf->Ln();
+        $size = getimagesize($fullPath);
+        $size = (["width" => $size[0], "height" => $size[1]]);
+
+        // Image should not be more than 80 pixels tall
+        // Most likely to prevent overflowing onto another page
+        if($size["width"] > 80) {
+            $size["height"] /= ($size["width"] / 80);
+            $size["width"] = 80;
+        }
+
+        $pdf->Image($fullPath, null, null, $size["width"], $size["height"]);
+        $yOld = $pdf->getY();
+        $pageNumOld = $pdf->PageNo();
+        $pdf->SetY($yOld - $size["height"]);
+
+        // Add answers to the pdf
+        foreach($pictureLandmarks as $pictureLandmark) {
             $pdf->Cell(100);
-            $pdf->Cell(7,5, "$pictureLandmark->Symbol: ", 0, "C");
-            $pdf->MultiCell(100,5, '___________________', 0, "L");
+            $pdf->Cell(7, 5, $pictureLandmark->Symbol.": ", 0, "C");
+            if($answerPdf) $pdf->setTextColor(255, 0, 0);
+            $line = ($answerPdf ? iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer) : str_repeat("_", 20));
+            $pdf->MultiCell(100, 5, $line, 0, "L");
             $pdf->Ln();
-        }
-        $y2 = $pdf->getY();
-        $pagenum2 = $pdf->PageNo();
-        //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
-        
-        if($pagenum1==$pagenum2){
-            ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
-        }else{
-            ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
-        }
-    }
-
-    private function answerPictureLandmarks($Question, $pdf)
-    {
-        $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
-        $picture = $Question->Picture_Name;
-        $imageUrl = 'uploads/pictures/'. $picture;
-
-        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
-        $pdf->Ln();
-        $w = getimagesize($fullPath)[0];
-        $h = getimagesize($fullPath)[1];
-
-        //l'image ne dépasse pas 80 en largeur
-        if($w>80) {
-            $h=$h/($w/80);
-            $w=80;
+            $pdf->setTextColor(0, 0, 0);
         }
 
-        $pdf->Image($fullPath, null, null, $w, $h);
-        $y1 = $pdf->getY();
-        $pagenum1 = $pdf->PageNo();
-        $pdf->SetY($y1-$h);
-
-        foreach ($pictureLandmarks as $pictureLandmark)
-        {
-            $pdf->Cell(100);
-            $pdf->Cell(7,10, "$pictureLandmark->Symbol: ", 0, "C");
-            $pdf->setTextColor(255,0,0);
-            $pdf->MultiCell(40,10, iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer), 0, "L");
-            $pdf->setTextColor(0,0,0);
-        }
-        $y2 = $pdf->getY();
-        $pagenum2 = $pdf->PageNo();
-        //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
-        if($pagenum1==$pagenum2){
-            ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
-        }else{
-            ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        $yNew = $pdf->getY();
+        $pageNumNew = $pdf->PageNo();
+        // Set current Y to low enough to add new things
+        if($pageNumNew == $pageNumOld) {
+            $pdf->setY($yOld > $yNew ? $yOld : $yNew);
+        } else {
+            $pdf->setY($pageNumOld > $pageNumNew ? $yOld : $yNew);
         }
     }
 }
