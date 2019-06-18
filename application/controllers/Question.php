@@ -381,25 +381,17 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 		
 			switch ($_POST['question_type']){
-			case 1:
+			case 1: case 2:
+			case 4: case 6:
 				$this->display_view('multiple_choice/add', $output);
-				break;
-			case 2:
-				$this->display_view('multiple_answer/add', $output);
 				break;
 			case 3:
 				$this->display_view('questions/noimplemented');
 				// TODO
 				break;
-			case 4:
-				$this->display_view('cloze_text/add', $output);
-				break;
 			case 5:
 				$this->display_view('questions/noimplemented');
 				// TODO
-				break;
-			case 6:
-				$this->display_view('free_answers/add', $output);
 				break;
 			case 7:	
 				$this->display_view('picture_landmark/file', $output);
@@ -469,24 +461,24 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+							$idQuestion = $this->multiple_choice_model->insert($inputQuestion);
 						} else {
 							$inputAnswer = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
+							$this->multiple_choice_model->update($answers[$i]['id'], $inputAnswer);
 
 							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
 						}
 					}
 
 					foreach ($answersDb as $answerDb) {
-						$this->multiple_answer_model->delete($answerDb);
+						$this->multiple_choice_model->delete($answerDb);
 					}
 				}
 				redirect('/Question');
