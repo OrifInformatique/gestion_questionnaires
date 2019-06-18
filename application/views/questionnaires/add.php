@@ -80,8 +80,16 @@ $nbMaxQuestion = 0;
                                     //Récupère chaque topic associé au topic parent
                                     for ($i = 0; $i < count($topicsList); $i++) {
                                         if ($topic->ID == $topicsList[$i]->FK_Parent_Topic) {
+
+                                            $disabled = false;
+                                            foreach ($topics as $topic_selected) {
+                                                if($topic_selected->ID == $topicsList[$i]->ID) {
+                                                    $disabled = true;
+                                                }
+                                            }
+
                                             //Affiche les topics associés
-                                            echo "<option value='" . $topicsList[$i]->ID . "'>" . $topicsList[$i]->Topic . "</option>";
+                                            echo "<option value='" . $topicsList[$i]->ID . "'".($disabled?' disabled':'').">" . $topicsList[$i]->Topic . "</option>";
                                         }
                                     }
                                     echo "</optgroup>";
@@ -159,4 +167,3 @@ $nbMaxQuestion = 0;
     </div>
 </div>
 <script>init();</script>
-
