@@ -228,7 +228,6 @@ class Questionnaire extends MY_Controller
         $pdf->Cell(80, 10, "Date :", 0, "C");
         $pdf->Ln();
         $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
-        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $pdf->Ln();
 
 
