@@ -236,6 +236,7 @@ class Questionnaire extends MY_Controller
         $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, "Points", 0, "R");
+        $pdf->AliasNbPages();
 
 
         // Title of the answered document
@@ -251,6 +252,7 @@ class Questionnaire extends MY_Controller
         $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $answers->Cell(140);
         $answers->MultiCell(20, 10, "Points", 0, "R");
+        $answers->AliasNbPages();
 
         $questionNum = 1;
 
@@ -263,14 +265,14 @@ class Questionnaire extends MY_Controller
 
             //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
             if($pdf->GetY() > 225) {
-                $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur X', 0, "R");
+                $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
                 $pdf->addPage();
                 $pdf->SetFont('', 'B'); // Set font style to bold
                 $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
                 $pdf->SetFont('', ''); // Back to normal style
             }
             if($answers->GetY() > 225){
-                $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur X', 0, "R");
+                $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur {nb}', 0, "R");
                 $answers->addPage();
                 $answers->SetFont('', 'B'); // Set font style to bold
                 $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.'(Corrigé)'), 0, "L");
@@ -338,14 +340,14 @@ class Questionnaire extends MY_Controller
             $questionNum++;
         }
         if($pdf->GetY() > 225) {
-            $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur X', 0, "R");
+            $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
             $pdf->addPage();
             $pdf->SetFont('', 'B'); // Set font style to bold
             $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
             $pdf->SetFont('', ''); // Back to normal style
         }
         if($answers->GetY() > 225){
-            $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur X', 0, "R");
+            $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur {nb}', 0, "R");
             $answers->addPage();
             $answers->SetFont('', 'B'); // Set font style to bold
             $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.'(Corrigé)'), 0, "L");
@@ -360,14 +362,14 @@ class Questionnaire extends MY_Controller
         $pdf->Ln();
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('Arial','', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur X', 0, "R");
+        $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
 
         $answers->SetTextColor(128,128,128);
         $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 20, "Total des points : ".$totalpoints, 0, "C");
         $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
         $answers->SetTextColor(0,0,0);
-        $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur X', 0, "R");
+        $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur {nb}', 0, "R");
 
         if($idQuestionnaire == -1){
             //$pdf->Output('I', 'Questionnaire', true);
