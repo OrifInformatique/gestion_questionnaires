@@ -221,6 +221,7 @@ class Questionnaire extends MY_Controller
         $pdf = new FPDF();
         $answers = new FPDF();
 
+        // Title of the questions document
         $pdf->AddPage();
         $pdf->SetMargins(20, 20);
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
@@ -263,7 +264,7 @@ class Questionnaire extends MY_Controller
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-            //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
+            // A page is about 300 high, so we go to the next one at 225
             if($pdf->GetY() > 225) {
                 $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
                 $pdf->addPage();
@@ -280,7 +281,7 @@ class Questionnaire extends MY_Controller
             }
 
             $stringLines = $this->string_to_small_array($rndQuestion->Question);
-            // Display question number, question and question points
+            // Display question header
             $pdf->SetFont('', 'B');
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
@@ -291,6 +292,7 @@ class Questionnaire extends MY_Controller
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
                 $pdf->MultiCell(10, 10, '');
             }
+            // Display question header
             $answers->SetFont('', 'B');
             $answers->Cell(10, 10, $questionNum.'.');
             $answers->SetFont('', '');
@@ -354,6 +356,7 @@ class Questionnaire extends MY_Controller
             $answers->SetFont('', ''); // Back to normal style
         }
 
+        // Finish last page
         $pdf->SetTextColor(128,128,128);
         $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
         $pdf->Cell(30); // Padding
@@ -364,6 +367,7 @@ class Questionnaire extends MY_Controller
         $pdf->SetFont('Arial','', self::QUESTIONFONT_SIZE);
         $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
 
+        // Finish last page
         $answers->SetTextColor(128,128,128);
         $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 20, "Total des points : ".$totalpoints, 0, "C");
@@ -520,6 +524,7 @@ class Questionnaire extends MY_Controller
                 $answers = $this->string_to_small_array($possible_answer->Answer);
                 for($i = 0; $i < count($answers); $i++) {
                     $pdf->Cell(10, 10);
+                    // Write the answer
                     $pdf->MultiCell(150, 10, iconv('UTF-8', 'windows-1252', $answers[$i]));
                 }
             }
@@ -527,6 +532,7 @@ class Questionnaire extends MY_Controller
             $nbAskedAnswers = $question->Nb_Desired_Answers;
             for($i = 0; $i < $nbAskedAnswers; $i++) {
                 $pdf->Cell(10, 10);
+                // Place the line to answer
                 $pdf->MultiCell(150, 10, str_repeat('_', 60));
             }
         }
@@ -605,18 +611,23 @@ class Questionnaire extends MY_Controller
             if($nbrAnswer == count($answers)) {
                 for($i = 1; $i <= $nbrAnswer; $i++) {
                     $pdf->Cell(10, 10);
+                    // Write the answer
                     $pdf->Cell(75, 10, iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0]));
                     $i++;
+                    // Write the second answer if it exists
                     $pdf->MultiCell(75, 10, ($i > $nbrAnswer ? '' : iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0])));
                 }
             }
         } else {
+            // Create a short line for answering
             $line = str_repeat('_', 20);
 
             for($i = 1; $i <= $nbrAnswer; $i++) {
                 $pdf->Cell(10, 10);
+                // Display the first line
                 $pdf->Cell(75, 10, "[ $i ] $line");
                 $i++;
+                // Display the second line if it exists
                 $pdf->MultiCell(75, 10, ($i > $nbrAnswer ? '' : "[ $i ] $line"));
             }
         }
@@ -758,14 +769,16 @@ class Questionnaire extends MY_Controller
             $pdf->SetTextColor(255, 0, 0);
             for($i = 0; $i < $answerSize; $i++) {
                 $pdf->Cell(10, 10);
+                // Write each answer
                 $pdf->Cell(150, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
                 $pdf->Ln();
             }
             $pdf->SetTextColor(0, 0, 0);
         } else {
+            $line = str_repeat("_", $maxlength);
             for($i = 0; $i < $answerSize; $i++) {
-                $line = str_repeat("_", $maxlength);
                 $pdf->Cell(10, 10);
+                // Display each line for answering
                 $pdf->MultiCell(150, 10, $line);
             }
         }
@@ -791,33 +804,41 @@ class Questionnaire extends MY_Controller
             $size["height"] /= ($size["width"] / 80);
             $size["width"] = 80;
         }
+        // Prevents image from being more than half of the available width
         if($size['height'] > 80) {
             $size['width'] /= ($size['height'] / 80);
             $size['height'] = 80;
         }
 
+        // Inserts image and then returns to point before
         $x = $pdf->GetX();
         $y = $pdf->GetY();
         $pdf->Image($fullPath, NULL, NULL, $size['width'], $size['height']);
         $pdf->SetXY($x, $y);
 
+        // Counts the amount of lines to add,
+        // in case not all of them are added,
+        // they will be later on
         $i_max = max(count($pictureLandmarks), round($size['height'], -1)/10);
         $pdf->Cell(10, $i_max*10);
         $pdf->Cell($size['width'], $i_max*10);
         $x = $pdf->GetX();
         $i = 0;
         foreach($pictureLandmarks as $pictureLandmark) {
-
+            // Go back to the left side of answers
             $pdf->SetX($x);
+            $text = $pictureLandmark->Symbol.'. ';
+            // Write answer / line depending on the type of sheet we are writing
             if($answerPdf) {
-                $text = iconv('UTF-8', 'windows-1252', $pictureLandmark->Symbol.'. '.$pictureLandmark->Answer);
+                $text .= iconv('UTF-8', 'windows-1252', .$pictureLandmark->Answer);
                 $pdf->SetTextColor(255, 0, 0);
             } else {
-                $text = $pictureLandmark->Symbol.'. '.str_repeat('_', 20);
+                $text .= str_repeat('_', 20);
             }
             $pdf->MultiCell(150-$size['width'], 10, $text);
             $i++;
         }
+        // Go back a last time and write the last chunk
         $pdf->SetX($x);
         $pdf->MultiCell(150-$size['width'], 10*($i_max-$i), '');
         $pdf->SetTextColor(0, 0, 0);
@@ -828,22 +849,23 @@ class Questionnaire extends MY_Controller
      *
      * @param string $string = The string to cut
      * @param string $pattern = The pattern to use to cut the string
-     * @param integer $string_length = The maximum length of the string
+     * @param integer $max_string_length = The maximum length of the string
      * @return array = An array containing the string in pieces
      */
-    private function string_to_small_array(string $string, ?string $pattern = '/ (?!\?)/', int $string_length = 60) {
+    private function string_to_small_array(string $string, ?string $pattern = '/ (?!\?)/', int $max_string_length = 60) {
+        // In case only the max_string_length is changed
         $pattern = $pattern ?: '/ (?!\?)/';
-        $stringLines = [];
-        $stringSplit = preg_split($pattern, $string);
-        $stringIndex = 0;
+        $stringLines = []; // Stores the different lines
+        $stringSplit = preg_split($pattern, $string); // Stores the "words"
+        $stringIndex = 0; // Current index in $stringLines
         for($i = 0; $i < count($stringSplit); $i++) {
-            $s = $stringSplit[$i];
+            $s = $stringSplit[$i]; // Reassign variable for simpler usage
             if(empty($stringLines[$stringIndex]))
-                $stringLines[$stringIndex] = $s;
-            elseif(strlen($stringLines[$stringIndex]) < $string_length)
-                $stringLines[$stringIndex] .= ' '.$s;
+                $stringLines[$stringIndex] = $s; // Empty line? Not anymore
+            elseif(strlen($stringLines[$stringIndex]) < $max_string_length)
+                $stringLines[$stringIndex] .= ' '.$s; // Add word to line which has space
             else
-                $stringLines[++$stringIndex] = $s;
+                $stringLines[++$stringIndex] = $s; // New line with the word
         }
         return $stringLines;
     }
