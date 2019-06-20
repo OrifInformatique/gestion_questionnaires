@@ -265,9 +265,23 @@ class Questionnaire extends MY_Controller
             $totalpoints += $rndQuestion->Points;
 
             // A page is ~300 high, so create a new one after 225
-            // Landmarks are type 7 and have images of (at most) 80 high,
-            // so create a new page earlier than we should
-            $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 125 : 225);
+            $maxHeight = 225;
+            $amount = 0;
+            // Lower the bound for landmarks so the answers and image are on a single page
+            switch($rndQuestion->FK_Question_Type) {
+                case 1:
+                    $amount = $this->multiple_choice_model->count_by("FK_Question = ".$rndQuestion->ID)-2;
+                    break;
+                case 2:
+                    $amount = ceil($rndQuestion->Nb_Desired_Answers / 2)-2;
+                    break;
+                case 7:
+                    $amount = max($this->picture_landmark_model->count_by("FK_Question = ".$rndQuestion->ID)+2, 10);
+                    break;
+                default:
+            }
+            if($amount > 0) $maxHeight -= $amount*10;
+
             if($pdf->getY() > $maxHeight) {
                 $pdf->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$pdf->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
                 $pdf->addPage();
@@ -769,7 +783,7 @@ class Questionnaire extends MY_Controller
         if($answerPdf) {
             $stringLines = $this->string_to_small_array($answer);
             $pdf->SetTextColor(255, 0, 0);
-            for($i = 0; $i < $answerSize; $i++) {
+            for($i = 0; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 // Write each answer
                 $pdf->Cell(150, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
