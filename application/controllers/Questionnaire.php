@@ -269,12 +269,14 @@ class Questionnaire extends MY_Controller
             // so create a new page earlier than we should
             $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 125 : 225);
             if($pdf->getY() > $maxHeight) {
+                $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
                 $pdf->addPage();
                 $pdf->SetFont('', 'B'); // Set font style to bold
                 $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
                 $pdf->SetFont('', ''); // Back to normal style
             }
             if($answers->getY() > $maxHeight) {
+                $answers->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
                 $answers->addPage();
                 $answers->SetFont('', 'B'); // Set font style to bold
                 $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.'(Corrigé)'), 0, "L");
@@ -516,8 +518,6 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function multipleAnswersPdf($question, $pdf, $answerPdf = FALSE) {
-        $stringLines = $this->string_to_small_array($question->Question);
-
         if($answerPdf) {
             $pdf->SetTextColor(255, 0, 0);
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
@@ -530,7 +530,9 @@ class Questionnaire extends MY_Controller
                 }
             }
         } else {
+            $pdf->Cell(10, 10);
             $nbAskedAnswers = $question->Nb_Desired_Answers;
+            $pdf->MultiCell(150, 10, iconv('UTF-8', 'windows-1252', '('.$nbAskedAnswers.' réponse'.($nbAskedAnswers > 1 ? 's' : '').' attendues)'));
             for($i = 0; $i < $nbAskedAnswers; $i++) {
                 $pdf->Cell(10, 10);
                 // Place the line to answer
@@ -592,9 +594,7 @@ class Questionnaire extends MY_Controller
         // Keep [ x ] on the same line
         $stringLines = $this->string_to_small_array($result, '/ (?!\?|(\[ [0-9] \])|([0-9]))/');
         // Display the question
-        $pdf->Cell(10, 5);
-        $pdf->Cell(140, 5);
-        $pdf->MultiCell(10, 5, '');
+        $pdf->Ln();
         for($i = 0; $i < count($stringLines); $i++) {
             $pdf->Cell(10, 10);
             $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
@@ -609,15 +609,13 @@ class Questionnaire extends MY_Controller
             }
 
             $pdf->SetTextColor(255, 0, 0);
-            if($nbrAnswer == count($answers)) {
-                for($i = 1; $i <= $nbrAnswer; $i++) {
-                    $pdf->Cell(10, 10);
-                    // Write the answer
-                    $pdf->Cell(75, 10, iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0]));
-                    $i++;
-                    // Write the second answer if it exists
-                    $pdf->MultiCell(75, 10, ($i > $nbrAnswer ? '' : iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0])));
-                }
+            for($i = 1; $i <= count($answers); $i++) {
+                $pdf->Cell(10, 10);
+                // Write the answer
+                $pdf->Cell(75, 10, iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0]));
+                $i++;
+                // Write the second answer if it exists
+                $pdf->MultiCell(75, 10, ($i > count($answers) ? '' : iconv('UTF-8', 'windows-1252', '[ '.$i.' ] '.$answers[$i-1][0])));
             }
         } else {
             // Create a short line for answering
@@ -801,14 +799,14 @@ class Questionnaire extends MY_Controller
 
         // Image should not be more than 80 pixels tall
         // To prevent overflowing onto another page
-        if($size["width"] > 80) {
-            $size["height"] /= ($size["width"] / 80);
-            $size["width"] = 80;
-        }
-        // Prevents image from being more than half of the available width
         if($size['height'] > 80) {
             $size['width'] /= ($size['height'] / 80);
             $size['height'] = 80;
+        }
+        // Prevents image from being more than half of the available width
+        if($size["width"] > 80) {
+            $size["height"] /= ($size["width"] / 80);
+            $size["width"] = 80;
         }
 
         // Inserts image and then returns to point before
@@ -826,8 +824,6 @@ class Questionnaire extends MY_Controller
         $x = $pdf->GetX();
         $i = 0;
         foreach($pictureLandmarks as $pictureLandmark) {
-            // Go back to the left side of answers
-            $pdf->SetX($x);
             $text = $pictureLandmark->Symbol.'. ';
             // Write answer / line depending on the type of sheet we are writing
             if($answerPdf) {
@@ -837,10 +833,11 @@ class Questionnaire extends MY_Controller
                 $text .= str_repeat('_', 20);
             }
             $pdf->MultiCell(150-$size['width'], 10, $text);
+            // Go back to the left side of answers
+            $pdf->SetX($x);
             $i++;
         }
         // Go back a last time and write the last chunk
-        $pdf->SetX($x);
         $pdf->MultiCell(150-$size['width'], 10*($i_max-$i), '');
         $pdf->SetTextColor(0, 0, 0);
     }
