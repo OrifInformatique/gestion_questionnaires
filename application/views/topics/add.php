@@ -17,8 +17,14 @@
             "id" => "addTopicForm",
             "name" => "addTopicForm");
         echo form_open('Topic/form_add', $attributes);
+        if(count($topics) == 0){
+            echo '<div class="alert alert-warning">'.$this->lang->line('topic_no_module_error').'</div>';
+        }
         if($error == true) {
-            echo "<p class='alert alert-danger'>" . $this->lang->line('add_topic_form_err') . "</p>";
+            echo '<div class="alert alert-danger">';
+            echo validation_errors();
+            echo '</div>';
+            //echo "<p class='alert alert-danger'>" . $this->lang->line('add_topic_form_err') . "</p>";
         }
         ?>
 
@@ -28,7 +34,6 @@
              <?php
     			//Récupère chaque module
                 foreach ($topics as $object => $topic) {
-                    var_dump($topic);
                     if($topic->FK_Parent_Topic == 0) {
     				    //Affiche les modules
                         echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
@@ -42,7 +47,7 @@
             <input maxlength="70" type="text" name="title" class="form-control" id="title" value="">
         </div>
         <div class="col-xs-12">
-              <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\'/gestion_questionnaires/Topic\'"'); ?>
+              <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
             <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
                  
         </div>

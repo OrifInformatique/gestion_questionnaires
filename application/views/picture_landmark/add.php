@@ -61,9 +61,9 @@
                 <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
                 <?php
                     if(isset($name)){
-                        echo form_long_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
                     } else {
-                        echo form_long_input('name', '', 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
                     }
                 ?>
             </div>
