@@ -9,10 +9,9 @@
  */
 class Questionnaire extends MY_Controller
 {
-    const TITLEFONT_SIZE = 18;
-    const QUESTIONFONT_SIZE = 12;
-    const MARGIN = 25;
-  
+    CONST TITLEFONT_SIZE = 18;
+    CONST QUESTIONFONT_SIZE = 12;
+    
     /* MY_Controller variables definition */
     protected $access_level = ACCESS_LVL_ADMIN;
 
@@ -27,7 +26,7 @@ class Questionnaire extends MY_Controller
             'multiple_choice_model', 'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation', 'MyPDF', 'upload'));
+        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'upload'));
     }
 
     /**
@@ -208,7 +207,7 @@ class Questionnaire extends MY_Controller
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
-                $this->generatePDF(-1, $tableTopics);
+                //$this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
                 $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
@@ -225,103 +224,111 @@ class Questionnaire extends MY_Controller
         
         if($idQuestionnaire == -1){
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
-            $title = $tableTopics->getTitle();
         } else {
             $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
-            $title = $this->getQuestionnaireName($idQuestionnaire)['name'];
         }
 
         $totalpoints = 0;
 
-        $pdf = new MyPDF();
-        $answers = new MyPDF();
+        $pdf = new FPDF();
+        $answers = new FPDF();
+
         $pdf->AddPage();
-
-        $pdf->setHeaderText(iconv('UTF-8', 'windows-1252', $title));
-        $pdf->AliasNbPages();
-        $pdf->setFooterText(iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page')), iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page2')));
-
-        $pdf->SetMargins(10, 10);
-        $pdf->Image('assets/images/logo.png', null, null, 60);
-
-        $pdf->SetMargins(self::MARGIN, 10);
-        $pdf->Ln();
+        $pdf->SetFont('Arial', 'B', self::TITLEFONT_SIZE);
+        $pdf->SetTitle("Questionnaire", true);
+        $pdf->MultiCell(0, 20, 'Questionnaire', 1, "C");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->Cell(($pdf->GetPageWidth()-2*self::MARGIN)/3, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_lastname')));
-        $pdf->Cell(($pdf->GetPageWidth()-2*self::MARGIN)/3, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_firstname')));
-        $pdf->Cell(($pdf->GetPageWidth()-2*self::MARGIN)/3, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, 1);
-
-        $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
-        $pdf->Cell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, 1);
-
+        $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
+        $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->Cell(0, 0, iconv('UTF-8', 'windows-1252', $title), 0, 1);
-
         $pdf->Ln();
-        $pdf->Cell(0, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, 1, 'R');
 
-        $noQuestion = 0;
+
+        // Title of the answered document
+        $answers->AddPage();
+        $answers->SetFont('Arial', 'B',  self::TITLEFONT_SIZE);
+        $answers->SetTitle('Corrigé', true);
+        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
+
         foreach ($listRndQuestions as $object => $idQuestion) {
 
-            $noQuestion++;
-
             $rndQuestion = $this->question_model->get($idQuestion);
+            $Question = $rndQuestion->Question;
+            $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-            $strNoQuestion = $noQuestion.'.';
-            $strPoints = '... / '.$rndQuestion->Points;
+            //une page fait environ 300 on oblige a créer une nouvelle page si on est déja aprés 225
+            if($pdf->getY()> 225){
+                $pdf->addPage();
+            }
+            if($answers->getY()> 225){
+                $answers->addPage();
+            }
 
-            $pdf->SetFont('Arial', 'B', self::QUESTIONFONT_SIZE);
-            $pdf->Cell(15, 6, iconv('UTF-8', 'windows-1252', $strNoQuestion));
+            $pdf->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
+            $answers->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
 
-            $Y1 = $pdf->GetY();
-            $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-            $pdf->MultiCell(($pdf->GetPageWidth()-2*self::MARGIN)-30, 6, iconv('UTF-8', 'windows-1252', $rndQuestion->Question));
+            $pdf->MultiCell(0, 5, $Question, 0, "L");
+            $answers->MultiCell(0, 5, $Question, 0, "L");
 
-            $Y2 = $pdf->GetY();
-            $pdf->SetXY(-self::MARGIN-15, $Y1);
-            $pdf->Cell(15, 6, iconv('UTF-8', 'windows-1252', $strPoints), 0, 0, 'R');
-            $pdf->SetY($Y2);
+            $pdf->SetFont('', '', 12);
+            $answers->SetFont('', '', 12);
 
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
-                    $this->displayMultipleChoices($rndQuestion, $pdf);
-                    //$this->answerMultipleChoices($rndQuestion, $answers);
-                    break;
+                $this->displayMultipleChoices($rndQuestion, $pdf);
+                $this->answerMultipleChoices($rndQuestion, $answers);
+                break;
                 case 2:
-                    $this->displayMultipleAnswers($rndQuestion, $pdf);
-                    //$this->answerMultipleAnswers($rndQuestion, $answers);
-                    break;
-                /*case 3:
-                    $this->displayAnswerDistribution($rndQuestion, $pdf);
-                    //$this->answerAnswerDistribution($rndQuestion, $answers);
-                    break;*/
+                $this->displayMultipleAnswers($rndQuestion, $pdf);
+                $this->answerMultipleAnswers($rndQuestion, $answers);
+                break;
+                case 3:
+                $this->displayAnswerDistribution($rndQuestion, $pdf);
+                $this->answerAnswerDistribution($rndQuestion, $answers);
+                break;
                 case 4:
-                    $this->displayClozeText($rndQuestion, $pdf);
-                    //$this->answerClozeText($rndQuestion, $answers);
-                    break;
-                /*case 5:
-                    $this->displayTable($rndQuestion, $pdf);
-                    //$this->answerTable($rndQuestion, $answers);
-                    break;*/
+                $this->displayClozeText($rndQuestion, $pdf);
+                $this->answerClozeText($rndQuestion, $answers);
+                break;
+                case 5:
+                $this->displayTable($rndQuestion, $pdf);
+                $this->answerTable($rndQuestion, $answers);
+                break;
                 case 6:
-                    $this->displaySimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $pdf);
-                    //$this->answerSimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $answers);
-                    break;
+                $this->displaySimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $pdf);
+                $this->answerSimpleQuestion($this->free_answer_model->get_by("FK_Question", $idQuestion)->Answer, $answers);
+                break;
                 case 7:
-                    $this->displayPictureLandmarks($rndQuestion, $pdf);
-                    //$this->answerPictureLandmarks($rndQuestion, $answers);
-                    break;
+                $this->displayPictureLandmarks($rndQuestion, $pdf);
+                $this->answerPictureLandmarks($rndQuestion, $answers);
+                break;
                 default:
-                    break;
+                break;
             }
+            $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+            $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
 
-            $pdf->Ln();
         }
+        $error = false;
+        
+        /*
+        }catch (Exception $e)
+        {
+            $error = true;
+        }*/
 
-        /*if ($error) {
+        $pdf->setTextColor(128,128,128);
+        $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
+        $pdf->MultiCell(0, 20, "Total des points : .../$totalpoints             Note :            ", 0, "C");
+        $answers->setTextColor(128,128,128);
+        $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
+        $answers->MultiCell(0, 20, "Total des points : $totalpoints                                   ", 0, "C");
+        if ($error) {
             echo $this->lang->line('pdf_error');
-        }else{*/
+        }else{
             if($idQuestionnaire == -1){
                 //$pdf->Output('I', 'Questionnaire', true);
                 $title = $tableTopics->getTitle();
@@ -339,7 +346,7 @@ class Questionnaire extends MY_Controller
                 $answers->Output('F', "pdf_files/corriges/" . $this->getQuestionnaireName($idQuestionnaire)['corrige'], true);
             }
             $this->index();
-        //}
+        }
     }
 
 
@@ -410,13 +417,25 @@ class Questionnaire extends MY_Controller
 
     private function displayMultipleChoices($Question, $pdf)
     {
+        try{
+            $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
 
-        $multi_Choice_Questions = $this->multiple_choice_model->get_many_by("FK_Question = $Question->ID");
+            foreach ($multi_Choice_Questions as $m)
+            {
+                $pdf->Cell(20, 20, iconv('UTF-8', 'windows-1252', $m->Answer), 0, "L");
 
-        foreach ($multi_Choice_Questions as $m) {
-            $pdf->SetX($pdf->GetX()+35);
-            $pdf->Rect($pdf->GetX()-5, $pdf->GetY()+3, 4, 4);
-            $pdf->Cell(($pdf->GetPageWidth()-2*self::MARGIN)-35, 10, iconv('UTF-8', 'windows-1252', $m->Answer), 0, 1);
+                $y = $pdf->Gety();
+                $pdf->SetY($y + 7.7);
+                $pdf->SetX(100);
+                $pdf->MultiCell(5, 5, " ", 1);
+                $pdf->SetY($y + 7.7);
+            }
+
+            return false;
+
+        }catch(Exception $e)
+        {
+            return true;
         }
     }
 
@@ -455,8 +474,11 @@ class Questionnaire extends MY_Controller
 
     private function displayMultipleAnswers($Question, $pdf)
     {
-        for ($i = 0; $i < $Question->Nb_Desired_Answers; $i++) {
-            $this->displaySimpleQuestion($Question, $pdf);
+        $nbAskedAnswers = $Question->Nb_Desired_Answers;
+        $pdf->Ln();
+        for($i = 0; $i < $nbAskedAnswers; $i++)
+        {
+            $pdf->MultiCell(80, 8, "___________________________", 0);
         }
     }
 
@@ -487,28 +509,26 @@ class Questionnaire extends MY_Controller
 
     private function displayClozeText($Question, $pdf)
     {
+        try{
+            $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
+            $outputText = preg_split("#\[\.*\]#", $ClozeText->Cloze_Text,-1,PREG_SPLIT_DELIM_CAPTURE);
+            $nbrAnswer = count($outputText)-1;
+            $result='';
 
-        $ClozeText = $this->cloze_text_model->get_by("FK_Question = $Question->ID");
-        $NumberAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = $ClozeText->ID");
-
-        $pdf->Ln();
-        $pdf->SetX($pdf->GetX()+15);
-        $pdf->MultiCell(($pdf->GetPageWidth()-2*self::MARGIN)-30, 6, iconv('UTF-8', 'windows-1252', $ClozeText->Cloze_Text));
-
-        $i = 0;
-        foreach ($NumberAnswers as $answer) {
-            $i++;
-            $pdf->SetX($pdf->GetX()+15);
-            $pdf->SetLineWidth(0.5);
-            $pdf->Cell(10, 10, '[ '.$i.' ]');
-            $pdf->Cell((($pdf->GetPageWidth()-2*self::MARGIN)-30)/2-10, 10, '', 'B');
-            $pdf->SetLineWidth(0.2);
-            if($i % 2 == 0){
-                $pdf->Ln();
+            foreach ($outputText as $key => $value) {
+                $result=$result.$value.(($key!=$nbrAnswer)?'['.($key+1).']':'');
             }
+            $pdf->SetFont('','',self::QUESTIONFONT_SIZE);
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $result), 0, "J");
+
+            for ($i=0; $i < $nbrAnswer; $i++) {
+                $pdf->MultiCell(0, 10, '['.($i+1).'] : ________________________', 0);
+            }
+
+            return false;
         }
-        if($i % 2 == 1){
-            $pdf->Ln();
+        catch(Exception $e){
+            return true;
         }
     }
 
@@ -619,10 +639,12 @@ class Questionnaire extends MY_Controller
     }
     private function displaySimpleQuestion($Answer, $pdf)
     {
-        $pdf->SetX($pdf->GetX()+15);
-        $pdf->SetLineWidth(0.5);
-        $pdf->Cell(($pdf->GetPageWidth()-2*self::MARGIN)-15, 10, '', 'B', 1);
-        $pdf->SetLineWidth(0.2);
+        $pdf->Ln();
+        //calculation of the number of lines granted according to the expected answer.
+        for ($i=0; $i < ceil(strlen($Answer)/60); $i++) { 
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "____________________________________________________________________________"), 0, "L");     
+        } 
+        
     }
     private function answerSimpleQuestion($Answer, $pdf)
     {
@@ -635,40 +657,39 @@ class Questionnaire extends MY_Controller
     private function displayPictureLandmarks($Question, $pdf)
     {
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = $Question->ID");
-        (is_file('uploads/pictures/'. $Question->Picture_Name))?($fullPath='uploads/pictures/'.$Question->Picture_Name):($fullPath=base_url().'assets/images/not-found.png');
+        $picture = $Question->Picture_Name;
+
+        (is_file('uploads/pictures/'. $picture))?($fullPath='uploads/pictures/'.$picture):($fullPath=base_url().'assets/images/not-found.png');
+        $pdf->Ln();
 
         $w = getimagesize($fullPath)[0];
         $h = getimagesize($fullPath)[1];
 
-        $colSize = (($pdf->GetPageWidth()-2*self::MARGIN)-15)/2-10;
-
-        if($w > $colSize){
-            $h /= $w / $colSize;
-            $w = $colSize;
+        //l'image ne dépasse pas 80 en largeur
+        if($w>80) {
+            $h=$h/($w/80);
+            $w=80;
         }
-        if($h > 100){
-            $w /= $h / 100;
-            $h = 100;
-        }
-
-        $Y = $pdf->GetY();
-        $pdf->SetX($pdf->GetX()+15);
         $pdf->Image($fullPath, null, null, $w, $h);
-        $pdf->SetY($Y);
+        $y1 = $pdf->getY();
+        $pagenum1 = $pdf->PageNo();
+        $pdf->SetY($y1-$h);
 
-        $i = 0;
-        foreach ($pictureLandmarks as $answer) {
-            $i++;
-            $pdf->SetX($pdf->GetX()+30+$colSize);
-            $pdf->SetLineWidth(0.5);
-            $pdf->Cell(10, 10, $answer->Symbol);
-            $pdf->Cell((($pdf->GetPageWidth()-2*self::MARGIN)-30)/2-10, 10, '', 'B');
-            $pdf->SetLineWidth(0.2);
+        foreach ($pictureLandmarks as $pictureLandmark)
+        {
+            $pdf->Cell(100);
+            $pdf->Cell(7,5, "$pictureLandmark->Symbol: ", 0, "C");
+            $pdf->MultiCell(100,5, '___________________', 0, "L");
             $pdf->Ln();
         }
-
-        if($pdf->GetY() < $Y+$h){
-            $pdf->SetY($Y+$h);
+        $y2 = $pdf->getY();
+        $pagenum2 = $pdf->PageNo();
+        //prend le point le plus bas entre la liste ou l'image pour définir le point y de la suite
+        
+        if($pagenum1==$pagenum2){
+            ($y1>$y2)?$pdf->SetY($y1):$pdf->SetY($y2);
+        }else{
+            ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
         }
     }
 

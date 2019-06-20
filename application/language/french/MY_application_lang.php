@@ -128,8 +128,8 @@ $lang['question_error_404_message']     = 'Vous essayez d\'accéder à une quest
 $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
-$lang['search']                         = 'Recherche';
-$lang['filter']                         = 'Filtrer';
+$lang['search']							= 'Recherche';
+$lang['filter']							= 'Filtrer';
 
 
 // Topics pages
@@ -144,11 +144,11 @@ $lang['update_topic_form_err']          = 'Le champ titre du sujet est requis';
 $lang['add_topic_form_err']             = 'Le champ titre du sujet est requis';
 $lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
 $lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
-$lang['topic_error_404_message']        = 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
-$lang['topic_error_404_heading']        = 'Sujet inexistant';
-$lang['topic_title_error']              = 'titre';
-$lang['topic_module_selected_error']    = 'module conercné';
-$lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module avant de créer un sujer.';
+$lang['topic_error_404_message']		= 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
+$lang['topic_error_404_heading']		= 'Sujet inexistant';
+$lang['topic_title_error']				= 'titre';
+$lang['topic_module_selected_error']	= 'module conercné';
+$lang['topic_no_module_error']			= 'Vous devez d\'abord créer un module avant de créer un sujer.';
 
 
 //Modules pages
@@ -162,16 +162,8 @@ $lang['update_module_form_err']         = 'Le champ titre du module est requis';
 $lang['add_module_form_err']            = 'Le champ titre du module est requis';
 $lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
-$lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
-$lang['module_error_404_heading']       = 'Module inexistant';
-
-//PDF
-$lang['pdf_lastname']                   = 'Nom :';
-$lang['pdf_firstname']                  = 'Prénom :';
-$lang['pdf_date']                       = 'Date :';
-$lang['pdf_points']                     = 'Points';
-$lang['pdf_page']                       = 'Page ';
-$lang['pdf_page2']                      = ' sur ';
+$lang['module_error_404_message']		= 'Vous essayez d\'accéder à un module qui n\'existe pas .';
+$lang['module_error_404_heading']		= 'Module inexistant';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
