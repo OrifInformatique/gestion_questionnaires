@@ -210,13 +210,16 @@ class Questionnaire extends MY_Controller
         $answers = new FPDF();
 
         $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', self::TITLEFONT_SIZE);
-        $pdf->SetTitle("Questionnaire", true);
-        $pdf->MultiCell(0, 20, 'Questionnaire', 1, "C");
+        $pdf->SetLeftMargin(20);
+        $pdf->SetRightMargin(20);
+        $pdf->Image('assets/images/logo_complet.png');
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 10, 'Nom :                                                               Date :', 0, "L");
-        $pdf->MultiCell(80, 10, iconv('UTF-8', 'windows-1252', 'Prénom : '), 0, "L");
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Nom :                                            Prénom :                                            Date :'), 0, "L");
+        $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Questionnaire'));
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'));
+        $pdf->MultiCell(0, 10, 'Points', 0, "R");
         $pdf->Ln();
 
 
@@ -227,6 +230,8 @@ class Questionnaire extends MY_Controller
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', 'Corrigé : '), 1, "C");
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $answers->MultiCell(0, 10, "\n\n\n", 0, "C");
+
+        $question_number = 1;
 
         foreach ($listRndQuestions as $object => $idQuestion) {
 
@@ -239,7 +244,11 @@ class Questionnaire extends MY_Controller
             // Landmarks are type 7 and have images of (at most) 80 high,
             // so create a new page earlier than we should
             $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 150 : 225);
-            if($pdf->getY() > $maxHeight) {
+
+            $yPos = $pdf->GetY();
+            $xPos = $pdf->GetX();
+
+            if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
             }
             if($answers->getY() > $maxHeight) {
@@ -249,8 +258,12 @@ class Questionnaire extends MY_Controller
             $pdf->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
             $answers->SetFont('Arial','B',self::QUESTIONFONT_SIZE);
 
-            $pdf->MultiCell(0, 5, $Question, 0, "L");
-            $answers->MultiCell(0, 5, $Question, 0, "L");
+            $pdf->Cell(10, 5, $question_number.".", 1, "C");
+            $answers->Cell(10, 5, $question_number, 0, "C");
+            $pdf->Cell(150, 5, $Question, 0, 0, "C");
+            $answers->Cell(150, 5, $Question, 0, 0, "C");
+            $pdf->MultiCell(10, 5, ".../$rndQuestion->Points", 0, "R");
+            $answers->MultiCell(10, 5, ".../$rndQuestion->Points", 0, "R");
 
             $pdf->SetFont('', '', 12);
             $answers->SetFont('', '', 12);
@@ -287,8 +300,9 @@ class Questionnaire extends MY_Controller
                 default:
                 break;
             }
-            $pdf->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
-            $answers->MultiCell(0, 20, ".../$rndQuestion->Points", 0, "R");
+
+            $pdf->Ln();
+            $question_number++;
 
         }
         $error = false;
@@ -409,6 +423,7 @@ class Questionnaire extends MY_Controller
                 $pdf->MultiCell(5, 5, " ", 1);
                 $pdf->SetY($y + 7.7);
             }
+            $pdf->Ln();
 
             return false;
 
@@ -621,7 +636,7 @@ class Questionnaire extends MY_Controller
         $pdf->Ln();
         //calculation of the number of lines granted according to the expected answer.
         for ($i=0; $i < ceil(strlen($Answer)/60); $i++) { 
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "____________________________________________________________________________"), 0, "L");     
+            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', "____________________________________________________________________"), 0, "L");     
         } 
         
     }
@@ -711,4 +726,22 @@ class Questionnaire extends MY_Controller
             ($pagenum1>$pagenum2)?$pdf->SetY($y1):$pdf->SetY($y2);
         }
     }
+
+    /* private function string_to_small_array($string, $pattern = '/ (?!\?)/', $string_length = 60){
+        $pattern = $pattern ?: '/ (?!\?)/';
+        $stringLines = [];
+        $stringSplit = preg_split($pattern, $string);
+        $stringIndex = 0;
+        for ($i = 0; $i < count($stringSplit); $i++){
+            $s = $stringSplit[$i];
+            if (empty($stringLines[$stringIndex])){
+                $stringLines[$stringIndex] = $s;
+            } else if (strlen($stringLines[$stringIndex] < $string_length)){
+                $stringLines[$stringIndex] .= ' '.$s;
+            } else {
+                $stringLines[++$stringIndex] = $s;
+            }
+        }
+        return $stringLines;
+    } */
 }
