@@ -264,16 +264,17 @@ class Questionnaire extends MY_Controller
             $Question = iconv('UTF-8', 'windows-1252', $Question);
             $totalpoints += $rndQuestion->Points;
 
-            // A page is about 300 high, so we go to the next one at 225
-            if($pdf->GetY() > 225) {
-                $pdf->MultiCell(0, 0, 'Page '.$pdf->PageNo().' sur {nb}', 0, "R");
+            // A page is ~300 high, so create a new one after 225
+            // Landmarks are type 7 and have images of (at most) 80 high,
+            // so create a new page earlier than we should
+            $maxHeight = ($rndQuestion->FK_Question_Type == 7 ? 125 : 225);
+            if($pdf->getY() > $maxHeight) {
                 $pdf->addPage();
                 $pdf->SetFont('', 'B'); // Set font style to bold
                 $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
                 $pdf->SetFont('', ''); // Back to normal style
             }
-            if($answers->GetY() > 225){
-                $answers->MultiCell(0, 0, 'Page '.$answers->PageNo().' sur {nb}', 0, "R");
+            if($answers->getY() > $maxHeight) {
                 $answers->addPage();
                 $answers->SetFont('', 'B'); // Set font style to bold
                 $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.'(Corrigé)'), 0, "L");
