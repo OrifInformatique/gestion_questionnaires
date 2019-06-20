@@ -830,7 +830,7 @@ class Questionnaire extends MY_Controller
             $text = $pictureLandmark->Symbol.'. ';
             // Write answer / line depending on the type of sheet we are writing
             if($answerPdf) {
-                $text .= iconv('UTF-8', 'windows-1252', .$pictureLandmark->Answer);
+                $text .= iconv('UTF-8', 'windows-1252', $pictureLandmark->Answer);
                 $pdf->SetTextColor(255, 0, 0);
             } else {
                 $text .= str_repeat('_', 20);
