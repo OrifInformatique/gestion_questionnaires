@@ -521,13 +521,16 @@ class Questionnaire extends MY_Controller
         if($answerPdf) {
             $pdf->SetTextColor(255, 0, 0);
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
+            $answer = '';
             foreach($possible_answers as $possible_answer) {
-                $answers = $this->string_to_small_array($possible_answer->Answer);
-                for($i = 0; $i < count($answers); $i++) {
-                    $pdf->Cell(10, 10);
-                    // Write the answer
-                    $pdf->MultiCell(150, 10, iconv('UTF-8', 'windows-1252', $answers[$i]));
-                }
+                $answer .= ', '.$possible_answer->Answer;
+            }
+            $answer = substr($answer, 2);
+            $answers = $this->string_to_small_array($answer);
+            for($i = 0; $i < count($answers); $i++) {
+                $pdf->Cell(10, 10);
+                // Write the answer
+                $pdf->MultiCell(150, 10, iconv('UTF-8', 'windows-1252', $answers[$i]));
             }
         } else {
             $pdf->Cell(10, 10);
@@ -853,17 +856,24 @@ class Questionnaire extends MY_Controller
     private function string_to_small_array(string $string, ?string $pattern = '/ (?!\?)/', int $max_string_length = 60) {
         // In case only the max_string_length is changed
         $pattern = $pattern ?: '/ (?!\?)/';
-        $stringLines = []; // Stores the different lines
-        $stringSplit = preg_split($pattern, $string); // Stores the "words"
-        $stringIndex = 0; // Current index in $stringLines
+        // Stores the different lines
+        $stringLines = [];
+        // Stores the "words"
+        $stringSplit = preg_split($pattern, $string);
+        // Current index in $stringLines
+        $stringIndex = 0;
         for($i = 0; $i < count($stringSplit); $i++) {
-            $s = $stringSplit[$i]; // Reassign variable for simpler usage
+            // Reassign variable for simpler usage
+            $s = $stringSplit[$i];
             if(empty($stringLines[$stringIndex]))
-                $stringLines[$stringIndex] = $s; // Empty line? Not anymore
+                // Empty line? Not anymore
+                $stringLines[$stringIndex] = $s;
             elseif(strlen($stringLines[$stringIndex]) < $max_string_length)
-                $stringLines[$stringIndex] .= ' '.$s; // Add word to line which has space
+                // Add word to line which has space
+                $stringLines[$stringIndex] .= ' '.$s;
             else
-                $stringLines[++$stringIndex] = $s; // New line with the word
+                // New line with the word
+                $stringLines[++$stringIndex] = $s;
         }
         return $stringLines;
     }
