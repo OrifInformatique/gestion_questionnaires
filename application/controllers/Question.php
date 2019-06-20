@@ -818,7 +818,6 @@ class Question extends MY_Controller
 					$this->question_model->update($_POST['id'], $inputQuestion);
 
 					$inputClozeText = array(
-						"FK_Question" => $_POST['id_cloze_text'],
 						"Cloze_Text" => $_POST['cloze_text']
 					);
 					$this->cloze_text_model->update($_POST['id_cloze_text'], $inputClozeText);
