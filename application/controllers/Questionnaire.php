@@ -216,7 +216,7 @@ class Questionnaire extends MY_Controller
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
-                //$this->generatePDF(-1, $tableTopics);
+                $this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
                 $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
