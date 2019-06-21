@@ -144,7 +144,7 @@ class Question extends MY_Controller
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
 			'topics' => $this->topic_model->get_all(),
-			'questionTypes' => $this->question_type_model->get_all()
+			'questionTypes' => $this->question_type_model->get_all(),
 		);
 		$this->display_view('questions/index', $output);
 	}

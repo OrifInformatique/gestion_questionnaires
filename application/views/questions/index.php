@@ -212,12 +212,27 @@ function displayQuestion($question)
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
             ?>
-        </a></td>
+        </a>
+        <br>
+        
+        </td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
         <td style="text-align: center;"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
     </tr>
+    <?php
+        //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
+        if(count($question->cloze_text) > 0){
+            $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
+            if(strlen($cloze_text) <= 75){
+                echo "<td id='cloze_text_part'><p>" . $cloze_text . "</p></td>";
+            } else {
+                $cloze_text_out_of_range = substr($cloze_text, 0, 75) . "...";
+                echo "<td id='cloze_text_part'><p>" . $cloze_text_out_of_range . "</p></td>";
+            }
+        }
+        ?>
     <?php
 }
 ?>
