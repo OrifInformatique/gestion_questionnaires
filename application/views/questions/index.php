@@ -211,11 +211,10 @@ function displayQuestion($question)
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
-            ?>
-        </a><hr style="margin:10px 0; border-color:lightgray">
-        <?php
-            //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
+
             if($question->question_type->ID == 4){
+                echo "</a><hr style='margin:10px 0; border-color:lightgray'";
+                //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
                 $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
                 if(strlen($cloze_text) <= 75){
                     echo "<p>" . $cloze_text . "</p>";
@@ -223,6 +222,8 @@ function displayQuestion($question)
                     $cloze_text_out_of_range = substr($cloze_text, 0, 75) . "...";
                     echo "<p>" . $cloze_text_out_of_range . "</p>";
                 }
+            } else {
+                echo "</a>";
             }
             ?>
         </td>
