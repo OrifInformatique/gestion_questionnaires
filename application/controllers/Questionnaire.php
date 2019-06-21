@@ -214,7 +214,7 @@ class Questionnaire extends MY_Controller
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 unset($_SESSION['temp_tableTopics']);
-                //$this->generatePDF(-1, $tableTopics);
+                $this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
                 $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
@@ -248,35 +248,34 @@ class Questionnaire extends MY_Controller
         $answers = new FPDF();
 
         // Title of the questions document
+        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $pdf->SetTitle($title, true);
         $pdf->AddPage();
         $pdf->SetMargins(20, 20);
-        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->Image('assets/images/logo.jpg');
+        $pdf->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
         $pdf->Cell(20);
         $pdf->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_last_name')), 0, "L");
         $pdf->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_first_name')), 0, "L");
         $pdf->MultiCell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "L");
         $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
-        $pdf->SetTitle("Questionnaire", true);
         $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
 
 
+
         // Title of the answered document
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
         $answers->AddPage();
         $answers->SetMargins(20, 20);
-        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->Image('assets/images/logo.jpg');
+        $answers->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "C");
         $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
-        $answers->SetTitle('Corrigé', true);
-        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.$this->lang->line('pdf_corrige')), 0, "L");
+        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $answers->Cell(140);
         $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $answers->AliasNbPages();
@@ -309,14 +308,12 @@ class Questionnaire extends MY_Controller
             if($amount > 0) $maxHeight -= $amount*10;
 
             if($pdf->getY() > $maxHeight) {
-                $pdf->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$pdf->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
                 $pdf->addPage();
                 $pdf->SetFont('', 'B'); // Set font style to bold
                 $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
                 $pdf->SetFont('', ''); // Back to normal style
             }
             if($answers->getY() > $maxHeight) {
-                $answers->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$answers->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
                 $answers->addPage();
                 $answers->SetFont('', 'B'); // Set font style to bold
                 $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.$this->lang->line('pdf_corrige')), 0, "L");
@@ -385,18 +382,10 @@ class Questionnaire extends MY_Controller
             $questionNum++;
         }
         if($pdf->GetY() > 225) {
-            $pdf->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$pdf->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
             $pdf->addPage();
-            $pdf->SetFont('', 'B'); // Set font style to bold
-            $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
-            $pdf->SetFont('', ''); // Back to normal style
         }
         if($answers->GetY() > 225){
-            $answers->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$answers->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
             $answers->addPage();
-            $answers->SetFont('', 'B'); // Set font style to bold
-            $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.$this->lang->line('pdf_corrige')), 0, "L");
-            $answers->SetFont('', ''); // Back to normal style
         }
 
         // Finish last page
@@ -408,7 +397,6 @@ class Questionnaire extends MY_Controller
         $pdf->Ln();
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('Arial','', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$pdf->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
 
         // Finish last page
         $answers->SetTextColor(128,128,128);
@@ -416,7 +404,6 @@ class Questionnaire extends MY_Controller
         $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_totals_points').' '.$totalpoints), 0, "C");
         $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
         $answers->SetTextColor(0,0,0);
-        $answers->MultiCell(0, 0, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_page').$answers->PageNo().$this->lang->line('pdf_page_of').'{nb}'), 0, "R");
 
         if($idQuestionnaire == -1){
             //$pdf->Output('I', 'Questionnaire', true);
@@ -526,7 +513,12 @@ class Questionnaire extends MY_Controller
         $multiChoiceQuestions = $this->multiple_choice_model->get_many_by("FK_Question = ".$question->ID);
 
         foreach($multiChoiceQuestions as $question) {
-            $stringLines = $this->string_to_small_array($question->Answer);
+            $answer = $question->Answer;
+            if($answer === '1')
+                $answer = $this->lang->line('yes');
+            elseif($answer === '0')
+                $answer = $this->lang->line('no');
+            $stringLines = $this->string_to_small_array($answer);
 
             for($i = 0; $i < count($stringLines); $i++) {
                 // Padding / Left box
@@ -594,7 +586,7 @@ class Questionnaire extends MY_Controller
      * @param FPDF $pdf = The pdf to update
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
-    private function answerDistributionPdf($question, $pdf, $answerPdf = false) {
+    private function answerDistributionPdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
             /**
              * @todo
@@ -686,7 +678,7 @@ class Questionnaire extends MY_Controller
      * @param FPDF $pdf = The pdf to update
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
-    private function tablePdf($question, $pdf, $answerPdf = false) {
+    private function tablePdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
             /**
              * @todo
@@ -710,7 +702,6 @@ class Questionnaire extends MY_Controller
                 foreach($tcRow as $row) {
                     if($row->Header) {
                         $pdf->SetFont('Arial', 'B', self::TITLEFONT_SIZE);
-
                         $pdf->Cell(40, 10, iconv('UTF-8', 'windows-1252', $row->Content), 1, "C");
                         $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
                     } elseif($row->Display_In_Question)
