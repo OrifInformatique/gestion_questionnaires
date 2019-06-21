@@ -102,50 +102,52 @@ class Question extends MY_Controller
 		$this->db->order_by($orderby);
 		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
-
 		} else {
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
 
+	    if(($page - 1) * ITEMS_PER_PAGE > count($output['questions'])) {
+	    	redirect('question/index/1');
+	    }
+
 		$this->load->library('pagination');
 
-		$config = array(
-			'base_url' => base_url('/question/index/'),
-			'total_rows' => count($output['questions']),
-			'per_page' => ITEMS_PER_PAGE,
-			'use_page_numbers' => TRUE,
-			'reuse_query_string' => TRUE,
+	    $config['base_url'] = base_url('/question/index/');
+	    $config['total_rows'] = count($output['questions']);
+	    $config['per_page'] = ITEMS_PER_PAGE;
+	    $config['use_page_numbers'] = TRUE;
+	    $config['reuse_query_string'] = TRUE;
 
-			'full_tag_open' => '<ul class="pagination">',
-			'full_tag_close' => '</ul>',
+	    $config['full_tag_open'] = '<ul class="pagination">';
+	    $config['full_tag_close'] = '</ul>';
 
-			'first_link' => '&laquo;',
-			'first_tag_open' => '<li>',
-			'first_tag_close' => '</li>',
+	    $config['first_link'] = '&laquo;';
+	    $config['first_tag_open'] = '<li>';
+	    $config['first_tag_close'] = '</li>';
 
-			'last_link' => '&raquo;',
-			'last_tag_open' => '<li>',
-			'last_tag_close' => '</li>',
+	    $config['last_link'] = '&raquo;';
+	    $config['last_tag_open'] = '<li>';
+	    $config['last_tag_close'] = '</li>';
 
-			'next_link' => FALSE,
-			'prev_link' => FALSE,
+	    $config['next_link'] = FALSE;
+	    $config['prev_link'] = FALSE;
 
-			'cur_tag_open' => '<li class="active"><a>',
-			'cur_tag_close' => '</li></a>',
-			'num_links' => 5,
+	    $config['cur_tag_open'] = '<li class="active"><a>';
+	    $config['cur_tag_close'] = '</li></a>';
+	    $config['num_links'] = 5;
 
-			'num_tag_open' => '<li>',
-			'num_tag_close' => '</li>'
-		);
+	    $config['num_tag_open'] = '<li>';
+	    $config['num_tag_close'] = '</li>';
 
-		$this->pagination->initialize($config);
+	    $this->pagination->initialize($config);
 
-		$output = array(
-			'pagination' => $this->pagination->create_links(),
-			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
-			'topics' => $this->topic_model->get_all(),
-			'questionTypes' => $this->question_type_model->get_all(),
-		);
+	    $output['pagination'] = $this->pagination->create_links();
+
+	    $output['questions'] = array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+
+
+		$output['topics'] = $this->topic_model->get_all();
+		$output['questionTypes'] = $this->question_type_model->get_all();
 		$this->display_view('questions/index', $output);
 	}
 
@@ -203,6 +205,7 @@ class Question extends MY_Controller
 		if ($id != 0) {
 			$question = $this->question_model->get($id);
 			if (!is_null($question)){
+				$output['topics'] = $this->topic_model->get_tree();
 				$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
 				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 				$output['name'] = $question->Question;
@@ -374,19 +377,15 @@ class Question extends MY_Controller
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
-			$output = array(
-				'focus_topic' => $this->topic_model->get($_POST['focus_topic']),
-				'question_type' => $this->question_type_model->get($_POST['question_type']),
-				'nbAnswer' => 1,
-				'answers' => [
-					0 => array(
-						'id' => 0,
-						'question' => FALSE,
-						'answer' => '',
-						'symbol' => ''
-					)
-				]
-			);
+			$output['topics'] = $this->topic_model->get_tree();
+			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
+			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
+			$output['nbAnswer'] = 1;
+			$answers[0]['id'] = 0;
+			$answers[0]['question'] = false;
+			$answers[0]['answer'] = "";
+			$answers[0]['symbol'] = "";
+			$output['answers'] = $answers;
 
 			switch ($_POST['question_type']){
 			case 1:
@@ -477,24 +476,24 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+							$idQuestion = $this->multiple_choice_model->insert($inputQuestion);
 						} else {
 							$inputAnswer = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
+							$this->multiple_choice_model->update($answers[$i]['id'], $inputAnswer);
 
 							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
 						}
 					}
 
 					foreach ($answersDb as $answerDb) {
-						$this->multiple_answer_model->delete($answerDb);
+						$this->multiple_choice_model->delete($answerDb);
 					}
 				}
 				redirect('/Question');
@@ -533,6 +532,7 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
+				$output['topics'] = $this->topic_model->get_tree();				
 
 				$this->display_view('multiple_choice/add', $output);
 			}
@@ -592,6 +592,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
+			$output['topics'] = $this->topic_model->get_tree();	
 
 			$this->display_view('multiple_choice/add', $output);
 		}
@@ -632,6 +633,7 @@ class Question extends MY_Controller
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
+						'Nb_Desired_Answers' => $_POST['nb_desired_answers'],
 						"Question" => $_POST['name'],
 						"Points" => $_POST['points']
 					);
@@ -653,13 +655,15 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['answer']
 							);
 							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+
+							unset($answersDb[array_search($idQuestion, $answersDb)]);
 						} else {
 							$inputAnswer = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['answer']
 							);
 							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
 
@@ -708,6 +712,7 @@ class Question extends MY_Controller
 					}
 				}
 				$output['answers'] = $answers;
+				$output['topics'] = $this->topic_model->get_tree();
 
 				$this->display_view('multiple_answer/add', $output);
 			}
@@ -764,6 +769,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
+			$output['topics'] = $this->topic_model->get_tree();
 
 			$this->display_view('multiple_answer/add', $output);
 		}
@@ -820,7 +826,6 @@ class Question extends MY_Controller
 					$this->question_model->update($_POST['id'], $inputQuestion);
 
 					$inputClozeText = array(
-						"FK_Question" => $_POST['id_cloze_text'],
 						"Cloze_Text" => $_POST['cloze_text']
 					);
 					$this->cloze_text_model->update($_POST['id_cloze_text'], $inputClozeText);
@@ -896,6 +901,7 @@ class Question extends MY_Controller
 					}
 				}
 				$output['answers'] = $answers;
+				$output['topics'] = $this->topic_model->get_tree();
 
 				$this->display_view('cloze_text/add', $output);
 			}
@@ -955,6 +961,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
+			$output['topics'] = $this->topic_model->get_tree();
 
 			$this->display_view('cloze_text/add', $output);
 		}
@@ -992,6 +999,7 @@ class Question extends MY_Controller
 
 					redirect('/Question');
 				} else {
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 					if(isset($_POST['name'])){
@@ -1106,6 +1114,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
+			$output['topics'] = $this->topic_model->get_tree();
 
 			if (isset($_POST['cancel']) & isset($_POST['id'])){
 				$this->display_view('picture_landmark/add', $output);
@@ -1281,6 +1290,7 @@ class Question extends MY_Controller
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
+				$output['topics'] = $this->topic_model->get_tree();
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 
