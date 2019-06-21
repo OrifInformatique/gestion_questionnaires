@@ -309,17 +309,11 @@ class Questionnaire extends MY_Controller
             }
             if($amount > 0) $maxHeight -= $amount*10;
 
-            if($pdf->getY() > $maxHeight) {
+            if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
-                $pdf->SetFont('', 'B'); // Set font style to bold
-                $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
-                $pdf->SetFont('', ''); // Back to normal style
             }
-            if($answers->getY() > $maxHeight) {
+            if($answers->GetY() > $maxHeight){
                 $answers->addPage();
-                $answers->SetFont('', 'B'); // Set font style to bold
-                $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.$this->lang->line('pdf_corrige')), 0, "L");
-                $answers->SetFont('', ''); // Back to normal style
             }
 
             $stringLines = $this->string_to_small_array($rndQuestion->Question);
