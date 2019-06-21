@@ -121,16 +121,16 @@
 				<tbody>
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
-			<tr>
+			<tr data-row-id="<?=$i?>">
 				<td class="form-group col-xs-10">
 					<?php
-						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id'], 'id="answer_id['.$i.']"');
+						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer['.$i.']"');
 					?>
 				</td>
 				<td class="form-group col-xs-2">
-					<button type="button" class="btn btn-default no-border" onclick="invertInputs(<?=$i?>, <?=$nbAnswer?>, -1);">▲</button>
-					<button type="button" class="btn btn-default no-border" onclick="invertInputs(<?=$i?>, <?=$nbAnswer?>, +1);">▼</button>
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(this, <?=$nbAnswer?>, -1);" data-button-id="<?=$i?>">▲</button>
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(this, <?=$nbAnswer?>, +1);" data-button-id="<?=$i?>">▼</button>
 					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"'); ?>
 				</td>
 			</tr>
