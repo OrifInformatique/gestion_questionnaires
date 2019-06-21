@@ -2,7 +2,7 @@
 /**
  * Home controller is used to display a homepage depending on user's
  * access level.
- * 
+ *
  * @author      Orif, section informatique (UlSi, ViDi)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)

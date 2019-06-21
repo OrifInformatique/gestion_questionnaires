@@ -81,9 +81,9 @@
             <div class="form-group col-md-1 col-xs-3">
                 <?php 
                     if(isset($name)){
-                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
+                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="points"');
                     } else {
-                        echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
+                        echo form_input('points', '', 'maxlength="11" class="form-control" id="points"');
                     }
                 ?>
             </div>
@@ -105,7 +105,7 @@
             <tr>
                 <td class="form-group col-xs-9">
                     <?php
-                        //echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+                        echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
                         echo form_input('reponses['.$i.'][question]', $answers[$i]['question'], 'maxlength="250" class="form-control" id="question"');
                     ?>
                 </td>

@@ -38,7 +38,7 @@ class Question extends MY_Controller
 				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
 			}
 		}
-    
+
 		if(isset($_GET['module']) && isset($_GET['topic']) && isset($_GET['type'])){
 			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
 		}
@@ -93,7 +93,7 @@ class Question extends MY_Controller
 				case 'points_asc': $orderby = "Points ASC, Question ASC, FK_Question_Type ASC, ID ASC";break;
 				case 'points_desc': $orderby = "Points DESC, Question ASC, FK_Question_Type ASC, ID ASC";break;
 				default:$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
-			}	
+			}
 		}
 		else{
 			$orderby = "Question ASC, FK_Question_Type ASC, Points ASC, ID ASC";
@@ -102,49 +102,54 @@ class Question extends MY_Controller
 		$this->db->order_by($orderby);
 		if(empty($where)){
 			$output['questions'] = $this->question_model->with_all()->get_all();
-
 		} else {
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
 
+	    if(($page - 1) * ITEMS_PER_PAGE > count($output['questions'])) {
+	    	redirect('question/index/1');
+	    }
+
 		$this->load->library('pagination');
 
-	    $config['base_url'] = base_url('/question/index/');
-	    $config['total_rows'] = count($output['questions']);
-	    $config['per_page'] = ITEMS_PER_PAGE;
-	    $config['use_page_numbers'] = TRUE;
-	    $config['reuse_query_string'] = TRUE;
-	    
-	    $config['full_tag_open'] = '<ul class="pagination">';
-	    $config['full_tag_close'] = '</ul>';
-	    
-	    $config['first_link'] = '&laquo;';
-	    $config['first_tag_open'] = '<li>';
-	    $config['first_tag_close'] = '</li>';
-	    
-	    $config['last_link'] = '&raquo;';
-	    $config['last_tag_open'] = '<li>';
-	    $config['last_tag_close'] = '</li>';
-	    
-	    $config['next_link'] = FALSE;
-	    $config['prev_link'] = FALSE;
-	    
-	    $config['cur_tag_open'] = '<li class="active"><a>';
-	    $config['cur_tag_close'] = '</li></a>';
-	    $config['num_links'] = 5;
-	    
-	    $config['num_tag_open'] = '<li>';
-	    $config['num_tag_close'] = '</li>';
-	    
-	    $this->pagination->initialize($config);
+		$config = array(
+			'base_url' => base_url('/question/index/'),
+			'total_rows' => count($output['questions']),
+			'per_page' => ITEMS_PER_PAGE,
+			'use_page_numbers' => TRUE,
+			'reuse_query_string' => TRUE,
 
-	    $output['pagination'] = $this->pagination->create_links();
+			'full_tag_open' => '<ul class="pagination">',
+			'full_tag_close' => '</ul>',
 
-	    $output['questions'] = array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+			'first_link' => '&laquo;',
+			'first_tag_open' => '<li>',
+			'first_tag_close' => '</li>',
 
-		
-		$output['topics'] = $this->topic_model->get_all();
-		$output['questionTypes'] = $this->question_type_model->get_all();
+			'last_link' => '&raquo;',
+			'last_tag_open' => '<li>',
+			'last_tag_close' => '</li>',
+
+			'next_link' => FALSE,
+			'prev_link' => FALSE,
+
+			'cur_tag_open' => '<li class="active"><a>',
+			'cur_tag_close' => '</li></a>',
+			'num_links' => 5,
+
+			'num_tag_open' => '<li>',
+			'num_tag_close' => '</li>'
+		);
+
+		$this->pagination->initialize($config);
+
+		$output = array(
+			'pagination' => $this->pagination->create_links(),
+			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
+			'topics' => $this->topic_model->get_all(),
+			'questionTypes' => $this->question_type_model->get_all()
+		);
+
 		$this->display_view('questions/index', $output);
 	}
 
@@ -158,7 +163,7 @@ class Question extends MY_Controller
 			if (is_null($action)) {
 				$output = get_object_vars($this->question_model->get($id));
 				$output["question"] = $this->question_model->get_all();
-                $this->display_view("questions/confirm", $output);
+				$this->display_view("questions/confirm", $output);
 			} else {
 				$this->question_model->update($id, array("Archive" => 1));
 				redirect('/Question');
@@ -173,11 +178,11 @@ class Question extends MY_Controller
 	{
 		$this->form_validation->set_rules('name', 'Title', 'required');
 		$this->form_validation->set_rules('points', 'Points', 'required');
-		
+
 		$id = $this->input->post('id');
 		$title = array(	'Question' => $this->input->post('name'),
 						'Points' => $this->input->post('points'));
-		
+
 		if ($this->form_validation->run() == true) {
 			$this->question_model->update($id, $title);
 			$this->index();
@@ -301,7 +306,7 @@ class Question extends MY_Controller
 			$output['image'] = "";
 			$output['reponse'] = "";
 			if (!is_null($question)){
-				switch ($question->FK_Question_Type){ 
+				switch ($question->FK_Question_Type){
 				case 1:
 					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
 					foreach ($reponses as $reponse) {
@@ -317,13 +322,13 @@ class Question extends MY_Controller
 					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
-					}				
+					}
 					break;
 				case 3:
 					$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
-					}				
+					}
 					break;
 				case 4:
 					$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
@@ -332,7 +337,7 @@ class Question extends MY_Controller
 					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
-					}				
+					}
 					break;
 				case 5:
 					$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
@@ -341,14 +346,14 @@ class Question extends MY_Controller
 					$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']." ".$reponse->Answer;
-					}		
-					break;			
+					}
+					break;
 				case 7:
 					$output['image'] = $question->Picture_Name;
 					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
-					}			
+					}
 				}
 				//var_dump($reponses);
 				$this->display_view('questions/detail', $output);
@@ -359,8 +364,8 @@ class Question extends MY_Controller
 			$this->index();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Display form to add a question
 	 */
@@ -368,8 +373,10 @@ class Question extends MY_Controller
 	{
 		if ($step==1){
 			// Display a form to choose a topic and a question type
-			$output['topics'] = $this->topic_model->get_tree();
-			$output['list_question_type'] = $this->question_type_model->dropdown('Type_Name');
+			$output = array(
+				'topics' => $this->topic_model->get_tree(),
+				'list_question_type' => $this->question_type_model->dropdown('Type_Name')
+			);;
 			$this->display_view('questions/add', $output);
 
 		} elseif ($step==2){
@@ -383,7 +390,7 @@ class Question extends MY_Controller
 			$answers[0]['answer'] = "";
 			$answers[0]['symbol'] = "";
 			$output['answers'] = $answers;
-		
+
 			switch ($_POST['question_type']){
 			case 1:
 				$this->display_view('multiple_choice/add', $output);
@@ -405,12 +412,12 @@ class Question extends MY_Controller
 			case 6:
 				$this->display_view('free_answers/add', $output);
 				break;
-			case 7:	
+			case 7:
 				$this->display_view('picture_landmark/file', $output);
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Function to save a multiple choice question
@@ -438,7 +445,7 @@ class Question extends MY_Controller
 						"Points" => $_POST['points']
 					);
 					$idQuestion = $this->question_model->insert($inputQuestion);
-					
+
 					for($i=0; $i < $_POST['nbAnswer']; $i++){
 						$inputAnswer = array(
 							"FK_Question" => $idQuestion,
@@ -473,24 +480,24 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+							$idQuestion = $this->multiple_choice_model->insert($inputQuestion);
 						} else {
 							$inputAnswer = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['question'],
-								"Valid" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['question'],
+								"Valid" => $answers[$i]['answer']
 							);
-							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
+							$this->multiple_choice_model->update($answers[$i]['id'], $inputAnswer);
 
 							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
 						}
 					}
 
 					foreach ($answersDb as $answerDb) {
-						$this->multiple_answer_model->delete($answerDb);
+						$this->multiple_choice_model->delete($answerDb);
 					}
 				}
 				redirect('/Question');
@@ -509,7 +516,7 @@ class Question extends MY_Controller
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
-				
+
 				for($i=0; $i < $output['nbAnswer']; $i++){
 					if(!empty($_POST['reponses'][$i]['id'])){
 						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
@@ -527,10 +534,10 @@ class Question extends MY_Controller
 						$answers[$i]['answer'] = "";
 					}
 				}
-				
-				$output['answers'] = $answers;
 
+				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();				
+
 				$this->display_view('multiple_choice/add', $output);
 			}
 		} else {
@@ -548,7 +555,7 @@ class Question extends MY_Controller
 			}
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
-			
+
 
 			for($i=0; $i < $output['nbAnswer']; $i++){
 				if(!empty($_POST['reponses'][$i]['id'])){
@@ -589,8 +596,8 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
-
 			$output['topics'] = $this->topic_model->get_tree();	
+
 			$this->display_view('multiple_choice/add', $output);
 		}
 	}
@@ -618,7 +625,7 @@ class Question extends MY_Controller
 						"Points" => $_POST['points']
 					);
 					$idQuestion = $this->question_model->insert($inputQuestion);
-					
+
 					for($i=0; $i < $_POST['nbAnswer']; $i++){
 						$inputAnswer = array(
 							"FK_Question" => $idQuestion,
@@ -630,6 +637,7 @@ class Question extends MY_Controller
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
+						'Nb_Desired_Answers' => $_POST['nb_desired_answers'],
 						"Question" => $_POST['name'],
 						"Points" => $_POST['points']
 					);
@@ -651,13 +659,15 @@ class Question extends MY_Controller
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['answer']
 							);
 							$idQuestion = $this->multiple_answer_model->insert($inputQuestion);
+
+							unset($answersDb[array_search($idQuestion, $answersDb)]);
 						} else {
 							$inputAnswer = array(
 								"FK_Question" => $_POST['id'],
-								"Answer" => $_POST['reponses'][$i]['answer']
+								"Answer" => $answers[$i]['answer']
 							);
 							$this->multiple_answer_model->update($answers[$i]['id'], $inputAnswer);
 
@@ -673,7 +683,7 @@ class Question extends MY_Controller
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-				
+
 				if(isset($_POST['id'])){
 					$output['id'] = $_POST['id'];
 				}
@@ -687,7 +697,7 @@ class Question extends MY_Controller
 					$output['nb_desired_answers'] = $_POST['nb_desired_answers'];
 				}
 				$output['nbAnswer'] = $_POST['nbAnswer'];
-				
+
 				for($i=0; $i < $output['nbAnswer']; $i++){
 					if(!empty($_POST['reponses'][$i]['id'])){
 						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
@@ -706,8 +716,8 @@ class Question extends MY_Controller
 					}
 				}
 				$output['answers'] = $answers;
-				
 				$output['topics'] = $this->topic_model->get_tree();
+
 				$this->display_view('multiple_answer/add', $output);
 			}
 		} else {
@@ -728,7 +738,7 @@ class Question extends MY_Controller
 			}
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
-			
+
 
 			foreach($_POST['reponses'] as $reponse){
 				if(!empty($reponse['id'])){
@@ -763,12 +773,12 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
-		
 			$output['topics'] = $this->topic_model->get_tree();
+
 			$this->display_view('multiple_answer/add', $output);
 		}
 	}
-	
+
 	/**
 	 * Function for save cloze text
 	 */
@@ -801,7 +811,7 @@ class Question extends MY_Controller
 						"Cloze_Text" => $_POST['cloze_text']
 					);
 					$idClozeText = $this->cloze_text_model->insert($inputClozeText);
-					
+
 					$i = 0;
 					foreach($_POST['reponses'] as $reponse){
 						$inputAnswer = array(
@@ -869,7 +879,7 @@ class Question extends MY_Controller
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-				
+
 				if(isset($_POST['id'])){
 					$output['id'] = $_POST['id'];
 				}
@@ -885,7 +895,7 @@ class Question extends MY_Controller
 				if(isset($_POST['cloze_text'])){
 					$output['cloze_text'] = $_POST['cloze_text'];
 				}
-				
+
 				$output['nbAnswer'] = $_POST['nbAnswer'];
 				$i = 0;
 				foreach($_POST['reponses'] as $reponse){
@@ -903,8 +913,8 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
-				
 				$output['topics'] = $this->topic_model->get_tree();
+
 				$this->display_view('cloze_text/add', $output);
 			}
 		} else {
@@ -928,7 +938,7 @@ class Question extends MY_Controller
 			}
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
-			
+
 			$i = 0;
 			foreach($_POST['reponses'] as $reponse){
 				if(!empty($reponse['id'])){
@@ -964,12 +974,12 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
-		
 			$output['topics'] = $this->topic_model->get_tree();
+
 			$this->display_view('cloze_text/add', $output);
 		}
-	} 
-	
+	}
+
 	/**
 	 * Function for save free answer
 	 */
@@ -984,7 +994,7 @@ class Question extends MY_Controller
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
-				
+
 				if ($this->form_validation->run()){
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
@@ -993,13 +1003,13 @@ class Question extends MY_Controller
 						"Points" => $_POST['points']
 					);
 					$idQuestion = $this->question_model->insert($inputQuestion);
-					
+
 					$inputAnswer = array(
 						"FK_Question" => $idQuestion,
 						"Answer" => $_POST['answer']
 					);
 					$this->free_answer_model->insert($inputAnswer);
-					
+
 					redirect('/Question');
 				} else {
 					$output['topics'] = $this->topic_model->get_tree();
@@ -1026,10 +1036,10 @@ class Question extends MY_Controller
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
 				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
-				
+
 				if ($this->form_validation->run()){
 					$id = $this->input->post('id');
-					
+
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
@@ -1037,13 +1047,13 @@ class Question extends MY_Controller
 						"Points" => $_POST['points']
 					);
 					$this->question_model->update($id, $inputQuestion);
-					
+
 					$inputAnswer = array(
 						"FK_Question" => $id,
 						"Answer" => $_POST['answer']
 					);
 					$this->free_answer_model->update($_POST['id_answer'], $inputAnswer);
-					
+
 					redirect('/Question');
 				} else {
 					$output['id'] = $_POST['id'];
@@ -1064,7 +1074,7 @@ class Question extends MY_Controller
 			}
 		}
 	}
-	
+
 	/**
 	 * Function for save picture landmark
 	 */
@@ -1086,7 +1096,7 @@ class Question extends MY_Controller
 			if(isset($_POST['points'])){
 				$output['points'] = $_POST['points'];
 			}
-			
+
 			if(isset($_POST['picture_name'])){
 				$output['picture_name'] = $_POST['picture_name'];
 			}
@@ -1144,7 +1154,7 @@ class Question extends MY_Controller
 					else
 					{
 							$output['upload_data'] = $this->upload->data();
-							
+
 							$this->display_view('picture_landmark/add', $output);
 					}
 				}
@@ -1254,7 +1264,7 @@ class Question extends MY_Controller
 				} else {
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
-					
+
 					if(isset($_POST['id'])){
 						$output['id'] = $_POST['id'];
 					}
@@ -1264,7 +1274,7 @@ class Question extends MY_Controller
 					if(isset($_POST['points'])){
 						$output['points'] = $_POST['points'];
 					}
-					
+
 					if(isset($_POST['picture_name'])){
 						$output['picture_name'] = $_POST['picture_name'];
 					}
@@ -1315,7 +1325,7 @@ class Question extends MY_Controller
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
-				
+
 
 				for($i=0; $i < $output['nbAnswer']; $i++){
 					if(!empty($_POST['reponses'][$i]['id'])){
@@ -1365,72 +1375,82 @@ class Question extends MY_Controller
 			}
 		}
 	}
-	
+
 	/**
 	 * ON BUILDING
 	 * Useful to import all questions already written on Excel
 	 */
 	public function import()
-    {
-        if(isset($_POST['submitExcel']))
-        {
-            $config['upload_path'] = './uploads/excel';
-            $config['allowed_types'] = 'xlsx';
-            $config['max_size'] = 100;
-            $config['max_width'] = 1024;
-            $config['max_height'] = 768;
-            $this->load->library('upload', $config);
-            $this->upload->initialize($config);
-            if (!$this->upload->do_upload('excelfile')) {
-            	$output['excel_error'] = true;
-                $output['excel_message'] = $this->upload->display_errors();
-            } else {
-            	$output['excel_error'] = false;
-                $data = array('upload_data' => $this->upload->data());
-                $inputFileName = $data['upload_data']['full_path'];
-                $topic = $this->input->post('topic_selected');
-                $inputFileType = 'Excel2007';
-                /**  Create a new Reader of the type defined in $inputFileType  **/
-                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-                $this->Import_MultipleChoices($topic, $objReader, $inputFileName);
-                $this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
-                $this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
-                $this->Import_ClozeText($topic, $objReader, $inputFileName);
-                $this->Import_TableCell($topic, $objReader, $inputFileName);
-                $this->Import_FreeAnswer($topic, $objReader, $inputFileName);
-                $this->Import_PictureLandmark($topic, $objReader, $inputFileName);
-               // redirect("./Question");
-            }
-        } else if(isset($_POST['submitPictures']))
-        {
-            $files = $_FILES;
-            $countfile = count($_FILES['picturesfile']['name']);
-            for($i = 0; $i < $countfile; $i++)
-            {
-                //More optimal object
-                $_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
-                $_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
-                $_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
-                $_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
-                $_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
-                $config['upload_path'] = './uploads/pictures';
-                $config['allowed_types'] = 'png|jpg|jpeg';
-                $config['max_size'] = 0;
-                $this->load->library('upload', $config);
-                $this->upload->initialize($config);
-                if (!$this->upload->do_upload('picturesfile'))
-                {
-                    $output['image_error'] = true;
-                    $output['image_message'] = $this->upload->display_errors();
-                } else {
-                	$output['image_error'] = false;
-                }
-            }
-        }
-        $output['questions'] = $this->question_model->with_all()->get_all();
-        $output['topics'] = $this->topic_model->get_tree();
-        $this->display_view('questions/import', $output);
-    }
+	{
+		if(isset($_POST['submitExcel']))
+		{
+			$config = array(
+				'upload_path' => './uploads/excel',
+				'allowed_types' => 'xlsx',
+				'max_size' => 100,
+				'max_width' => 1024,
+				'max_height' => 768
+			);
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+			if (!$this->upload->do_upload('excelfile')) {
+				$output = array(
+					'excel_error' => true,
+					'excel_message' => $this->upload->display_errors()
+				);
+			} else {
+				$output['excel_error'] = false;
+				$data = array('upload_data' => $this->upload->data());
+				$inputFileName = $data['upload_data']['full_path'];
+				$topic = $this->input->post('topic_selected');
+				$inputFileType = 'Excel2007';
+				/**  Create a new Reader of the type defined in $inputFileType  **/
+				$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+				$this->Import_MultipleChoices($topic, $objReader, $inputFileName);
+				$this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
+				$this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
+				$this->Import_ClozeText($topic, $objReader, $inputFileName);
+				$this->Import_TableCell($topic, $objReader, $inputFileName);
+				$this->Import_FreeAnswer($topic, $objReader, $inputFileName);
+				$this->Import_PictureLandmark($topic, $objReader, $inputFileName);
+			   // redirect("./Question");
+			}
+		} else if(isset($_POST['submitPictures']))
+		{
+			$files = $_FILES;
+			$countfile = count($_FILES['picturesfile']['name']);
+			for($i = 0; $i < $countfile; $i++)
+			{
+				//More optimal object
+				$_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
+				$_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
+				$_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
+				$_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
+				$_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
+				$config = array(
+					'upload_path' => './uploads/pictures',
+					'allowed_types' => 'png|jpg|jpeg',
+					'max_size' => 0
+				);
+				$this->load->library('upload', $config);
+				$this->upload->initialize($config);
+				if (!$this->upload->do_upload('picturesfile'))
+				{
+					$output = array(
+						'image_error' => TRUE,
+						'image_message' => $this->upload->display_errors()
+					);
+				} else {
+					$output = array('image_error' => FALSE);
+				}
+			}
+		}
+		$output += array(
+			'questions' => $this->question_model->with_all()->get_all(),
+			'topics' => $this->topic_model->get_tree()
+		);
+		$this->display_view('questions/import', $output);
+	}
 
 
 	/**
@@ -1491,7 +1511,7 @@ class Question extends MY_Controller
 
 					if($validField == "x")$valid = true;
 					else $valid = false;
-					
+
 					$inputMultipleChoice = array(
 						"FK_Question" => $idQuestion,
 						"Answer" => $answerField,

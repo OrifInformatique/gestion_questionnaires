@@ -211,10 +211,21 @@ function displayQuestion($question)
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
+            echo "</a>";
+
+            if(count($question->cloze_text) > 0){
+                //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
+                $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
+
+                if(strlen($cloze_text) > 75){
+                    $cloze_text = substr($cloze_text, 0, 75) . "...";
+                }
+                echo "<br>".$cloze_text;
+            }
             ?>
         </a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
-        <td style="text-align: right;"><?php echo $question->Points; ?></td>
+        <td style="text-align: center;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
         <td style="text-align: center;"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
     </tr>
