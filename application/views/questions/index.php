@@ -220,7 +220,7 @@ function displayQuestion($question)
     </tr>
     <?php
         //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
-        if(count($question->cloze_text) > 0){
+        if($question->question_type->ID == 4){
             $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
             if(strlen($cloze_text) <= 75){
                 echo "<td id='cloze_text_part'><p>" . $cloze_text . "</p></td>";
