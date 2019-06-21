@@ -155,18 +155,18 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>
+                                <th style="border-color:gray">
                                     <?php 
                                         echo $this->lang->line('question'); 
                                         echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
                                     ?>
                                 </th>
-                                <th><?php 
+                                <th style="border-color:gray"><?php 
                                         echo $this->lang->line('question_type');
                                         echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question_type\")' class='sorted_btn btn btn-default'>$question_type_sort</a>" 
                                     ?>  
                                     </th>
-                                <th>
+                                <th style="border-color:gray">
                                     <?php   
                                         echo $this->lang->line('points'); 
                                         echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"points\")' class='sorted_btn btn btn-default'>$points_sort</a>" 
@@ -206,30 +206,31 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
+        <td style="border-color:gray" id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
             <?php 
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
             ?>
-        </a></td>
-        <td><?php echo $question->question_type->Type_Name ?></td>
-        <td style="text-align: right;"><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
-        <td style="text-align: center;"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
-    </tr>
-    <?php
-        //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
-        if($question->question_type->ID == 4){
-            $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
-            if(strlen($cloze_text) <= 75){
-                echo "<td id='cloze_text_part'><p>" . $cloze_text . "</p></td>";
-            } else {
-                $cloze_text_out_of_range = substr($cloze_text, 0, 75) . "...";
-                echo "<td id='cloze_text_part'><p>" . $cloze_text_out_of_range . "</p></td>";
+        </a><hr style="margin:10px 0; border-color:lightgray">
+        <?php
+            //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
+            if($question->question_type->ID == 4){
+                $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
+                if(strlen($cloze_text) <= 75){
+                    echo "<p>" . $cloze_text . "</p>";
+                } else {
+                    $cloze_text_out_of_range = substr($cloze_text, 0, 75) . "...";
+                    echo "<p>" . $cloze_text_out_of_range . "</p>";
+                }
             }
-        }
-        ?>
+            ?>
+        </td>
+        <td style="text-align: center; border-color:gray"><?php echo $question->question_type->Type_Name ?></td>
+        <td style="text-align: center; border-color:gray"><?php echo $question->Points; ?></td>
+        <td style="text-align: center; border-color:gray"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
+        <td style="text-align: center; border-color:gray"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
+    </tr>
     <?php
 }
 ?>
