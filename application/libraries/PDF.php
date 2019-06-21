@@ -19,7 +19,7 @@ class PDF extends FPDF {
         $y = $this->GetY();
         $this->SetY(0, false);
         $this->SetFont('', 'B');
-        $this->Cell(0, 10, $this->title);
+        $this->Cell(0, 10, iconv('UTF-8', 'windows-1252', $this->title));
         $this->SetFont('', '');
         $this->SetXY($x, $y);
     }
