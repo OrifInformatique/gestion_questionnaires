@@ -227,7 +227,7 @@ class Questionnaire extends MY_Controller
 
         // Title of the questions document
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->SetTitle("Questionnaire", true);
+        $pdf->SetTitle($title, true);
         $pdf->AddPage();
         $pdf->SetMargins(20, 20);
         $pdf->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
@@ -238,7 +238,6 @@ class Questionnaire extends MY_Controller
         $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
@@ -246,7 +245,7 @@ class Questionnaire extends MY_Controller
 
         // Title of the answered document
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->SetTitle('Corrigé', true);
+        $answers->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
         $answers->AddPage();
         $answers->SetMargins(20, 20);
         $answers->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
@@ -254,7 +253,6 @@ class Questionnaire extends MY_Controller
         $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', 'Sous-titre du questionnaire'), 0, "L");
         $answers->Cell(140);
         $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $answers->AliasNbPages();

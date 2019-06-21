@@ -8,8 +8,8 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class PDF extends FPDF {
-    protected $title;
-    protected $footerPage, $footerOutOf;
+    protected $title;   // Document's title
+    protected $footerPage, $footerOutOf;    // Parts of the footer
 
     /**
      * Creates a new PDF
@@ -32,7 +32,7 @@ class PDF extends FPDF {
         $y = $this->GetY();
         $this->SetY(10, false);
         $this->SetFont('', 'B');
-        $this->Cell(0, 10, iconv('UTF-8', 'windows-1252', $this->title));
+        $this->Cell(0, 10, $this->title);
         $this->SetFont('', '');
         $this->SetXY($x, $y);
     }
@@ -43,17 +43,19 @@ class PDF extends FPDF {
     function Footer() {
         $x = $this->GetX();
         $y = $this->GetY();
-        $this->SetXY(170, -20);
+        $footerY = $this->GetPageHeight() -20;
+        $this->SetXY(170, $footerY);
         $this->Cell(0, 10, ($this->footerPage.$this->PageNo().$this->footerOutOf.$this->AliasNbPages));
         $this->SetXY($x, $y);
     }
     /**
      * Sets the title of the document
      */
-    function SetTitle($title, $isUTF8=false) {
+    function SetTitle($title, $isUTF8 = false) {
         parent::SetTitle($title, $isUTF8);
-        $this->title = $title;
+        $this->title = iconv('UTF-8', 'windows-1252', $title);
     }
+
     /**
      * Updates the page's footer text
      *
