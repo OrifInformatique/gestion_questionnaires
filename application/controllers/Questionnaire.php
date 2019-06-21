@@ -309,10 +309,10 @@ class Questionnaire extends MY_Controller
             }
             if($amount > 0) $maxHeight -= $amount*10;
 
-            if($pdf->GetY() > 225) {
+            if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
             }
-            if($answers->GetY() > 225){
+            if($answers->GetY() > $maxHeight){
                 $answers->addPage();
             }
 
