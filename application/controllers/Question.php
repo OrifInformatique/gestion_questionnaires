@@ -631,6 +631,7 @@ class Question extends MY_Controller
 					$inputQuestion = array(
 						"FK_Topic" => $_POST['focus_topic'],
 						"FK_Question_Type" => $_POST['question_type'],
+						'Nb_Desired_Answers' => $_POST['nb_desired_answers'],
 						"Question" => $_POST['name'],
 						"Points" => $_POST['points']
 					);
