@@ -161,7 +161,6 @@ class Auth extends MY_Controller
 
             // Display the password change form
             $this->display_view('auth/password_change_form');
-
         } else {
             // Access is not allowed
             $this->ask_for_login();
@@ -170,6 +169,10 @@ class Auth extends MY_Controller
 
     /**
      * Callback method for change_password validation rule
+     *
+     * @param string $pwd = The previous password
+     * @param string $user = The username
+     * @return boolean = Whether or not the combination is correct
      */
     public function old_password_check($pwd,$user){
         return $this->user_model->check_password($user, $pwd);
