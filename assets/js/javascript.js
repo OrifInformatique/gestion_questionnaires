@@ -125,3 +125,30 @@ function getID(id, typeItem) {
 
     oldid = id;
 }*/
+
+function invertInputs(button, total, direction){
+
+    let index = parseInt(button.getAttribute('data-button-id'));
+
+    let destination = index+direction;
+    console.log(index, destination);
+
+    if(destination >= 0 && destination < total){
+
+        let indexDOM = $("[data-row-id="+index+"]");
+        let destinationDOM = $("[data-row-id="+destination+"]");
+
+        if(direction > 0){
+            indexDOM.insertAfter(destinationDOM);
+        } else if(direction < 0){
+            indexDOM.insertBefore(destinationDOM);
+        }
+        indexDOM.attr('data-row-id', destination);
+        destinationDOM.attr('data-row-id', index);
+
+        let button1 = $("[data-button-id="+index+"]");
+        let button2 = $("[data-button-id="+destination+"]");
+        button1.attr('data-button-id', destination);
+        button2.attr('data-button-id', index);
+    }
+}
