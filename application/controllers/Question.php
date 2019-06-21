@@ -112,42 +112,44 @@ class Question extends MY_Controller
 
 		$this->load->library('pagination');
 
-	    $config['base_url'] = base_url('/question/index/');
-	    $config['total_rows'] = count($output['questions']);
-	    $config['per_page'] = ITEMS_PER_PAGE;
-	    $config['use_page_numbers'] = TRUE;
-	    $config['reuse_query_string'] = TRUE;
+		$config = array(
+			'base_url' => base_url('/question/index/'),
+			'total_rows' => count($output['questions']),
+			'per_page' => ITEMS_PER_PAGE,
+			'use_page_numbers' => TRUE,
+			'reuse_query_string' => TRUE,
 
-	    $config['full_tag_open'] = '<ul class="pagination">';
-	    $config['full_tag_close'] = '</ul>';
+			'full_tag_open' => '<ul class="pagination">',
+			'full_tag_close' => '</ul>',
 
-	    $config['first_link'] = '&laquo;';
-	    $config['first_tag_open'] = '<li>';
-	    $config['first_tag_close'] = '</li>';
+			'first_link' => '&laquo;',
+			'first_tag_open' => '<li>',
+			'first_tag_close' => '</li>',
 
-	    $config['last_link'] = '&raquo;';
-	    $config['last_tag_open'] = '<li>';
-	    $config['last_tag_close'] = '</li>';
+			'last_link' => '&raquo;',
+			'last_tag_open' => '<li>',
+			'last_tag_close' => '</li>',
 
-	    $config['next_link'] = FALSE;
-	    $config['prev_link'] = FALSE;
+			'next_link' => FALSE,
+			'prev_link' => FALSE,
 
-	    $config['cur_tag_open'] = '<li class="active"><a>';
-	    $config['cur_tag_close'] = '</li></a>';
-	    $config['num_links'] = 5;
+			'cur_tag_open' => '<li class="active"><a>',
+			'cur_tag_close' => '</li></a>',
+			'num_links' => 5,
 
-	    $config['num_tag_open'] = '<li>';
-	    $config['num_tag_close'] = '</li>';
+			'num_tag_open' => '<li>',
+			'num_tag_close' => '</li>'
+		);
 
-	    $this->pagination->initialize($config);
+		$this->pagination->initialize($config);
 
-	    $output['pagination'] = $this->pagination->create_links();
+		$output = array(
+			'pagination' => $this->pagination->create_links(),
+			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
+			'topics' => $this->topic_model->get_all(),
+			'questionTypes' => $this->question_type_model->get_all()
+		);
 
-	    $output['questions'] = array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE);
-
-
-		$output['topics'] = $this->topic_model->get_all();
-		$output['questionTypes'] = $this->question_type_model->get_all();
 		$this->display_view('questions/index', $output);
 	}
 
@@ -377,6 +379,7 @@ class Question extends MY_Controller
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
+
 			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);

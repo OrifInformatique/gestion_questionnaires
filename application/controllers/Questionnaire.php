@@ -26,11 +26,13 @@ class Questionnaire extends MY_Controller
             'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
         $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'upload'));
+        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'pdf', 'upload'));
     }
 
     /**
      * Display questionnaire list
+     *
+     * @param string $error = Any error that occured
      */
     public function index($error = "")
     {
@@ -110,10 +112,10 @@ class Questionnaire extends MY_Controller
 
     /**
      * To add a new questionnaire
-     * @param int $error
-     * @param string $title
-     * @param array $topics
-     * @param array $nbQuestions
+     * @param int $error = Whether or not there has been an error
+     * @param string $title = The title of the page
+     * @param array $topics = The topics selected
+     * @param array $nbQuestions = The amount of questions selected per topic
      */
     public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
     {
@@ -244,8 +246,10 @@ class Questionnaire extends MY_Controller
 
         $totalpoints = 0;
 
-        $pdf = new FPDF();
-        $answers = new FPDF();
+        $pdf = new PDF();
+        $answers = new PDF();
+        $pdf->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
+        $answers->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
 
         // Title of the questions document
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
@@ -263,8 +267,6 @@ class Questionnaire extends MY_Controller
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
-
-
 
         // Title of the answered document
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);

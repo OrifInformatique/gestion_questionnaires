@@ -22,6 +22,8 @@ class Module extends MY_Controller
 
     /**
      * Display the module view
+     *
+     * @param string $error = The error to display
      */
     public function index($error = "")
     {
@@ -96,8 +98,10 @@ class Module extends MY_Controller
     }
 
     /**
-     * @param int $id = id of the selected questionnaire
      * Delete selected module (parent topic) and redirect to module list
+     *
+     * @param int $id = id of the selected questionnaire
+     * @param any $action = Set to not null to delete the module
      */
     public function delete($id = 0, $action = NULL){
 		if ($id != 0) {
@@ -122,6 +126,8 @@ class Module extends MY_Controller
     /**
      * not build
      * To add a new module
+     *
+     * @param any $error = Whether or not there has been an error
      */
     public function add($error = NULL){
         $outputs = array(
