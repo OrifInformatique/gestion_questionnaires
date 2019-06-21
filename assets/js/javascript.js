@@ -125,3 +125,18 @@ function getID(id, typeItem) {
 
     oldid = id;
 }*/
+
+function invertInputs(index, total, direction){
+
+    let destination = index+direction;
+
+    if(destination >= 0 && destination < total){
+
+        let answer1 = document.getElementById("answer["+index+"]");
+        let answer2 = document.getElementById("answer["+destination+"]");
+
+        let value = answer1.value;
+        answer1.value = answer2.value;
+        answer2.value = value;
+    }
+}

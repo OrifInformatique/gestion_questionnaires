@@ -65,7 +65,7 @@
 
 		<div class="row">
 			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
+				<?php echo form_label($this->lang->line('cloze_text_consign'), 'name'); ?>
 				<?php
 					if(isset($name)){
 						echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
@@ -101,9 +101,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-						echo form_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_textarea('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
 					} else {
-						echo form_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_textarea('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
 					}
 				?>
 			</div>
@@ -118,19 +118,20 @@
 						<th colspan="2"><?php echo form_label($this->lang->line('answers_list'), 'answer') ?></th>
 					</tr>
 				</thead>
-				<tbody> 
+				<tbody>
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
 			<tr>
-				<td class="form-group col-xs-11">
+				<td class="form-group col-xs-10">
 					<?php
-						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer"');
+						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id'], 'id="answer_id['.$i.']"');
+						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer['.$i.']"');
 					?>
 				</td>
-				<td class="form-group col-xs-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"');
-					?>
+				<td class="form-group col-xs-2">
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(<?=$i?>, <?=$nbAnswer?>, -1);">▲</button>
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(<?=$i?>, <?=$nbAnswer?>, +1);">▼</button>
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"'); ?>
 				</td>
 			</tr>
 		<?php } ?>

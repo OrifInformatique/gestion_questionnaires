@@ -777,7 +777,7 @@ class Question extends MY_Controller
 		}
 
 		if (isset($_POST['save'])){
-			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('name', $this->lang->line('cloze_text_consign'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
