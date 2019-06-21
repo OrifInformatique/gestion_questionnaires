@@ -47,8 +47,9 @@ function changeselect() {
     var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
+    var search = document.getElementById("search").value;
 
-    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type;
+    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search;
 }
 
 
@@ -73,7 +74,7 @@ function changePage(page){
     window.location =  updateURLParameter(window.location.toString(), "page", page);
 }
 function updateURLParameter(url, param, paramVal){
- var newAdditionalURL = "";
+    var newAdditionalURL = "";
     var tempArray = url.split("?");
     var baseURL = tempArray[0];
     var additionalURL = tempArray[1];
@@ -124,3 +125,30 @@ function getID(id, typeItem) {
 
     oldid = id;
 }*/
+
+function invertInputs(button, total, direction){
+
+    let index = parseInt(button.getAttribute('data-button-id'));
+
+    let destination = index+direction;
+    console.log(index, destination);
+
+    if(destination >= 0 && destination < total){
+
+        let indexDOM = $("[data-row-id="+index+"]");
+        let destinationDOM = $("[data-row-id="+destination+"]");
+
+        if(direction > 0){
+            indexDOM.insertAfter(destinationDOM);
+        } else if(direction < 0){
+            indexDOM.insertBefore(destinationDOM);
+        }
+        indexDOM.attr('data-row-id', destination);
+        destinationDOM.attr('data-row-id', index);
+
+        let button1 = $("[data-button-id="+index+"]");
+        let button2 = $("[data-button-id="+destination+"]");
+        button1.attr('data-button-id', destination);
+        button2.attr('data-button-id', index);
+    }
+}

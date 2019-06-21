@@ -30,7 +30,7 @@
         </div>
         <div class="col-xs-12">
 
-            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\'/gestion_questionnaires/Module\'"'); ?>
+            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Module').'\'"'); ?>
             <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
                  
         </div>

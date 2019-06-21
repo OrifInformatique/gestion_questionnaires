@@ -38,6 +38,14 @@ class TableTopics
     }
 
     /**
+     * @param int $index
+     */
+    public function removeArrayNbQuestion($index)
+    {
+        array_splice($this->arrayNbQuestion, $index, 1);
+    }
+
+    /**
      * @return array
      */
     public function getArrayTopics()
@@ -51,6 +59,14 @@ class TableTopics
     public function setArrayTopics($arrayTopics)
     {
         array_push($this->arrayTopics, $arrayTopics);
+    }
+
+    /**
+     * @param int $index
+     */
+    public function removeArrayTopics($index)
+    {
+        array_splice($this->arrayTopics, $index, 1);
     }
 
     /**

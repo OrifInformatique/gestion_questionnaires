@@ -17,7 +17,7 @@
         ?>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
-                <a href="<?php echo base_url(); ?>Questionnaire/add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
+                <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
             </div>
         </div>
         <div class="row">

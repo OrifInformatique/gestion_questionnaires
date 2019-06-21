@@ -61,7 +61,7 @@ function displayTableBody($topic){
                         if($module->FK_Parent_Topic == 0)
                         {
                             //Affiche les modules
-                            echo "<option value='" . $module->ID . "'>" . $module->Topic . "</option>";
+                            echo "<option value='" . $module->ID . "' ".($module_selected==$module->ID?' selected':'').">" . $module->Topic . "</option>";
                         }
                     }
                     ?>

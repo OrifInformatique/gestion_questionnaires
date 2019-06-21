@@ -19,7 +19,6 @@
 		
 		<!-- Hidden fields to put informations in $_POST -->
 		<?php
-		echo form_hidden('focus_topic', $focus_topic->ID);
 		echo form_hidden('question_type', $question_type->ID);
 		echo form_hidden('nbAnswer', $nbAnswer);
 		if(isset($id)){
@@ -40,7 +39,6 @@
 				?>
 			</div>
 			<div class="form-group col-md-8 text-right">
-				<h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>
 				<h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
 			</div>
 		</div>
@@ -53,8 +51,21 @@
 		
 		<!-- QUESTION FIELDS -->
 		<div class="row">
+            <div class="form-group col-md-12">
+                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?php 
+                    if(isset($focus_topic)){
+                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
+                    } else {
+                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
+                    }
+                ?>
+            </div>
+        </div>
+
+		<div class="row">
 			<div class="form-group col-md-12">
-				<?php echo form_label($this->lang->line('question_text'), 'name'); ?>
+				<?php echo form_label($this->lang->line('cloze_text_consign'), 'name'); ?>
 				<?php
 					if(isset($name)){
 						echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
@@ -90,9 +101,9 @@
 			<div class="form-group col-md-12">
 				<?php 
 		        	if(isset($cloze_text)){
-						echo form_long_input('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_textarea('cloze_text', $cloze_text, 'maxlength="65535" class="form-control" id="cloze_text"');
 					} else {
-						echo form_long_input('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
+						echo form_textarea('cloze_text', '', 'maxlength="65535" class="form-control" id="cloze_text"');
 					}
 				?>
 			</div>
@@ -107,19 +118,20 @@
 						<th colspan="2"><?php echo form_label($this->lang->line('answers_list'), 'answer') ?></th>
 					</tr>
 				</thead>
-				<tbody> 
+				<tbody>
 		<?php
 		for ($i = 0; $i < $nbAnswer; $i++){ ?>
-			<tr>
-				<td class="form-group col-xs-11">
+			<tr data-row-id="<?=$i?>">
+				<td class="form-group col-xs-10">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer"');
+						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer['.$i.']"');
 					?>
 				</td>
-				<td class="form-group col-xs-1">
-					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"');
-					?>
+				<td class="form-group col-xs-2">
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(this, <?=$nbAnswer?>, -1);" data-button-id="<?=$i?>">▲</button>
+					<button type="button" class="btn btn-default no-border" onclick="invertInputs(this, <?=$nbAnswer?>, +1);" data-button-id="<?=$i?>">▼</button>
+					<?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-default no-border"'); ?>
 				</td>
 			</tr>
 		<?php } ?>

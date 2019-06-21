@@ -10,25 +10,28 @@
 class Module extends MY_Controller
 {
     /* MY_Controller variables definition */
-    protected $access_level = "2";
+    protected $access_level = ACCESS_LVL_ADMIN;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('topic_model');
-        $this->load->helper(array('form', 'url'));
-		$this->load->helper('date');
+        $this->load->helper(array('form', 'url', 'date'));
     }
 
     /**
      * Display the module view
+     *
+     * @param string $error = The error to display
      */
     public function index($error = "")
     {
-        $outputs['modules'] = $this->topic_model->get_many_by('FK_Parent_Topic is NULL');
-		$outputs['error'] = $error;
-        $this->display_view("modules/index", $outputs);		
+        $outputs = array(
+            'modules' => $this->topic_model->get_many_by('FK_Parent_Topic is NULL'),
+            'error' => $error
+        );
+        $this->display_view("modules/index", $outputs);
     }
 
     /**
@@ -40,24 +43,25 @@ class Module extends MY_Controller
      * Display the update module view
      */
     public function update($id = 0, $error = 0){
-        $outputs['error'] = $error;
-    
         if($id != 0){
 			$topic = $this->topic_model->get($id);
 			if (!is_null($topic)){
-    			$outputs["id"] = $topic->ID;
-    			$outputs["title"] = $topic->Topic;
-    			$outputs["action"] = "update";
-    			
-                $this->display_view("modules/update", $outputs); 
+                $outputs = array(
+                    'error' => $error,
+                    'id' => $id,
+                    'title' => $topic->Topic,
+                    'action' => 'update'
+                );
+
+                $this->display_view("modules/update", $outputs);
             }
             else
                 show_error($this->lang->line('module_error_404_message'), 404, $this->lang->line('module_error_404_heading'));
-            
+
         }else{
             $this->index();
         }
-  
+
     }
 
     /**
@@ -69,7 +73,7 @@ class Module extends MY_Controller
 		date_default_timezone_set(TIMEZONE);
 		$datestring = '%Y-%m-%d %h:%i:%s';
 		$time = time();
-	
+
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
         $id = $this->input->post('id');
@@ -92,15 +96,17 @@ class Module extends MY_Controller
 			}
         }
     }
-	
+
     /**
-     * @param int $id = id of the selected questionnaire
      * Delete selected module (parent topic) and redirect to module list
+     *
+     * @param int $id = id of the selected questionnaire
+     * @param any $action = Set to not null to delete the module
      */
     public function delete($id = 0, $action = NULL){
 		if ($id != 0) {
-			$topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
 			if (is_null($action)) {
+                $topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
 				if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
 					$this->index($this->lang->line('del_module_form_err'));
 				} else {
@@ -120,10 +126,14 @@ class Module extends MY_Controller
     /**
      * not build
      * To add a new module
+     *
+     * @param any $error = Whether or not there has been an error
      */
     public function add($error = NULL){
-		$outputs["error"] = ($error == NULL ? NULL : true);
-		$outputs["action"] = "add";
+        $outputs = array(
+            'error' => ($error == NULL ? NULL : true),
+            'action' => 'add'
+        );
         $this->display_view("modules/add", $outputs);
-    }	
+    }
 }

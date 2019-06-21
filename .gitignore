@@ -31,3 +31,4 @@ application/config/config.php
 
 pdf_files/
 uploads/
+.vscode/launch.json

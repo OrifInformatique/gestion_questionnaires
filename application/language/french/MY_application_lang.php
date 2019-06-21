@@ -1,7 +1,7 @@
 <?php
 /**
  * Application's texts
- * 
+ *
  * @author      Orif Pomy, section informatique (UlSi, ViDi)
  * @copyright   Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
@@ -41,7 +41,7 @@ $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette part
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
 
-// Buttons 
+// Buttons
 $lang['btn_cancel']                     = 'Annuler';
 $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
@@ -108,6 +108,7 @@ $lang['update_question_form_err']       = 'Veillez à ce que tous les champs soi
 $lang['question_type']                  = 'Type de question';
 $lang['title_question_add']             = 'Nouvelle question';
 $lang['question_text']                  = 'Texte de la question';
+$lang['cloze_text_consign']             = 'Consigne';
 $lang['answer_question_add']            = 'Réponse attendue';
 $lang['answers_list']                   = 'Liste des réponses';
 $lang['valid_answers_list']             = 'Liste des réponses valides';
@@ -116,7 +117,7 @@ $lang['nb_desired_answers']             = 'Nombre de réponses attendues';
 $lang['landmark']                       = 'Liste des repères';
 $lang['change_picture']                 = 'Changer l\'image';
 $lang['cloze_text']                     = 'Texte à trous';
-$lang['cloze_text_tip']                 = 'Inscrire [No de repère] pour représenter les trous (p.ex. [5])';
+$lang['cloze_text_tip']                 = 'Inscrire [...] pour représenter les trous';
 $lang['delete_questions_questionnaire_list'] = 'Pour supprimer cette question, veuillez supprimer les questionnaires suivants :';
 $lang['clear_filter']                   = 'Supprimer le filtre';
 $lang['clear_filters']                  = 'Supprimer tous les filtres';
@@ -127,7 +128,9 @@ $lang['import_question_error']          = 'Erreur lors de l\'importion des quest
 $lang['question_error_404_message']     = 'Vous essayez d\'accéder à une question qui n\'existe pas .';
 $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
-
+$lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
+$lang['search']                         = 'Recherche';
+$lang['filter']                         = 'Filtrer';
 
 
 // Topics pages
@@ -142,8 +145,11 @@ $lang['update_topic_form_err']          = 'Le champ titre du sujet est requis';
 $lang['add_topic_form_err']             = 'Le champ titre du sujet est requis';
 $lang['del_topic_form_err']             = 'Ce sujet possède des questions liées, il ne peut être supprimé...';
 $lang['del_topic_form_title']           = 'Voulez-vous vraiment supprimer le sujet ';
-$lang['topic_error_404_message']		= 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
-$lang['topic_error_404_heading']		= 'Sujet inexistant';
+$lang['topic_error_404_message']        = 'Vous essayez d\'accéder à un sujet qui n\'existe pas .';
+$lang['topic_error_404_heading']        = 'Sujet inexistant';
+$lang['topic_title_error']              = 'titre';
+$lang['topic_module_selected_error']    = 'module conercné';
+$lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module avant de créer un sujer.';
 
 
 //Modules pages
@@ -157,8 +163,21 @@ $lang['update_module_form_err']         = 'Le champ titre du module est requis';
 $lang['add_module_form_err']            = 'Le champ titre du module est requis';
 $lang['del_module_form_err']            = 'Ce module possède des questions et/ou des sujets liés, il ne peut être supprimé...';
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
-$lang['module_error_404_message']		= 'Vous essayez d\'accéder à un module qui n\'existe pas .';
-$lang['module_error_404_heading']		= 'Module inexistant';
+$lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
+$lang['module_error_404_heading']       = 'Module inexistant';
+
+//PDF
+$lang['pdf_first_name']                 = 'Prénom :';
+$lang['pdf_last_name']                  = 'Nom :';
+$lang['pdf_date']                       = 'Date :';
+$lang['pdf_points']                     = 'Points';
+$lang['pdf_corrige']                    = '(Corrigé)';
+$lang['pdf_page']                       = 'Page ';
+$lang['pdf_page_of']                    = ' sur ';
+$lang['pdf_totals_points']              = 'Total des points :';
+$lang['pdf_note']                       = 'Note :';
+$lang['pdf_multiple_answer_1']          = 'réponse';
+$lang['pdf_multiple_answer_2']          = 'attendue';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";

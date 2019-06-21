@@ -19,7 +19,6 @@
         
         <!-- Hidden fields to put informations in $_POST -->
         <?php
-        echo form_hidden('focus_topic', $focus_topic->ID);
         echo form_hidden('question_type', $question_type->ID);
         echo form_hidden('nbAnswer', $nbAnswer);
         if(isset($id)){
@@ -44,7 +43,6 @@
                 ?>
             </div>
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('focus_topic').' : '.$focus_topic->Topic; ?></h4>
                 <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
             </div>
         </div>
@@ -58,12 +56,25 @@
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
+                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?php 
+                    if(isset($focus_topic)){
+                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
+                    } else {
+                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
+                    }
+                ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
                 <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
                 <?php
                     if(isset($name)){
-                        echo form_long_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
                     } else {
-                        echo form_long_input('name', '', 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
                     }
                 ?>
             </div>

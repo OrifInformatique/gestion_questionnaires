@@ -19,7 +19,9 @@ class question_model extends MY_Model
                              'topic' => ['primary_key' => 'FK_Topic',
                                          'model' => 'topic_model']];
     protected $has_many = ['question_questionnaires' => ['primary_key' => 'FK_Question',
-                                                         'model' => 'question_questionnaire_model']];
+                                                         'model' => 'question_questionnaire_model'],
+                           'cloze_text' => ['primary_key' => 'FK_Question',
+                                            'model' => 'cloze_text_model']];
 
     /**
      * Constructor

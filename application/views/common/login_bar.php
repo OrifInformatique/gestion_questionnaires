@@ -11,12 +11,6 @@
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" >
       <div class="nav nav-pills" style="margin-top:20px;">
         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
-          
-          <!-- ADMIN ACCESS ONLY -->
-          <?php if ($_SESSION['user_access'] >= ACCESS_LVL_MSP) { ?>
-              <a href="<?= base_url("admin/"); ?>" ><?= $this->lang->line('btn_admin'); ?></a><br />
-          <?php } ?>
-          <!-- END OF ADMIN ACCESS -->
 
           <!-- Password change -->
           <a href="<?= base_url("auth/change_password"); ?>"><?= $this->lang->line('btn_change_password') ?></a><br />
