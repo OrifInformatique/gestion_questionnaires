@@ -112,42 +112,44 @@ class Question extends MY_Controller
 
 		$this->load->library('pagination');
 
-	    $config['base_url'] = base_url('/question/index/');
-	    $config['total_rows'] = count($output['questions']);
-	    $config['per_page'] = ITEMS_PER_PAGE;
-	    $config['use_page_numbers'] = TRUE;
-	    $config['reuse_query_string'] = TRUE;
+		$config = array(
+			'base_url' => base_url('/question/index/'),
+			'total_rows' => count($output['questions']),
+			'per_page' => ITEMS_PER_PAGE,
+			'use_page_numbers' => TRUE,
+			'reuse_query_string' => TRUE,
 
-	    $config['full_tag_open'] = '<ul class="pagination">';
-	    $config['full_tag_close'] = '</ul>';
+			'full_tag_open' => '<ul class="pagination">',
+			'full_tag_close' => '</ul>',
 
-	    $config['first_link'] = '&laquo;';
-	    $config['first_tag_open'] = '<li>';
-	    $config['first_tag_close'] = '</li>';
+			'first_link' => '&laquo;',
+			'first_tag_open' => '<li>',
+			'first_tag_close' => '</li>',
 
-	    $config['last_link'] = '&raquo;';
-	    $config['last_tag_open'] = '<li>';
-	    $config['last_tag_close'] = '</li>';
+			'last_link' => '&raquo;',
+			'last_tag_open' => '<li>',
+			'last_tag_close' => '</li>',
 
-	    $config['next_link'] = FALSE;
-	    $config['prev_link'] = FALSE;
+			'next_link' => FALSE,
+			'prev_link' => FALSE,
 
-	    $config['cur_tag_open'] = '<li class="active"><a>';
-	    $config['cur_tag_close'] = '</li></a>';
-	    $config['num_links'] = 5;
+			'cur_tag_open' => '<li class="active"><a>',
+			'cur_tag_close' => '</li></a>',
+			'num_links' => 5,
 
-	    $config['num_tag_open'] = '<li>';
-	    $config['num_tag_close'] = '</li>';
+			'num_tag_open' => '<li>',
+			'num_tag_close' => '</li>'
+		);
 
-	    $this->pagination->initialize($config);
+		$this->pagination->initialize($config);
 
-	    $output['pagination'] = $this->pagination->create_links();
+		$output = array(
+			'pagination' => $this->pagination->create_links(),
+			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
+			'topics' => $this->topic_model->get_all(),
+			'questionTypes' => $this->question_type_model->get_all()
+		);
 
-	    $output['questions'] = array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE);
-
-
-		$output['topics'] = $this->topic_model->get_all();
-		$output['questionTypes'] = $this->question_type_model->get_all();
 		$this->display_view('questions/index', $output);
 	}
 
@@ -161,7 +163,7 @@ class Question extends MY_Controller
 			if (is_null($action)) {
 				$output = get_object_vars($this->question_model->get($id));
 				$output["question"] = $this->question_model->get_all();
-                $this->display_view("questions/confirm", $output);
+				$this->display_view("questions/confirm", $output);
 			} else {
 				$this->question_model->update($id, array("Archive" => 1));
 				redirect('/Question');
@@ -369,12 +371,15 @@ class Question extends MY_Controller
 	{
 		if ($step==1){
 			// Display a form to choose a topic and a question type
-			$output['topics'] = $this->topic_model->get_tree();
-			$output['list_question_type'] = $this->question_type_model->dropdown('Type_Name');
+			$output = array(
+				'topics' => $this->topic_model->get_tree(),
+				'list_question_type' => $this->question_type_model->dropdown('Type_Name')
+			);;
 			$this->display_view('questions/add', $output);
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
+
 			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -1366,66 +1371,76 @@ class Question extends MY_Controller
 	 * Useful to import all questions already written on Excel
 	 */
 	public function import()
-    {
-        if(isset($_POST['submitExcel']))
-        {
-            $config['upload_path'] = './uploads/excel';
-            $config['allowed_types'] = 'xlsx';
-            $config['max_size'] = 100;
-            $config['max_width'] = 1024;
-            $config['max_height'] = 768;
-            $this->load->library('upload', $config);
-            $this->upload->initialize($config);
-            if (!$this->upload->do_upload('excelfile')) {
-            	$output['excel_error'] = true;
-                $output['excel_message'] = $this->upload->display_errors();
-            } else {
-            	$output['excel_error'] = false;
-                $data = array('upload_data' => $this->upload->data());
-                $inputFileName = $data['upload_data']['full_path'];
-                $topic = $this->input->post('topic_selected');
-                $inputFileType = 'Excel2007';
-                /**  Create a new Reader of the type defined in $inputFileType  **/
-                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-                $this->Import_MultipleChoices($topic, $objReader, $inputFileName);
-                $this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
-                $this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
-                $this->Import_ClozeText($topic, $objReader, $inputFileName);
-                $this->Import_TableCell($topic, $objReader, $inputFileName);
-                $this->Import_FreeAnswer($topic, $objReader, $inputFileName);
-                $this->Import_PictureLandmark($topic, $objReader, $inputFileName);
-               // redirect("./Question");
-            }
-        } else if(isset($_POST['submitPictures']))
-        {
-            $files = $_FILES;
-            $countfile = count($_FILES['picturesfile']['name']);
-            for($i = 0; $i < $countfile; $i++)
-            {
-                //More optimal object
-                $_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
-                $_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
-                $_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
-                $_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
-                $_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
-                $config['upload_path'] = './uploads/pictures';
-                $config['allowed_types'] = 'png|jpg|jpeg';
-                $config['max_size'] = 0;
-                $this->load->library('upload', $config);
-                $this->upload->initialize($config);
-                if (!$this->upload->do_upload('picturesfile'))
-                {
-                    $output['image_error'] = true;
-                    $output['image_message'] = $this->upload->display_errors();
-                } else {
-                	$output['image_error'] = false;
-                }
-            }
-        }
-        $output['questions'] = $this->question_model->with_all()->get_all();
-        $output['topics'] = $this->topic_model->get_tree();
-        $this->display_view('questions/import', $output);
-    }
+	{
+		if(isset($_POST['submitExcel']))
+		{
+			$config = array(
+				'upload_path' => './uploads/excel',
+				'allowed_types' => 'xlsx',
+				'max_size' => 100,
+				'max_width' => 1024,
+				'max_height' => 768
+			);
+			$this->load->library('upload', $config);
+			$this->upload->initialize($config);
+			if (!$this->upload->do_upload('excelfile')) {
+				$output = array(
+					'excel_error' => true,
+					'excel_message' => $this->upload->display_errors()
+				);
+			} else {
+				$output['excel_error'] = false;
+				$data = array('upload_data' => $this->upload->data());
+				$inputFileName = $data['upload_data']['full_path'];
+				$topic = $this->input->post('topic_selected');
+				$inputFileType = 'Excel2007';
+				/**  Create a new Reader of the type defined in $inputFileType  **/
+				$objReader = PHPExcel_IOFactory::createReader($inputFileType);
+				$this->Import_MultipleChoices($topic, $objReader, $inputFileName);
+				$this->Import_MultipleAnswers($topic, $objReader, $inputFileName);
+				$this->Import_AnswerDistribution($topic, $objReader, $inputFileName);
+				$this->Import_ClozeText($topic, $objReader, $inputFileName);
+				$this->Import_TableCell($topic, $objReader, $inputFileName);
+				$this->Import_FreeAnswer($topic, $objReader, $inputFileName);
+				$this->Import_PictureLandmark($topic, $objReader, $inputFileName);
+			   // redirect("./Question");
+			}
+		} else if(isset($_POST['submitPictures']))
+		{
+			$files = $_FILES;
+			$countfile = count($_FILES['picturesfile']['name']);
+			for($i = 0; $i < $countfile; $i++)
+			{
+				//More optimal object
+				$_FILES['picturesfile']['name'] = $files['picturesfile']['name'][$i];
+				$_FILES['picturesfile']['type'] = $files['picturesfile']['type'][$i];
+				$_FILES['picturesfile']['tmp_name'] = $files['picturesfile']['tmp_name'][$i];
+				$_FILES['picturesfile']['error'] = $files['picturesfile']['error'][$i];
+				$_FILES['picturesfile']['size'] = $files['picturesfile']['size'][$i];
+				$config = array(
+					'upload_path' => './uploads/pictures',
+					'allowed_types' => 'png|jpg|jpeg',
+					'max_size' => 0
+				);
+				$this->load->library('upload', $config);
+				$this->upload->initialize($config);
+				if (!$this->upload->do_upload('picturesfile'))
+				{
+					$output = array(
+						'image_error' => TRUE,
+						'image_message' => $this->upload->display_errors()
+					);
+				} else {
+					$output = array('image_error' => FALSE);
+				}
+			}
+		}
+		$output += array(
+			'questions' => $this->question_model->with_all()->get_all(),
+			'topics' => $this->topic_model->get_tree()
+		);
+		$this->display_view('questions/import', $output);
+	}
 
 
 	/**

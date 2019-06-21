@@ -31,7 +31,7 @@ $nbMaxQuestion = 0;
                 }
             }).fail(function(xhr, status, error) {
                     alert(error);
-                });;
+                });
         });
     });
 </script>
@@ -156,7 +156,12 @@ $nbMaxQuestion = 0;
                 
             </div>
             <div class="col-sm-4 col-xs-12" > 
-                <input type="submit" class="btn btn-danger col-xs-12" name="<?php echo $this->lang->line('cancel');?>" value="<?php echo $this->lang->line('cancel');?>">
+                <?php 
+                echo form_button('annuler', $this->lang->line('cancel'),
+                array(
+                    'class' => 'btn btn-danger col-xs-12',
+                    'onclick' => 'location.href=`'.base_url('Questionnaire').'`'
+                )); ?>
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
                  <input type="submit" class="btn btn-success col-xs-12" name="<?php echo $this->lang->line('save');?>" value="<?php echo $this->lang->line('save');?>">
