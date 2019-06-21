@@ -212,10 +212,7 @@ function displayQuestion($question)
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
             ?>
-        </a>
-        <br>
-        
-        </td>
+        </a></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: right;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
