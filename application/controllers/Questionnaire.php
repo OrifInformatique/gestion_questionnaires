@@ -222,6 +222,8 @@ class Questionnaire extends MY_Controller
 
         $pdf = new PDF();
         $answers = new PDF();
+        $pdf->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
+        $answers->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
 
         // Title of the questions document
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
