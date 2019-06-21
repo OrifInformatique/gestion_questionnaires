@@ -216,12 +216,11 @@ function displayQuestion($question)
             if(count($question->cloze_text) > 0){
                 //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
                 $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
-                if(strlen($cloze_text) <= 75){
-                    echo "<p>" . $cloze_text . "</p>";
-                } else {
-                    $cloze_text_out_of_range = substr($cloze_text, 0, 75) . "...";
-                    echo "<p>" . $cloze_text_out_of_range . "</p>";
+
+                if(strlen($cloze_text) > 75){
+                    $cloze_text = substr($cloze_text, 0, 75) . "...";
                 }
+                echo "<br>".$cloze_text;
             }
             ?>
         </a></td>
