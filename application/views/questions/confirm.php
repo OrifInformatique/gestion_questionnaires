@@ -3,7 +3,7 @@
         <div class="row">
             <?php if($Archive) { ?>
                 <div class="alert alert-danger">
-                    <?php echo $this->lang->line('question_deleted'); ?>
+                    <?php echo $this->lang->line('question_already_deleted'); ?>
                 </div>
             <?php } ?>
             <div class="col-xs-12">
