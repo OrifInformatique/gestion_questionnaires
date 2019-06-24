@@ -751,6 +751,7 @@ class Question extends MY_Controller
 				} else {
 					$answers[$i]['answer'] = "";
 				}
+				$i++;
 			}
 
 			if (isset($_POST['add_answer'])){
