@@ -95,6 +95,7 @@ $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questio
 $lang['title_question']                 = 'Liste des questions';
 $lang['title_import_questions']         = 'Importez vos questions';
 $lang['title_import_pictures']          = 'Importez vos images';
+$lang['question_deleted']               = 'Cette question a été supprimée';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';

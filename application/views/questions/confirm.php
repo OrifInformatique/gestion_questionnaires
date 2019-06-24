@@ -1,6 +1,11 @@
 <div id="page-content-wrapper">
     <div class="container">
         <div class="row">
+            <?php if($Archive) { ?>
+                <div class="alert alert-danger">
+                    <?php echo $this->lang->line('question_deleted'); ?>
+                </div>
+            <?php } ?>
             <div class="col-xs-12">
                 <div>
                     <h3><?php echo $this->lang->line('del_question_form_title') . '"' . $Question; ?>" ?

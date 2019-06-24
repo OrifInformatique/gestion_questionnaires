@@ -489,9 +489,8 @@ class Questionnaire extends MY_Controller
         //load randoms questions about the topic
         $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
 
-        for($number = 0; $number < count($rndQuestions); $number++)
-        {
-            $listIDQuestions[] = $rndQuestions[$number]->FK_Question;
+        foreach($rndQuestions as $rndQuestion) {
+            $listIDQuestions[] = $rndQuestion->FK_Question;
         }
 
         return $listIDQuestions;
@@ -584,12 +583,13 @@ class Questionnaire extends MY_Controller
      */
     private function answerDistributionPdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
+            echo 'not implemented';
             /**
              * @todo
              * The function did not exist,
              * there are no distribution questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
 
@@ -676,12 +676,13 @@ class Questionnaire extends MY_Controller
      */
     private function tablePdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
+            echo 'not implemented';
             /**
              * @todo
              * The function did not exist,
              * there are no table questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
 
