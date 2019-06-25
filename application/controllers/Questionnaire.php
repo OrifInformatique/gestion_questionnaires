@@ -583,7 +583,6 @@ class Questionnaire extends MY_Controller
      */
     private function answerDistributionPdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
-            echo 'not implemented';
             /**
              * @todo
              * The function did not exist,
@@ -676,7 +675,6 @@ class Questionnaire extends MY_Controller
      */
     private function tablePdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
-            echo 'not implemented';
             /**
              * @todo
              * The function did not exist,
