@@ -104,7 +104,7 @@
                     ?>
                 </div>
                 <div class="col-lg-4">
-                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></a>
+                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></button>
                 </div>
             </div>
             <div class="row">
@@ -223,7 +223,7 @@ function displayQuestion($question)
                 echo "<br>".$cloze_text;
             }
             ?>
-        </a></td>
+        </td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: center;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
