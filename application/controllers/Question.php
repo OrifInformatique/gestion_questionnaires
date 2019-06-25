@@ -739,7 +739,7 @@ class Question extends MY_Controller
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
 
-
+			$i = 0;
 			foreach($_POST['reponses'] as $reponse){
 				if(!empty($reponse['id'])){
 					$answers[$i]['id'] = $reponse['id'];
@@ -751,6 +751,7 @@ class Question extends MY_Controller
 				} else {
 					$answers[$i]['answer'] = "";
 				}
+				$i++;
 			}
 
 			if (isset($_POST['add_answer'])){
