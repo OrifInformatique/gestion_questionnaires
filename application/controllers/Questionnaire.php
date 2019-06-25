@@ -321,7 +321,7 @@ class Questionnaire extends MY_Controller
             $pdf->SetFont('', 'B');
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
-            $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $pdf->Cell(130, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
             $pdf->MultiCell(10, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
