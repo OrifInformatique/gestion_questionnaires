@@ -227,7 +227,8 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * Creates a questionnaire
+     * Loads the id of the questionnaire to create
+     * If it does not exist yet, create it from $tableTopics
      *
      * @param integer $idQuestionnaire = The questionnaire's id
      * @param TableTopics $tableTopics = The topics
@@ -365,24 +366,24 @@ class Questionnaire extends MY_Controller
         $title = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
         $totalpoints = $questionNum = 0;
 
-        $pdf = new PDF();
-        $pdf->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
-        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
+        $answers = new PDF();
+        $answers->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
         // Title of the questions document
-        $pdf->AddPage();
-        $pdf->SetMargins(20, 20);
-        $pdf->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
-        $pdf->Cell(20);
-        $pdf->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_last_name')), 0, "L");
-        $pdf->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_first_name')), 0, "L");
-        $pdf->MultiCell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "L");
-        $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
-        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
-        $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $pdf->Cell(140);
-        $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
-        $pdf->AliasNbPages();
+        $answers->AddPage();
+        $answers->SetMargins(20, 20);
+        $answers->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
+        $answers->Cell(20);
+        $answers->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_last_name')), 0, "L");
+        $answers->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_first_name')), 0, "L");
+        $answers->MultiCell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "L");
+        $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
+        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->Cell(140);
+        $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
+        $answers->AliasNbPages();
         foreach($listRndQuestions as $idQuestion) {
             $rndQuestion = $this->question_model->get($idQuestion);
             $question = iconv('UTF-8', 'windows-1252', $rndQuestion->Question);
@@ -405,60 +406,60 @@ class Questionnaire extends MY_Controller
                 default:
             }
             if($amount > 0) $maxHeight -= $amount*10;
-            if($pdf->GetY() > $maxHeight) {
-                $pdf->addPage();
+            if($answers->GetY() > $maxHeight) {
+                $answers->addPage();
             }
             // Display question header
             $stringLines = $this->string_to_small_array($rndQuestion->Question);
-            $pdf->SetFont('', 'B');
-            $pdf->Cell(10, 10, $questionNum.'.');
-            $pdf->SetFont('', '');
-            $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $pdf->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $answers->SetFont('', 'B');
+            $answers->Cell(10, 10, $questionNum.'.');
+            $answers->SetFont('', '');
+            $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $answers->MultiCell(10, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
-                $pdf->Cell(10, 10);
-                $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-                $pdf->MultiCell(10, 10, '');
+                $answers->Cell(10, 10);
+                $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
+                $answers->MultiCell(10, 10, '');
             }
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
-                    $this->multipleChoicesPdf($rndQuestion, $pdf, true);
+                    $this->multipleChoicesPdf($rndQuestion, $answers, true);
                     break;
                 case 2:
-                    $this->multipleAnswersPdf($rndQuestion, $pdf, true);
+                    $this->multipleAnswersPdf($rndQuestion, $answers, true);
                     break;
                 case 3: // /!\ The function is incomplete /!\ \\
-                    $this->answerDistributionPdf($rndQuestion, $pdf, true);
+                    $this->answerDistributionPdf($rndQuestion, $answers, true);
                     break;
                 case 4:
-                    $this->clozeTextPdf($rndQuestion, $pdf, true);
+                    $this->clozeTextPdf($rndQuestion, $answers, true);
                     break;
                 case 5: // /!\ The function is incomplete /!\ \\
-                    $this->tablePdf($rndQuestion, $pdf, true);
+                    $this->tablePdf($rndQuestion, $answers, true);
                     break;
                 case 6:
-                    $this->simpleQuestionPdf($rndQuestion, $pdf, true);
+                    $this->simpleQuestionPdf($rndQuestion, $answers, true);
                     break;
                 case 7:
-                    $this->pictureLandmarkPdf($rndQuestion, $pdf, true);
+                    $this->pictureLandmarkPdf($rndQuestion, $answers, true);
                     break;
                 default:
                     break;
             }
-            $pdf->Ln();
+            $answers->Ln();
         }
         // Finish last page
-        $pdf->SetTextColor(128,128,128);
-        $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
-        $pdf->Cell(30); // Padding
-        $pdf->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_totals_points').' .../'.$totalpoints), 0, "R");
-        $pdf->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_note')), 0, "R");
-        $pdf->Ln();
-        $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('Arial','', self::QUESTIONFONT_SIZE);
+        $answers->SetTextColor(128,128,128);
+        $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
+        $answers->Cell(30); // Padding
+        $answers->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_totals_points').' .../'.$totalpoints), 0, "R");
+        $answers->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_note')), 0, "R");
+        $answers->Ln();
+        $answers->SetTextColor(0,0,0);
+        $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
 
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-        $pdf->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
+        $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
     }
 
     /**
