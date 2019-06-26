@@ -50,6 +50,7 @@ $lang['btn_add_topic']                  = 'Ajouter un sujet';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
+$lang['btn_add_questionnaire_model']    = 'Ajouter un modèle de questionnaire';
 $lang['btn_import_image']               = 'Importer une image';
 $lang['btn_import_question']            = 'Importer une question';
 $lang['btn_next']                       = 'Suivant';
@@ -90,6 +91,14 @@ $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
 
+// Questionnaire model pages
+$lang['title_model']                    = 'Liste des modèles';
+$lang['questionnaire_model_titles']     = 'Titre des questionnaires';
+$lang['questionnaire_model']            = 'Modèle';
+$lang['generate']                       = 'Générer';
+$lang['add_questionnaire_model_title']  = 'Ajouter un modèle de questionnaire';
+$lang['add_title_questionnaire_model']  = 'Titre du modèle:';
+$lang['del_questionnaire_model_form_title'] = 'Voulez-vous vraiment supprimer le modèle ';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';

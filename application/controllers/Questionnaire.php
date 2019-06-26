@@ -24,7 +24,8 @@ class Questionnaire extends MY_Controller
         $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
             'question_model', 'answer_distribution_model', 'multiple_choice_model',
             'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
-            'picture_landmark_model', 'free_answer_model', 'multiple_answer_model'));
+            'picture_landmark_model', 'free_answer_model', 'multiple_answer_model',
+            'questionnaire_model_topic_model', 'questionnaire_model_model'));
         $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'pdf', 'upload'));
     }
@@ -38,6 +39,7 @@ class Questionnaire extends MY_Controller
     {
         $outputs = array(
             'questionnaires' => $this->questionnaire_model->get_all(),
+            'models' => $this->questionnaire_model_model->get_all(),
             'error' => $error
         );
         $this->display_view('questionnaires/index', $outputs);
@@ -93,7 +95,7 @@ class Questionnaire extends MY_Controller
         if ($id != 0) {
             if (is_null($action)) {
                 $output = get_object_vars($this->questionnaire_model->get($id));
-                $output["questionnaires"] = $this->questionnaire_model->get_all();
+                $output["model"] = false;
                 $this->display_view("questionnaires/delete", $output);
             } else {
                 $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
@@ -112,21 +114,16 @@ class Questionnaire extends MY_Controller
 
     /**
      * To add a new questionnaire
+     *
+     * @param boolean $model = Whether or not it's for models
      * @param int $error = Whether or not there has been an error
      * @param string $title = The title of the page
      * @param array $topics = The topics selected
      * @param array $nbQuestions = The amount of questions selected per topic
+     * @param string $modelName = The name of the model
      */
-    public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
+    public function add($model = 0, $error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $modelName = '')
     {
-        $output = array(
-            'error' => ($error == NULL ? NULL : true),
-            'topicsList' => $this->topic_model->get_all(),
-            'title' => $title,
-            'topics' => $topics,
-            'nbQuestions' => $nbQuestions
-        );
-
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
             $Topic = urldecode($_POST['topic']);
@@ -135,6 +132,15 @@ class Questionnaire extends MY_Controller
             $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
             echo $nbQuestion;
         } else {
+            $output = array(
+                'error' => ($error == NULL ? NULL : true),
+                'topicsList' => $this->topic_model->get_all(),
+                'title' => $title,
+                'modelName' => $modelName,
+                'topics' => $topics,
+                'nbQuestions' => $nbQuestions,
+                'model' => (bool) $model
+            );
             $this->display_view('questionnaires/add', $output);
         }
     }
@@ -146,7 +152,9 @@ class Questionnaire extends MY_Controller
     {
         // If temporary tableTopics does not exist, create it
         // Used to store topics and number of questions list
-        if (!isset($_SESSION['temp_tableTopics']))
+        $model = !empty($this->input->post('model'));
+        $temp_table_name = 'temp_tableTopics'.($model ? '_model' : '');
+        if (!isset($_SESSION[$temp_table_name]))
         {
             //Create a temporary TableTopics object
             $tableTopics = new TableTopics();
@@ -154,18 +162,21 @@ class Questionnaire extends MY_Controller
         else
         {
             //Get TableTopics object from session
-            $tableTopics = unserialize($_SESSION['temp_tableTopics']);
+            $tableTopics = unserialize($_SESSION[$temp_table_name]);
         }
 
         //Store title if defined
         if(!empty($this->input->post('title'))){
             $tableTopics->setTitle($this->input->post('title'));
         }
+        if(!empty($this->input->post('modelName'))) {
+            $tableTopics->setModelName($this->input->post('modelName'));
+        }
 
         //If the user want to validate his pdf
         if (isset($_POST[$this->lang->line('cancel')]))
         {
-            unset($_SESSION["temp_tableTopics"]);
+            unset($_SESSION[$temp_table_name]);
             redirect('/Questionnaire');
         }
         else if (isset($_POST['delete_topic']))
@@ -174,8 +185,8 @@ class Questionnaire extends MY_Controller
                 $tableTopics->removeArrayTopics($key);
                 $tableTopics->removeArrayNbQuestion($key);
             }
-            $_SESSION['temp_tableTopics'] = serialize($tableTopics);
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $_SESSION[$temp_table_name] = serialize($tableTopics);
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
         }
         else if (isset($_POST[$this->lang->line('add_form')]))
         {
@@ -202,9 +213,9 @@ class Questionnaire extends MY_Controller
                 //And take with him the last inputs
                 $tableTopics->setArrayTopics($topic);
                 $tableTopics->setArrayNbQuestion($nbQuestions);
-                $_SESSION['temp_tableTopics'] = serialize($tableTopics);
+                $_SESSION[$temp_table_name] = serialize($tableTopics);
             }
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
         }
         else if(isset($_POST[$this->lang->line('save')]))
         {
@@ -215,14 +226,15 @@ class Questionnaire extends MY_Controller
             if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
             {
                 $tableTopics->setTitle($this->input->post('title'));
-                unset($_SESSION['temp_tableTopics']);
-                $this->generatePDF(-1, $tableTopics);
+                unset($_SESSION[$temp_table_name]);
+                if(!$model) $this->generatePDF(-1, $tableTopics);
+                else $this->generateModel($tableTopics);
             } else {
                 // Form validation error
-                $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+                $this->add($model, 1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
             }
         } else {
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
         }
     }
 
@@ -421,6 +433,80 @@ class Questionnaire extends MY_Controller
             $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         }
         redirect('Questionnaire');
+    }
+
+    /**
+     * Adds a new model to the database
+     *
+     * @param TableTopics $tableTopics = The object containing all the data
+     */
+    public function generateModel($tableTopics = NULL) {
+        if(!is_null($tableTopics)) { // Prevent users from going in here
+            $nbQuestions = $tableTopics->getArrayNbQuestion();
+            $arrayTopics = $tableTopics->getArrayTopics();
+            $modelName = $tableTopics->getModelName();
+            $title = $tableTopics->getTitle();
+            $newQuestionnaireModel = array(
+                'Base_Name' => $modelName,
+                'Questionnaire_Name' => $title
+            );
+            $idQuestionnaireModel = $this->questionnaire_model_model->insert($newQuestionnaireModel);
+            $count = count($nbQuestions);
+            for($i = 0; $i < $count; $i++) {
+                $newQuestionnaireModelTopic = array(
+                    'FK_Questionnaire_Model' => $idQuestionnaireModel,
+                    'FK_Topic' => $arrayTopics[$i]->ID,
+                    'Nb_Topic_Questions' => $nbQuestions[$i]
+                );
+                $this->questionnaire_model_topic_model->insert($newQuestionnaireModelTopic);
+            }
+        }
+        redirect('Questionnaire');
+    }
+
+    /**
+     * Generates a pdf and answer sheet based on the questionnaire model
+     * Actually just prepares a TableTopics object before passing it to generatePDF()
+     *
+     * @param integer $modelId = The id of the questionnaire model to use
+     */
+    public function model_generate_pdf($modelId) {
+        $questionnaireModel = $this->questionnaire_model_model->get($modelId);
+        $questmodtops = $this->questionnaire_model_topic_model->get_many_by('FK_Questionnaire_Model = '.$modelId);
+        if(is_null($questionnaireModel)) {
+            redirect('Questionnaire');
+        }
+        $tableTopics = new TableTopics();
+        $tableTopics->setTitle($questionnaireModel->Questionnaire_Name);
+        foreach($questmodtops as $questmodtop) {
+            $topic = $this->topic_model->get($questmodtop->FK_Topic);
+            $tableTopics->setArrayTopics($topic);
+            $tableTopics->setArrayNbQuestion($questmodtop->Nb_Topic_Questions);
+        }
+        $this->generatePDF(-1, $tableTopics);
+    }
+
+    /**
+     * Deletes a questionnaire model
+     *
+     * @param integer $modelId = The id of the questionnaire model to delete
+     * @param any $action = Keep NULL to show confirmation, otherwise delete
+     */
+    public function model_delete($modelId, $action = NULL) {
+        $questionnaireModel = $this->questionnaire_model_model->get($modelId);
+        if(is_null($questionnaireModel)) redirect('Questionnaire');
+        if(is_null($action)) {
+            $output = get_object_vars($questionnaireModel);
+            $output['model'] = true;
+            $this->display_view('questionnaires/delete', $output);
+        } else {
+            $questmodtops = $this->questionnaire_model_topic_model->get_many_by('FK_Questionnaire_Model = '.$modelId);
+            foreach($questmodtops as $questmodtop) {
+                $this->questionnaire_model_topic_model->delete($questmodtop->ID);
+            }
+            $this->questionnaire_model_model->delete($modelId);
+            redirect('Questionnaire');
+        }
     }
 
     /**
