@@ -47,6 +47,7 @@ $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_add_topic']                  = 'Ajouter un sujet';
+$lang['btn_add_topic_in_module']        = 'Ajouter un sujet dans ce module';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';

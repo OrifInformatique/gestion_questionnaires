@@ -48,8 +48,6 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     <?php echo $this->lang->line('nav_questionnaire');?></a></li>
             <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
                     <?php echo $this->lang->line('nav_question');?></a></li>
-            <li <?php checkactive(3); ?>><a href="<?php echo base_url('Module');?>">
-                    <?php echo $this->lang->line('nav_module');?></a></li>
             <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
                     <?php echo $this->lang->line('nav_topic');?></a></li>
         </ul>

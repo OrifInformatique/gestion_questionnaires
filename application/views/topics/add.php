@@ -16,7 +16,7 @@
         $attributes = array("class" => "form-group",
             "id" => "addTopicForm",
             "name" => "addTopicForm");
-        echo form_open('Topic/form_add', $attributes);
+        echo form_open('Topic/form_add_topic', $attributes);
         if(count($topics) == 0){
             echo '<div class="alert alert-warning">'.$this->lang->line('topic_no_module_error').'</div>';
         }
@@ -36,7 +36,7 @@
                 foreach ($topics as $object => $topic) {
                     if($topic->FK_Parent_Topic == 0) {
     				    //Affiche les modules
-                        echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
+                        echo "<option value='". $topic->ID ."'".($selected_module == $topic->ID?' selected':'').">" . $topic->Topic . "</option>";
                     }
                 }
             ?>
