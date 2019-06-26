@@ -8,6 +8,7 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model` (
 	`Questionnaire_Name` varchar(100) NOT NULL,
 	PRIMARY KEY (`ID`)
 ) ENGINE = InnoDB;
+ALTER TABLE `t_questionnaire_model` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Create `t_questionnaire_model_topic`
@@ -21,6 +22,7 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model_topic` (
 	INDEX (`FK_Questionnaire_Model`),
 	INDEX (`FK_Topic`)
 ) ENGINE = InnoDB;
+ALTER TABLE `t_questionnaire_model_topic` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Update key relations
