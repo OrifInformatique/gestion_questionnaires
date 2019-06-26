@@ -105,7 +105,7 @@ $nbMaxQuestion = 0;
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-sm-4 col-xs-12">
-                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="<?php echo $this->lang->line('add_form')?>"/>
+                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="add_form"/>
             </div>
         </div>
         <div class="row">
@@ -156,11 +156,11 @@ $nbMaxQuestion = 0;
                 
             </div>
             <div class="col-sm-4 col-xs-12" > 
-            <input type="submit" class="btn btn-danger col-xs-12" name="<?php echo $this->lang->line('cancel');?>" value="<?php echo $this->lang->line('cancel');?>">
+            <input type="submit" class="btn btn-danger col-xs-12" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
 
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                 <input type="submit" class="btn btn-success col-xs-12" name="<?php echo $this->lang->line('save');?>" value="<?php echo $this->lang->line('save');?>">
+                 <input type="submit" class="btn btn-success col-xs-12" name="save" value="<?php echo $this->lang->line('save');?>">
             </div>
 
             <?php echo form_close(); ?>
