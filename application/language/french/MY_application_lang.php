@@ -75,6 +75,7 @@ $lang['msg_err_access_denied']          = 'Accès refusé';
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
 $lang['title_questionnaire_update']     = 'Modifier un questionnaire';
+$lang['finish_questionnaire']           = 'Modifier un questionnaire depuis un modèle';
 $lang['update_title_questionnaire']     = 'Titre :';
 $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soient remplis';
 $lang['questionnaire']                  = 'Titre';

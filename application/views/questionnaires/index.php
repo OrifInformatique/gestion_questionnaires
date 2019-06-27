@@ -33,7 +33,7 @@
                             <td><?= $model->Base_Name; ?></td>
                             <td><?= $model->Questionnaire_Name; ?></td>
                             <td><?= $model->Questionnaire_Subtitle; ?></td>
-                            <td><a href="<?= base_url('Questionnaire/model_generate_pdf/'.$model->ID) ?>"><?= $this->lang->line('generate'); ?></a></td>
+                            <td><a href="<?= base_url('Questionnaire/generate_pdf_from_model/'.$model->ID) ?>"><?= $this->lang->line('generate'); ?></a></td>
                             <td><a href="<?= base_url('Questionnaire/model_delete/'.$model->ID); ?>" class="close">×</a></td>
                         </tr>
                     <?php } ?>

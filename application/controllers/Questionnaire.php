@@ -498,26 +498,45 @@ class Questionnaire extends MY_Controller
     }
 
     /**
+     * Displays a page to modify a last time the pdf title and subtitle
+     *
+     * @param integer $modelId = The id of the model to generate
+     */
+    public function generate_pdf_from_model($modelId) {
+        $questionnaireModel = $this->questionnaire_model_model->get($modelId);
+        $output = array(
+            'model' => $questionnaireModel
+        );
+        $this->display_view('questionnaires/generate', $output);
+    }
+
+    /**
      * Generates a pdf and answer sheet based on the questionnaire model
      * Actually just prepares a TableTopics object before passing it to generatePDF()
-     *
-     * @param integer $modelId = The id of the questionnaire model to use
      */
-    public function model_generate_pdf($modelId) {
-        $questionnaireModel = $this->questionnaire_model_model->get($modelId);
-        $questmodtops = $this->questionnaire_model_topic_model->get_many_by('FK_Questionnaire_Model = '.$modelId);
-        if(is_null($questionnaireModel)) {
-            redirect('Questionnaire');
+    public function model_generate_pdf() {
+        $modelId = $this->input->post('modelId');
+
+        $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
+        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'), 'required');
+
+        if($this->form_validation->run()) {
+            $title = $this->input->post('title');
+            $subtitle = $this->input->post('subtitle');
+            $questmodtops = $this->questionnaire_model_topic_model->get_many_by('FK_Questionnaire_Model = '.$modelId);
+
+            $tableTopics = new TableTopics();
+            $tableTopics->setTitle($title);
+            $tableTopics->setSubtitle($subtitle);
+            foreach($questmodtops as $questmodtop) {
+                $topic = $this->topic_model->get($questmodtop->FK_Topic);
+                $tableTopics->setArrayTopics($topic);
+                $tableTopics->setArrayNbQuestion($questmodtop->Nb_Topic_Questions);
+            }
+            $this->generatePDF(-1, $tableTopics);
+        } else {
+            $this->generate_pdf_from_model($modelId);
         }
-        $tableTopics = new TableTopics();
-        $tableTopics->setTitle($questionnaireModel->Questionnaire_Name);
-        $tableTopics->setSubtitle($questionnaireModel->Questionnaire_Subtitle);
-        foreach($questmodtops as $questmodtop) {
-            $topic = $this->topic_model->get($questmodtop->FK_Topic);
-            $tableTopics->setArrayTopics($topic);
-            $tableTopics->setArrayNbQuestion($questmodtop->Nb_Topic_Questions);
-        }
-        $this->generatePDF(-1, $tableTopics);
     }
 
     /**
