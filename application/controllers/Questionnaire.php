@@ -411,9 +411,14 @@ class Questionnaire extends MY_Controller
         $answers->SetTextColor(0,0,0);
 
         if($idQuestionnaire == -1){
-            //$pdf->Output('I', 'Questionnaire', true);
-            $title = $tableTopics->getTitle();
+            // Trim the name before using it to create a file
+            $title = trim($tableTopics->getTitle());
 
+            // Replace all non alphanum characters with dashes
+            // This would only fail on less than 1% of all operating systems
+            $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title));
+
+            // In case the questionnaire's pdf already exists, change the file's name
             if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
                 $i = 1;
                 while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
@@ -441,7 +446,11 @@ class Questionnaire extends MY_Controller
     {
         $listIDQuestions = array();
         // Prepare the questionnaire name and save the original
-        $title_original = $title = $tableTopics->getTitle();
+        $title_original = trim($tableTopics->getTitle());
+
+        // Replace all non alphanum characters with dashes
+        // This would only fail on less than 1% of all operating systems
+        $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -499,9 +508,8 @@ class Questionnaire extends MY_Controller
         //load randoms questions about the topic
         $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
 
-        for($number = 0; $number < count($rndQuestions); $number++)
-        {
-            $listIDQuestions[] = $rndQuestions[$number]->FK_Question;
+        foreach($rndQuestions as $rndQuestion) {
+            $listIDQuestions[] = $rndQuestion->FK_Question;
         }
 
         return $listIDQuestions;
@@ -599,7 +607,7 @@ class Questionnaire extends MY_Controller
              * The function did not exist,
              * there are no distribution questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
 
@@ -691,7 +699,7 @@ class Questionnaire extends MY_Controller
              * The function did not exist,
              * there are no table questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
 
