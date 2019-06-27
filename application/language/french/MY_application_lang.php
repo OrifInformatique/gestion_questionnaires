@@ -86,6 +86,7 @@ $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
 $lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
 $lang['add_title_questionnaire']        = 'Titre du questionnaire:';
+$lang['add_subtitle_questionnaire']     = 'Sous-titre du questionnaire:';
 $lang['add_topic_questionnaire']        = 'Sujet :';
 $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
