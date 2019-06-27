@@ -65,10 +65,6 @@ $db['default'] = array(
 * [FPDF](http://www.fpdf.org/) - To generate pdf questionnaires
 * [PHPExcel - DEPRECATED](https://github.com/PHPOffice/PHPExcel) - To import original questions sets from Excel files (not to use anymore)
 
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/OrifInformatique/gestion_questionnaires/tags).
-
 ## Authors
 
 * **Orif, domaine informatique** - *Initiating and following the project* - [GitHub account](https://github.com/OrifInformatique)
