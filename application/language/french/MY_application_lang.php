@@ -95,6 +95,7 @@ $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questio
 // Questionnaire model pages
 $lang['title_model']                    = 'Liste des modèles';
 $lang['questionnaire_model_titles']     = 'Titre des questionnaires';
+$lang['questionnaire_model_subtitles']  = 'Sous-titre des questionnaires';
 $lang['questionnaire_model']            = 'Modèle';
 $lang['generate']                       = 'Générer';
 $lang['add_questionnaire_model_title']  = 'Ajouter un modèle de questionnaire';

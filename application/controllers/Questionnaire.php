@@ -179,6 +179,12 @@ class Questionnaire extends MY_Controller
             $tableTopics->setSubtitle($this->input->post('subtitle'));
         }
 
+        $title = $tableTopics->getTitle();
+        $arrayTopics = $tableTopics->getArrayTopics();
+        $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
+        $subtitle = $tableTopics->getSubtitle();
+        $modelName = $tableTopics->getModelName();
+
         //If the user want to validate his pdf
         if (isset($_POST[$this->lang->line('cancel')]))
         {
@@ -191,9 +197,11 @@ class Questionnaire extends MY_Controller
                 $tableTopics->removeArrayTopics($key);
                 $tableTopics->removeArrayNbQuestion($key);
             }
+            $arrayTopics = $tableTopics->getArrayTopics();
+            $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
 
             $_SESSION[$temp_table_name] = serialize($tableTopics);
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
+            $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
         else if (isset($_POST[$this->lang->line('add_form')]))
         {
@@ -222,8 +230,10 @@ class Questionnaire extends MY_Controller
                 $tableTopics->setArrayNbQuestion($nbQuestions);
                 $_SESSION[$temp_table_name] = serialize($tableTopics);
             }
+            $arrayTopics = $tableTopics->getArrayTopics();
+            $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
 
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
+            $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
         else if(isset($_POST[$this->lang->line('save')]))
         {
@@ -242,10 +252,10 @@ class Questionnaire extends MY_Controller
 
             } else {
                 // Form validation error
-                $this->add($model, 1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
+                $this->add($model, 1, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
             }
         } else {
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
+            $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
     }
 
@@ -467,9 +477,11 @@ class Questionnaire extends MY_Controller
             $arrayTopics = $tableTopics->getArrayTopics();
             $modelName = $tableTopics->getModelName();
             $title = $tableTopics->getTitle();
+            $subtitle = $tableTopics->getSubtitle();
             $newQuestionnaireModel = array(
                 'Base_Name' => $modelName,
-                'Questionnaire_Name' => $title
+                'Questionnaire_Name' => $title,
+                'Questionnaire_Subtitle' => $subtitle
             );
             $idQuestionnaireModel = $this->questionnaire_model_model->insert($newQuestionnaireModel);
             $count = count($nbQuestions);
@@ -499,6 +511,7 @@ class Questionnaire extends MY_Controller
         }
         $tableTopics = new TableTopics();
         $tableTopics->setTitle($questionnaireModel->Questionnaire_Name);
+        $tableTopics->setSubtitle($questionnaireModel->Questionnaire_Subtitle);
         foreach($questmodtops as $questmodtop) {
             $topic = $this->topic_model->get($questmodtop->FK_Topic);
             $tableTopics->setArrayTopics($topic);

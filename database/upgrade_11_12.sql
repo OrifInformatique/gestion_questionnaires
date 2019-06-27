@@ -10,6 +10,7 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model` (
 	`ID` int NOT NULL,
 	`Base_Name` varchar(100) NOT NULL,
 	`Questionnaire_Name` varchar(100) NOT NULL,
+	`Questionnaire_Subtitle` varchar(255) NULL,
 	PRIMARY KEY (`ID`)
 ) ENGINE = InnoDB;
 ALTER TABLE `t_questionnaire_model` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
@@ -34,4 +35,4 @@ ALTER TABLE `t_questionnaire_model_topic` CHANGE `ID` `ID` INT(11) NOT NULL AUTO
 ALTER TABLE `t_questionnaire_model_topic` ADD CONSTRAINT `t_questionnaire_model_topic_ibfk_1`
 FOREIGN KEY (`FK_Topic`) REFERENCES `t_topic`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `t_questionnaire_model_topic` ADD CONSTRAINT `t_questionnaire_model_topic_ibfk_2`
-FOREIGN KEY (`FK_Questionnaire_Model`) REFERENCES `t_questionnaire_model`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION; 
+FOREIGN KEY (`FK_Questionnaire_Model`) REFERENCES `t_questionnaire_model`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
