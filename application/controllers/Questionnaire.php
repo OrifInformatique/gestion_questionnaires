@@ -331,11 +331,18 @@ class Questionnaire extends MY_Controller
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
             $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $pdf->MultiCell(20, 10, '.../'.$rndQuestion->Points);
+            $pdf->MultiCell(20, 7, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-                $pdf->MultiCell(10, 10, '');
+                
+                if((count($stringLines) - 1) == $i)
+                {
+                    $pdf->MultiCell(10, 10, '');
+                } else 
+                {
+                   $pdf->MultiCell(10, 7, '');
+                }
             }
             // Display question header
             $answers->SetFont('', 'B');
@@ -810,7 +817,15 @@ class Questionnaire extends MY_Controller
         // Prepare variables
         $maxlength = 60;
         $answer = $this->free_answer_model->get_by('FK_Question', $question->ID)->Answer;
-        $answerSize = ceil(strlen($answer) / $maxlength);
+        $numberOfLines = 1;
+
+        if(strlen($answer) > 50 && strlen($answer) < 100)
+        {
+            $numberOfLines = 2;
+        } else if(strlen($answer) > 100)
+        {
+            $numberOfLines = 3;
+        }
 
         if($answerPdf) {
             $stringLines = $this->string_to_small_array($answer);
@@ -824,7 +839,7 @@ class Questionnaire extends MY_Controller
             $pdf->SetTextColor(0, 0, 0);
         } else {
             $line = str_repeat("_", $maxlength);
-            for($i = 0; $i < $answerSize; $i++) {
+            for($i = 0; $i < $numberOfLines; $i++) {
                 $pdf->Cell(10, 10);
                 // Display each line for answering
                 $pdf->MultiCell(150, 10, $line);
