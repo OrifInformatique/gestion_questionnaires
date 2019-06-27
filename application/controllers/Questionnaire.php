@@ -166,7 +166,7 @@ class Questionnaire extends MY_Controller
         }
 
         //If the user want to validate his pdf
-        if (isset($_POST[$this->lang->line('cancel')]))
+        if (isset($_POST['cancel']))
         {
             unset($_SESSION["temp_tableTopics"]);
             redirect('/Questionnaire');
@@ -180,7 +180,7 @@ class Questionnaire extends MY_Controller
             $_SESSION['temp_tableTopics'] = serialize($tableTopics);
             $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
         }
-        else if (isset($_POST[$this->lang->line('add_form')]))
+        else if (isset($_POST['add_form']))
         {
             $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
             $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
@@ -209,7 +209,7 @@ class Questionnaire extends MY_Controller
             }
             $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
         }
-        else if(isset($_POST[$this->lang->line('save')]))
+        else if(isset($_POST['save']))
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
