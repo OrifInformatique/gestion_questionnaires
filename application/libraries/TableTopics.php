@@ -11,6 +11,7 @@ class TableTopics
 
     private $title = '';
     private $modelName = '';
+    private $subtitle = '';
     private $PDFName = '';
     private $arrayTopics = array();
     private $arrayNbQuestion = array();
@@ -87,7 +88,21 @@ class TableTopics
     }
 
     /**
-     * @return string
+     * @return string $subtitle
+     */
+    public function getSubtitle() {
+        return $this->subtitle;
+    }
+
+    /**
+     * @param string $subtitle
+     */
+    public function setSubtitle($subtitle) {
+        $this->subtitle = $subtitle;
+    }
+    
+    /**
+     * @return string $modelName
      */
     public function getModelName() {
         return $this->modelName;

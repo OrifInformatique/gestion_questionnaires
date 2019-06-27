@@ -122,7 +122,7 @@ class Questionnaire extends MY_Controller
      * @param array $nbQuestions = The amount of questions selected per topic
      * @param string $modelName = The name of the model
      */
-    public function add($model = 0, $error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $modelName = '')
+    public function add($model = 0, $error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $subtitle = '', $modelName = '')
     {
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
@@ -139,7 +139,8 @@ class Questionnaire extends MY_Controller
                 'modelName' => $modelName,
                 'topics' => $topics,
                 'nbQuestions' => $nbQuestions,
-                'model' => (bool) $model
+                'model' => (bool) $model,
+                'subtitle' => $subtitle
             );
             $this->display_view('questionnaires/add', $output);
         }
@@ -169,8 +170,13 @@ class Questionnaire extends MY_Controller
         if(!empty($this->input->post('title'))){
             $tableTopics->setTitle($this->input->post('title'));
         }
+
         if(!empty($this->input->post('modelName'))) {
             $tableTopics->setModelName($this->input->post('modelName'));
+        }
+        
+        if(!empty($this->input->post('subtitle'))) {
+            $tableTopics->setSubtitle($this->input->post('subtitle'));
         }
 
         //If the user want to validate his pdf
@@ -185,8 +191,9 @@ class Questionnaire extends MY_Controller
                 $tableTopics->removeArrayTopics($key);
                 $tableTopics->removeArrayNbQuestion($key);
             }
+
             $_SESSION[$temp_table_name] = serialize($tableTopics);
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
         }
         else if (isset($_POST[$this->lang->line('add_form')]))
         {
@@ -215,7 +222,8 @@ class Questionnaire extends MY_Controller
                 $tableTopics->setArrayNbQuestion($nbQuestions);
                 $_SESSION[$temp_table_name] = serialize($tableTopics);
             }
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
+
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
         }
         else if(isset($_POST[$this->lang->line('save')]))
         {
@@ -226,15 +234,18 @@ class Questionnaire extends MY_Controller
             if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
             {
                 $tableTopics->setTitle($this->input->post('title'));
+                $tableTopics->setSubtitle($this->input->post('subtitle'));
+
                 unset($_SESSION[$temp_table_name]);
                 if(!$model) $this->generatePDF(-1, $tableTopics);
                 else $this->generateModel($tableTopics);
+
             } else {
                 // Form validation error
-                $this->add($model, 1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
+                $this->add($model, 1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
             }
         } else {
-            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getModelName());
+            $this->add($model, NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle(), $tableTopics->getModelName());
         }
     }
 
@@ -250,10 +261,13 @@ class Questionnaire extends MY_Controller
             // Prevent calling the function without any argument
             if(is_null($tableTopics)) redirect('Questionnaire');
             $title = $tableTopics->getTitle();
+            $subtitle = $tableTopics->getSubtitle();
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         } else {
             $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
-            $title = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
+            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+            $title = $questionnaire->Questionnaire_Name;
+            $subtitle = $questionnaire->Questionnaire_Subtitle;
         }
 
         $totalpoints = 0;
@@ -276,6 +290,7 @@ class Questionnaire extends MY_Controller
         $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $subtitle), 0, 'L');
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
@@ -290,6 +305,7 @@ class Questionnaire extends MY_Controller
         $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $subtitle), 0, 'L');
         $answers->Cell(140);
         $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $answers->AliasNbPages();
@@ -414,9 +430,14 @@ class Questionnaire extends MY_Controller
         $answers->SetTextColor(0,0,0);
 
         if($idQuestionnaire == -1){
-            //$pdf->Output('I', 'Questionnaire', true);
-            $title = $tableTopics->getTitle();
+            // Trim the name before using it to create a file
+            $title = trim($tableTopics->getTitle());
 
+            // Replace all non alphanum characters with dashes
+            // This would only fail on less than 1% of all operating systems
+            $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title));
+
+            // In case the questionnaire's pdf already exists, change the file's name
             if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
                 $i = 1;
                 while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
@@ -518,7 +539,11 @@ class Questionnaire extends MY_Controller
     {
         $listIDQuestions = array();
         // Prepare the questionnaire name and save the original
-        $title_original = $title = $tableTopics->getTitle();
+        $title_original = trim($tableTopics->getTitle());
+
+        // Replace all non alphanum characters with dashes
+        // This would only fail on less than 1% of all operating systems
+        $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -532,6 +557,7 @@ class Questionnaire extends MY_Controller
         // Insert new questionnaire
         $newQuestionnaire = array(
             "Questionnaire_Name" => $title_original,
+            "Questionnaire_Subtitle" => $tableTopics->getSubtitle(),
             "PDF" => $title.".pdf",
             "Corrige_PDF" => $title."_corrige.pdf"
         );

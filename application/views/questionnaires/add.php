@@ -73,6 +73,17 @@ $nbMaxQuestion = 0;
                     </div>
                 </div>
             </div>
+            <div class="form-group col-xs-12">
+                <h4><?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle'); ?></h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <?= form_input('subtitle', $subtitle, array(
+                            'maxlength' => 100, 'id' => 'subtitle',
+                            'class' => 'form-control'
+                        )); ?>
+                    </div>
+                </div>
+            </div>
             <div class="form-group col-xs-12 col-sm-4">
                 <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
                 <div class="row">
