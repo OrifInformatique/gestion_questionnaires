@@ -19,6 +19,9 @@ class topic_model extends MY_Model
                                            'model' => 'question_model'],
                            'child_topics' => ['primary_key' => 'FK_Parent_Topic',
                                               'model' => 'topic_model']];
+    // Uncomment to enable soft deletion
+    //protected $soft_delete_key = 'Archive';
+    //protected $soft_delete = TRUE;
 
     /**
      * Constructor
