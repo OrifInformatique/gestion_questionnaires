@@ -330,8 +330,8 @@ class Questionnaire extends MY_Controller
             $pdf->SetFont('', 'B');
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
-            $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $pdf->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $pdf->MultiCell(20, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
@@ -341,8 +341,8 @@ class Questionnaire extends MY_Controller
             $answers->SetFont('', 'B');
             $answers->Cell(10, 10, $questionNum.'.');
             $answers->SetFont('', '');
-            $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $answers->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $answers->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $answers->MultiCell(20, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $answers->Cell(10, 10);
                 $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
