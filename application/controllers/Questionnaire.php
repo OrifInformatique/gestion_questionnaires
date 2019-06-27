@@ -327,15 +327,25 @@ class Questionnaire extends MY_Controller
 
             $stringLines = $this->string_to_small_array($rndQuestion->Question);
             // Display question header
-            $pdf->SetFont('', 'B');
-            $pdf->Cell(10, 10, $questionNum.'.');
-            $pdf->SetFont('', '');
-            $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            if(count($stringLines) == 1)    //Keep line spacing large enough between the question and the answer line
+            {
+                $pdf->SetFont('', 'B');
+                $pdf->Cell(10, 7, $questionNum.'.');
+                $pdf->SetFont('', '');
+                $pdf->Cell(139, 7, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            } else 
+            {
+                $pdf->SetFont('', 'B');
+                $pdf->Cell(10, 10, $questionNum.'.');
+                $pdf->SetFont('', '');
+                $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            }
             $pdf->MultiCell(20, 7, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
                 
+                //Avoid the answer line to be closer of the question
                 if((count($stringLines) - 1) == $i)
                 {
                     $pdf->MultiCell(10, 10, '');
@@ -648,13 +658,21 @@ class Questionnaire extends MY_Controller
         $lastC = strrpos($result, '[');
         $result = substr($result, 0, $lastC);
         // Keep [ x ] on the same line
-        $stringLines = $this->string_to_small_array($result, '/ (?!\?|(\[ [0-9] \])|([0-9]))/');
+        $stringLines = $this->string_to_small_array($result, '/ (?!\?|(\[ [0-9] \])|([0-9])|\])/');
         // Display the question
-        $pdf->Ln();
+        $pdf->MultiCell(10, 1, '');
         for($i = 0; $i < count($stringLines); $i++) {
             $pdf->Cell(10, 10);
             $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-            $pdf->MultiCell(10, 10, '');
+
+            //Avoid the answer line to be closer of the question
+            if((count($stringLines) - 1) == $i)
+            {
+                $pdf->MultiCell(10, 10, '');
+            } else 
+            {
+                $pdf->MultiCell(10, 7, '');
+            }
         }
 
         if($answerPdf) {
