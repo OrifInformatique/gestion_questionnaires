@@ -48,4 +48,22 @@ class user_model extends MY_Model
             return false;
         }
     }
+
+    /**
+     * Deletes the item permanently
+     *
+     * @param integer $id = The id of the item to delete
+     * @return integer =
+     */
+    public function hard_delete($id) {
+        $this->trigger('before_delete', $id);
+
+        $this->_database->where($this->primary_key, $id);
+
+        $result = $this->_database->delete($this->_table);
+
+        $this->trigger('after_delete', $result);
+
+        return $result;
+    }
 }

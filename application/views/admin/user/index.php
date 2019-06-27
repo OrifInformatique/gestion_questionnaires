@@ -38,9 +38,7 @@
                                     title='<?= $this->lang->line("title_user_change_password")."\"{$user->User}\""; ?>'>
                                     🖍
                                 </a>
-                                <?php if(!$user->is_inactive) { ?>
-                                    <a href="<?= base_url('Admin/user_delete/'.$user->ID); ?>" class="close">×</a>
-                                <?php } ?>
+                                <a href="<?= base_url('Admin/user_delete/'.$user->ID); ?>" class="close">×</a>
                             </td>
                         </tr>
                     <?php } ?>

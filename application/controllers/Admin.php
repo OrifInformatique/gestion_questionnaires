@@ -104,30 +104,27 @@ class Admin extends MY_Controller {
      * Deletes a user
      *
      * @param int $userId = The id of the user to delete
-     * @param int $action = Display confirmation or desactivate
+     * @param int $action = Display confirmation or deactivate
      */
     public function user_delete($userId, $action = 0) {
-        $user = $this->user_model->get($userId);
+        $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) redirect('Admin/user_index');
 
         switch($action) {
-            case 0:
+            case 0: // Display confirmation
                 $output = get_object_vars($user);
                 $this->display_view('admin/user/delete', $output);
                 break;
-            case 1:
+            case 1: // Deactivate user
                 $this->user_model->delete($userId);
                 redirect('Admin/user_index');
                 break;
-            default:
+            case 2: // Delete user
+                $this->user_model->hard_delete($userId);
                 redirect('Admin/user_index');
-        }
-        if(is_null($action)) {
-            $output = get_object_vars($user);
-            $this->display_view('admin/user/delete', $output);
-        } else {
-            $this->user_model->delete($userId);
-            redirect('Admin/user_index');
+                break;
+            default: // Do nothing
+                redirect('Admin/user_index');
         }
     }
 

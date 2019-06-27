@@ -3,14 +3,19 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <h3><?php echo $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</h3>
+                    <h3><?= $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</h3>
                 </div>
                 <div class="btn-group">
-                    <a href="<?php echo base_url().uri_string()."/1";?>" class="btn btn-danger btn-lg">
-                        <?php echo $this->lang->line('yes');?>
+                    <?php if(!$is_inactive) { ?>
+                    <a href="<?= base_url().uri_string()."/1";?>" class="btn btn-warning btn-lg">
+                        <?= $this->lang->line('btn_desactivate');?>
                     </a>
-                    <a href="<?php echo base_url()."Module";?>" class="btn btn-lg">
-                        <?php echo $this->lang->line('no');?>
+                    <?php } ?>
+                    <a href="<?= base_url().uri_string()."/2";?>" class="btn btn-danger btn-lg">
+                        <?= $this->lang->line('btn_del');?>
+                    </a>
+                    <a href="<?= base_url()."Admin/user_index";?>" class="btn btn-lg">
+                        <?= $this->lang->line('btn_cancel');?>
                     </a>
                 </div>
             </div>
