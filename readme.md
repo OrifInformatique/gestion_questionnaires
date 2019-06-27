@@ -1,6 +1,6 @@
 # Questionnaires management
 
-The goal of this application is to record questions about different subjects and then being able to generate questionnaires with a random subset of these questions.
+The purpose of this application is to record questions about different topics and then being able to generate questionnaires with a random subset of these questions.
 Different types of questions are available, such as free text answer questions, multiple choice questions, cloze texts and others.
 
 This application is developed in french and not (yet ?) translated in other languages.
@@ -17,7 +17,7 @@ Install a local PHP server, [XAMPP for example](https://www.apachefriends.org)
 
 1. Download [our latest release](https://github.com/OrifInformatique/gestion_questionnaires/releases)
 2. Unzip your download in your project's directory (in your local PHP server)
-3. Generate a local database, using the latest "gestion_questionnaires_structure.sql" file in the "database" directory
+3. Generate a local database, using the latest "gestion_questionnaires_structure.sql" file, witch you find in the "database" directory
 4. Modify file application/config/config.php with your local site's URL and language (french by default)
 ```
 
