@@ -117,16 +117,8 @@ class Questionnaire extends MY_Controller
      * @param array $topics = The topics selected
      * @param array $nbQuestions = The amount of questions selected per topic
      */
-    public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array())
+    public function add($error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $subtitle = '')
     {
-        $output = array(
-            'error' => ($error == NULL ? NULL : true),
-            'topicsList' => $this->topic_model->get_all(),
-            'title' => $title,
-            'topics' => $topics,
-            'nbQuestions' => $nbQuestions
-        );
-
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
             $Topic = urldecode($_POST['topic']);
@@ -135,6 +127,14 @@ class Questionnaire extends MY_Controller
             $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
             echo $nbQuestion;
         } else {
+            $output = array(
+                'error' => ($error == NULL ? NULL : true),
+                'topicsList' => $this->topic_model->get_all(),
+                'title' => $title,
+                'subtitle' => $subtitle,
+                'topics' => $topics,
+                'nbQuestions' => $nbQuestions
+            );
             $this->display_view('questionnaires/add', $output);
         }
     }
@@ -161,9 +161,12 @@ class Questionnaire extends MY_Controller
         if(!empty($this->input->post('title'))){
             $tableTopics->setTitle($this->input->post('title'));
         }
+        if(!empty($this->input->post('subtitle'))) {
+            $tableTopics->setSubtitle($this->input->post('subtitle'));
+        }
 
         //If the user want to validate his pdf
-        if (isset($_POST[$this->lang->line('cancel')]))
+        if (isset($_POST['cancel']))
         {
             unset($_SESSION["temp_tableTopics"]);
             redirect('/Questionnaire');
@@ -175,9 +178,9 @@ class Questionnaire extends MY_Controller
                 $tableTopics->removeArrayNbQuestion($key);
             }
             $_SESSION['temp_tableTopics'] = serialize($tableTopics);
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
         }
-        else if (isset($_POST[$this->lang->line('add_form')]))
+        else if (isset($_POST['add_form']))
         {
             $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
             $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
@@ -204,9 +207,9 @@ class Questionnaire extends MY_Controller
                 $tableTopics->setArrayNbQuestion($nbQuestions);
                 $_SESSION['temp_tableTopics'] = serialize($tableTopics);
             }
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
         }
-        else if(isset($_POST[$this->lang->line('save')]))
+        else if(isset($_POST['save']))
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
@@ -215,14 +218,15 @@ class Questionnaire extends MY_Controller
             if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
             {
                 $tableTopics->setTitle($this->input->post('title'));
+                $tableTopics->setSubtitle($this->input->post('subtitle'));
                 unset($_SESSION['temp_tableTopics']);
                 $this->generatePDF(-1, $tableTopics);
             } else {
                 // Form validation error
-                $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+                $this->add(1, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
             }
         } else {
-            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion());
+            $this->add(NULL, $tableTopics->getTitle(), $tableTopics->getArrayTopics(), $tableTopics->getArrayNbQuestion(), $tableTopics->getSubtitle());
         }
     }
 
@@ -238,10 +242,13 @@ class Questionnaire extends MY_Controller
             // Prevent calling the function without any argument
             if(is_null($tableTopics)) redirect('Questionnaire');
             $title = $tableTopics->getTitle();
+            $subtitle = $tableTopics->getSubtitle();
             $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
         } else {
             $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
-            $title = $this->questionnaire_model->get($idQuestionnaire)->Questionnaire_Name;
+            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+            $title = $questionnaire->Questionnaire_Name;
+            $subtitle = $questionnaire->Questionnaire_Subtitle;
         }
 
         $totalpoints = 0;
@@ -264,6 +271,7 @@ class Questionnaire extends MY_Controller
         $pdf->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title), 0, "L");
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $pdf->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $subtitle), 0, 'L');
         $pdf->Cell(140);
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
@@ -278,6 +286,7 @@ class Questionnaire extends MY_Controller
         $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
         $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
         $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $subtitle), 0, 'L');
         $answers->Cell(140);
         $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $answers->AliasNbPages();
@@ -321,8 +330,8 @@ class Questionnaire extends MY_Controller
             $pdf->SetFont('', 'B');
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
-            $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $pdf->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $pdf->MultiCell(20, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
@@ -332,8 +341,8 @@ class Questionnaire extends MY_Controller
             $answers->SetFont('', 'B');
             $answers->Cell(10, 10, $questionNum.'.');
             $answers->SetFont('', '');
-            $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $answers->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $answers->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $answers->MultiCell(20, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $answers->Cell(10, 10);
                 $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
@@ -402,9 +411,14 @@ class Questionnaire extends MY_Controller
         $answers->SetTextColor(0,0,0);
 
         if($idQuestionnaire == -1){
-            //$pdf->Output('I', 'Questionnaire', true);
-            $title = $tableTopics->getTitle();
+            // Trim the name before using it to create a file
+            $title = trim($tableTopics->getTitle());
 
+            // Replace all non alphanum characters with dashes
+            // This would only fail on less than 1% of all operating systems
+            $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title));
+
+            // In case the questionnaire's pdf already exists, change the file's name
             if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
                 $i = 1;
                 while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
@@ -432,7 +446,11 @@ class Questionnaire extends MY_Controller
     {
         $listIDQuestions = array();
         // Prepare the questionnaire name and save the original
-        $title_original = $title = $tableTopics->getTitle();
+        $title_original = trim($tableTopics->getTitle());
+
+        // Replace all non alphanum characters with dashes
+        // This would only fail on less than 1% of all operating systems
+        $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -446,6 +464,7 @@ class Questionnaire extends MY_Controller
         // Insert new questionnaire
         $newQuestionnaire = array(
             "Questionnaire_Name" => $title_original,
+            "Questionnaire_Subtitle" => $tableTopics->getSubtitle(),
             "PDF" => $title.".pdf",
             "Corrige_PDF" => $title."_corrige.pdf"
         );
@@ -489,9 +508,8 @@ class Questionnaire extends MY_Controller
         //load randoms questions about the topic
         $rndQuestions = $this->question_questionnaire_model->get_many_by("FK_Questionnaire  = '" .  $idQuestionnaire . "'");
 
-        for($number = 0; $number < count($rndQuestions); $number++)
-        {
-            $listIDQuestions[] = $rndQuestions[$number]->FK_Question;
+        foreach($rndQuestions as $rndQuestion) {
+            $listIDQuestions[] = $rndQuestion->FK_Question;
         }
 
         return $listIDQuestions;
@@ -589,7 +607,7 @@ class Questionnaire extends MY_Controller
              * The function did not exist,
              * there are no distribution questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
 
@@ -681,7 +699,7 @@ class Questionnaire extends MY_Controller
              * The function did not exist,
              * there are no table questions and
              * the page to create them has yet to be coded
-            */
+             */
         } else {
             $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
 
