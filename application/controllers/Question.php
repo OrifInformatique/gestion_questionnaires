@@ -248,6 +248,7 @@ class Question extends MY_Controller
 				case 4:
 					// CLOZE TEXT
 					$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+					$this->db->order_by("Answer_Order");
 					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
 					$i = 0;
 					foreach ($reponses as $reponse) {
@@ -332,6 +333,7 @@ class Question extends MY_Controller
 				case 4:
 					$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
 					$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
+					$this->db->order_by("Answer_Order");
 					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
 					foreach ($reponses as $reponse) {
 						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
@@ -379,7 +381,6 @@ class Question extends MY_Controller
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
-
 			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -738,18 +739,19 @@ class Question extends MY_Controller
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
 
-
-			for($i=0; $i < $output['nbAnswer']; $i++){
-				if(!empty($_POST['reponses'][$i]['id'])){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+			$i = 0;
+			foreach($_POST['reponses'] as $reponse){
+				if(!empty($reponse['id'])){
+					$answers[$i]['id'] = $reponse['id'];
 				} else {
 					$answers[$i]['id'] = 0;
 				}
-				if(!empty($_POST['reponses'][$i]['answer'])){
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($reponse['answer'])){
+					$answers[$i]['answer'] = $reponse['answer'];
 				} else {
 					$answers[$i]['answer'] = "";
 				}
+				$i++;
 			}
 
 			if (isset($_POST['add_answer'])){
@@ -788,7 +790,7 @@ class Question extends MY_Controller
 		}
 
 		if (isset($_POST['save'])){
-			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+			$this->form_validation->set_rules('name', $this->lang->line('cloze_text_consign'), 'required');
 			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
@@ -811,13 +813,15 @@ class Question extends MY_Controller
 					);
 					$idClozeText = $this->cloze_text_model->insert($inputClozeText);
 
-					for($i=0; $i < $_POST['nbAnswer']; $i++){
+					$i = 0;
+					foreach($_POST['reponses'] as $reponse){
 						$inputAnswer = array(
 							"FK_Cloze_Text" => $idClozeText,
-							"Answer" => $_POST['reponses'][$i]['answer'],
+							"Answer" => $reponse['answer'],
 							"Answer_Order" => $i
 						);
 						$this->cloze_text_answer_model->insert($inputAnswer);
+						$i++;
 					}
 				} else {
 					$inputQuestion = array(
@@ -838,6 +842,7 @@ class Question extends MY_Controller
 						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
 					}
 
+					$this->db->order_by("Answer_Order");
 					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $_POST['id_cloze_text']);
 					$i = 0;
 					foreach ($reponses as $reponse) {
@@ -845,24 +850,26 @@ class Question extends MY_Controller
 						$i++;
 					}
 
-					for($i=0; $i < $_POST['nbAnswer']; $i++){
+					$i = 0;
+					foreach($_POST['reponses'] as $reponse){
 						if($answers[$i]['id'] == 0){
 							$inputQuestion = array(
 								"FK_Cloze_Text" => $_POST['id_cloze_text'],
-								"Answer" => $_POST['reponses'][$i]['answer'],
+								"Answer" => $reponse['answer'],
 								"Answer_Order" => $i
 							);
 							$idQuestion = $this->cloze_text_answer_model->insert($inputQuestion);
 						} else {
 							$inputAnswer = array(
 								"FK_Cloze_Text" => $_POST['id_cloze_text'],
-								"Answer" => $_POST['reponses'][$i]['answer'],
+								"Answer" => $reponse['answer'],
 								"Answer_Order" => $i
 							);
 							$this->cloze_text_answer_model->update($answers[$i]['id'], $inputAnswer);
 
 							unset($answersDb[array_search($answers[$i]['id'], $answersDb)]);
 						}
+						$i++;
 					}
 
 					foreach ($answersDb as $answerDb) {
@@ -891,18 +898,21 @@ class Question extends MY_Controller
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
-				for($i=0; $i < $output['nbAnswer']; $i++){
-					if(!empty($_POST['reponses'][$i]['id'])){
-						$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+				$i = 0;
+				foreach($_POST['reponses'] as $reponse){
+					if(!empty($reponse['id'])){
+						$answers[$i]['id'] = $reponse['id'];
 					} else {
 						$answers[$i]['id'] = 0;
 					}
-					if(!empty($_POST['reponses'][$i]['answer'])){
-						$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+					if(!empty($reponse['answer'])){
+						$answers[$i]['answer'] = $reponse['answer'];
 					} else {
 						$answers[$i]['answer'] = "";
 					}
+					$i++;
 				}
+
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();
 
@@ -930,18 +940,19 @@ class Question extends MY_Controller
 
 			$output['nbAnswer'] = $_POST['nbAnswer'];
 
-
-			for($i=0; $i < $output['nbAnswer']; $i++){
-				if(!empty($_POST['reponses'][$i]['id'])){
-					$answers[$i]['id'] = $_POST['reponses'][$i]['id'];
+			$i = 0;
+			foreach($_POST['reponses'] as $reponse){
+				if(!empty($reponse['id'])){
+					$answers[$i]['id'] = $reponse['id'];
 				} else {
 					$answers[$i]['id'] = 0;
 				}
-				if(!empty($_POST['reponses'][$i]['answer'])){
-					$answers[$i]['answer'] = $_POST['reponses'][$i]['answer'];
+				if(!empty($reponse['answer'])){
+					$answers[$i]['answer'] = $reponse['answer'];
 				} else {
 					$answers[$i]['answer'] = "";
 				}
+				$i++;
 			}
 
 			if (isset($_POST['add_answer'])){
