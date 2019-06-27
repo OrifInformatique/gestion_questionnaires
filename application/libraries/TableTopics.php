@@ -10,6 +10,7 @@ class TableTopics
 {
 
     private $title = '';
+    private $subtitle = '';
     private $PDFName = '';
     private $arrayTopics = array();
     private $arrayNbQuestion = array();
@@ -83,6 +84,20 @@ class TableTopics
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubtitle() {
+        return $this->subtitle;
+    }
+
+    /**
+     * @return string $subtitle
+     */
+    public function setSubtitle($subtitle) {
+        $this->subtitle = $subtitle;
     }
 
     /**

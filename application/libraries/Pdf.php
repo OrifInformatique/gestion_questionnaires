@@ -36,6 +36,7 @@ class PDF extends FPDF {
         $this->SetFont('', '');
         $this->SetXY($x, $y);
     }
+
     /**
      * Adds the amount of pages to the bottom right of the document
      * Spaces are not added to the text
@@ -48,12 +49,16 @@ class PDF extends FPDF {
         $this->Cell(0, 10, ($this->footerPage.$this->PageNo().$this->footerOutOf.$this->AliasNbPages));
         $this->SetXY($x, $y);
     }
+
     /**
      * Sets the title of the document
+     *
+     * @param string $title = The new title
+     * @param boolean $isUTF8 = Whether the title is in UTF8
      */
     function SetTitle($title, $isUTF8 = false) {
         parent::SetTitle($title, $isUTF8);
-        $this->title = iconv('UTF-8', 'windows-1252', $title);
+        $this->title = ($isUTF8 ? iconv('UTF-8', 'windows-1252', $title) : $title);
     }
 
     /**
