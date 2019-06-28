@@ -100,7 +100,7 @@ $nbMaxQuestion = 0;
                                             }
 
                                             //Affiche les topics associés
-                                            echo "<option class='disablable_option' value='" . $topicsList[$i]->ID . "'".($disabled?' disabled':'').">" . $topicsList[$i]->Topic . "</option>";
+                                            echo "<option value='" . $topicsList[$i]->ID . "'".($disabled?' disabled':'').">" . $topicsList[$i]->Topic . "</option>";
                                         }
                                     }
                                     echo "</optgroup>";

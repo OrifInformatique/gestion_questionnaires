@@ -9,10 +9,10 @@
     margin:20px 0;
 }
 
-.disablable_option {
+option {
     color: inherit;
 }
-.disablable_option:disabled {
+option:disabled {
     color: silver;
 }
 .align-center{
