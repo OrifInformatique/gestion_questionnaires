@@ -213,17 +213,29 @@ class Topic extends MY_Controller
     public function delete_module($id = 0, $action = NULL){
         if ($id != 0) {
             if (is_null($action)) {
-                $topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
-                if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
-                    $this->index($this->lang->line('del_module_form_err'));
+                $count = $this->topic_model->count_by('FK_Parent_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
+                $output['ID'] = $id;
+                $output['Topic'] = $this->topic_model->get($id)->Topic;
+                if ($count == 0) {
+                    $this->display_view("topics/delete", $output);
                 } else {
-                    $output = get_object_vars($this->topic_model->get($id));
-                    $this->display_view("modules/delete", $output);
+                    $output['topics'] = $count;
+                    $this->display_view("topics/delete", $output);
                 }
             } else {
-                $this->topic_model->delete($id);
+                $update = array('Archive' => 1);
+                $this->topic_model->update($id, $update);
+                $topics = $this->topic_model->get_many_by('FK_Parent_Topic='.$id);
+                foreach ($topics as $topic) {
+                    $questions = $this->question_model->get_many_by('FK_Topic='.$topic->ID);
+                    foreach ($questions as $question) {
+                        $this->question_model->update($question->ID, $update);
+                    }
+                    $this->question_model->update($topic->ID, $update);
+                }
                 $this->index();
             }
+
         } else {
           $this->index();
         }
