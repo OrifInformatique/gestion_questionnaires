@@ -9,6 +9,11 @@
 
 ?>
 <div class="container">
+    <?php if($question->Archive) { ?>
+        <div class="row alert alert-danger">
+            <?php echo $this->lang->line('question_deleted'); ?>
+        </div>
+    <?php } ?>
     <div class="row">
         <div class="col-xs-12">
             <table class="table table-hover" id="table">

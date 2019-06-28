@@ -51,6 +51,7 @@ $lang['btn_add_topic_in_module']        = 'Ajouter un sujet dans ce module';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
+$lang['btn_add_questionnaire_model']    = 'Ajouter un modèle de questionnaire';
 $lang['btn_import_image']               = 'Importer une image';
 $lang['btn_import_question']            = 'Importer une question';
 $lang['btn_next']                       = 'Suivant';
@@ -75,6 +76,7 @@ $lang['msg_err_access_denied']          = 'Accès refusé';
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
 $lang['title_questionnaire_update']     = 'Modifier un questionnaire';
+$lang['finish_questionnaire']           = 'Modifier un questionnaire depuis un modèle';
 $lang['update_title_questionnaire']     = 'Titre :';
 $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soient remplis';
 $lang['questionnaire']                  = 'Titre';
@@ -85,17 +87,29 @@ $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
 $lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
 $lang['add_title_questionnaire']        = 'Titre du questionnaire:';
+$lang['add_subtitle_questionnaire']     = 'Sous-titre du questionnaire:';
 $lang['add_topic_questionnaire']        = 'Sujet :';
 $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
 
+// Questionnaire model pages
+$lang['title_model']                    = 'Liste des modèles';
+$lang['questionnaire_model_titles']     = 'Titre des questionnaires';
+$lang['questionnaire_model_subtitles']  = 'Sous-titre des questionnaires';
+$lang['questionnaire_model']            = 'Modèle';
+$lang['generate']                       = 'Générer';
+$lang['add_questionnaire_model_title']  = 'Ajouter un modèle de questionnaire';
+$lang['add_title_questionnaire_model']  = 'Titre du modèle:';
+$lang['del_questionnaire_model_form_title'] = 'Voulez-vous vraiment supprimer le modèle ';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
 $lang['title_import_questions']         = 'Importez vos questions';
 $lang['title_import_pictures']          = 'Importez vos images';
+$lang['question_deleted']               = 'Cette question a été supprimée';
+$lang['question_already_deleted']       = 'Cette question a déjà été supprimée';
 $lang['question']                       = 'Question(s)';
 $lang['question_type']                  = 'Type de question';
 $lang['points']                         = 'Point(s)';
@@ -128,7 +142,7 @@ $lang['import_question_success']        = 'Les questions ont été importées av
 $lang['import_question_error']          = 'Erreur lors de l\'importion des questions.';
 $lang['question_error_404_message']     = 'Vous essayez d\'accéder à une question qui n\'existe pas .';
 $lang['question_error_404_heading']     = 'Question inexistante';
-$lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer la question ';
+$lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette question ?';
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
 $lang['filter']                         = 'Filtrer';
