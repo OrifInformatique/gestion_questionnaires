@@ -34,10 +34,8 @@
              <?php
     			//Récupère chaque module
                 foreach ($topics as $object => $topic) {
-                    if($topic->FK_Parent_Topic == 0) {
-    				    //Affiche les modules
-                        echo "<option value='". $topic->ID ."'".($selected_module == $topic->ID?' selected':'').">" . $topic->Topic . "</option>";
-                    }
+				    //Affiche les modules
+                    echo "<option value='". $topic->ID ."'".($selected_module == $topic->ID?' selected':'').">" . $topic->Topic . "</option>";
                 }
             ?>
             </select>

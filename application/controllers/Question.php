@@ -146,7 +146,7 @@ class Question extends MY_Controller
 		$output = array(
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
-			'topics' => $this->topic_model->get_all(),
+			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
 			'questionTypes' => $this->question_type_model->get_all()
 		);
 

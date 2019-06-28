@@ -151,6 +151,8 @@ $lang['topic_error_404_heading']        = 'Sujet inexistant';
 $lang['topic_title_error']              = 'titre';
 $lang['topic_module_selected_error']    = 'module conercné';
 $lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module avant de créer un sujer.';
+$lang['delete_topic_questions_list']    = array('Si vous supprimer ce sujet, ', ' questions seront supprimées.');
+$lang['view_questions_list']            = 'Voir la liste des questions';
 
 
 //Modules pages

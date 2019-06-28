@@ -16,7 +16,7 @@ class Topic extends MY_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
-        $this->load->model('topic_model');
+        $this->load->model(array('topic_model', 'question_model'));
         $this->load->helper(array('form', 'url', 'date'));
     }
 
@@ -26,8 +26,8 @@ class Topic extends MY_Controller
     public function index($error = "")
     {
         $output = array(
-            'modules' => $this->topic_model->get_many_by('FK_Parent_Topic IS NULL'),
-            'topics' => $this->topic_model->get_many_by('FK_Parent_Topic IS NOT NULL'),
+            'modules' => $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)'),
+            'topics' => $this->topic_model->get_many_by('FK_Parent_Topic IS NOT NULL AND (Archive IS NULL OR Archive = 0)'),
             'error' => $error
         );
 
@@ -80,18 +80,23 @@ class Topic extends MY_Controller
 
         if($id != 0){
 
-            $topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
+            $topic = $this->topic_model->get($id);
 
             if (is_null($action)) {
-                if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
-                    $this->index($this->lang->line('del_topic_form_err'));
+                $count = $this->question_model->count_by('FK_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
+                $output['ID'] = $id;
+                $output['Topic'] = $this->topic_model->get($id)->Topic;
+                if ($count == 0) {
+                    $this->display_view("topics/delete", $output);
                 } else {
-                    $output = get_object_vars($this->topic_model->get($id));
-                    $output["topics"] = $this->topic_model->get_all();
+                    $output['questions'] = $count;
                     $this->display_view("topics/delete", $output);
                 }
             } else {
-                $this->topic_model->delete($id);
+                $update = array('Archive' => 1);
+                $this->topic_model->update($id, $update);
+                $this->question_model->update_by('FK_Topic='.$id, $update);
+
                 $this->index();
             }
         } else {
@@ -105,7 +110,7 @@ class Topic extends MY_Controller
      */
     public function add_topic($preselect_module = NULL, $error = NULL){
         $output = array(
-            'topics' => $this->topic_model->get_all(),
+            'topics' => $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)'),
             'error' => ($error == NULL ? NULL : true),
             'selected_module' => $preselect_module
         );
@@ -213,7 +218,6 @@ class Topic extends MY_Controller
                     $this->index($this->lang->line('del_module_form_err'));
                 } else {
                     $output = get_object_vars($this->topic_model->get($id));
-                    $output["modules"] = $this->topic_model->get_all();
                     $this->display_view("modules/delete", $output);
                 }
             } else {

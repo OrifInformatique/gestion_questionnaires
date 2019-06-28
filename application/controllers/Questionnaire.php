@@ -121,7 +121,7 @@ class Questionnaire extends MY_Controller
     {
         $output = array(
             'error' => ($error == NULL ? NULL : true),
-            'topicsList' => $this->topic_model->get_all(),
+            'topicsList' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
             'title' => $title,
             'topics' => $topics,
             'nbQuestions' => $nbQuestions
