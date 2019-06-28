@@ -53,7 +53,7 @@ class Topic extends MY_Controller
                 );
                 $this->display_view("topics/update", $outputs);
             } else show_error($this->lang->line('topic_error_404_message'), 404, $this->lang->line('topic_error_404_heading'));
-        } else $this->index();
+        } else redirect('topic');
     }
 
     /**
@@ -66,7 +66,7 @@ class Topic extends MY_Controller
         $title = array('Topic' => $this->input->post('title'));
         if($this->form_validation->run() == true){
             $this->topic_model->update($id, $title);
-            $this->index();
+            redirect('topic');
         }else{
             $this->update_topic($id, 1);
         }
@@ -97,10 +97,10 @@ class Topic extends MY_Controller
                 $this->topic_model->update($id, $update);
                 $this->question_model->update_by('FK_Topic='.$id, $update);
 
-                $this->index();
+                redirect('topic');
             }
         } else {
-            $this->index();
+            redirect('topic');
         }
     }
 
@@ -135,7 +135,7 @@ class Topic extends MY_Controller
             'Creation_Date' => mdate($datestring, $time));
         if($this->form_validation->run() == true){
             $this->topic_model->insert($title);
-            $this->index();
+            redirect('topic');
         }else{;
             $this->add_topic(NULL, 1);
         }
@@ -166,7 +166,7 @@ class Topic extends MY_Controller
                 show_error($this->lang->line('module_error_404_message'), 404, $this->lang->line('module_error_404_heading'));
 
         }else{
-            $this->index();
+            redirect('topic');
         }
 
     }
@@ -194,7 +194,7 @@ class Topic extends MY_Controller
                                'Creation_Date' => mdate($datestring, $time));
                 $this->topic_model->insert($title);
             }
-            $this->index();
+            redirect('topic');
         } else {
             if ($action == "update") {
                 $this->update_module($id, 1);
@@ -233,11 +233,11 @@ class Topic extends MY_Controller
                     }
                     $this->question_model->update($topic->ID, $update);
                 }
-                $this->index();
+                redirect('topic');
             }
 
         } else {
-          $this->index();
+          redirect('topic');
         }
     }
 
