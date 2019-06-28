@@ -38,7 +38,7 @@ $nbMaxQuestion = 0;
 
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire_title'); ?></h1>
+        <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire'.($model ? '_model' : '').'_title'); ?></h1>
         <div class="row">
             <?php
             $attributes = array("class" => "form-group",
@@ -46,13 +46,24 @@ $nbMaxQuestion = 0;
                 "name" => "addQuestionnaireForm",
                 "style" => "padding-bottom: 5%;");
             echo form_open('Questionnaire/form_add', $attributes);
-            ?>
-            <?php
+            echo form_hidden('model', $model);
             if($error == true)
             {
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
             }
             ?>
+            <?php if($model) { ?>
+                <div class="form-group col-xs-12">
+                    <h4><?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName'); ?></h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <?= form_input('modelName', $modelName, array(
+                                'maxlength' => 100, 'class' => 'form-control', 'id' => 'modelName'
+                            )); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="form-group col-xs-12">
                 <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
                 <div class="row">

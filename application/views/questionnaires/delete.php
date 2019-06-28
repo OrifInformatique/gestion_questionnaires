@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <h3><?php echo $this->lang->line('del_questionnaire_form_title') . '"' . $Questionnaire_Name; ?>" ?
+                    <h3><?php echo $this->lang->line('del_questionnaire'.($model ? '_model' : '').'_form_title') . '"' . ($model ? $Base_Name : $Questionnaire_Name); ?>" ?
                     </h3>
                 </div>
                 <div class="btn-group">
