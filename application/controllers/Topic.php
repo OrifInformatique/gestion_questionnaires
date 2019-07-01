@@ -88,7 +88,7 @@ class Topic extends MY_Controller
             $topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
 
             if (is_null($action)) {
-                if ((count($topic->child_topics) + count($topic->questions) + count($topic->questionnaire_models) > 0)) {
+                if (!empty($topic->child_topics) || !empty($topic->questions) || !empty($topic->questionnaire_models)) {
                     $this->index($this->lang->line('del_topic_form_err'));
                 } else {
                     $output = get_object_vars($this->topic_model->get($id));
