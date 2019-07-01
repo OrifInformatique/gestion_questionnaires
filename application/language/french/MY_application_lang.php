@@ -11,7 +11,6 @@ $lang['app_title']                      = 'Gestion questionnaires';
 // Page titles
 $lang['page_login']                     = 'Connexion';
 $lang['page_item_list']                 = 'Liste des objets';
-$lang['page_login']                     = 'Connexion';
 $lang['page_password_change']           = 'Modification du mot de passe';
 
 // Date and time formats
@@ -61,8 +60,6 @@ $lang['save']                           = 'Enregistrer';
 $lang['cancel']                         = 'Annuler';
 $lang['return']                         = 'Retour';
 $lang['btn_change_password']            = 'Modifier le mot de passe';
-$lang['btn_login']                      = 'Se connecter';
-$lang['btn_logout']                     = 'Se déconnecter';
 $lang['btn_login']                      = 'Se connecter';
 $lang['btn_logout']                     = 'Se déconnecter';
 

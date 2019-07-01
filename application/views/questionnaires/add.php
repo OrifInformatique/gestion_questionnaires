@@ -189,4 +189,3 @@ $nbMaxQuestion = 0;
         </div>
     </div>
 </div>
-<script>init();</script>
