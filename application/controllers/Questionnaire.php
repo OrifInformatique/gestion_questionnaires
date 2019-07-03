@@ -840,7 +840,7 @@ class Questionnaire extends MY_Controller
         if(strlen($answer) > 50 && strlen($answer) < 100)
         {
             $numberOfLines = 2;
-        } else if(strlen($answer) > 100)
+        } else if(strlen($answer) >= 100)
         {
             $numberOfLines = 3;
         }
