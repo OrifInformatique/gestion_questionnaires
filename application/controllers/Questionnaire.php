@@ -46,24 +46,27 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * @param int $id = id of the selected questionnaire
-     * @param int $error = Type of error :
-     * 0 = no error
-     * 1 = wrong identifiers
-     * 2 = field(s) empty
      * Display the update questionnaire view
+     *
+     * @param int $id = id of the selected questionnaire
+     * @param bool $model = Whether or not it's updating a model
+     * @param bool $error = Whether or not there has been an error
      */
-    public function update($id = 0, $error = FALSE)
+    public function update($id = 0, $model = FALSE, $error = FALSE)
     {
-        if ($id != 0) {
-            $outputs = array(
-                'error' => $error,
-                'id' => $id
-            );
-            $this->display_view("questionnaires/update", $outputs);
-        } else {
-            redirect('Questionnaire');
-        }
+        if($model) $object = $this->questionnaire_model_model->get($id);
+        else $object = $this->questionnaire_model->get($id);
+        if(is_null($object)) redirect('Questionnaire');
+
+        $outputs = array(
+            'error' => $error,
+            'id' => $id,
+            'model' => $model,
+            'title' => $object->Questionnaire_Name,
+            'subtitle' => $object->Questionnaire_Subtitle,
+            'modelName' => $object->Base_Name ?? ''
+        );
+        $this->display_view("questionnaires/update", $outputs);
     }
 
     /**
@@ -71,17 +74,27 @@ class Questionnaire extends MY_Controller
      */
     public function form_update()
     {
-        $this->form_validation->set_rules('title', 'Title', 'required');
-
         $id = $this->input->post('id');
-        $title = array('Questionnaire_Name' => $this->input->post('title'));
+        $model = (bool) $this->input->post('model');
+
+        $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
+
+        $object = array(
+            'Questionnaire_Name' => $this->input->post('title'),
+            'Questionnaire_Subtitle' => $this->input->post('subtitle')
+        );
+
+        if($model) $object['Base_Name'] = $this->input->post('modelName');
 
         if ($this->form_validation->run() == true) {
-
-            $this->questionnaire_model->update($id, $title);
-            redirect('Questionnaire');
+            if($model)
+                $this->questionnaire_model_model->update($id, $object);
+            else {
+                $this->questionnaire_model->update($id, $object);
+                $this->generatePDF($id);
+            }
         } else {
-            $this->update($id, true);
+            $this->update($id, $model, true);
         }
     }
 
