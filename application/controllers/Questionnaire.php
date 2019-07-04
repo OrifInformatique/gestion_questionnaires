@@ -513,11 +513,9 @@ class Questionnaire extends MY_Controller
                 $title .= '-'.$i;
             }
 
-            $pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
             $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
         } else {
             $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-            $pdf->Output('F', "pdf_files/questionnaires/" . $questionnaire->PDF, true);
             $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         }
         redirect('Questionnaire');
