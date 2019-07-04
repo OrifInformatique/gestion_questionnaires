@@ -18,7 +18,9 @@ class topic_model extends MY_Model
     protected $has_many = ['questions' => ['primary_key' => 'FK_Topic',
                                            'model' => 'question_model'],
                            'child_topics' => ['primary_key' => 'FK_Parent_Topic',
-                                              'model' => 'topic_model']];
+                                              'model' => 'topic_model'],
+                           'questionnaire_models' => ['primary_key' => 'FK_Topic',
+                                                     'model' => 'questionnaire_model_model']];
 
     /**
      * Constructor
