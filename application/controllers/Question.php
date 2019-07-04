@@ -1383,6 +1383,7 @@ class Question extends MY_Controller
 	 */
 	public function import()
 	{
+		$output = array();
 		if(isset($_POST['submitExcel']))
 		{
 			$config = array(
