@@ -101,49 +101,51 @@
                 </thead>
                 <tbody>
                 <?php
-        for ($i = 0; $i < $nbAnswer; $i++){ ?>
-            <tr>
-                <td class="form-group col-xs-9">
-                    <?php
-                        echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-                        echo form_input('reponses['.$i.'][question]', $answers[$i]['question'], 'maxlength="250" class="form-control" id="question"');
-                    ?>
-                </td>
-                
-                <td class="form-group col-xs-2" >
-                    <!-- YES radio button -->
-                    <?php 
-                        if ($answers[$i]['answer']==1){
-                            echo form_radio('reponses['.$i.'][answer]', 1, TRUE);
-                        }else{
-                            echo form_radio('reponses['.$i.'][answer]', 1);
-                        }
-                        echo form_label($this->lang->line('yes'), $answers[$i]['id'], null, true);
-                    ?>
-                    
-                    <!-- NO radio button -->
-                    <?php 
-                        if ($answers[$i]['answer']==0){
-                            echo form_radio('reponses['.$i.'][answer]', 0, TRUE);
-                        }else{
-                            echo form_radio('reponses['.$i.'][answer]', 0);
+                    for ($i = 0; $i < $nbAnswer; $i++){ ?>
+                        <tr>
+                            <td class="form-group col-xs-9">
+                                <?php
+                                    echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+                                    echo form_input('reponses['.$i.'][question]', $answers[$i]['question'], 'maxlength="250" class="form-control" id="question"');
+                                ?>
+                            </td>
+                            
+                            <td class="form-group col-xs-2" >
+                                <!-- YES radio button -->
+                                <?php 
+                                    if ($answers[$i]['answer']==1){
+                                        echo form_radio('reponses['.$i.'][answer]', 1, TRUE);
+                                    }else{
+                                        echo form_radio('reponses['.$i.'][answer]', 1);
+                                    }
+                                    echo form_label($this->lang->line('yes'), $answers[$i]['id'], null, true);
+                                ?>
+                                
+                                <!-- NO radio button -->
+                                <?php 
+                                    if ($answers[$i]['answer']==0){
+                                        echo form_radio('reponses['.$i.'][answer]', 0, TRUE);
+                                    }else{
+                                        echo form_radio('reponses['.$i.'][answer]', 0);
 
-                        }echo form_label($this->lang->line('no'), $answers[$i]['id'], null, true);
-                    ?>
-                </td>
-                <td class="form-group col-xs-1">
-                    <?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary no-border"');
-                    ?>
-                </td>
-            </tr>
-        <?php } ?>
-        <tr>
-            <td><?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+                                    }echo form_label($this->lang->line('no'), $answers[$i]['id'], null, true);
+                                ?>
+                            </td>
+                            <td class="form-group col-xs-1">
+                                <?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary no-border"');
+                                ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <tr>
+                        <td><?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
 
-    </tbody>
+                </tbody>
+            </table>
+        </div>
     <?php echo form_close(); ?>
 </div>

@@ -56,3 +56,8 @@ option:disabled {
 .no-border{
     margin: 0;
 }
+
+.black-line {
+    margin: 0;
+    border-top: 1px solid black
+}

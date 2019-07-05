@@ -48,6 +48,7 @@ $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_add_topic']                  = 'Ajouter un sujet';
+$lang['btn_add_topic_in_module']        = 'Ajouter un sujet dans ce module';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
@@ -168,6 +169,9 @@ $lang['topic_error_404_heading']        = 'Sujet inexistant';
 $lang['topic_title_error']              = 'titre';
 $lang['topic_module_selected_error']    = 'module conercné';
 $lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module avant de créer un sujer.';
+$lang['delete_topic_questions_list']    = array('Si vous supprimez ce sujet, ', ' questions seront supprimées.');
+$lang['delete_module_topics_list']      = array('Si vous supprimez ce module, ', ' sujets et leurs questions seront supprimés.');
+$lang['view_questions_list']            = 'Voir la liste des questions';
 
 
 //Modules pages

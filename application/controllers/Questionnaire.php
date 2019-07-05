@@ -124,6 +124,14 @@ class Questionnaire extends MY_Controller
      */
     public function add($model = 0, $error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $subtitle = '', $modelName = '')
     {
+        $output = array(
+            'error' => ($error == NULL ? NULL : true),
+            'topicsList' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
+            'title' => $title,
+            'topics' => $topics,
+            'nbQuestions' => $nbQuestions
+        );
+      
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
             $Topic = urldecode($_POST['topic']);
