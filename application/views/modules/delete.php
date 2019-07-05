@@ -10,7 +10,7 @@
                     <a href="<?php echo base_url().uri_string()."/confirmed";?>" class="btn btn-danger btn-lg">
                         <?php echo $this->lang->line('yes');?>
                     </a>
-                    <a href="<?php echo base_url()."Module";?>" class="btn btn-lg">
+                    <a href="<?php echo base_url()."Topic";?>" class="btn btn-lg">
                         <?php echo $this->lang->line('no');?>
                     </a>
                 </div>

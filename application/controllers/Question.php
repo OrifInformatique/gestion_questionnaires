@@ -146,7 +146,7 @@ class Question extends MY_Controller
 		$output = array(
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
-			'topics' => $this->topic_model->get_all(),
+			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
 			'questionTypes' => $this->question_type_model->get_all()
 		);
 
@@ -165,7 +165,7 @@ class Question extends MY_Controller
 				$output["question"] = $this->question_model->get_all();
 				$this->display_view("questions/confirm", $output);
 			} else {
-				$this->question_model->update($id, array("Archive" => 1));
+				$this->question_model->delete($id);
 				redirect('/Question');
 			}
 		}
@@ -1383,6 +1383,7 @@ class Question extends MY_Controller
 	 */
 	public function import()
 	{
+		$output = array();
 		if(isset($_POST['submitExcel']))
 		{
 			$config = array(
@@ -1446,10 +1447,8 @@ class Question extends MY_Controller
 				}
 			}
 		}
-		$output += array(
-			'questions' => $this->question_model->with_all()->get_all(),
-			'topics' => $this->topic_model->get_tree()
-		);
+		$output['questions'] = $this->question_model->with_all()->get_all();
+		$output['topics'] = $this->topic_model->get_tree();
 		$this->display_view('questions/import', $output);
 	}
 
