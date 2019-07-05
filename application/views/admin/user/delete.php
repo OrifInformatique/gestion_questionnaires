@@ -6,7 +6,7 @@
                     <h3><?= $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</h3>
                 </div>
                 <div class="btn-group">
-                    <?php if(!$is_deleted) { ?>
+                    <?php if(!$Archive) { ?>
                     <a href="<?= base_url().uri_string()."/1";?>" class="btn btn-warning btn-lg">
                         <?= $this->lang->line('btn_desactivate');?>
                     </a>

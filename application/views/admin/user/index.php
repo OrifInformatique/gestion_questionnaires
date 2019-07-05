@@ -32,7 +32,7 @@
                         <tr>
                             <td><a href="<?= base_url('Admin/user_add/'.$user->ID); ?>"><?= $user->User; ?></a></td>
                             <td><?= $user_types[$user->FK_User_Type]; ?></td>
-                            <td><?= $this->lang->line($user->is_deleted ? 'no' : 'yes'); ?></td>
+                            <td><?= $this->lang->line($user->Archive ? 'no' : 'yes'); ?></td>
                             <td><a href="<?= base_url('Admin/user_delete/'.$user->ID); ?>" class="close">×</a></td>
                         </tr>
                     <?php } ?>

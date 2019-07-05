@@ -16,7 +16,7 @@ class user_model extends MY_Model
     protected $belongs_to = ['user_type'=> ['primary_key' => 'FK_User_Type',
                                             'model' => 'user_type_model']];
     protected $soft_delete = TRUE;
-    protected $soft_delete_key = 'is_deleted';
+    protected $soft_delete_key = 'Archive';
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ class user_model extends MY_Model
     {
         $user = $this->get_by('User', $username);
 
-        if (!is_null($user) && $user->is_deleted == false) {
+        if (!is_null($user) && $user->Archive == false) {
             // A corresponding active user has been found
             // Check password
             return password_verify($password, $user->Password);

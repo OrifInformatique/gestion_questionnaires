@@ -95,7 +95,7 @@ class Admin extends MY_Controller {
                     $this->user_add($userId);
                     return;
                 } elseif(isset($_POST['reactivate'])) {
-                    $this->user_model->update($userId, array('is_deleted' => 0));
+                    $this->user_model->update($userId, array('Archive' => 0));
                     $this->user_add($userId);
                     return;
                 }
