@@ -32,7 +32,7 @@
                         <tr>
                             <td><a href="<?= base_url('Admin/user_add/'.$user->ID); ?>"><?= $user->User; ?></a></td>
                             <td><?= $user_types[$user->FK_User_Type]; ?></td>
-                            <td><?= $this->lang->line($user->is_inactive ? 'no' : 'yes'); ?></td>
+                            <td><?= $this->lang->line($user->is_deleted ? 'no' : 'yes'); ?></td>
                             <td>
                                 <a href="<?= base_url('Admin/user_change_password/'.$user->ID); ?>"
                                     title='<?= $this->lang->line("title_user_change_password")."\"{$user->User}\""; ?>'>

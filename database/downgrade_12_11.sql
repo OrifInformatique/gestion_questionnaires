@@ -1,8 +1,11 @@
 --
 -- Modifies `t_user` to have `is_active` back
+-- Invert the values of this field
 --
-
-ALTER TABLE `t_user` CHANGE `is_inactive` `is_active` TINYINT(4) NULL DEFAULT '1';
+ALTER TABLE `t_user` CHANGE `is_deleted` `is_active` TINYINT(4) NULL DEFAULT '1';
+UPDATE `t_user` SET `is_deleted`=2 WHERE `is_deleted`=1;
+UPDATE `t_user` SET `is_deleted`=1 WHERE `is_deleted`=0;
+UPDATE `t_user` SET `is_deleted`=0 WHERE `is_deleted`=2;
 
 --
 -- Removes the column `Questionnaire_Subtitle` from `t_questionnaire`

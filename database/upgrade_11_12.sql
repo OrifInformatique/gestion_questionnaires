@@ -4,10 +4,14 @@
 ALTER TABLE `t_questionnaire` ADD `Questionnaire_Subtitle` VARCHAR(255) NULL AFTER `Questionnaire_Name`;
 
 --
--- Modifies `t_user` to have `is_inactive` for inactive users checking
+-- Modifies `t_user` to have `is_deleted` for soft deleted users
+-- Invert the values of this field
 --
+ALTER TABLE `t_user` CHANGE `is_active` `is_deleted` TINYINT(4) NOT NULL DEFAULT '0';
+UPDATE `t_user` SET `is_deleted`=2 WHERE `is_deleted`=1;
+UPDATE `t_user` SET `is_deleted`=1 WHERE `is_deleted`=0;
+UPDATE `t_user` SET `is_deleted`=0 WHERE `is_deleted`=2;
 
-ALTER TABLE `t_user` CHANGE `is_active` `is_inactive` TINYINT(4) NOT NULL DEFAULT '0';
 --
 -- Create `t_questionnaire_model`
 --
