@@ -30,7 +30,7 @@
                     <tbody>
                     <?php foreach($models as $model) { ?>
                         <tr>
-                            <td><?= $model->Base_Name; ?></td>
+                            <td><a href="<?= base_url('Questionnaire/update/'.$model->ID.'/1'); ?>"><?= $model->Base_Name; ?></a></td>
                             <td><?= $model->Questionnaire_Name; ?></td>
                             <td><?= $model->Questionnaire_Subtitle; ?></td>
                             <td><a href="<?= base_url('Questionnaire/generate_pdf_from_model/'.$model->ID) ?>"><?= $this->lang->line('generate'); ?></a></td>
@@ -68,7 +68,7 @@
                     foreach ($questionnaires as $questionnaire){
                         ?>
                         <tr>
-                            <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
+                            <td><a href="<?= base_url('Questionnaire/update/'.$questionnaire->ID); ?>"><?php echo $questionnaire->Questionnaire_Name; ?></a></td>
                             <td><a href="<?php echo base_url()."pdf_files/questionnaires/".$questionnaire->PDF; ?>" target="_blank">
                                     <?php echo $this->lang->line('redirect_pdf');?></a></td>
                             <td><a target="_blank" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>">
