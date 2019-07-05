@@ -4,8 +4,7 @@
 ALTER TABLE `t_questionnaire` ADD `Questionnaire_Subtitle` VARCHAR(255) NULL AFTER `Questionnaire_Name`;
 
 --
--- Modifies `t_user` to have `is_deleted` for soft deleted users
--- Invert the values of this field
+-- Modifies `t_user` to have `is_deleted` for inactive users checking
 --
 ALTER TABLE `t_user` CHANGE `is_active` `is_deleted` TINYINT(4) NOT NULL DEFAULT '0';
 UPDATE `t_user` SET `is_deleted`=2 WHERE `is_deleted`=1;

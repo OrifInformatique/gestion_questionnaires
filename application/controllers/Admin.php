@@ -51,7 +51,7 @@ class Admin extends MY_Controller {
      */
     public function user_add($userId = 0) {
         $output = array(
-            'user' => $this->user_model->get($userId) ?? NULL,
+            'user' => $this->user_model->with_deleted()->get($userId) ?? NULL,
             'user_types' => $this->user_type_model->dropdown('name')
         );
         $this->display_view('admin/user/add', $output);
@@ -123,6 +123,8 @@ class Admin extends MY_Controller {
                 $this->user_model->hard_delete($userId);
                 redirect('Admin/user_index');
                 break;
+            case 3: // Reactivate user
+                $this->user_model->update($userId, array('is_deleted' => 0));
             default: // Do nothing
                 redirect('Admin/user_index');
         }
@@ -134,7 +136,7 @@ class Admin extends MY_Controller {
      * @param integer $userId = The id of the user to modify
      */
     public function user_change_password($userId) {
-        $user = $this->user_model->get($userId);
+        $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) redirect('Admin/user_index');
 
         $output = array(

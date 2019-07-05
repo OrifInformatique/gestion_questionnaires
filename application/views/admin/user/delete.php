@@ -10,6 +10,10 @@
                     <a href="<?= base_url().uri_string()."/1";?>" class="btn btn-warning btn-lg">
                         <?= $this->lang->line('btn_desactivate');?>
                     </a>
+                    <?php } else { ?>
+                        <a href="<?= base_url().uri_string().'/3'; ?>" class="btn btn-lg btn-success">
+                            <?= $this->lang->line('btn_reactivate'); ?>
+                        </a>
                     <?php } ?>
                     <a href="<?= base_url().uri_string()."/2";?>" class="btn btn-danger btn-lg">
                         <?= $this->lang->line('btn_del');?>
