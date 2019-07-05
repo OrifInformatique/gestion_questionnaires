@@ -333,11 +333,13 @@ class Questionnaire extends MY_Controller
                 default:
             }
 
-            $stringLines = $this->string_to_small_array($rndQuestion->Question);
             if($amount > 0) $maxHeight -= $amount*10;
             if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
             }
+
+            $stringLines = $this->string_to_small_array($rndQuestion->Question);
+
             // Display question header
             if(count($stringLines) == 1)    //Keep line spacing large enough between the question and the answer line
             {
