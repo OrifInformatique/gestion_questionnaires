@@ -88,7 +88,17 @@ class Admin extends MY_Controller {
                 'FK_User_Type' => $this->input->post('user_usertype')
             );
             if($userId > 0) {
-                $this->user_model->update($userId, $user);
+                if(isset($_POST['save'])) {
+                    $this->user_model->update($userId, $user);
+                } elseif(isset($_POST['disactivate'])) {
+                    $this->user_model->delete($userId);
+                    $this->user_add($userId);
+                    return;
+                } elseif(isset($_POST['reactivate'])) {
+                    $this->user_model->update($userId, array('is_deleted' => 0));
+                    $this->user_add($userId);
+                    return;
+                }
             } else {
                 $password = $this->input->post('user_password');
                 $user['Password'] = password_hash($password, PASSWORD_HASH_ALGORITHM);
@@ -123,8 +133,6 @@ class Admin extends MY_Controller {
                 $this->user_model->hard_delete($userId);
                 redirect('Admin/user_index');
                 break;
-            case 3: // Reactivate user
-                $this->user_model->update($userId, array('is_deleted' => 0));
             default: // Do nothing
                 redirect('Admin/user_index');
         }

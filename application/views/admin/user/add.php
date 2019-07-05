@@ -70,6 +70,22 @@ $update = !is_null($user);
                 )); ?>
             </div>
         </div>
+        <?php } else { ?>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <?php
+                if($user->is_deleted) {
+                    echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
+                } else {
+                    echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
+                }
+                ?>
+                <a href="<?= base_url('Admin/user_change_password/'.$user->ID); ?>"
+                    class="btn btn-warning col-xs-12 col-sm-4 col-sm-offset-4">
+                    <?= $this->lang->line("title_user_change_password"); ?>
+                </a>
+            </div>
+        </div>
         <?php } ?>
 
     <?= form_close(); ?>
