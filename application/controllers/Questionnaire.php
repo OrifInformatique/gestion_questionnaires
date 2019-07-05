@@ -96,6 +96,8 @@ class Questionnaire extends MY_Controller
         } else {
             $this->update($id, $model, true);
         }
+        
+        redirect('Questionnaire');
     }
 
     /**
