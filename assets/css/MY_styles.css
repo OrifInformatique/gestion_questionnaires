@@ -13,7 +13,8 @@ option {
     color: inherit;
 }
 option:disabled {
-    color: silver;
+    color: white;
+    background-color: #ccc;
 }
 .align-center{
     text-align: center;
