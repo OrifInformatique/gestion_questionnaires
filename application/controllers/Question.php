@@ -165,7 +165,7 @@ class Question extends MY_Controller
 				$output["question"] = $this->question_model->get_all();
 				$this->display_view("questions/confirm", $output);
 			} else {
-				$this->question_model->update($id, array("Archive" => 1));
+				$this->question_model->delete($id);
 				redirect('/Question');
 			}
 		}

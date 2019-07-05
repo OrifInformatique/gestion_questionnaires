@@ -22,6 +22,10 @@ class topic_model extends MY_Model
                            'questionnaire_models' => ['primary_key' => 'FK_Topic',
                                                      'model' => 'questionnaire_model_model']];
 
+    // Uncomment to enable soft deletion
+    //protected $soft_delete_key = 'Archive';
+    //protected $soft_delete = TRUE;
+
     /**
      * Constructor
      */
