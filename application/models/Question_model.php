@@ -22,6 +22,8 @@ class question_model extends MY_Model
                                                          'model' => 'question_questionnaire_model'],
                            'cloze_text' => ['primary_key' => 'FK_Question',
                                             'model' => 'cloze_text_model']];
+    protected $soft_delete = TRUE;
+    protected $soft_delete_key = 'Archive';
 
     /**
      * Constructor

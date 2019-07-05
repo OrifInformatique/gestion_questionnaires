@@ -30,7 +30,7 @@ class Topic extends MY_Controller
             'error' => $error
         );
         if(isset($_GET['topic_selected'])){
-            $output['topics'] = $this->topic_model->get_many_by("FK_Parent_Topic = " . $_GET['topic_selected']);
+            $output['topics'] = $this->topic_model->get_many_by("(Archive = NULL OR Archive = 0) AND FK_Parent_Topic = " . $_GET['topic_selected']);
             $output['module_selected'] = $_GET['topic_selected'];
         } else {
             $output['topics'] = $this->topic_model->get_all();
