@@ -30,7 +30,7 @@ class Topic extends MY_Controller
             'error' => $error
         );
         if(isset($_GET['topic_selected'])){
-            $output['topics'] = $this->topic_model->get_many_by("FK_Parent_Topic = " . $_GET['topic_selected']);
+            $output['topics'] = $this->topic_model->get_many_by("(Archive = NULL OR Archive = 0) AND FK_Parent_Topic = " . $_GET['topic_selected']);
             $output['module_selected'] = $_GET['topic_selected'];
         } else {
             $output['topics'] = $this->topic_model->get_all();
@@ -88,7 +88,7 @@ class Topic extends MY_Controller
             $topic = $this->topic_model->with("questions")->with("child_topics")->get($id);
 
             if (is_null($action)) {
-                if ((count($topic->child_topics) > 0) OR (count($topic->questions) > 0)) {
+                if ((count($topic->child_topics) + count($topic->questions) + count($topic->questionnaire_models) > 0)) {
                     $this->index($this->lang->line('del_topic_form_err'));
                 } else {
                     $output = get_object_vars($this->topic_model->get($id));
