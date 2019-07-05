@@ -260,36 +260,42 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * Generates a PDF from a questionnaire
+     * Loads the id of the questionnaire to create
+     * If it does not exist yet, create it from $tableTopics
      *
      * @param integer $idQuestionnaire = The questionnaire's id
      * @param TableTopics $tableTopics = The topics
      */
-    public function generatePDF($idQuestionnaire = -1, $tableTopics = NULL)
-    {
-        if($idQuestionnaire == -1){
-            // Prevent calling the function without any argument
+    public function generatePDF($idQuestionnaire = -1, $tableTopics = NULL) {
+        if($idQuestionnaire == -1) {
             if(is_null($tableTopics)) redirect('Questionnaire');
-            $title = $tableTopics->getTitle();
-            $subtitle = $tableTopics->getSubtitle();
-            $listRndQuestions = $this->InsertNewQuestionnaire($tableTopics);
-        } else {
-            $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
-            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-            $title = $questionnaire->Questionnaire_Name;
-            $subtitle = $questionnaire->Questionnaire_Subtitle;
+            $idQuestionnaire = $this->InsertNewQuestionnaire($tableTopics);
         }
+        if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('Questionnaire');
 
-        $totalpoints = 0;
+        $this->generateQuestions($idQuestionnaire, false);
+        $this->generateAnswers($idQuestionnaire, false);
+
+        redirect('Questionnaire');
+    }
+
+    /**
+     * (Re)generates the PDF for the questions
+     *
+     * @param integer $idQuestionnaire = The id of the questionnaire to create
+     */
+    public function generateQuestions($idQuestionnaire) {
+        $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
+        $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+        $title = $questionnaire->Questionnaire_Name;
+        $subtitle = $questionnaire->Questionnaire_Subtitle;
+        $totalpoints = $questionNum = 0;
 
         $pdf = new PDF();
-        $answers = new PDF();
         $pdf->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
-        $answers->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
-
-        // Title of the questions document
         $pdf->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
         $pdf->SetTitle($title, true);
+        // Title of the questions document
         $pdf->AddPage();
         $pdf->SetMargins(20, 20);
         $pdf->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
@@ -305,30 +311,11 @@ class Questionnaire extends MY_Controller
         $pdf->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $pdf->AliasNbPages();
 
-        // Title of the answered document
-        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
-        $answers->AddPage();
-        $answers->SetMargins(20, 20);
-        $answers->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
-        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "C");
-        $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
-        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
-        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
-        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $subtitle), 0, 'L');
-        $answers->Cell(140);
-        $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
-        $answers->AliasNbPages();
-
-        $questionNum = 1;
-
-        foreach ($listRndQuestions as $idQuestion) {
-
+        foreach($listRndQuestions as $idQuestion) {
             $rndQuestion = $this->question_model->get($idQuestion);
-            $Question = $rndQuestion->Question;
-            $Question = iconv('UTF-8', 'windows-1252', $Question);
+            $question = iconv('UTF-8', 'windows-1252', $rndQuestion->Question);
             $totalpoints += $rndQuestion->Points;
-
+            $questionNum++;
             // A page is ~300 high, so create a new one after 225
             $maxHeight = 225;
             $amount = 0;
@@ -346,16 +333,11 @@ class Questionnaire extends MY_Controller
                 default:
             }
             if($amount > 0) $maxHeight -= $amount*10;
-
             if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
             }
-            if($answers->GetY() > $maxHeight){
-                $answers->addPage();
-            }
-
-            $stringLines = $this->string_to_small_array($rndQuestion->Question);
             // Display question header
+            $stringLines = $this->string_to_small_array($rndQuestion->Question);
             $pdf->SetFont('', 'B');
             $pdf->Cell(10, 10, $questionNum.'.');
             $pdf->SetFont('', '');
@@ -366,62 +348,36 @@ class Questionnaire extends MY_Controller
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
                 $pdf->MultiCell(10, 10, '');
             }
-            // Display question header
-            $answers->SetFont('', 'B');
-            $answers->Cell(10, 10, $questionNum.'.');
-            $answers->SetFont('', '');
-            $answers->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $answers->MultiCell(20, 10, '.../'.$rndQuestion->Points);
-            for($i = 1; $i < count($stringLines); $i++) {
-                $answers->Cell(10, 10);
-                $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-                $answers->MultiCell(10, 10, '');
-            }
-
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
                     $this->multipleChoicesPdf($rndQuestion, $pdf);
-                    $this->multipleChoicesPdf($rndQuestion, $answers, true);
                     break;
                 case 2:
                     $this->multipleAnswersPdf($rndQuestion, $pdf);
-                    $this->multipleAnswersPdf($rndQuestion, $answers, true);
                     break;
                 case 3: // /!\ The function is incomplete /!\ \\
                     $this->answerDistributionPdf($rndQuestion, $pdf);
-                    $this->answerDistributionPdf($rndQuestion, $answers, true);
                     break;
                 case 4:
                     $this->clozeTextPdf($rndQuestion, $pdf);
-                    $this->clozeTextPdf($rndQuestion, $answers, true);
                     break;
                 case 5: // /!\ The function is incomplete /!\ \\
                     $this->tablePdf($rndQuestion, $pdf);
-                    $this->tablePdf($rndQuestion, $answers, true);
                     break;
                 case 6:
                     $this->simpleQuestionPdf($rndQuestion, $pdf);
-                    $this->simpleQuestionPdf($rndQuestion, $answers, true);
                     break;
                 case 7:
                     $this->pictureLandmarkPdf($rndQuestion, $pdf);
-                    $this->pictureLandmarkPdf($rndQuestion, $answers, true);
                     break;
                 default:
                     break;
             }
             $pdf->Ln();
-            $answers->Ln();
-
-            $questionNum++;
         }
         if($pdf->GetY() > 225) {
             $pdf->addPage();
         }
-        if($answers->GetY() > 225){
-            $answers->addPage();
-        }
-
         // Finish last page
         $pdf->SetTextColor(128,128,128);
         $pdf->SetFont('Arial','', self::TITLEFONT_SIZE);
@@ -432,12 +388,113 @@ class Questionnaire extends MY_Controller
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('Arial','', self::QUESTIONFONT_SIZE);
 
+        $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+        $pdf->Output('F', "pdf_files/questionnaires/" . $questionnaire->PDF, true);
+    }
+
+    /**
+     * (Re)generates the PDF for the answers
+     *
+     * @param integer $idQuestionnaire = The id of the questionnaire to create
+     */
+    public function generateAnswers($idQuestionnaire) {
+        $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
+        $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+        $title = $questionnaire->Questionnaire_Name;
+        $subtitle = $questionnaire->Questionnaire_Subtitle;
+        $totalpoints = $questionNum = 0;
+
+        $answers = new PDF();
+        $answers->SetFooterStrings($this->lang->line('pdf_page'), $this->lang->line('pdf_page_of'));
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->SetTitle($title.' '.$this->lang->line('pdf_corrige'), true);
+        // Title of the questions document
+        $answers->AddPage();
+        $answers->SetMargins(20, 20);
+        $answers->Image('assets/images/Logo_Orif_Grand.jpg', NULL, NULL, 60, 20);
+        $answers->Cell(20);
+        $answers->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_last_name')), 0, "L");
+        $answers->Cell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_first_name')), 0, "L");
+        $answers->MultiCell(60, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_date')), 0, "L");
+        $answers->SetFont('Arial', '', self::TITLEFONT_SIZE);
+        $answers->MultiCell(0, 10, iconv('UTF-8', 'windows-1252', $title.' '.$this->lang->line('pdf_corrige')), 0, "L");
+        $answers->SetFont('Arial', '', self::QUESTIONFONT_SIZE);
+        $answers->Cell(140);
+        $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
+        $answers->AliasNbPages();
+        foreach($listRndQuestions as $idQuestion) {
+            $rndQuestion = $this->question_model->get($idQuestion);
+            $question = iconv('UTF-8', 'windows-1252', $rndQuestion->Question);
+            $totalpoints += $rndQuestion->Points;
+            $questionNum++;
+            // A page is ~300 high, so create a new one after 225
+            $maxHeight = 225;
+            $amount = 0;
+            // Lower the bound for landmarks so the answers and image are on a single page
+            switch($rndQuestion->FK_Question_Type) {
+                case 1:
+                    $amount = $this->multiple_choice_model->count_by("FK_Question = ".$rndQuestion->ID)-2;
+                    break;
+                case 2:
+                    $amount = ceil($rndQuestion->Nb_Desired_Answers / 2)-2;
+                    break;
+                case 7:
+                    $amount = max($this->picture_landmark_model->count_by("FK_Question = ".$rndQuestion->ID)+2, 10);
+                    break;
+                default:
+            }
+            if($amount > 0) $maxHeight -= $amount*10;
+            if($answers->GetY() > $maxHeight) {
+                $answers->addPage();
+            }
+            // Display question header
+            $stringLines = $this->string_to_small_array($rndQuestion->Question);
+            $answers->SetFont('', 'B');
+            $answers->Cell(10, 10, $questionNum.'.');
+            $answers->SetFont('', '');
+            $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $answers->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            for($i = 1; $i < count($stringLines); $i++) {
+                $answers->Cell(10, 10);
+                $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
+                $answers->MultiCell(10, 10, '');
+            }
+            switch ($rndQuestion->FK_Question_Type) {
+                case 1:
+                    $this->multipleChoicesPdf($rndQuestion, $answers, true);
+                    break;
+                case 2:
+                    $this->multipleAnswersPdf($rndQuestion, $answers, true);
+                    break;
+                case 3: // /!\ The function is incomplete /!\ \\
+                    $this->answerDistributionPdf($rndQuestion, $answers, true);
+                    break;
+                case 4:
+                    $this->clozeTextPdf($rndQuestion, $answers, true);
+                    break;
+                case 5: // /!\ The function is incomplete /!\ \\
+                    $this->tablePdf($rndQuestion, $answers, true);
+                    break;
+                case 6:
+                    $this->simpleQuestionPdf($rndQuestion, $answers, true);
+                    break;
+                case 7:
+                    $this->pictureLandmarkPdf($rndQuestion, $answers, true);
+                    break;
+                default:
+                    break;
+            }
+            $answers->Ln();
+        }
         // Finish last page
         $answers->SetTextColor(128,128,128);
         $answers->SetFont('Arial','', self::TITLEFONT_SIZE);
-        $answers->MultiCell(0, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_totals_points').' '.$totalpoints), 0, "C");
-        $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
+        $answers->Cell(30); // Padding
+        $answers->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_totals_points').' .../'.$totalpoints), 0, "R");
+        $answers->Cell(90, 20, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_note')), 0, "R");
+        $answers->Ln();
         $answers->SetTextColor(0,0,0);
+        $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
 
         if($idQuestionnaire == -1){
             // Trim the name before using it to create a file
@@ -456,11 +513,9 @@ class Questionnaire extends MY_Controller
                 $title .= '-'.$i;
             }
 
-            $pdf->Output('F', "pdf_files/questionnaires/" .$title.'.pdf', true);
             $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
         } else {
             $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-            $pdf->Output('F', "pdf_files/questionnaires/" . $questionnaire->PDF, true);
             $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         }
         redirect('Questionnaire');
@@ -566,6 +621,7 @@ class Questionnaire extends MY_Controller
      * Creates a new questionnaire in pdf format
      *
      * @param TableTopics $tableTopics = The questionnaire topics
+     * @return integer = The id of the newly added questionnaire
      */
     private function InsertNewQuestionnaire($tableTopics)
     {
@@ -575,7 +631,7 @@ class Questionnaire extends MY_Controller
 
         // Replace all non alphanum characters with dashes
         // This would only fail on less than 1% of all operating systems
-        $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title_original));
+        $title = $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -597,28 +653,27 @@ class Questionnaire extends MY_Controller
         $idQuestionnaire = $this->questionnaire_model->insert($newQuestionnaire);
 
         //Insert each question about the questionnaire
-        for ($index = 0; $index < count($tableTopics->getArrayTopics()); $index++)
+        $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
+        $arrayTopics = $tableTopics->getArrayTopics();
+        for ($index = 0; $index < count($arrayTopics); $index++)
         {
             //Get ID for each topic asked
-            $nbQuestion = $tableTopics->getArrayNbQuestion()[$index];
-            $idTopic = $tableTopics->getArrayTopics()[$index]->ID;
+            $nbQuestion = $arrayNbQuestion[$index];
+            $idTopic = $arrayTopics[$index]->ID;
 
             //load randoms questions about the topic
             $rndQuestions = $this->question_model->getRNDQuestions($idTopic, $nbQuestion);
 
-            for($number = 0; $number < count($rndQuestions); $number++)
-            {
+            foreach($rndQuestions as $rndQuestion) {
                 $row = array(
-                    "FK_Question" => intval($rndQuestions[$number]["ID"]),
+                    'FK_Question' => $rndQuestion['ID'],
                     "FK_Questionnaire" => $idQuestionnaire
                 );
                 $this->question_questionnaire_model->insert($row);
-                $listIDQuestions[] = intval($rndQuestions[$number]["ID"]);
-
             }
         }
 
-        return $listIDQuestions;
+        return $idQuestionnaire;
     }
 
     /**
