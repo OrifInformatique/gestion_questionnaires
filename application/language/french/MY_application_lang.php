@@ -23,6 +23,7 @@ $lang['nav_question']                   = 'Questions';
 $lang['nav_questionnaire']              = 'Questionnaires';
 $lang['nav_module']                     = 'Modules';
 $lang['nav_topic']                      = 'Sujets';
+$lang['nav_admin']                      = 'Administration';
 
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
@@ -46,13 +47,17 @@ $lang['btn_del']                        = 'Supprimer';
 $lang['btn_update']                     = 'Modifier';
 $lang['btn_add']                        = 'Ajouter';
 $lang['btn_add_topic']                  = 'Ajouter un sujet';
+$lang['btn_add_topic_in_module']        = 'Ajouter un sujet dans ce module';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
+$lang['btn_add_user']                   = 'Ajouter un utilisateur';
 $lang['btn_add_questionnaire_model']    = 'Ajouter un modèle de questionnaire';
 $lang['btn_import_image']               = 'Importer une image';
 $lang['btn_import_question']            = 'Importer une question';
 $lang['btn_next']                       = 'Suivant';
+$lang['btn_desactivate']                = 'Désactiver';
+$lang['btn_reactivate']                = 'Réactiver';
 $lang['yes']                            = 'Oui';
 $lang['no']                             = 'Non';
 $lang['ouinon']                         = 'Oui/Non';
@@ -161,6 +166,9 @@ $lang['topic_error_404_heading']        = 'Sujet inexistant';
 $lang['topic_title_error']              = 'titre';
 $lang['topic_module_selected_error']    = 'module conercné';
 $lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module avant de créer un sujer.';
+$lang['delete_topic_questions_list']    = array('Si vous supprimez ce sujet, ', ' questions seront supprimées.');
+$lang['delete_module_topics_list']      = array('Si vous supprimez ce module, ', ' sujets et leurs questions seront supprimés.');
+$lang['view_questions_list']            = 'Voir la liste des questions';
 
 
 //Modules pages
@@ -176,6 +184,21 @@ $lang['del_module_form_err']            = 'Ce module possède des questions et/o
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 $lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
 $lang['module_error_404_heading']       = 'Module inexistant';
+
+
+//Admin/users pages
+$lang['users']                          = 'Utilisateur(s)';
+$lang['title_users']                    = 'Liste des utilisateurs';
+$lang['title_user_new']                 = 'Nouvel utilisateur';
+$lang['title_user_update']              = 'Modifier l\'utilisateur';
+$lang['title_user_change_password']     = 'Modifier le mot de passe';
+$lang['user_name']                      = 'Nom d\'utilisateur';
+$lang['user_usertype']                  = 'Type d\'utilisateur';
+$lang['user_active']                    = 'Actif';
+$lang['user_password']                  = 'Mot de passe';
+$lang['user_password_again']            = 'Répétez le mot de passe';
+$lang['user_password_force']            = 'Forcer le changement de mot de passe';
+$lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
 
 //PDF
 $lang['pdf_first_name']                 = 'Prénom :';

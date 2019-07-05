@@ -14,7 +14,7 @@
         $attributes = array("class" => "form-group",
             "id" => "updateModuleForm",
             "name" => "updateModuleForm");
-        echo form_open('Module/form_validate', $attributes);
+        echo form_open('Topic/form_validate_module', $attributes);
         ?>
         <?php
         if($error == true) {
@@ -30,7 +30,7 @@
         </div>
         <div class="col-xs-12">
 
-            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Module').'\'"'); ?>
+            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
             <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
                  
         </div>
