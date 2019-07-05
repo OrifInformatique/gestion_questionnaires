@@ -332,6 +332,8 @@ class Questionnaire extends MY_Controller
                     break;
                 default:
             }
+
+            $stringLines = $this->string_to_small_array($rndQuestion->Question);
             if($amount > 0) $maxHeight -= $amount*10;
             if($pdf->GetY() > $maxHeight) {
                 $pdf->addPage();
