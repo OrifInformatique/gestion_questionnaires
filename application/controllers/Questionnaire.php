@@ -337,32 +337,16 @@ class Questionnaire extends MY_Controller
                 $pdf->addPage();
             }
             // Display question header
-            if(count($stringLines) == 1)    //Keep line spacing large enough between the question and the answer line
-            {
-                $pdf->SetFont('', 'B');
-                $pdf->Cell(10, 7, $questionNum.'.');
-                $pdf->SetFont('', '');
-                $pdf->Cell(139, 7, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            } else 
-            {
-                $pdf->SetFont('', 'B');
-                $pdf->Cell(10, 10, $questionNum.'.');
-                $pdf->SetFont('', '');
-                $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            }
-            $pdf->MultiCell(20, 7, '.../'.$rndQuestion->Points);
+            $stringLines = $this->string_to_small_array($rndQuestion->Question);
+            $pdf->SetFont('', 'B');
+            $pdf->Cell(10, 10, $questionNum.'.');
+            $pdf->SetFont('', '');
+            $pdf->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $pdf->MultiCell(20, 10, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $pdf->Cell(10, 10);
                 $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-                
-                //Avoid the answer line to be closer of the question
-                if((count($stringLines) - 1) == $i)
-                {
-                    $pdf->MultiCell(10, 10, '');
-                } else 
-                {
-                   $pdf->MultiCell(10, 7, '');
-                }
+                $pdf->MultiCell(10, 10, '');
             }
             switch ($rndQuestion->FK_Question_Type) {
                 case 1:
@@ -837,21 +821,13 @@ class Questionnaire extends MY_Controller
         $lastC = strrpos($result, '[');
         $result = substr($result, 0, $lastC);
         // Keep [ x ] on the same line
-        $stringLines = $this->string_to_small_array($result, '/ (?!\?|(\[ [0-9] \])|([0-9])|\])/');
+        $stringLines = $this->string_to_small_array($result, '/ (?!\?|(\[ [0-9] \])|([0-9]))/');
         // Display the question
-        $pdf->MultiCell(10, 1, '');
+        $pdf->Ln();
         for($i = 0; $i < count($stringLines); $i++) {
             $pdf->Cell(10, 10);
             $pdf->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
-
-            //Avoid the answer line to be closer of the question
-            if((count($stringLines) - 1) == $i)
-            {
-                $pdf->MultiCell(10, 10, '');
-            } else 
-            {
-                $pdf->MultiCell(10, 7, '');
-            }
+            $pdf->MultiCell(10, 10, '');
         }
 
         if($answerPdf) {
@@ -1014,15 +990,7 @@ class Questionnaire extends MY_Controller
         // Prepare variables
         $maxlength = 60;
         $answer = $this->free_answer_model->get_by('FK_Question', $question->ID)->Answer;
-        $numberOfLines = 1;
-
-        if(strlen($answer) > 50 && strlen($answer) < 100)
-        {
-            $numberOfLines = 2;
-        } else if(strlen($answer) >= 100)
-        {
-            $numberOfLines = 3;
-        }
+        $answerSize = ceil(strlen($answer) / $maxlength);
 
         if($answerPdf) {
             $stringLines = $this->string_to_small_array($answer);
@@ -1036,7 +1004,7 @@ class Questionnaire extends MY_Controller
             $pdf->SetTextColor(0, 0, 0);
         } else {
             $line = str_repeat("_", $maxlength);
-            for($i = 0; $i < $numberOfLines; $i++) {
+            for($i = 0; $i < $answerSize; $i++) {
                 $pdf->Cell(10, 10);
                 // Display each line for answering
                 $pdf->MultiCell(150, 10, $line);
