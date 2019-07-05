@@ -9,6 +9,13 @@
     margin:20px 0;
 }
 
+option {
+    color: inherit;
+}
+option:disabled {
+    color: white;
+    background-color: #ccc;
+}
 .align-center{
     text-align: center;
 }

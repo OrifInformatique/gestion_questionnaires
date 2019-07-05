@@ -24,6 +24,7 @@ $lang['nav_question']                   = 'Questions';
 $lang['nav_questionnaire']              = 'Questionnaires';
 $lang['nav_module']                     = 'Modules';
 $lang['nav_topic']                      = 'Sujets';
+$lang['nav_admin']                      = 'Administration';
 
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
@@ -50,9 +51,13 @@ $lang['btn_add_topic']                  = 'Ajouter un sujet';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
 $lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
+$lang['btn_add_user']                   = 'Ajouter un utilisateur';
+$lang['btn_add_questionnaire_model']    = 'Ajouter un modèle de questionnaire';
 $lang['btn_import_image']               = 'Importer une image';
 $lang['btn_import_question']            = 'Importer une question';
 $lang['btn_next']                       = 'Suivant';
+$lang['btn_desactivate']                = 'Désactiver';
+$lang['btn_reactivate']                = 'Réactiver';
 $lang['yes']                            = 'Oui';
 $lang['no']                             = 'Non';
 $lang['ouinon']                         = 'Oui/Non';
@@ -74,6 +79,7 @@ $lang['msg_err_access_denied']          = 'Accès refusé';
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
 $lang['title_questionnaire_update']     = 'Modifier un questionnaire';
+$lang['finish_questionnaire']           = 'Modifier un questionnaire depuis un modèle';
 $lang['update_title_questionnaire']     = 'Titre :';
 $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soient remplis';
 $lang['questionnaire']                  = 'Titre';
@@ -91,6 +97,15 @@ $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
 
+// Questionnaire model pages
+$lang['title_model']                    = 'Liste des modèles';
+$lang['questionnaire_model_titles']     = 'Titre des questionnaires';
+$lang['questionnaire_model_subtitles']  = 'Sous-titre des questionnaires';
+$lang['questionnaire_model']            = 'Modèle';
+$lang['generate']                       = 'Générer';
+$lang['add_questionnaire_model_title']  = 'Ajouter un modèle de questionnaire';
+$lang['add_title_questionnaire_model']  = 'Titre du modèle:';
+$lang['del_questionnaire_model_form_title'] = 'Voulez-vous vraiment supprimer le modèle ';
 
 // Questions pages
 $lang['title_question']                 = 'Liste des questions';
@@ -168,6 +183,21 @@ $lang['del_module_form_err']            = 'Ce module possède des questions et/o
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 $lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
 $lang['module_error_404_heading']       = 'Module inexistant';
+
+
+//Admin/users pages
+$lang['users']                          = 'Utilisateur(s)';
+$lang['title_users']                    = 'Liste des utilisateurs';
+$lang['title_user_new']                 = 'Nouvel utilisateur';
+$lang['title_user_update']              = 'Modifier l\'utilisateur';
+$lang['title_user_change_password']     = 'Modifier le mot de passe';
+$lang['user_name']                      = 'Nom d\'utilisateur';
+$lang['user_usertype']                  = 'Type d\'utilisateur';
+$lang['user_active']                    = 'Actif';
+$lang['user_password']                  = 'Mot de passe';
+$lang['user_password_again']            = 'Répétez le mot de passe';
+$lang['user_password_force']            = 'Forcer le changement de mot de passe';
+$lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
 
 //PDF
 $lang['pdf_first_name']                 = 'Prénom :';
