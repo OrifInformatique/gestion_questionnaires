@@ -20,7 +20,7 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model` (
 	`Questionnaire_Name` varchar(100) NOT NULL,
 	`Questionnaire_Subtitle` varchar(255) NULL,
 	PRIMARY KEY (`ID`)
-) ENGINE = InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `t_questionnaire_model` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -34,7 +34,7 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model_topic` (
 	PRIMARY KEY (`ID`),
 	INDEX (`FK_Questionnaire_Model`),
 	INDEX (`FK_Topic`)
-) ENGINE = InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `t_questionnaire_model_topic` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
