@@ -9,6 +9,13 @@
     margin:20px 0;
 }
 
+option {
+    color: inherit;
+}
+option:disabled {
+    color: white;
+    background-color: #ccc;
+}
 .align-center{
     text-align: center;
 }
@@ -48,4 +55,9 @@
 }
 .no-border{
     margin: 0;
+}
+
+.black-line {
+    margin: 0;
+    border-top: 1px solid black
 }

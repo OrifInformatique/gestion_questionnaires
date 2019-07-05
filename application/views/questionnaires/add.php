@@ -39,13 +39,15 @@ $nbMaxQuestion = 0;
 <div id="page-content-wrapper">
     <div class="container">
         <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire'.($model ? '_model' : '').'_title'); ?></h1>
-        <div class="row">
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "addQuestionnaireForm",
                 "name" => "addQuestionnaireForm",
                 "style" => "padding-bottom: 5%;");
             echo form_open('Questionnaire/form_add', $attributes);
+        ?>
+        <div class="row">
+            <?php
             echo form_hidden('model', $model);
             if($error == true)
             {
@@ -135,17 +137,15 @@ $nbMaxQuestion = 0;
                 <table class="table">
                     <thead class="thead-inverse">
                     <tr>
-                        <div class="row">
-                            <th class="col-lg-1">
-                                <span>#</span>
-                            </th>
-                            <th class="col-lg-9">
-                                <span>Nom du sujet</span>
-                            </th>
-                            <th class="col-lg-2">
-                                <span>Nb questions</span>
-                            </th>
-                        </div>
+                        <th class="col-lg-1">
+                            <span>#</span>
+                        </th>
+                        <th class="col-lg-9">
+                            <span>Nom du sujet</span>
+                        </th>
+                        <th class="col-lg-2">
+                            <span>Nb questions</span>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -185,8 +185,8 @@ $nbMaxQuestion = 0;
                  <input type="submit" class="btn btn-success col-xs-12" name="save" value="<?php echo $this->lang->line('save');?>">
             </div>
 
-            <?php echo form_close(); ?>
         </div>
+        <?php echo form_close(); ?>
     </div>
 </div>
 <script>init();</script>

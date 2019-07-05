@@ -4,6 +4,14 @@
 ALTER TABLE `t_questionnaire` ADD `Questionnaire_Subtitle` VARCHAR(255) NULL AFTER `Questionnaire_Name`;
 
 --
+-- Modifies `t_user` to have `Archive` for inactive users checking
+--
+ALTER TABLE `t_user` CHANGE `is_active` `Archive` TINYINT(4) NOT NULL DEFAULT '0';
+UPDATE `t_user` SET `Archive`=2 WHERE `Archive`=1;
+UPDATE `t_user` SET `Archive`=1 WHERE `Archive`=0;
+UPDATE `t_user` SET `Archive`=0 WHERE `Archive`=2;
+
+--
 -- Create `t_questionnaire_model`
 --
 CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model` (
