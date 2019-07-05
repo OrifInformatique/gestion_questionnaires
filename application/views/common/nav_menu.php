@@ -33,6 +33,9 @@ function checkactive($page){
         case 4:
             test_regex('/\/Topic/');
             break;
+        case 5:
+            test_regex('/\/Admin/');
+            break;
         default:
             break;
     }
@@ -48,10 +51,12 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     <?php echo $this->lang->line('nav_questionnaire');?></a></li>
             <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
                     <?php echo $this->lang->line('nav_question');?></a></li>
-            <li <?php checkactive(3); ?>><a href="<?php echo base_url('Module');?>">
-                    <?php echo $this->lang->line('nav_module');?></a></li>
             <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
                     <?php echo $this->lang->line('nav_topic');?></a></li>
+            <?php if($_SESSION['user_access'] == ACCESS_LVL_ADMIN) { ?>
+            <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
+                    <?php echo $this->lang->line('nav_admin');?></a></li>
+            <?php } ?>
         </ul>
     </div>
 <?php
