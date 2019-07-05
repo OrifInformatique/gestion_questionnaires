@@ -197,9 +197,6 @@
             <div id="pagination_top"><?=$pagination?></div>
         </div> 
     </div>
-    <script>
-        //window.onload = init();
-    </script>
 
 <?php
 function displayQuestion($question)

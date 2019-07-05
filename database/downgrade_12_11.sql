@@ -21,3 +21,32 @@ DROP TABLE `t_questionnaire_model_topic`;
 -- Delete `t_questionnaire_model`
 --
 DROP TABLE `t_questionnaire_model`;
+
+--
+-- Create `t_temp_questionnaire`
+--
+CREATE TABLE `gestion_questionnaires`.`t_temp_questionnaire` (
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`ID_Question` int(11) NOT NULL,
+	`Question` text NOT NULL,
+	`Picture_Path` varchar(100) NOT NULL,
+	`Content` text NOT NULL,
+	`Answer_Zone` text NOT NULL,
+	`Points` int(11) NOT NULL,
+	PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Create `t_temp_questionnaire_answer`
+--
+CREATE TABLE `gestion_questionnaires`.`t_temp_questionnaire_answer` (
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`ID_Question` int(11) NOT NULL,
+	`Question` text NOT NULL,
+	`Content` text NOT NULL,
+	`Picture_Path` varchar(100) NOT NULL,
+	`Picture_Answers` varchar(100) NOT NULL,
+	`Answer` text NOT NULL,
+	`Points` int(11) NOT NULL,
+	PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

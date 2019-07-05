@@ -38,6 +38,16 @@ CREATE TABLE `gestion_questionnaires`.`t_questionnaire_model_topic` (
 ALTER TABLE `t_questionnaire_model_topic` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- Remove `t_temp_questionnaire`
+--
+DROP TABLE `t_temp_questionnaire`;
+
+--
+-- Remove `t_temp_questionnaire_answer`
+--
+DROP TABLE `t_temp_questionnaire_answer`;
+
+--
 -- Update key relations
 --
 ALTER TABLE `t_questionnaire_model_topic` ADD CONSTRAINT `t_questionnaire_model_topic_ibfk_1`

@@ -53,6 +53,3 @@
         </div>
     </div>
 </div>
-<script>
-    //window.onload = init();
-</script>

@@ -189,4 +189,3 @@ $nbMaxQuestion = 0;
         <?php echo form_close(); ?>
     </div>
 </div>
-<script>init();</script>
