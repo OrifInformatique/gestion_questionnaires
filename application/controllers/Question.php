@@ -1447,10 +1447,8 @@ class Question extends MY_Controller
 				}
 			}
 		}
-		$output += array(
-			'questions' => $this->question_model->with_all()->get_all(),
-			'topics' => $this->topic_model->get_tree()
-		);
+		$output['questions'] = $this->question_model->with_all()->get_all();
+		$output['topics'] = $this->topic_model->get_tree();
 		$this->display_view('questions/import', $output);
 	}
 
