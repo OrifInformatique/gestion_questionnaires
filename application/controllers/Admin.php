@@ -159,17 +159,8 @@ class Admin extends MY_Controller {
      */
     public function user_change_password_form() {
         $userId = $this->input->post('id');
-        $force = (bool) $this->input->post('password_force');
         $user = $this->user_model->get($userId);
 
-        if(!$force) {
-            $this->form_validation->set_rules('user_password_old', $this->lang->line('field_old_password'), [
-                'trim', 'required',
-                'min_length['.PASSWORD_MIN_LENGTH.']',
-                'max_length['.PASSWORD_MAX_LENGTH.']',
-                'callback_old_password_check['.$user->User.']'
-            ]);
-        }
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
             'min_length['.PASSWORD_MIN_LENGTH.']',
@@ -183,23 +174,12 @@ class Admin extends MY_Controller {
         ]);
 
         if($this->form_validation->run()) {
-            $new_password = $this->input->post('field_new_password');
+            $new_password = $this->input->post('user_password_new');
             $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
-            //$this->user_model->update($userId, ['Password' => $new_password]);
-            //redirect('Admin/user_index');
+            $this->user_model->update($userId, ['Password' => $new_password]);
+            redirect('Admin/user_index');
         } else {
             $this->user_change_password($userId);
         }
-    }
-
-    /**
-     * Callback method for change_password validation rule
-     *
-     * @param string $pwd = The previous password
-     * @param string $user = The username
-     * @return boolean = Whether or not the combination is correct
-     */
-    public function old_password_check($pwd, $user){
-        return $this->user_model->check_password($user, $pwd);
     }
 }

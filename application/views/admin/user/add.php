@@ -77,11 +77,11 @@ $update = !is_null($user);
                 if($user->is_deleted) {
                     echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
                 } else {
-                    echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
+                    echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-warning col-xs-12 col-sm-4"');
                 }
                 ?>
                 <a href="<?= base_url('Admin/user_change_password/'.$user->ID); ?>"
-                    class="btn btn-warning col-xs-12 col-sm-4 col-sm-offset-4">
+                    class="btn btn-default col-xs-12 col-sm-4 col-sm-offset-4">
                     <?= $this->lang->line("title_user_change_password"); ?>
                 </a>
             </div>
