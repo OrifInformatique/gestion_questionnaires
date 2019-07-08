@@ -17,6 +17,12 @@
     ));
     ?>
 
+        <!-- ERROR MESSAGES -->
+        <?php
+        if (!empty(validation_errors())) {
+            echo '<div class="alert alert-danger">'.validation_errors().'</div>';}
+        ?>
+
         <div class="row">
             <div class="form-group">
                 <a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
