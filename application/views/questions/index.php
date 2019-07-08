@@ -109,7 +109,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4">
-                    <a href="<?php echo base_url('Question');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                    <a href="<?php echo base_url('Question?');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
                 </div>
             </div>
                 <hr>
