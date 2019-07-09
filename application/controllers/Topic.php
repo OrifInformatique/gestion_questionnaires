@@ -60,7 +60,7 @@ class Topic extends MY_Controller
      * Form validation to update a topic
      */
     public function form_update_topic(){
-        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
 
         $id = $this->input->post('id');
         $title = array('Topic' => $this->input->post('title'));
@@ -126,7 +126,7 @@ class Topic extends MY_Controller
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
 
-        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required');
+        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
         $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero');
 
         $title = array(
@@ -181,7 +181,7 @@ class Topic extends MY_Controller
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
 
-        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
 
         $id = $this->input->post('id');
         $action = $this->input->post('action');

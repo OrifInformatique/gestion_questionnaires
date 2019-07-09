@@ -50,3 +50,8 @@ CREATE TABLE `gestion_questionnaires`.`t_temp_questionnaire_answer` (
 	`Points` int(11) NOT NULL,
 	PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Downgrade Topic's name length
+--
+ALTER TABLE `t_topic` CHANGE `Topic` `Topic` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL; 
