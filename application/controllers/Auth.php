@@ -20,7 +20,6 @@ class Auth extends MY_Controller
         parent::__construct();
 
         $this->load->model(['user_model', 'user_type_model']);
-        $this->load->library('form_validation');
     }
 
     /**

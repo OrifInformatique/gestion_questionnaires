@@ -15,7 +15,6 @@ class Topic extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('form_validation');
         $this->load->model(array('topic_model', 'question_model'));
         $this->load->helper('date');
     }
