@@ -28,6 +28,10 @@ class PDF extends FPDF {
      */
     function Header() {
         if(empty($this->title)) return;
+        $oldColor = $this->TextColor;
+        $this->SetTextColor(PDF_HEADER_COLOR['red'],
+                            PDF_HEADER_COLOR['green'],
+                            PDF_HEADER_COLOR['blue']);
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetY(10, false);
@@ -35,6 +39,7 @@ class PDF extends FPDF {
         $this->Cell(0, 10, $this->title);
         $this->SetFont('', '');
         $this->SetXY($x, $y);
+        $this->TextColor = $oldColor;
     }
 
     /**
@@ -42,12 +47,17 @@ class PDF extends FPDF {
      * Spaces are not added to the text
      */
     function Footer() {
+        $oldColor = $this->TextColor;
+        $this->SetTextColor(PDF_HEADER_COLOR['red'],
+                            PDF_HEADER_COLOR['green'],
+                            PDF_HEADER_COLOR['blue']);
         $x = $this->GetX();
         $y = $this->GetY();
         $footerY = $this->GetPageHeight() -20;
         $this->SetXY(170, $footerY);
         $this->Cell(0, 10, ($this->footerPage.$this->PageNo().$this->footerOutOf.$this->AliasNbPages));
         $this->SetXY($x, $y);
+        $this->TextColor = $oldColor;
     }
 
     /**
