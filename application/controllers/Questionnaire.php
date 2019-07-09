@@ -335,7 +335,7 @@ class Questionnaire extends MY_Controller
         $pdf->AliasNbPages();
 
         foreach($listRndQuestions as $idQuestion) {
-            $rndQuestion = $this->question_model->get($idQuestion);
+            $rndQuestion = $this->question_model->with_deleted()->get($idQuestion);
             $question = iconv('UTF-8', 'windows-1252', $rndQuestion->Question);
             $totalpoints += $rndQuestion->Points;
             $questionNum++;
@@ -466,7 +466,7 @@ class Questionnaire extends MY_Controller
         $answers->MultiCell(20, 10, iconv('UTF-8', 'windows-1252', $this->lang->line('pdf_points')), 0, "R");
         $answers->AliasNbPages();
         foreach($listRndQuestions as $idQuestion) {
-            $rndQuestion = $this->question_model->get($idQuestion);
+            $rndQuestion = $this->question_model->with_deleted()->get($idQuestion);
             $question = iconv('UTF-8', 'windows-1252', $rndQuestion->Question);
             $totalpoints += $rndQuestion->Points;
             $questionNum++;
