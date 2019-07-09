@@ -48,9 +48,9 @@ class PDF extends FPDF {
      */
     function Footer() {
         $oldColor = $this->TextColor;
-        $this->SetTextColor(PDF_HEADER_COLOR['red'],
-                            PDF_HEADER_COLOR['green'],
-                            PDF_HEADER_COLOR['blue']);
+        $this->SetTextColor(PDF_FOOTER_COLOR['red'],
+                            PDF_FOOTER_COLOR['green'],
+                            PDF_FOOTER_COLOR['blue']);
         $x = $this->GetX();
         $y = $this->GetY();
         $footerY = $this->GetPageHeight() -20;
