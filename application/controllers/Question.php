@@ -154,6 +154,15 @@ class Question extends MY_Controller
 	}
 
 	/**
+	 * Resets the index filters stored in $_SESSION['filtres']
+	 * and redirects the user to index
+	 */
+	public function resetFilters() {
+		unset($_SESSION['filtres']);
+		redirect('Question');
+	}
+
+	/**
 	 * @param int $id = id of the question
 	 * Delete selected question
 	 */
