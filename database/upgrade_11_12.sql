@@ -54,3 +54,8 @@ ALTER TABLE `t_questionnaire_model_topic` ADD CONSTRAINT `t_questionnaire_model_
 FOREIGN KEY (`FK_Topic`) REFERENCES `t_topic`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `t_questionnaire_model_topic` ADD CONSTRAINT `t_questionnaire_model_topic_ibfk_2`
 FOREIGN KEY (`FK_Questionnaire_Model`) REFERENCES `t_questionnaire_model`(`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Update Topic's name length
+--
+ALTER TABLE `t_topic` CHANGE `Topic` `Topic` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL; 
