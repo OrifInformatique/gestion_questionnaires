@@ -1262,6 +1262,7 @@ class Question extends MY_Controller
 					}
 					redirect('/Question');
 				} else {
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 
@@ -1280,6 +1281,10 @@ class Question extends MY_Controller
 					}
 					if(isset($_POST['upload_data'])){
 						$output['upload_data'] = $_POST['upload_data'];
+					}
+
+					if(isset($_POST['nbAnswer'])){
+						$output['nbAnswer'] = $_POST['nbAnswer'];
 					}
 
 					for($i=0; $i < $output['nbAnswer']; $i++){
@@ -1322,6 +1327,10 @@ class Question extends MY_Controller
 				}
 				if(isset($_POST['upload_data'])){
 					$output['upload_data'] = $_POST['upload_data'];
+				}
+
+				if(isset($_POST['nbAnswer'])){
+					$output['nbAnswer'] = $_POST['nbAnswer'];
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
