@@ -495,8 +495,8 @@ class Questionnaire extends MY_Controller
             $answers->SetFont('', 'B');
             $answers->Cell(10, 10, $questionNum.'.');
             $answers->SetFont('', '');
-            $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
-            $answers->MultiCell(10, 10, '.../'.$rndQuestion->Points);
+            $answers->Cell(139, 10, iconv('UTF-8', 'windows-1252', $stringLines[0]));
+            $answers->MultiCell(20, 7, '.../'.$rndQuestion->Points);
             for($i = 1; $i < count($stringLines); $i++) {
                 $answers->Cell(10, 10);
                 $answers->Cell(140, 10, iconv('UTF-8', 'windows-1252', $stringLines[$i]));
