@@ -29,7 +29,10 @@ class PDF extends FPDF {
     function Header() {
         if(empty($this->title)) return;
         $oldColor = $this->TextColor;
-        $this->SetTextColor(0, 0, 0);
+        $red = PDF_HEADER_COLOR['red'];
+        $green = PDF_HEADER_COLOR['green'];
+        $blue = PDF_HEADER_COLOR['blue'];
+        $this->SetTextColor($red, $green, $blue);
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetY(10, false);
@@ -46,7 +49,10 @@ class PDF extends FPDF {
      */
     function Footer() {
         $oldColor = $this->TextColor;
-        $this->SetTextColor(0, 0, 0);
+        $red = PDF_FOOTER_COLOR['red'];
+        $green = PDF_FOOTER_COLOR['green'];
+        $blue = PDF_FOOTER_COLOR['blue'];
+        $this->SetTextColor($red, $green, $blue);
         $x = $this->GetX();
         $y = $this->GetY();
         $footerY = $this->GetPageHeight() -20;

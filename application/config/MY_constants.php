@@ -27,3 +27,14 @@ define('PASSWORD_HASH_ALGORITHM', PASSWORD_BCRYPT);
 
 
 define('ITEMS_PER_PAGE',25);
+
+define('PDF_HEADER_COLOR', [
+    'red' => 0,
+    'green' => 0,
+    'blue' => 0
+]);
+define('PDF_FOOTER_COLOR', [
+    'red' => 0,
+    'green' => 0,
+    'blue' => 0
+]);
