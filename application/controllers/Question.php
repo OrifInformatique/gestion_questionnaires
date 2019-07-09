@@ -23,7 +23,6 @@ class Question extends MY_Controller
 		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-		$this->load->helper(array('url', 'form'));
 		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
 	}
 

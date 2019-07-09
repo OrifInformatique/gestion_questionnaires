@@ -26,7 +26,6 @@ class Questionnaire extends MY_Controller
             'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
-        $this->load->helper(array('url', 'form'));
         $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'pdf', 'upload'));
     }
 
