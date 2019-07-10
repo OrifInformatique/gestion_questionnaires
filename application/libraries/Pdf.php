@@ -27,7 +27,7 @@ class PDF extends FPDF {
      * Adds the title of the document to the top left
      */
     function Header() {
-        if(empty($this->title)) return;
+        if(empty($this->title) || $this->PageNo() == 1) return;
         $oldColor = $this->TextColor;
         $this->SetTextColor(PDF_HEADER_COLOR['red'],
                             PDF_HEADER_COLOR['green'],
