@@ -157,8 +157,13 @@
                             <tr>
                                 <th>
                                     <?php 
-                                        echo $this->lang->line('question'); 
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
+                                        echo $this->lang->line('question').'<br>'.
+                                        "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
+                                    ?>
+                                </th>
+                                <th>
+                                    <?php 
+                                        echo $this->lang->line('topic'); 
                                     ?>
                                 </th>
                                 <th><?php 
@@ -221,6 +226,7 @@ function displayQuestion($question)
             }
             ?>
         </td>
+        <td><?php echo $question->topic->Topic ?></td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: center;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
