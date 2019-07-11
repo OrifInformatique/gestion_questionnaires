@@ -15,8 +15,8 @@ ALTER TABLE `t_questionnaire` DROP COLUMN `Questionnaire_Subtitle`;
 --
 -- Don't allow longer filenames
 --
-ALTER TABLE `t_questionnaire` CHANGE `PDF` `PDF` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
-CHANGE `Corrige_PDF` `Corrige_PDF` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `t_questionnaire` CHANGE `PDF` `PDF` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+CHANGE `Corrige_PDF` `Corrige_PDF` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
 --
 -- Delete `t_questionnaire_model_topic`
