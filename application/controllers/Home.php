@@ -23,13 +23,9 @@ class Home extends MY_Controller {
      * Redirect depending of user access level
      */
     public function index(){
-    	switch($this->session->user_access){
-            case ACCESS_LVL_USER :
-            	$this->display_view("home/home_view");
-                break;
-            case ACCESS_LVL_ADMIN :
-                redirect('Questionnaire');
-                break;
-        }
+    	if($this->session->user_access >= ACCESS_LVL_MANAGER)
+            redirect('Questionnaire');
+        else
+            $this->display_view("home/home_view");
     }
 }

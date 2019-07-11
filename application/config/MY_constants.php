@@ -16,7 +16,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |--------------------------------------------------------------------------
 */
 define('ACCESS_LVL_USER', 1);
-define('ACCESS_LVL_ADMIN', 2);
+define('ACCESS_LVL_MANAGER', 2);
+define('ACCESS_LVL_ADMIN', 4);
 
 define('USERNAME_MIN_LENGTH', 3);
 define('USERNAME_MAX_LENGTH', 45);
