@@ -1,23 +1,23 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Questionnaire model is used to give access to the tab 'Questionnaire' of the application
- *
+ * This model is used for accessing t_questionnaire_model
+ * 
  * @author      Orif, section informatique (UlSi, ViDi)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
-class temp_questionnaire extends MY_Model{
-
+class questionnaire_model_model extends MY_Model {
     /* SET MY_Model VARIABLES */
-    protected $_table = 't_temp_questionnaire';
+    protected $_table = 't_questionnaire_model';
     protected $primary_key = 'ID';
     protected $protected_attributes = ['ID'];
+    protected $has_many = ['questionnaire_model_topic' => ['primary_key' => 'FK_Questionnaire_Model',
+                                                           'model' => 'questionnaire_model_topic_model']];
 
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 }

@@ -15,6 +15,8 @@ class user_model extends MY_Model
     protected $protected_attributes = ['ID'];
     protected $belongs_to = ['user_type'=> ['primary_key' => 'FK_User_Type',
                                             'model' => 'user_type_model']];
+    protected $soft_delete = TRUE;
+    protected $soft_delete_key = 'Archive';
 
     /**
      * Constructor
@@ -36,7 +38,7 @@ class user_model extends MY_Model
     {
         $user = $this->get_by('User', $username);
 
-        if (!is_null($user) && $user->is_active == true) {
+        if (!is_null($user) && $user->Archive == false) {
             // A corresponding active user has been found
             // Check password
             return password_verify($password, $user->Password);
@@ -45,5 +47,23 @@ class user_model extends MY_Model
             // No corresponding active user
             return false;
         }
+    }
+
+    /**
+     * Deletes the item permanently
+     *
+     * @param integer $id = The id of the item to delete
+     * @return integer =
+     */
+    public function hard_delete($id) {
+        $this->trigger('before_delete', $id);
+
+        $this->_database->where($this->primary_key, $id);
+
+        $result = $this->_database->delete($this->_table);
+
+        $this->trigger('after_delete', $result);
+
+        return $result;
     }
 }

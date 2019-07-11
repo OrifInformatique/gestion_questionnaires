@@ -16,7 +16,7 @@
         $attributes = array("class" => "form-group",
             "id" => "addTopicForm",
             "name" => "addTopicForm");
-        echo form_open('Topic/form_add', $attributes);
+        echo form_open('Topic/form_add_topic', $attributes);
         if(count($topics) == 0){
             echo '<div class="alert alert-warning">'.$this->lang->line('topic_no_module_error').'</div>';
         }
@@ -34,17 +34,15 @@
              <?php
     			//Récupère chaque module
                 foreach ($topics as $object => $topic) {
-                    if($topic->FK_Parent_Topic == 0) {
-    				    //Affiche les modules
-                        echo "<option value=". $topic->ID .">" . $topic->Topic . "</option>";
-                    }
+				    //Affiche les modules
+                    echo "<option value='". $topic->ID ."'".($selected_module == $topic->ID?' selected':'').">" . $topic->Topic . "</option>";
                 }
             ?>
             </select>
         </div>
         <div class="col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
-            <input maxlength="70" type="text" name="title" class="form-control" id="title" value="">
+            <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control" id="title" value="">
         </div>
         <div class="col-xs-12">
               <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>

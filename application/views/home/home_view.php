@@ -11,5 +11,6 @@
 <div id="page-content-wrapper">
     <div class="container">
         <p>Vous êtes connecté en tant qu'utilisateur.</p>
+        <p>Actuellement aucune fonction n'est disponible en tant que simple utilisateur.</p>
     </div>
 </div>

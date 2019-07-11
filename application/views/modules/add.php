@@ -14,7 +14,7 @@
             $attributes = array("class" => "form-group",
                 "id" => "addModuleForm",
                 "name" => "addModuleForm");
-            echo form_open('Module/form_validate', $attributes);
+            echo form_open('Topic/form_validate_module', $attributes);
                 
             if($error == true) {
                 echo "<p class='alert alert-danger'>" . $this->lang->line('add_module_form_err') . "</p>";
@@ -22,12 +22,12 @@
         ?>
         <div class="form-group col-xs-12">
             <h4 for="title"><?php echo $this->lang->line('add_title_module'); ?></h4>
-            <input maxlength="45" type="text" name="title" class="form-control" id="title" value="">
+            <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control" id="title" value="">
             <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
         </div>
         <div class="col-xs-12">
        
-           <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Module').'\'"'); ?>
+            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
             <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
                      
         </div>

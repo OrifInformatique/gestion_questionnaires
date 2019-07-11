@@ -65,10 +65,7 @@
                 <div class="col-lg-2"></div>
             </div>
         </div>
-    </div>s
-    <script>
-        window.onload = init();
-    </script>
+    </div>
 <?php
 function displayQuestion($questionnaire)
 {

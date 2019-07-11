@@ -6,42 +6,7 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
-
-function displayTopics($topics){
-
-    $compteur = 0;
-
-    foreach ($topics as $topic)
-    {
-
-        if (isset($_GET['param']) && $topic->Topic == $_GET['param'])
-        {
-            for($index = 0; $index < count($topics); $index++)
-            {
-                if($topic->ID == $topics[$index]->FK_Parent_Topic)
-                {
-                    $compteur++;
-                    displayTableBody($topics[$index]);
-                }
-            }
-        }
-    }
-    return $compteur;
-}
-function displayTableBody($topic){
-    ?>
-	<tr>
-        <td>
-        <a href="<?php echo base_url(); ?>Topic/update/<?php echo $topic->ID; ?>"><?php echo $topic->Topic; ?></a>
-       </td>   
-       <td>
-    	<a href="<?php echo base_url(); ?>Topic/delete/<?php echo $topic->ID; ?>" class="close">×</a>
-    	</td>
-    </tr>
-	<?php
-}
 ?>
-
 <div id="page-content-wrapper">
     <div class="container">
         <h1 class="title-section"><?php echo $this->lang->line('title_topic'); ?></h1>			
@@ -51,63 +16,40 @@ function displayTableBody($topic){
 			}
 		?>
         <div class="row">
-            <div class="col-xs-12">
-                <h4><?php echo $this->lang->line('focus_module'); ?></h4>
-                <select onchange="changeselectTopic()" class="form-control" id="topic_selected">
-                    <?php
-                    echo "<option selected disabled hidden></option>";
-                    //Récupère chaque module
-                    foreach ($modules as $object => $module) {
-                        if($module->FK_Parent_Topic == 0)
-                        {
-                            //Affiche les modules
-                            echo "<option value='" . $module->ID . "' ".($module_selected==$module->ID?' selected':'').">" . $module->Topic . "</option>";
-                        }
-                    }
-                    ?>
-                </select>
-            </div>  
-            <div class="col-xs-12 col-sm-4" style="margin-bottom: 10px">
-                <a href="<?php echo base_url(); ?>Topic/add/" class="btn btn-success col-xs-12"><?php echo $this->lang->line('btn_add_topic'); ?></a>
-            </div>
-            <div class="table-responsive col-xs-12">
-                <?php
-                if(isset($_GET['param'])){
-                    echo "<h3>" . $_GET['param'] . "</h3>";
-                }
-                ?>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th><?php echo $this->lang->line('topic'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $compteur = displayTopics($topics);
-                    if($compteur == 0)
-                    {
-                        foreach ($topics as $topic)
-                        {
-                            if(isset($_GET['param'])){
-                                if(($topic->FK_Parent_Topic != 0) AND ($topic->Topic == $_GET['param']))
-                                {
-                                    displayTableBody($topic);
-                                }
-                            } else {
-                                if($topic->FK_Parent_Topic != 0)
-                                {
-                                    displayTableBody($topic);
-                                }
+            <h4><?php echo $this->lang->line('topic'); ?></h4>
+            <div class="accordion" id="accordionExample">
+                <?php foreach ($modules as $module) { ?>
+                    <div class="card">
+                        <div class="card-header" id="heading<?=$module->ID?>">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse<?=$module->ID?>" aria-expanded="false" aria-controls="collapse<?=$module->ID?>">
+                                    <?=$module->Topic;  ?> ▼
+                                </button>
+                                <a href="<?php echo base_url(); ?>Topic/delete_module/<?php echo $module->ID; ?>" class="close">×</a>
+                                <a href="<?=base_url()?>Topic/update_module/<?php echo $module->ID ?>" class="close">✎</a>
+                            </h5>
+                        </div>
 
-                            }
-                        }
-                    }?>
-                    </tbody>
-                </table>
+                        <div id="collapse<?=$module->ID?>" class="collapse" aria-labelledby="heading<?=$module->ID?>" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <table class="table table-hover">
+                                    <tr><td><a class="btn btn-success" href="<?=base_url('Topic/add_topic/'.$module->ID)?>"><?=$this->lang->line('btn_add_topic_in_module')?></a></td></tr>
+                                    <?php foreach ($topics as $topic) {
+                                        if($topic->FK_Parent_Topic == $module->ID){ ?>
+                                            <tr>
+                                                <td><a href="<?= base_url('Topic/update_topic/'.$topic->ID)?>"><?=$topic->Topic?></a></td>
+                                                <td><a href="<?= base_url('Topic/delete_topic/'.$topic->ID)?>" class="close">×</a></td>
+                                            </tr>
+                                        <?php }
+                                    } ?>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="black-line">
+                <?php } ?>
+                <a class="btn btn-success" href="<?=base_url('Topic/add_module/')?>"><?=$this->lang->line('btn_add_module')?></a>
             </div>
         </div>
     </div>
-    <script>
-        //window.onload = init();
-    </script>
+</div>

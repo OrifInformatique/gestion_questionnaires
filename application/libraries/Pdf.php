@@ -27,7 +27,11 @@ class PDF extends FPDF {
      * Adds the title of the document to the top left
      */
     function Header() {
-        if(empty($this->title)) return;
+        if(empty($this->title) || $this->PageNo() == 1) return;
+        $oldColor = $this->TextColor;
+        $this->SetTextColor(PDF_HEADER_COLOR['red'],
+                            PDF_HEADER_COLOR['green'],
+                            PDF_HEADER_COLOR['blue']);
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetY(10, false);
@@ -35,25 +39,36 @@ class PDF extends FPDF {
         $this->Cell(0, 10, $this->title);
         $this->SetFont('', '');
         $this->SetXY($x, $y);
+        $this->TextColor = $oldColor;
     }
+
     /**
      * Adds the amount of pages to the bottom right of the document
      * Spaces are not added to the text
      */
     function Footer() {
+        $oldColor = $this->TextColor;
+        $this->SetTextColor(PDF_FOOTER_COLOR['red'],
+                            PDF_FOOTER_COLOR['green'],
+                            PDF_FOOTER_COLOR['blue']);
         $x = $this->GetX();
         $y = $this->GetY();
         $footerY = $this->GetPageHeight() -20;
         $this->SetXY(170, $footerY);
         $this->Cell(0, 10, ($this->footerPage.$this->PageNo().$this->footerOutOf.$this->AliasNbPages));
         $this->SetXY($x, $y);
+        $this->TextColor = $oldColor;
     }
+
     /**
      * Sets the title of the document
+     *
+     * @param string $title = The new title
+     * @param boolean $isUTF8 = Whether the title is in UTF8
      */
     function SetTitle($title, $isUTF8 = false) {
         parent::SetTitle($title, $isUTF8);
-        $this->title = iconv('UTF-8', 'windows-1252', $title);
+        $this->title = ($isUTF8 ? iconv('UTF-8', 'windows-1252', $title) : $title);
     }
 
     /**

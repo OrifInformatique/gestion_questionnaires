@@ -9,6 +9,38 @@
 ?>
 <div id="page-content-wrapper">
     <div class="container">
+        <h1><?= $this->lang->line('title_model'); ?></h1>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <a href="<?= base_url('Questionnaire/form_add/1'); ?>" class="btn btn-success col-xs-12"><?= $this->lang->line('btn_add_questionnaire_model'); ?></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><?= $this->lang->line('questionnaire_model'); ?></th>
+                            <th><?= $this->lang->line('questionnaire_model_titles');?></th>
+                            <th><?= $this->lang->line('questionnaire_model_subtitles');?></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($models as $model) { ?>
+                        <tr>
+                            <td><a href="<?= base_url('Questionnaire/update/'.$model->ID.'/1'); ?>"><?= $model->Base_Name; ?></a></td>
+                            <td><?= $model->Questionnaire_Name; ?></td>
+                            <td><?= $model->Questionnaire_Subtitle; ?></td>
+                            <td><a href="<?= base_url('Questionnaire/generate_pdf_from_model/'.$model->ID) ?>"><?= $this->lang->line('generate'); ?></a></td>
+                            <td><a href="<?= base_url('Questionnaire/model_delete/'.$model->ID); ?>" class="close">×</a></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <h1 class="title-section"><?php echo $this->lang->line('title_questionnaire');?></h1>
         <?php
             if($error == true) {
@@ -36,7 +68,7 @@
                     foreach ($questionnaires as $questionnaire){
                         ?>
                         <tr>
-                            <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
+                            <td><a href="<?= base_url('Questionnaire/update/'.$questionnaire->ID); ?>"><?php echo $questionnaire->Questionnaire_Name; ?></a></td>
                             <td><a href="<?php echo base_url()."pdf_files/questionnaires/".$questionnaire->PDF; ?>" target="_blank">
                                     <?php echo $this->lang->line('redirect_pdf');?></a></td>
                             <td><a target="_blank" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>">
@@ -51,7 +83,6 @@
                     </tbody>
                 </table>
             </div>
-            
         </div>
     </div>
 </div>

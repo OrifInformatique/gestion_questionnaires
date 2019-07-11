@@ -104,12 +104,12 @@
                     ?>
                 </div>
                 <div class="col-lg-4">
-                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></a>
+                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
-                    <a href="Question?" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                    <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
                 </div>
             </div>
                 <hr>
@@ -197,9 +197,6 @@
             <div id="pagination_top"><?=$pagination?></div>
         </div> 
     </div>
-    <script>
-        //window.onload = init();
-    </script>
 
 <?php
 function displayQuestion($question)
@@ -223,7 +220,7 @@ function displayQuestion($question)
                 echo "<br>".$cloze_text;
             }
             ?>
-        </a></td>
+        </td>
         <td><?php echo $question->question_type->Type_Name ?></td>
         <td style="text-align: center;"><?php echo $question->Points; ?></td>
         <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>

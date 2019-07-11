@@ -21,6 +21,10 @@ function test_regex($pattern)
  * **/
 function checkactive($page){
     switch ($page){
+        case 0;
+            test_regex('/\/Home/');
+            test_regex('/\//');
+            break;
         case 1;
             test_regex('/\/Questionnaire/');
             break;
@@ -33,6 +37,9 @@ function checkactive($page){
         case 4:
             test_regex('/\/Topic/');
             break;
+        case 5:
+            test_regex('/\/Admin/');
+            break;
         default:
             break;
     }
@@ -44,16 +51,22 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
 ?>
     <div id="myNavbar" class="container">
         <ul class="nav navbar-nav">
-            <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
-                    <?php echo $this->lang->line('nav_questionnaire');?></a></li>
-            <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
-                    <?php echo $this->lang->line('nav_question');?></a></li>
-            <li <?php checkactive(3); ?>><a href="<?php echo base_url('Module');?>">
-                    <?php echo $this->lang->line('nav_module');?></a></li>
-            <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
-                    <?php echo $this->lang->line('nav_topic');?></a></li>
+            <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
+                <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
+                    <?= $this->lang->line('nav_questionnaire');?></a></li>
+                <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
+                    <?= $this->lang->line('nav_question');?></a></li>
+                <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
+                    <?= $this->lang->line('nav_topic');?></a></li>
+                
+                <?php if($_SESSION['user_access'] == ACCESS_LVL_ADMIN) { ?>
+                    <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
+                        <?= $this->lang->line('nav_admin');?></a></li>
+                <?php } ?>
+            <?php } else { ?>
+                <li <?php checkactive(0); ?>><a href="<?php echo base_url('Home');?>">
+                    <?php echo $this->lang->line('nav_home');?></a></li>
+           <?php } ?>
         </ul>
     </div>
-<?php
-    }
-?>
+<?php } ?>

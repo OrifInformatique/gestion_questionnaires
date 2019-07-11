@@ -11,7 +11,7 @@
 class Question extends MY_Controller
 {
 	/* MY_Controller variables definition */
-	protected $access_level = ACCESS_LVL_ADMIN;
+	protected $access_level = ACCESS_LVL_MANAGER;
 
 
 	/**
@@ -23,8 +23,7 @@ class Question extends MY_Controller
 		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-		$this->load->helper(array('url', 'form'));
-		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
+		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel'));
 	}
 
 	/**
@@ -146,11 +145,20 @@ class Question extends MY_Controller
 		$output = array(
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
-			'topics' => $this->topic_model->get_all(),
+			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
 			'questionTypes' => $this->question_type_model->get_all()
 		);
 
 		$this->display_view('questions/index', $output);
+	}
+
+	/**
+	 * Resets the index filters stored in $_SESSION['filtres']
+	 * and redirects the user to index
+	 */
+	public function resetFilters() {
+		unset($_SESSION['filtres']);
+		redirect('Question');
 	}
 
 	/**
@@ -165,7 +173,7 @@ class Question extends MY_Controller
 				$output["question"] = $this->question_model->get_all();
 				$this->display_view("questions/confirm", $output);
 			} else {
-				$this->question_model->update($id, array("Archive" => 1));
+				$this->question_model->delete($id);
 				redirect('/Question');
 			}
 		}
@@ -1263,6 +1271,7 @@ class Question extends MY_Controller
 					}
 					redirect('/Question');
 				} else {
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 
@@ -1281,6 +1290,10 @@ class Question extends MY_Controller
 					}
 					if(isset($_POST['upload_data'])){
 						$output['upload_data'] = $_POST['upload_data'];
+					}
+
+					if(isset($_POST['nbAnswer'])){
+						$output['nbAnswer'] = $_POST['nbAnswer'];
 					}
 
 					for($i=0; $i < $output['nbAnswer']; $i++){
@@ -1323,6 +1336,10 @@ class Question extends MY_Controller
 				}
 				if(isset($_POST['upload_data'])){
 					$output['upload_data'] = $_POST['upload_data'];
+				}
+
+				if(isset($_POST['nbAnswer'])){
+					$output['nbAnswer'] = $_POST['nbAnswer'];
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
@@ -1383,6 +1400,7 @@ class Question extends MY_Controller
 	 */
 	public function import()
 	{
+		$output = array();
 		if(isset($_POST['submitExcel']))
 		{
 			$config = array(
@@ -1446,10 +1464,8 @@ class Question extends MY_Controller
 				}
 			}
 		}
-		$output += array(
-			'questions' => $this->question_model->with_all()->get_all(),
-			'topics' => $this->topic_model->get_tree()
-		);
+		$output['questions'] = $this->question_model->with_all()->get_all();
+		$output['topics'] = $this->topic_model->get_tree();
 		$this->display_view('questions/import', $output);
 	}
 

@@ -47,6 +47,7 @@
             <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_question'); ?>" name="submitExcel">
         </div>
     </div>
+    <?=form_close();?>
     <h1 class="title-section"><?php echo $this->lang->line('title_import_pictures'); ?></h1>
 
     <?php
@@ -72,4 +73,5 @@
                 <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_image'); ?>" name="submitPictures">
         </div>
     </div>
+    <?=form_close();?>
 </div>

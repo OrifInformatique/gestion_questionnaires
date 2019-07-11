@@ -38,27 +38,51 @@ $nbMaxQuestion = 0;
 
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire_title'); ?></h1>
-        <div class="row">
+        <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire'.($model ? '_model' : '').'_title'); ?></h1>
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "addQuestionnaireForm",
                 "name" => "addQuestionnaireForm",
                 "style" => "padding-bottom: 5%;");
             echo form_open('Questionnaire/form_add', $attributes);
-            ?>
+        ?>
+        <div class="row">
             <?php
+            echo form_hidden('model', $model);
             if($error == true)
             {
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
             }
             ?>
+            <?php if($model) { ?>
+                <div class="form-group col-xs-12">
+                    <h4><?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName'); ?></h4>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <?= form_input('modelName', $modelName, array(
+                                'maxlength' => 100, 'class' => 'form-control', 'id' => 'modelName'
+                            )); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="form-group col-xs-12">
                 <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
                         <input maxlength="100" type="text" name="title" class="form-control" id="title"
                         value="<?php echo $title;?>">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-xs-12">
+                <h4><?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle'); ?></h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <?= form_input('subtitle', $subtitle, array(
+                            'maxlength' => 100, 'id' => 'subtitle',
+                            'class' => 'form-control'
+                        )); ?>
                     </div>
                 </div>
             </div>
@@ -105,7 +129,7 @@ $nbMaxQuestion = 0;
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-sm-4 col-xs-12">
-                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="<?php echo $this->lang->line('add_form')?>"/>
+                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="add_form"/>
             </div>
         </div>
         <div class="row">
@@ -113,17 +137,15 @@ $nbMaxQuestion = 0;
                 <table class="table">
                     <thead class="thead-inverse">
                     <tr>
-                        <div class="row">
-                            <th class="col-lg-1">
-                                <span>#</span>
-                            </th>
-                            <th class="col-lg-9">
-                                <span>Nom du sujet</span>
-                            </th>
-                            <th class="col-lg-2">
-                                <span>Nb questions</span>
-                            </th>
-                        </div>
+                        <th class="col-lg-1">
+                            <span>#</span>
+                        </th>
+                        <th class="col-lg-9">
+                            <span>Nom du sujet</span>
+                        </th>
+                        <th class="col-lg-2">
+                            <span>Nb questions</span>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -156,15 +178,14 @@ $nbMaxQuestion = 0;
                 
             </div>
             <div class="col-sm-4 col-xs-12" > 
-            <input type="submit" class="btn btn-danger col-xs-12" name="<?php echo $this->lang->line('cancel');?>" value="<?php echo $this->lang->line('cancel');?>">
+            <input type="submit" class="btn btn-danger col-xs-12" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
 
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                 <input type="submit" class="btn btn-success col-xs-12" name="<?php echo $this->lang->line('save');?>" value="<?php echo $this->lang->line('save');?>">
+                 <input type="submit" class="btn btn-success col-xs-12" name="save" value="<?php echo $this->lang->line('save');?>">
             </div>
 
-            <?php echo form_close(); ?>
         </div>
+        <?php echo form_close(); ?>
     </div>
 </div>
-<script>init();</script>

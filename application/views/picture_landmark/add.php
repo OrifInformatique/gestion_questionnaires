@@ -138,7 +138,7 @@
                         <td class="form-group col-xs-1">
                             <?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-danger"');
                             ?>
-                        </tr>
+                        </td>
                     </tr>
                 <?php } ?>
                 </tbody>
