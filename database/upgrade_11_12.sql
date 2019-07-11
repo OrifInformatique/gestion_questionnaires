@@ -4,6 +4,12 @@
 ALTER TABLE `t_questionnaire` ADD `Questionnaire_Subtitle` VARCHAR(255) NULL AFTER `Questionnaire_Name`;
 
 --
+-- Allows longer filenames
+--
+ALTER TABLE `t_questionnaire` CHANGE `PDF` `PDF` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+CHANGE `Corrige_PDF` `Corrige_PDF` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+--
 -- Modifies `t_user` to have `Archive` for inactive users checking
 --
 ALTER TABLE `t_user` CHANGE `is_active` `Archive` TINYINT(4) NOT NULL DEFAULT '0';
