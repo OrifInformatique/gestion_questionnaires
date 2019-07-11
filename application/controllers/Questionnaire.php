@@ -13,7 +13,7 @@ class Questionnaire extends MY_Controller
     CONST QUESTIONFONT_SIZE = 12;
 
     /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_ADMIN;
+    protected $access_level = ACCESS_LVL_MANAGER;
 
     /**
      * Constructor

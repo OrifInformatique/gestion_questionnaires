@@ -59,3 +59,9 @@ FOREIGN KEY (`FK_Questionnaire_Model`) REFERENCES `t_questionnaire_model`(`ID`) 
 -- Update Topic's name length
 --
 ALTER TABLE `t_topic` CHANGE `Topic` `Topic` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL; 
+
+--
+-- Update User type
+--
+UPDATE `t_user_type` SET `access_level` = '4' WHERE `access_level` = 2;
+INSERT INTO `t_user_type` (`name`, `access_level`) VALUES ('manager', '2');
