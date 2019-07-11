@@ -58,6 +58,8 @@ ALTER TABLE `t_topic` CHANGE `Topic` `Topic` VARCHAR(50) CHARACTER SET utf8 COLL
 
 --
 -- Downgrade User type
+-- Delete the "Manager" user type
+-- Change admin access_level to 2
 --
 DELETE FROM `t_user_type` WHERE `access_level` = 2;
 UPDATE `t_user_type` SET `access_level` = '2' WHERE `access_level` = 4;
