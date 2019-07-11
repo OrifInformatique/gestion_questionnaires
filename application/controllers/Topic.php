@@ -10,7 +10,7 @@
 class Topic extends MY_Controller
 {
     /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_ADMIN;
+    protected $access_level = ACCESS_LVL_MANAGER;
 
     public function __construct()
     {
