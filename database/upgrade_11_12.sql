@@ -62,6 +62,8 @@ ALTER TABLE `t_topic` CHANGE `Topic` `Topic` VARCHAR(150) CHARACTER SET utf8 COL
 
 --
 -- Update User type
+-- Add a new "Manager" user type with access_level = 2
+-- Change admin access_level to 4
 --
 UPDATE `t_user_type` SET `access_level` = '4' WHERE `access_level` = 2;
 INSERT INTO `t_user_type` (`name`, `access_level`) VALUES ('manager', '2');
