@@ -18,8 +18,6 @@ class Admin extends MY_Controller {
         parent::__construct();
 
         $this->load->model(['user_model', 'user_type_model']);
-        $this->load->helper(['url','form']);
-        $this->load->library('form_validation');
     }
 
     /**

@@ -26,8 +26,7 @@ class Questionnaire extends MY_Controller
             'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
             'picture_landmark_model', 'free_answer_model', 'multiple_answer_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
-        $this->load->helper(array('url', 'form'));
-        $this->load->library(array('TableTopics', 'form_validation', 'fpdf181/Fpdf', 'pdf', 'upload'));
+        $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));
     }
 
     /**
@@ -164,11 +163,11 @@ class Questionnaire extends MY_Controller
     /**
      * Adds a new topic to a questionnaire or saves it on the database
      */
-    public function form_add()
+    public function form_add($model = 0)
     {
         // If temporary tableTopics does not exist, create it
         // Used to store topics and number of questions list
-        $model = !empty($this->input->post('model'));
+        $model = (!empty($this->input->post('model'))) || $model == 1;
         $temp_table_name = 'temp_tableTopics'.($model ? '_model' : '');
         if (!isset($_SESSION[$temp_table_name]))
         {
@@ -182,18 +181,10 @@ class Questionnaire extends MY_Controller
         }
 
         //Store title if defined
-        if(!empty($this->input->post('title'))){
-            $tableTopics->setTitle($this->input->post('title'));
-        }
-
-        if(!empty($this->input->post('modelName'))) {
-            $tableTopics->setModelName($this->input->post('modelName'));
-        }
+        $tableTopics->setTitle($this->input->post('title'));
+        $tableTopics->setModelName($this->input->post('modelName'));
+        $tableTopics->setSubtitle($this->input->post('subtitle'));
         
-        if(!empty($this->input->post('subtitle'))) {
-            $tableTopics->setSubtitle($this->input->post('subtitle'));
-        }
-
         $title = $tableTopics->getTitle();
         $arrayTopics = $tableTopics->getArrayTopics();
         $arrayNbQuestion = $tableTopics->getArrayNbQuestion();

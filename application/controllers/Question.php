@@ -23,8 +23,7 @@ class Question extends MY_Controller
 		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-		$this->load->helper(array('url', 'form'));
-		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel', 'upload', 'form_validation'));
+		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel'));
 	}
 
 	/**
@@ -1272,6 +1271,7 @@ class Question extends MY_Controller
 					}
 					redirect('/Question');
 				} else {
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 
@@ -1290,6 +1290,10 @@ class Question extends MY_Controller
 					}
 					if(isset($_POST['upload_data'])){
 						$output['upload_data'] = $_POST['upload_data'];
+					}
+
+					if(isset($_POST['nbAnswer'])){
+						$output['nbAnswer'] = $_POST['nbAnswer'];
 					}
 
 					for($i=0; $i < $output['nbAnswer']; $i++){
@@ -1332,6 +1336,10 @@ class Question extends MY_Controller
 				}
 				if(isset($_POST['upload_data'])){
 					$output['upload_data'] = $_POST['upload_data'];
+				}
+
+				if(isset($_POST['nbAnswer'])){
+					$output['nbAnswer'] = $_POST['nbAnswer'];
 				}
 
 				$output['nbAnswer'] = $_POST['nbAnswer'];
