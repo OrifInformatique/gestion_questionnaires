@@ -12,7 +12,7 @@
             <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
             <div class="row">
                <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_module'); ?></h4>
+                    <b class="biggertext"><?php echo $this->lang->line('focus_module'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="module_selected">
                         <?php
                         echo "<option selected disabled hidden></option>";
@@ -31,7 +31,7 @@
                     </select>
                 </div>
                 <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
+                    <b class="biggertext"><?php echo $this->lang->line('focus_topic'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
 
@@ -74,7 +74,7 @@
                     </select>
                 </div>
                 <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
+                    <b class="biggertext"><?php echo $this->lang->line('question_type'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
                         
@@ -94,7 +94,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-8">
-                    <h4><?php echo $this->lang->line('search'); ?></h4>
+                    <b class="biggertext"><?php echo $this->lang->line('search'); ?></b>
                     <?php
                         if(isset($_GET['search'])){
                             echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
@@ -188,8 +188,8 @@
                     </table>
                     <?php
                     if($compteur == 0){
-                        echo "<div class='well' style='border: solid 2px red;'><h4>"
-                        . $this->lang->line('no_question') . "</h4></div>";
+                        echo "<div class='well' style='border: solid 2px red;'><b class='biggertext'>"
+                        . $this->lang->line('no_question') . "</b></div>";
                     }
                     ?>
                 </div>
