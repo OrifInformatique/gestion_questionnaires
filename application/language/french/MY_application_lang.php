@@ -95,7 +95,7 @@ $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
-$lang['delete_questionnaire']           = 'Suppression du questionnaire';
+$lang['delete_questionnaire']           = 'Supprimer le questionnaire';
 
 // Questionnaire model pages
 $lang['title_model']                    = 'Liste des modèles';
@@ -149,8 +149,7 @@ $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette 
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
 $lang['filter']                         = 'Filtrer';
-$lang['delete_question']                = 'Suppression de question';
-$lang['edit_question']                  = 'Édition de question';
+$lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
 
 
@@ -174,6 +173,7 @@ $lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module 
 $lang['delete_topic_questions_list']    = array('Si vous supprimez ce sujet, ', ' questions seront supprimées.');
 $lang['delete_module_topics_list']      = array('Si vous supprimez ce module, ', ' sujets et leurs questions seront supprimés.');
 $lang['view_questions_list']            = 'Voir la liste des questions';
+$lang['delete_topic']                   = 'Supprimer le topic';
 
 
 //Modules pages
@@ -189,6 +189,7 @@ $lang['del_module_form_err']            = 'Ce module possède des questions et/o
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 $lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
 $lang['module_error_404_heading']       = 'Module inexistant';
+$lang['delete_module']                  = 'Supprimer le module';
 
 
 //Admin/users pages
@@ -204,6 +205,7 @@ $lang['user_password']                  = 'Mot de passe';
 $lang['user_password_again']            = 'Répétez le mot de passe';
 $lang['user_password_force']            = 'Forcer le changement de mot de passe';
 $lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
+$lang['delete_user']                    = 'Supprimer l\'utilisateur';
 
 //PDF
 $lang['pdf_first_name']                 = 'Prénom :';

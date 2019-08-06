@@ -222,7 +222,7 @@ class Question extends MY_Controller
 				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 				$output['name'] = $question->Question;
 				$output['points'] = $question->Points;
-				$output['title'] = $this->lang->line('edit_question');
+				$output['title'] = $this->lang->line('title_question_update');
 
 				switch ($question->FK_Question_Type){
 				case 1:
