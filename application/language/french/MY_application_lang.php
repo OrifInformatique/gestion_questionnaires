@@ -95,6 +95,7 @@ $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
+$lang['delete_questionnaire']           = 'Suppression du questionnaire';
 
 // Questionnaire model pages
 $lang['title_model']                    = 'Liste des modèles';
@@ -148,6 +149,9 @@ $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette 
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
 $lang['filter']                         = 'Filtrer';
+$lang['delete_question']                = 'Suppression de question';
+$lang['edit_question']                  = 'Édition de question';
+$lang['detail_question']                = 'Détails de la question';
 
 
 // Topics pages

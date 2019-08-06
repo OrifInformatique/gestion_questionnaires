@@ -37,6 +37,7 @@ class Questionnaire extends MY_Controller
     public function index($error = "")
     {
         $outputs = array(
+            'title' => $this->lang->line('title_questionnaire'),
             'questionnaires' => $this->questionnaire_model->get_all(),
             'models' => $this->questionnaire_model_model->get_all(),
             'error' => $error
@@ -58,10 +59,11 @@ class Questionnaire extends MY_Controller
         if(is_null($object)) redirect('Questionnaire');
 
         $outputs = array(
+            'title' => $this->lang->line('title_questionnaire_update'),
             'error' => $error,
             'id' => $id,
             'model' => $model,
-            'title' => $object->Questionnaire_Name,
+            'quest_title' => $object->Questionnaire_Name,
             'subtitle' => $object->Questionnaire_Subtitle,
             'modelName' => $object->Base_Name ?? ''
         );
@@ -110,6 +112,7 @@ class Questionnaire extends MY_Controller
             if (is_null($action)) {
                 $output = get_object_vars($this->questionnaire_model->get($id));
                 $output["model"] = false;
+                $output["title"] = $this->lang->line('delete_questionnaire');
                 $this->display_view("questionnaires/delete", $output);
             } else {
                 $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
@@ -147,6 +150,7 @@ class Questionnaire extends MY_Controller
             echo $nbQuestion;
         } else {
             $output = array(
+                'title' => $this->lang->line('add_questionnaire_title'),
                 'error' => ($error == NULL ? NULL : true),
                 'topicsList' => $this->topic_model->get_all(),
                 'title' => $title,

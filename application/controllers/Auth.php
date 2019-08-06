@@ -87,7 +87,8 @@ class Auth extends MY_Controller
         }
 
         // Display login page
-        $this->display_view('auth/login_form');
+        $output = array('title' => $this->lang->line('btn_login'));
+        $this->display_view('auth/login_form', $output);
     }
 
     /**
