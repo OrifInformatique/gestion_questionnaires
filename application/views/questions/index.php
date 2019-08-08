@@ -117,9 +117,6 @@
                 <div class="col-xs-12 col-sm-4">
                     <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
                 </div>
-                <div class="col-xs-12 col-sm-offset-4 col-sm-4">
-                    <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
-                </div>
             </div>
             <div id="pagination_top"><?=$pagination?></div>
             <div class="row">
