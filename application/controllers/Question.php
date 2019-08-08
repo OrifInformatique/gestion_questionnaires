@@ -439,10 +439,10 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
+				$answers = $this->input->post('reponses');
 				// Create a new question
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
-					$answers = $this->input->post('reponses');
 					foreach($answers as $answer) {
 						$answerNew = array(
 							'FK_Question' => $id,
@@ -455,7 +455,6 @@ class Question extends MY_Controller {
 				} else {
 					$this->question_model->update($id, $question);
 
-					$answers = $this->input->post('reponses');
 					$oldanswers = $this->multiple_choice_model->get_many_by('FK_Question = ' . $this->input->post('id'));
 					$answersDb = [];
 
@@ -578,11 +577,11 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
+				$answers = $this->input->post('reponses');
 
 				// Create a new question
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
-					$answers = $this->input->post('reponses');
 					foreach($answers as $answer) {
 						$answerNew = array(
 							'FK_Question' => $id,
@@ -594,7 +593,6 @@ class Question extends MY_Controller {
 				} else {
 					$this->question_model->update($id, $question);
 
-					$answers = $this->input->post('reponses');
 					$oldanswers = $this->multiple_answer_model->get_many_by('FK_Question = ' . $this->input->post('id'));
 					$answersDb = [];
 
@@ -718,6 +716,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
+				$answers = $this->input->post('reponses');
 
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
@@ -727,7 +726,6 @@ class Question extends MY_Controller {
 					);
 					$id_cloze_text = $this->cloze_text_model->insert($cloze_text);
 
-					$answers = $this->input->post('reponses');
 					for($i = 0; $i < count($answers); $i++) {
 						$answer = $answers[$i];
 						$answerNew = array(
@@ -744,7 +742,6 @@ class Question extends MY_Controller {
 					);
 					$this->cloze_text_model->update($this->input->post('id_cloze_text'), $cloze_text);
 
-					$answers = $this->input->post('reponses');
 					$this->db->order_by('Answer_Order');
 					$oldanswers = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = '.$this->input->post('id_cloze_text'));
 					$answersDb = [];
@@ -970,6 +967,7 @@ class Question extends MY_Controller {
 							'Points' => $this->input->post('points'),
 							'Picture_Name' => $picture_name
 						);
+						$answers = $this->input->post('reponses');
 
 						if(is_null($id)) {
 							$id = $this->question_model->insert($question);
@@ -981,7 +979,6 @@ class Question extends MY_Controller {
 								}
 							}
 
-							$answers = $this->input->post('reponses');
 							foreach($answers as $answer) {
 								$answerNew = array(
 									'FK_Question' => $id,
@@ -993,7 +990,6 @@ class Question extends MY_Controller {
 						} else {
 							$this->question_model->update($id, $question);
 
-							$answers = $this->input->post('reponses');
 							$oldanswers = $this->picture_landmark_model->get_many_by('FK_Question = '.$id);
 							$answersDb = [];
 							$list = scandir("./uploads/pictures");
