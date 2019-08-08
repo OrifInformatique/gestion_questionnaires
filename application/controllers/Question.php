@@ -50,7 +50,7 @@ class Question extends MY_Controller {
 
 		// Save URL to session in case the person wants to come back
 		if(!empty($module) && !empty($topic) && !empty($type))
-			$_SESSION['filters'] = 'Question?module='.$module.'&topic'.$topic.'&type='.$type;
+			$_SESSION['filters'] = 'Question?module='.$module.'&topic='.$topic.'&type='.$type;
 
 		// Redirect to the saved URL if there is no ? in the URL
 		if(isset($_SESSION['filters']) && strpos($this->input->server('REQUEST_URI'), '?') === FALSE)
