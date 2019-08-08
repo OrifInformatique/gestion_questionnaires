@@ -381,7 +381,8 @@ class Question extends MY_Controller {
 						'id' => 0,
 						'question' => FALSE,
 						'answer' => '',
-						'symbol' => ''
+						'symbol' => '',
+						'order' => 0
 					)]
 				);
 				switch($this->input->post('question_type')) {
