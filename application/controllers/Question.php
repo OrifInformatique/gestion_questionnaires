@@ -519,7 +519,7 @@ class Question extends MY_Controller {
 				'answers' => []
 			);
 
-			$answers = $this->input->post('reponses');
+			$answers = (array)$this->input->post('reponses');
 			foreach($answers as $answer) {
 				$output['answers'][] = array(
 					'id' => $answer['id'] ??  0,
@@ -540,9 +540,7 @@ class Question extends MY_Controller {
 
 			// Check if there is an answer to remove
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(empty($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))) {
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -663,7 +661,7 @@ class Question extends MY_Controller {
 				'answers' => []
 			);
 
-			$answers = $this->input->post('reponses');
+			$answers = (array)$this->input->post('reponses');
 			foreach($answers as $answer) {
 				$output['answers'][] = array(
 					'id' => $answer['id'] ?? 0,
@@ -682,9 +680,7 @@ class Question extends MY_Controller {
 
 			// Remove an answer if needed
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(is_null($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))){
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -813,7 +809,7 @@ class Question extends MY_Controller {
 				'topics' => $this->topic_model->get_tree()
 			);
 
-			$answers = $this->input->post('reponses');
+			$answers = (array)$this->input->post('reponses');
 			for($i = 0; $i < count($answers); $i++) {
 				$output['answers'][] = array(
 					'id' => $answers[$i]['id'] ?? 0,
@@ -832,9 +828,7 @@ class Question extends MY_Controller {
 			}
 
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(is_null($this->input->post('del_answer'.$i))) continue;
-				//elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer')-1;
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))){
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -1068,7 +1062,7 @@ class Question extends MY_Controller {
 						'nbAnswer' => $this->input->post('nbAnswer'),
 						'answers' => []
 					);
-					$answers = $this->input->post('reponses');
+					$answers = (array)$this->input->post('reponses');
 
 					foreach($answers as $answer) {
 						$output['answers'][] = array(
@@ -1088,9 +1082,7 @@ class Question extends MY_Controller {
 					}
 
 					for($i = 0; $i < $output['nbAnswer']; $i++) {
-						if(is_null($this->input->post('del_answer'.$i))) continue;
-						elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-						else {
+						if(!is_null($this->input->post('del_answer'.$i))) {
 							$output['nbAnswer']--;
 							for($j = $i; $j < $output['nbAnswer']; $j++) {
 								$output['answers'][$j] = $output['answers'][$j+1];
