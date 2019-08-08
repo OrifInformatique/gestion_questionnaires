@@ -250,7 +250,8 @@ class Question extends MY_Controller {
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer->ID,
-						'answer' => $answer->Answer
+						'answer' => $answer->Answer,
+						'order' => $answer->Answer_Order
 					);
 				}
 				$output['nbAnswer'] = count($answers);
@@ -755,7 +756,7 @@ class Question extends MY_Controller {
 						$answer = array(
 							'FK_Cloze_Text' => $this->input->post('id_cloze_text'),
 							'Answer' => $answers[$i]['answer'],
-							'Answer_Order' => $i
+							'Answer_Order' => $answers[$i]['order']
 						);
 						var_dump($answer);
 						if($answers[$i]['id'] == 0)
@@ -770,7 +771,7 @@ class Question extends MY_Controller {
 						$this->cloze_text_answer_model->delete($answerDb);
 					}
 				}
-				//redirect('Question');
+				redirect('Question');
 			} else {
 				$output = array(
 					'focus_topic' => $this->topic_model->get($this->input->post('focus_topic')),
@@ -786,10 +787,11 @@ class Question extends MY_Controller {
 				);
 
 				$answers = $this->input->post('reponses');
-				foreach($answers as $answer) {
+				for($i = 0; $i < count($answers); $i++) {
 					$output['answers'][] = array(
-						'id' => $answer['id'] ?? 0,
-						'answer' => $answer['answer'] ?? ''
+						'id' => $answers[$i]['id'] ?? 0,
+						'answer' => $answers[$i]['answer'] ?? '',
+						'order' => $answers[$i]['order'] ?? 0
 					);
 				}
 
@@ -811,24 +813,26 @@ class Question extends MY_Controller {
 			);
 
 			$answers = $this->input->post('reponses');
-			foreach($answers as $answer) {
+			for($i = 0; $i < count($answers); $i++) {
 				$output['answers'][] = array(
-					'id' => $answer['id'] ?? 0,
-					'answer' => $answer['answer'] ?? ''
+					'id' => $answers[$i]['id'] ?? 0,
+					'answer' => $answers[$i]['answer'] ?? '',
+					'order' => $answers[$i]['order'] ?? 0
 				);
 			}
 
 			if(!is_null($this->input->post('add_answer'))) {
 				$output['answers'][] = array(
 					'id' => 0,
-					'answer' => ''
+					'answer' => '',
+					'order' => $output['nbAnswer']
 				);
 				$output['nbAnswer']++;
 			}
 
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
 				if(is_null($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer')-1;
+				//elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer')-1;
 				else {
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {

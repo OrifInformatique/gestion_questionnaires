@@ -110,7 +110,6 @@
 		</div>
 		
 		<!-- ANSWERS FIELDS -->
-		
 		<div class="table-responsive">
 			<table class="table table-hover">
 				<thead>
@@ -125,6 +124,7 @@
 				<td class="form-group col-xs-10">
 					<?php
 						echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
+						echo form_input(array('type' => 'hidden', 'name' => 'reponses['.$i.'][order]', 'value' => $answers[$i]['order'], 'id' => 'order-'.$i));
 						echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="65535" class="form-control" id="answer['.$i.']"');
 					?>
 				</td>

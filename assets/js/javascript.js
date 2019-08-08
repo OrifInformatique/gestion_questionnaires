@@ -58,7 +58,6 @@ function invertInputs(button, total, direction){
     let index = parseInt(button.getAttribute('data-button-id'));
 
     let destination = index+direction;
-    console.log(index, destination);
 
     if(destination >= 0 && destination < total){
 
@@ -73,9 +72,16 @@ function invertInputs(button, total, direction){
         indexDOM.attr('data-row-id', destination);
         destinationDOM.attr('data-row-id', index);
 
-        let button1 = $("[data-button-id="+index+"]");
-        let button2 = $("[data-button-id="+destination+"]");
-        button1.attr('data-button-id', destination);
-        button2.attr('data-button-id', index);
+        $("[data-button-id="+index+"]").attr('data-button-id', "prov");
+        $("[data-button-id="+destination+"]").attr('data-button-id', index);
+        $("[data-button-id=prov]").attr('data-button-id', destination);
+
+        $("#order-"+index).val(destination);
+        $("#order-"+destination).val(index);
+        $("#order-"+index).attr('id', "prov");
+        $("#order-"+destination).attr('id', "order-"+index);
+        $("#prov").attr('id', "order-"+destination);
     }
+
+
 }
