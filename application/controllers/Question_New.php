@@ -18,6 +18,7 @@ class Question extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->model(['question_model', 'question_type_model', 'topic_model']);
 	}
 
 	/**
@@ -25,10 +26,8 @@ class Question extends MY_Controller {
 	 *
 	 * @param int $page = The currently selected page
 	 */
-	// Libraries: pagination
 	public function index($page = 1) {
-		// Load required models and libraries
-		$this->load->model(['topic_model', 'question_model', 'question_type_model']);
+		// Load required libraries
 		$this->load->library('pagination');
 
 		// Declare variables
@@ -156,7 +155,6 @@ class Question extends MY_Controller {
 	 * @param mixed $action
 	 */
 	public function delete($id = 0, $action = NULL) {
-		$this->load->model('question_model');
 
 		$question = $this->question_model->get($id);
 		// No question, cancel
@@ -176,7 +174,6 @@ class Question extends MY_Controller {
 	 * Form validation to update question
 	 */
 	public function form_update() {
-		$this->load->model('question_model');
 
 		$this->form_validation->set_rules('name', 'Title', 'required');
 		$this->form_validation->set_rules('points', 'Points', ['required','numeric']);
@@ -201,8 +198,7 @@ class Question extends MY_Controller {
 	 * @param int $id = selected question id
 	 */
 	public function update($id = 0) {
-		$this->load->model(['question_model', 'topic_model', 'question_type_model',
-			'multiple_choice_model', 'multiple_answer_model', 'cloze_text_model',
+		$this->load->model(['multiple_choice_model', 'multiple_answer_model', 'cloze_text_model',
 			'free_answer_model', 'picture_landmark_model', 'cloze_text_answer_model']);
 
 		$question = $this->question_model->get($id);
@@ -295,7 +291,7 @@ class Question extends MY_Controller {
 	 * @param int $id = selected question id
 	 */
 	public function detail($id = 0) {
-		$this->load->model(['question_model', 'multiple_choice_model', 'multiple_answer_model',
+		$this->load->model(['multiple_choice_model', 'multiple_answer_model',
 			'answer_distribution_model', 'cloze_text_model', 'cloze_text_answer_model',
 			'table_cell_model', 'free_answer_model', 'picture_landmark_model']);
 
@@ -366,8 +362,6 @@ class Question extends MY_Controller {
 	 * @param int $step = Current step of question creation
 	 */
 	public function add($step = 1) {
-		$this->load->model(['topic_model', 'question_type_model']);
-
 		switch((int) $step) {
 			case 1: // Choose topic and question type
 				$output = array(
@@ -424,8 +418,7 @@ class Question extends MY_Controller {
 	 * Function to save a multiple choice question
 	 */
 	public function add_MultipleChoice() {
-		$this->load->model(['topic_model', 'question_type_model', 'question_model',
-			'multiple_answer_model', 'multiple_choice_model']);
+		$this->load->model(['multiple_answer_model', 'multiple_choice_model']);
 
 		if(!is_null($this->input->post('cancel'))) redirect('Question');
 		// Check the inputs and save the question
@@ -562,7 +555,7 @@ class Question extends MY_Controller {
 	 * Function for save multiple answer
 	 */
 	public function add_MultipleAnswer() {
-		$this->load->model(['topic_model', 'question_type_model', 'question_model', 'multiple_answer_model']);
+		$this->load->model(['multiple_answer_model']);
 
 		if(!is_null($this->input->post('cancel'))) redirect('Question');
 		// Check the inputs and save the question
@@ -704,8 +697,7 @@ class Question extends MY_Controller {
 	 * Function for save cloze text
 	 */
 	public function add_ClozeText() {
-		$this->load->model(['focus_topic', 'question_type_model', 'question_model',
-			'cloze_text_model', 'cloze_text_answer_model']);
+		$this->load->model(['cloze_text_model', 'cloze_text_answer_model']);
 
 		if(!is_null($this->input->post('cancel'))) redirect('Question');
 		// Check the inputs and save the question
@@ -778,7 +770,7 @@ class Question extends MY_Controller {
 				}
 			} else {
 				$output = array(
-					'focus_topic' => $this->focus_topic->get($this->input->post('focus_topic')),
+					'focus_topic' => $this->topic_model->get($this->input->post('focus_topic')),
 					'question_type' => $this->question_type_model->get($this->input->post('question_type')),
 					'id' => $this->input->post('id'),
 					'id_cloze_text' => $this->input->post('id_cloze_text'),
@@ -850,7 +842,7 @@ class Question extends MY_Controller {
 	 * Function for save free answer
 	 */
 	public function add_FreeAnswer() {
-		$this->load->model(['question_model', 'free_answer_model', 'topic_model', 'question_type_model']);
+		$this->load->model(['free_answer_model']);
 
 		if(!is_null($this->input->post('cancel'))) redirect('Question');
 		elseif(!is_null($this->input->post('save'))) {
@@ -906,7 +898,7 @@ class Question extends MY_Controller {
 	 * @param int $step = Current step of question creation
 	 */
 	public function add_PictureLandmark($step = 1) {
-		$this->load->model(['topic_model', 'question_model', 'question_type_model']);
+		$this->load->model(['picture_landmark_model']);
 
 		switch ($step) {
 			case 1: // Enter Image
@@ -958,6 +950,103 @@ class Question extends MY_Controller {
 			case 2: // Enter Values
 				if(!is_null($this->input->post('cancel'))) redirect('Question');
 				elseif(!is_null($this->input->post('save'))) {
+					$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
+					$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+					for($i=0; $i < $_POST['nbAnswer']; $i++){
+						$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
+						$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
+					}
+
+					if($this->form_validation->run()) {
+						$id = $this->input->post('id');
+						$picture_name = $this->input->post('upload_data')['file_name'] ?? $this->input->post('picture_name');
+						$question = array(
+							'FK_Topic' => $this->input->post('focus_topic'),
+							'FK_Question_Type' => $this->input->post('question_type'),
+							'Question' => $this->input->post('name'),
+							'Points' => $this->input->post('points'),
+							'Picture_Name' => $picture_name
+						);
+
+						if(is_null($id)) {
+							$id = $this->question_model->insert($question);
+
+							$list = scandir('./uploads/pictures');
+							foreach($list as $file) {
+								if(strpos($file, $id.'_') !== FALSE && $file != $this->input->post('upload_data')['file_name']) {
+									unlink('uploads/pictures/'.$file);
+								}
+							}
+
+							$answers = $this->input->post('reponses');
+							foreach($answers as $answer) {
+								$answerNew = array(
+									'FK_Question' => $id,
+									'Symbol' => $answer['symbol'],
+									'Answer' => $answer['answer']
+								);
+								$this->picture_landmark_model->insert($answerNew);
+							}
+						} else {
+							$this->question_model->update($id, $question);
+
+							$answers = $this->input->post('reponses');
+							$oldanswers = $this->picture_landmark_model->get_many_by('FK_Question = '.$id);
+							$answersDb = [];
+							$list = scandir("./uploads/pictures");
+
+							foreach($list as $file) {
+								if(strpos($file, $id."_") !== false && $file != $this->input->post('upload_data')['file_name']) {
+									unlink("uploads/pictures/".$file);
+								}
+							}
+							foreach($oldanswers as $oldanswer) {
+								$oldid = $oldanswer->ID;
+								$answersDb[$oldid] = $oldid;
+							}
+							foreach($answers as $answer) {
+								$question = array(
+									'FK_Question' => $id,
+									'Symbol' => $answer['symbol'],
+									'Answer' => $answer['answer']
+								);
+								if($answer['id'] == 0) {
+									$this->picture_landmark_model->insert($question);
+								} else {
+									$this->picture_landmark_model->update($answer['id'], $question);
+									unset($answersDb[$answer['id']]);
+								}
+							}
+							foreach($answersDb as $answerDb) {
+								$this->picture_landmark_model->delete($answerDb);
+							}
+						}
+
+						redirect('Question');
+					} else {
+						$output = array(
+							'topics' => $this->topic_model->get_tree(),
+							'focus_topic' => $this->topic_model->get($this->input->post('focus_topic')),
+							'question_type' => $this->question_type_model->get($this->input->post('question_type')),
+							'id' => $this->input->post('id'),
+							'name' => $this->input->post('name'),
+							'points' => $this->input->post('points'),
+							'picture_name' => $this->input->post('picture_name'),
+							'upload_data' => $this->input->post('upload_data'),
+							'nbAnswer' => $this->input->post('nbAnswer'),
+							'answers' => []
+						);
+						$answers = $this->input->post('reponses');
+
+						foreach($answers as $answer) {
+							$output['answers'][] = array(
+								'id' => $answer['id'] ?? 0,
+								'symbol' => $answer['symbol'] ?? '',
+								'answer' => $answer['answer'] ?? ''
+							);
+						}
+						$this->display_view('picture_landmark/add', $output);
+					}
 				} else {
 					$output = array(
 						'topics' => $this->topic_model->get_tree(),
