@@ -250,7 +250,8 @@ class Question extends MY_Controller {
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer->ID,
-						'answer' => $answer->Answer
+						'answer' => $answer->Answer,
+						'order' => $answer->Answer_Order
 					);
 				}
 				$output['nbAnswer'] = count($answers);
@@ -380,7 +381,8 @@ class Question extends MY_Controller {
 						'id' => 0,
 						'question' => FALSE,
 						'answer' => '',
-						'symbol' => ''
+						'symbol' => '',
+						'order' => 0
 					)]
 				);
 				switch($this->input->post('question_type')) {
@@ -429,6 +431,10 @@ class Question extends MY_Controller {
 				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][question]', $this->lang->line('answers_list'), 'required');
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('valid_answer'), 'required');
+			}
 
 			// Check the inputs
 			if($this->form_validation->run()) {
@@ -439,7 +445,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				// Create a new question
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
@@ -493,7 +499,7 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -516,7 +522,7 @@ class Question extends MY_Controller {
 				'answers' => []
 			);
 
-			$answers = $this->input->post('reponses');
+			$answers = (array)$this->input->post('reponses');
 			foreach($answers as $answer) {
 				$output['answers'][] = array(
 					'id' => $answer['id'] ??  0,
@@ -537,9 +543,7 @@ class Question extends MY_Controller {
 
 			// Check if there is an answer to remove
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(empty($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))) {
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -566,6 +570,9 @@ class Question extends MY_Controller {
 			for($i = 0; $i < $this->input->post('nbAnswer'); $i++) {
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+			}
 
 			// Check the inputs
 			if($this->form_validation->run()) {
@@ -577,7 +584,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 
 				// Create a new question
 				if(is_null($id)) {
@@ -634,7 +641,7 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -659,7 +666,7 @@ class Question extends MY_Controller {
 				'answers' => []
 			);
 
-			$answers = $this->input->post('reponses');
+			$answers = (array)$this->input->post('reponses');
 			foreach($answers as $answer) {
 				$output['answers'][] = array(
 					'id' => $answer['id'] ?? 0,
@@ -678,9 +685,7 @@ class Question extends MY_Controller {
 
 			// Remove an answer if needed
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(is_null($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))){
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -707,6 +712,9 @@ class Question extends MY_Controller {
 			for($i = 0; $i < $this->input->post('nbAnswer'); $i++) {
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+			}
 
 			if($this->form_validation->run()) {
 				$question = array(
@@ -716,7 +724,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
@@ -752,7 +760,7 @@ class Question extends MY_Controller {
 						$answer = array(
 							'FK_Cloze_Text' => $this->input->post('id_cloze_text'),
 							'Answer' => $answers[$i]['answer'],
-							'Answer_Order' => $i
+							'Answer_Order' => $answers[$i]['order']
 						);
 						var_dump($answer);
 						if($answers[$i]['id'] == 0)
@@ -767,7 +775,7 @@ class Question extends MY_Controller {
 						$this->cloze_text_answer_model->delete($answerDb);
 					}
 				}
-				//redirect('Question');
+				redirect('Question');
 			} else {
 				$output = array(
 					'focus_topic' => $this->topic_model->get($this->input->post('focus_topic')),
@@ -782,11 +790,12 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
-				foreach($answers as $answer) {
+				$answers = (array)$this->input->post('reponses');
+				for($i = 0; $i < count($answers); $i++) {
 					$output['answers'][] = array(
-						'id' => $answer['id'] ?? 0,
-						'answer' => $answer['answer'] ?? ''
+						'id' => $answers[$i]['id'] ?? 0,
+						'answer' => $answers[$i]['answer'] ?? '',
+						'order' => $answers[$i]['order'] ?? 0
 					);
 				}
 
@@ -807,26 +816,26 @@ class Question extends MY_Controller {
 				'topics' => $this->topic_model->get_tree()
 			);
 
-			$answers = $this->input->post('reponses');
-			foreach($answers as $answer) {
+			$answers = (array)$this->input->post('reponses');
+			for($i = 0; $i < count($answers); $i++) {
 				$output['answers'][] = array(
-					'id' => $answer['id'] ?? 0,
-					'answer' => $answer['answer'] ?? ''
+					'id' => $answers[$i]['id'] ?? 0,
+					'answer' => $answers[$i]['answer'] ?? '',
+					'order' => $answers[$i]['order'] ?? 0
 				);
 			}
 
 			if(!is_null($this->input->post('add_answer'))) {
 				$output['answers'][] = array(
 					'id' => 0,
-					'answer' => ''
+					'answer' => '',
+					'order' => $output['nbAnswer']
 				);
 				$output['nbAnswer']++;
 			}
 
 			for($i = 0; $i < $output['nbAnswer']; $i++) {
-				if(is_null($this->input->post('del_answer'.$i))) continue;
-				elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer')-1;
-				else {
+				if(!is_null($this->input->post('del_answer'.$i))){
 					$output['nbAnswer']--;
 					for($j = $i; $j < $output['nbAnswer'];$j++) {
 						$output['answers'][$j] = $output['answers'][$j+1];
@@ -914,7 +923,7 @@ class Question extends MY_Controller {
 					'answers' => [],
 					'topics' => $this->topic_model->get_tree()
 				);
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -956,6 +965,10 @@ class Question extends MY_Controller {
 						$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
 						$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 					}
+					if($this->input->post('nbAnswer') == 0){
+						$this->form_validation->set_rules('reponses[0][symbol]', $this->lang->line('landmark'), 'required');
+						$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+					}
 
 					if($this->form_validation->run()) {
 						$id = $this->input->post('id');
@@ -967,7 +980,7 @@ class Question extends MY_Controller {
 							'Points' => $this->input->post('points'),
 							'Picture_Name' => $picture_name
 						);
-						$answers = $this->input->post('reponses');
+						$answers = (array)$this->input->post('reponses');
 
 						if(is_null($id)) {
 							$id = $this->question_model->insert($question);
@@ -1035,7 +1048,7 @@ class Question extends MY_Controller {
 							'nbAnswer' => $this->input->post('nbAnswer'),
 							'answers' => []
 						);
-						$answers = $this->input->post('reponses');
+						$answers = (array)$this->input->post('reponses');
 
 						foreach($answers as $answer) {
 							$output['answers'][] = array(
@@ -1059,7 +1072,7 @@ class Question extends MY_Controller {
 						'nbAnswer' => $this->input->post('nbAnswer'),
 						'answers' => []
 					);
-					$answers = $this->input->post('reponses');
+					$answers = (array)$this->input->post('reponses');
 
 					foreach($answers as $answer) {
 						$output['answers'][] = array(
@@ -1079,9 +1092,7 @@ class Question extends MY_Controller {
 					}
 
 					for($i = 0; $i < $output['nbAnswer']; $i++) {
-						if(is_null($this->input->post('del_answer'.$i))) continue;
-						elseif($output['nbAnswer'] <= 1) $output['nbAnswer'] = $this->input->post('nbAnswer');
-						else {
+						if(!is_null($this->input->post('del_answer'.$i))) {
 							$output['nbAnswer']--;
 							for($j = $i; $j < $output['nbAnswer']; $j++) {
 								$output['answers'][$j] = $output['answers'][$j+1];
