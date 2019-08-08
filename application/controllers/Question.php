@@ -431,6 +431,10 @@ class Question extends MY_Controller {
 				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][question]', $this->lang->line('answers_list'), 'required');
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('valid_answer'), 'required');
+			}
 
 			// Check the inputs
 			if($this->form_validation->run()) {
@@ -441,7 +445,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				// Create a new question
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
@@ -495,7 +499,7 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -566,6 +570,9 @@ class Question extends MY_Controller {
 			for($i = 0; $i < $this->input->post('nbAnswer'); $i++) {
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+			}
 
 			// Check the inputs
 			if($this->form_validation->run()) {
@@ -577,7 +584,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 
 				// Create a new question
 				if(is_null($id)) {
@@ -634,7 +641,7 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -705,6 +712,9 @@ class Question extends MY_Controller {
 			for($i = 0; $i < $this->input->post('nbAnswer'); $i++) {
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
+			if($this->input->post('nbAnswer') == 0){
+				$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+			}
 
 			if($this->form_validation->run()) {
 				$question = array(
@@ -714,7 +724,7 @@ class Question extends MY_Controller {
 					'Points' => $this->input->post('points')
 				);
 				$id = $this->input->post('id');
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 
 				if(is_null($id)) {
 					$id = $this->question_model->insert($question);
@@ -780,7 +790,7 @@ class Question extends MY_Controller {
 					'topics' => $this->topic_model->get_tree()
 				);
 
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				for($i = 0; $i < count($answers); $i++) {
 					$output['answers'][] = array(
 						'id' => $answers[$i]['id'] ?? 0,
@@ -913,7 +923,7 @@ class Question extends MY_Controller {
 					'answers' => [],
 					'topics' => $this->topic_model->get_tree()
 				);
-				$answers = $this->input->post('reponses');
+				$answers = (array)$this->input->post('reponses');
 				foreach($answers as $answer) {
 					$output['answers'][] = array(
 						'id' => $answer['id'] ?? 0,
@@ -955,6 +965,10 @@ class Question extends MY_Controller {
 						$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
 						$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 					}
+					if($this->input->post('nbAnswer') == 0){
+						$this->form_validation->set_rules('reponses[0][symbol]', $this->lang->line('landmark'), 'required');
+						$this->form_validation->set_rules('reponses[0][answer]', $this->lang->line('answers_list'), 'required');
+					}
 
 					if($this->form_validation->run()) {
 						$id = $this->input->post('id');
@@ -966,7 +980,7 @@ class Question extends MY_Controller {
 							'Points' => $this->input->post('points'),
 							'Picture_Name' => $picture_name
 						);
-						$answers = $this->input->post('reponses');
+						$answers = (array)$this->input->post('reponses');
 
 						if(is_null($id)) {
 							$id = $this->question_model->insert($question);
@@ -1034,7 +1048,7 @@ class Question extends MY_Controller {
 							'nbAnswer' => $this->input->post('nbAnswer'),
 							'answers' => []
 						);
-						$answers = $this->input->post('reponses');
+						$answers = (array)$this->input->post('reponses');
 
 						foreach($answers as $answer) {
 							$output['answers'][] = array(
