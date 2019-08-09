@@ -207,6 +207,21 @@ $lang['user_password_force']            = 'Forcer le changement de mot de passe'
 $lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
 $lang['delete_user']                    = 'Supprimer l\'utilisateur';
 
+
+//Admin/users pages
+$lang['users']                          = 'Utilisateur(s)';
+$lang['title_users']                    = 'Liste des utilisateurs';
+$lang['title_user_new']                 = 'Nouvel utilisateur';
+$lang['title_user_update']              = 'Modifier l\'utilisateur';
+$lang['title_user_change_password']     = 'Modifier le mot de passe';
+$lang['user_name']                      = 'Nom d\'utilisateur';
+$lang['user_usertype']                  = 'Type d\'utilisateur';
+$lang['user_active']                    = 'Actif';
+$lang['user_password']                  = 'Mot de passe';
+$lang['user_password_again']            = 'Répétez le mot de passe';
+$lang['user_password_force']            = 'Forcer le changement de mot de passe';
+$lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
+
 //PDF
 $lang['pdf_first_name']                 = 'Prénom :';
 $lang['pdf_last_name']                  = 'Nom :';
