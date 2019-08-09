@@ -223,5 +223,5 @@ $lang['pdf_error']                      = "Erreur lors de la génération des qu
 $lang['title_report_a_problem']         = 'Signaler un problème';
 $lang['issue_title']                    = 'Objet';
 $lang['issue_body']                     = 'Texte du problème';
-$lang['title_problem_ok']               = 'Problème signalé';
-$lang['text_problem_ok']                = 'Merci, le problème nous a été signalé.';
+$lang['title_problem_submitted']        = 'Problème signalé';
+$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';

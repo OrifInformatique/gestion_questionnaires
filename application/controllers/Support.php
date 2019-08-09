@@ -19,9 +19,9 @@ class Support extends MY_Controller {
         $this->load->model(['user_model', 'user_type_model']);
     }
 
-    public function index($ok = false) {
-        if($ok){
-            $this->display_view('support/problem_ok');
+    public function index($sumbitted = false) {
+        if($sumbitted){
+            $this->display_view('support/problem_sumbitted');
         } else {
             $this->display_view('support/report_problem');
         }
