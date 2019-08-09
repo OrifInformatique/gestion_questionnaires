@@ -16,7 +16,6 @@ class Support extends MY_Controller {
      */
     public function __construct() {
         parent::__construct();
-        $this->load->model(['user_model', 'user_type_model']);
     }
 
     public function index($sumbitted = false) {
