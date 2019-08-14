@@ -933,16 +933,17 @@ class Question extends MY_Controller {
 				}
 				$id = $this->input->post('id');
 
-				if(!is_null($this->input->post('id'))) {
+				if(!is_null($this->input->post('cancel'))) {
 					if(is_null($id)) redirect('Question');
 					else $this->display_view('picture_landmark/add', $output);
 				} elseif(isset($_FILES['picture'])) {
+					$file_name = preg_replace('/[^a-z0-9\.]+/', '-', strtolower($_FILES['picture']['name']));
 					$id = $id ?? $this->question_model->get_next_id();
 					$config = array(
 						'upload_path' => './uploads/pictures',
 						'allowed_types' => 'gif|jpg|jpeg|png',
 						'max_size' => 2048,
-						'file_name' => $id."_".$_FILES['picture']['name']
+						'file_name' => $id.'_'.$file_name
 					);
 
 					$this->upload->initialize($config);
