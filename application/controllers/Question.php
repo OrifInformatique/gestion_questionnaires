@@ -177,7 +177,7 @@ class Question extends MY_Controller {
 
 		$this->form_validation->set_rules('name', 'Title', 'required');
 		$this->form_validation->set_rules('points', 'Points', ['required','numeric']);
-				
+
 				$id = $this->input->post('id');
 
 		// Updated question
