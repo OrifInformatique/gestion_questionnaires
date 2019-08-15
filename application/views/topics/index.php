@@ -9,12 +9,7 @@
 ?>
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 class="title-section"><?php echo $this->lang->line('title_topic'); ?></h1>			
-		<?php
-			if($error == true) {
-				echo "<p class='alert alert-danger'>" . $error . "</p>";
-			}
-		?>
+        <h1 class="title-section"><?php echo $this->lang->line('title_topic'); ?></h1>
         <div class="row">
             <h4><?php echo $this->lang->line('topic'); ?></h4>
             <div class="accordion" id="accordionExample">

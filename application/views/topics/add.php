@@ -16,15 +16,12 @@
         $attributes = array("class" => "form-group",
             "id" => "addTopicForm",
             "name" => "addTopicForm");
-        echo form_open('Topic/form_add_topic', $attributes);
+        echo form_open('Topic/form_validate_topic', $attributes);
         if(count($topics) == 0){
             echo '<div class="alert alert-warning">'.$this->lang->line('topic_no_module_error').'</div>';
         }
-        if($error == true) {
-            echo '<div class="alert alert-danger">';
-            echo validation_errors();
-            echo '</div>';
-            //echo "<p class='alert alert-danger'>" . $this->lang->line('add_topic_form_err') . "</p>";
+        if(!empty($this->form_validation->error_string())) {
+            echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
         }
         ?>
 

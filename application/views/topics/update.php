@@ -15,11 +15,11 @@
             $attributes = array("class" => "form-group",
                 "id" => "updateTopicForm",
                 "name" => "updateTopicForm");
-            echo form_open('Topic/form_update_topic', $attributes);
+            echo form_open('Topic/form_validate_topic', $attributes);
             ?>
             <?php
-            if($error == true) {
-                echo "<p class='alert alert-warning'>" . $this->lang->line('update_topic_form_err') . "</p>";
+            if(!empty($this->form_validation->error_string())) {
+                echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
             }
             ?>
             <div class="col-xs-12">

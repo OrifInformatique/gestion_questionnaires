@@ -67,6 +67,7 @@ class Admin extends MY_Controller {
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), 'required');
+        // Check for password only if it's a new user
         if($userId === 0) {
             $this->form_validation->set_rules('user_password', $this->lang->line('user_password'), [
                 'required','trim',
@@ -103,9 +104,8 @@ class Admin extends MY_Controller {
                 $this->user_model->insert($user);
             }
             redirect('Admin/user_index');
-        } else {
+        } else
             $this->user_add($userId);
-        }
     }
 
     /**
@@ -145,9 +145,7 @@ class Admin extends MY_Controller {
         $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) redirect('Admin/user_index');
 
-        $output = array(
-            'user' => $user
-        );
+        $output = array('user' => $user);
 
         $this->display_view('admin/user/change_password', $output);
     }
@@ -176,8 +174,7 @@ class Admin extends MY_Controller {
             $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
             $this->user_model->update($userId, ['Password' => $new_password]);
             redirect('Admin/user_index');
-        } else {
+        } else
             $this->user_change_password($userId);
-        }
     }
 }

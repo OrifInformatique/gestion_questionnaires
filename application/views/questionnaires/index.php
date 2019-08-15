@@ -42,11 +42,6 @@
             </div>
         </div>
         <h1 class="title-section"><?php echo $this->lang->line('title_questionnaire');?></h1>
-        <?php
-            if($error == true) {
-                echo "<p class='alert alert-danger'>" . $error . "</p>";
-            }
-        ?>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
                 <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>

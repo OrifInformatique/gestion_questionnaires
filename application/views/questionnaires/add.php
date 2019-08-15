@@ -12,26 +12,21 @@ $nbMaxQuestion = 0;
     $(document).ready(function(){
         $("#topic_selected").change(function(){
 
-            var topic = $( "#topic_selected" ).val();
+            let topic = $("#topic_selected").val();
 
-            topic = topic.replace("'", "_apostrophe_");
-
-            $.post("./add/", {topic: topic}, function (nbQuestion) {
-
+            $.get("<?= base_url('Questionnaire/getNbQuestion/'); ?>"+topic, '', function (nbQuestion) {
                 $("#nb_questions")
                     .find('option')
                     .remove()
                     .end()
 
-                var i;
-                for (i = 0; i < nbQuestion; i++){
+                for (let i = 0; i < nbQuestion; i++){
                     $("#nb_questions")
                         .append('<option>' + (i+1) + '</option>')
-
                 }
             }).fail(function(xhr, status, error) {
-                    alert(error);
-                });
+                alert(error);
+            });
         });
     });
 </script>
@@ -49,9 +44,8 @@ $nbMaxQuestion = 0;
         <div class="row">
             <?php
             echo form_hidden('model', $model);
-            if($error == true)
-            {
-                echo "<p class='alert alert-warning'>" . $this->lang->line('update_questionnaire_form_err') . "</p>";
+            if(!empty($this->form_validation->error_string())) {
+                echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
             }
             ?>
             <?php if($model) { ?>
@@ -173,9 +167,9 @@ $nbMaxQuestion = 0;
                     ?>
                     </tbody>
                 </table>
-               
 
-                
+
+
             </div>
             <div class="col-sm-4 col-xs-12" > 
             <input type="submit" class="btn btn-danger col-xs-12" name="cancel" value="<?php echo $this->lang->line('cancel');?>">

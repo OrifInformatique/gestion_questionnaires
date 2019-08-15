@@ -19,7 +19,7 @@ class Auth extends MY_Controller
     {
         parent::__construct();
 
-        $this->load->model(['user_model', 'user_type_model']);
+        $this->load->model('user_model');
     }
 
     /**
@@ -46,16 +46,12 @@ class Auth extends MY_Controller
                 array(
                     'field' => 'username',
                     'label' => 'lang:field_username',
-                    'rules' => 'trim|required|'
-                             . 'min_length['.USERNAME_MIN_LENGTH.']|'
-                             . 'max_length['.USERNAME_MAX_LENGTH.']'
+                    'rules' => 'trim|required'
                 ),
                 array(
                     'field' => 'password',
                     'label' => 'lang:field_password',
-                    'rules' => 'trim|required|'
-                             . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                             . 'max_length['.PASSWORD_MAX_LENGTH.']'
+                    'rules' => 'trim|required'
                 )
             );
             $this->form_validation->set_rules($validation_rules);
@@ -79,10 +75,9 @@ class Auth extends MY_Controller
                     // Send the user to the redirection URL
                     redirect($_SESSION['after_login_redirect']);
 
-                } else {
+                } else
                     // Login failed
                     $this->session->set_flashdata('message-danger', lang('msg_err_invalid_password'));
-                }
             }
         }
 
@@ -160,10 +155,9 @@ class Auth extends MY_Controller
 
             // Display the password change form
             $this->display_view('auth/password_change_form');
-        } else {
+        } else
             // Access is not allowed
             $this->ask_for_login();
-        }
     }
 
     /**
