@@ -14,25 +14,26 @@
         $attributes = array("class" => "form-group",
             "id" => "updateModuleForm",
             "name" => "updateModuleForm");
-        echo form_open('Topic/form_validate_module', $attributes);
-        ?>
-        <?php
-        if(!empty($this->form_validation->error_string())) {
-            echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
+        echo form_open('Topic/form_validate_module', $attributes, [
+            'id' => $id, 'action' => $action
+        ]);
+        if (!empty(validation_errors())) {
+            echo '<div class="alert alert-danger">'.validation_errors().'</div>';
         }
         ?>
         <div class="col-xs-12">
-            <h4 for="title"><?php echo $this->lang->line('update_title_module'); ?></h4>
-            
-            <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control" id="title" value="<?php echo $title; ?>">
-            <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
-            <input type="hidden" name="action" id="action" value="<?php echo $action; ?>">
+            <h4><?= form_label($this->lang->line('update_title_module'), 'title'); ?></h4>
+
+            <?= form_input('title', $title, [
+                'id' => 'title', 'maxlength' => TOPIC_MAX_LENGTH,
+                'class' => 'form-control'
+            ]); ?>
         </div>
         <div class="col-xs-12">
-
-            <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
-            <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
-                 
+            <a href="<?= base_url('Topic'); ?>" class="btn btn-danger col-xs-12 col-sm-4"><?= $this->lang->line('cancel'); ?></a>
+            <?= form_submit('submit', $this->lang->line('save'), [
+                'class' => 'btn btn-success col-xs-12 col-sm-4 col-sm-offset-4'
+            ]); ?>
         </div>
         <?php echo form_close(); ?>
     </div>

@@ -17,11 +17,11 @@
             "style" => "padding-bottom: 5%;");
         echo form_open('Questionnaire/form_update', $attributes,
             ['id' => $id, 'model' => (bool) $model]);
-        ?>
 
-            <?php if(!empty(validation_errors())) { ?>
-                <div class="alert alert-danger"><?= validation_errors(); ?></div>
-            <?php } ?>
+        if(!empty(validation_errors())) {
+            echo "<p class='alert alert-warning'>".validation_errors()."</p>";
+        }
+        ?>
 
             <?php if($model) { ?>
                 <div class="form-group col-xs-12">

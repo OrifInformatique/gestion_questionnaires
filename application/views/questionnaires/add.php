@@ -33,7 +33,7 @@ $nbMaxQuestion = 0;
 
 <div id="page-content-wrapper">
     <div class="container">
-        <h1 class="title-section"><?php echo $this->lang->line('add_questionnaire'.($model ? '_model' : '').'_title'); ?></h1>
+        <h1 class="title-section"><?= $this->lang->line('add_questionnaire'.($model ? '_model' : '').'_title'); ?></h1>
             <?php
             $attributes = array("class" => "form-group",
                 "id" => "addQuestionnaireForm",
@@ -44,8 +44,8 @@ $nbMaxQuestion = 0;
         <div class="row">
             <?php
             echo form_hidden('model', $model);
-            if(!empty($this->form_validation->error_string())) {
-                echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
+            if(!empty(validation_errors())) {
+                echo "<p class='alert alert-warning'>".validation_errors()."</p>";
             }
             ?>
             <?php if($model) { ?>
@@ -61,11 +61,15 @@ $nbMaxQuestion = 0;
                 </div>
             <?php } ?>
             <div class="form-group col-xs-12">
-                <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
+                <h4>
+                    <?= form_label($this->lang->line('add_title_questionnaire'), 'title'); ?>
+                </h4>
                 <div class="row">
                     <div class="col-xs-12">
-                        <input maxlength="100" type="text" name="title" class="form-control" id="title"
-                        value="<?php echo $title;?>">
+                        <?= form_input('title', $title, array(
+                            'id' => 'title', 'maxlength' => 100,
+                            'class' => 'form-control'
+                        )); ?>
                     </div>
                 </div>
             </div>
@@ -81,33 +85,27 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-xs-12 col-sm-4">
-                <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
+                <h4><?= form_label($this->lang->line('add_topic_questionnaire'), 'topic_selected'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
                         <select class="form-control" id="topic_selected" name="topic_selected">
                             <option selected disabled hidden></option>
                             <?php
-
                             //Récupère chaque topics
-                            foreach ($topicsList as $object => $topic) {
+                            foreach ($topicsList as $topic) {
 
                                 if ($topic->FK_Parent_Topic == 0) {
                                     //Affiche le topic parent
-                                    echo "<optgroup label='$topic->Topic' >";
+                                    echo "<optgroup label='".$topic->Topic."' >";
 
                                     //Récupère chaque topic associé au topic parent
-                                    for ($i = 0; $i < count($topicsList); $i++) {
-                                        if ($topic->ID == $topicsList[$i]->FK_Parent_Topic) {
+                                    foreach($topicsList as $topicList) {
+                                        if ($topic->ID == $topicList->FK_Parent_Topic) {
 
-                                            $disabled = false;
-                                            foreach ($topics as $topic_selected) {
-                                                if($topic_selected->ID == $topicsList[$i]->ID) {
-                                                    $disabled = true;
-                                                }
-                                            }
+                                            $disabled = array_search($topicList, $topics) !== FALSE;
 
                                             //Affiche les topics associés
-                                            echo "<option value='" . $topicsList[$i]->ID . "'".($disabled?' disabled':'').">" . $topicsList[$i]->Topic . "</option>";
+                                            echo "<option value='".$topicList->ID."'".($disabled?' disabled':'').">".$topicList->Topic."</option>";
                                         }
                                     }
                                     echo "</optgroup>";
@@ -119,11 +117,15 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-sm-4 colxs-12">
-                <h4 for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></h4>
-                <select class="form-control" id="nb_questions" name="nb_questions"></select>
+                <h4><?= form_label($this->lang->line('nb_questions'), 'nb_questions'); ?></h4>
+                <?= form_dropdown('nb_questions', [], [], [
+                    'id' => 'nb_questions', 'class' => 'form-control'
+                ]); ?>
             </div>
             <div class="col-sm-4 col-xs-12">
-                <input type="submit" class="btn btn-success col-xs-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="add_form"/>
+                <?= form_submit('add_form', $this->lang->line('add_form'), [
+                    'class' => 'btn btn-success col-xs-12 xs-space'
+                ]); ?>
             </div>
         </div>
         <div class="row">
@@ -150,12 +152,12 @@ $nbMaxQuestion = 0;
                     {
                         ?>
                         <tr>
-                            <td><?php echo $compteur?></td>
+                            <td><?= $compteur?></td>
                             <td>
-                                    <?php echo $topic->Topic ;?>
+                                    <?= $topic->Topic ;?>
                             </td>
                             <td>
-                                <?php echo $nbQuestions[$key];?>
+                                <?= $nbQuestions[$key];?>
                             </td>
                             <td>
                                 <input type="submit" value="×" class="close" id="btn_del" name="delete_topic[<?=$key?>]">
@@ -171,15 +173,19 @@ $nbMaxQuestion = 0;
 
 
             </div>
-            <div class="col-sm-4 col-xs-12" > 
-            <input type="submit" class="btn btn-danger col-xs-12" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
+            <div class="col-sm-4 col-xs-12" >
+                <?= form_submit('cancel', $this->lang->line('cancel'), [
+                    'class' => 'btn btn-danger col-xs-12'
+                ]); ?>
 
             </div>
             <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                 <input type="submit" class="btn btn-success col-xs-12" name="save" value="<?php echo $this->lang->line('save');?>">
+                <?= form_submit('save', $this->lang->line('save'), [
+                    'class' => 'btn btn-success col-xs-12'
+                ]); ?>
             </div>
 
         </div>
-        <?php echo form_close(); ?>
+        <?= form_close(); ?>
     </div>
 </div>

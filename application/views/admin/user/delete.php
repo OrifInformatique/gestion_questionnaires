@@ -7,14 +7,14 @@
                 </div>
                 <div class="btn-group">
                     <?php if(!$Archive) { ?>
-                    <a href="<?= base_url().uri_string()."/1";?>" class="btn btn-warning btn-lg">
+                    <a href="<?= base_url().uri_string().'/1';?>" class="btn btn-warning btn-lg">
                         <?= $this->lang->line('btn_desactivate');?>
                     </a>
                     <?php } ?>
-                    <a href="<?= base_url().uri_string()."/2";?>" class="btn btn-danger btn-lg">
+                    <a href="<?= base_url().uri_string().'/2';?>" class="btn btn-danger btn-lg">
                         <?= $this->lang->line('btn_del');?>
                     </a>
-                    <a href="<?= base_url()."Admin/user_index";?>" class="btn btn-lg">
+                    <a href="<?= base_url('Admin/user_index');?>" class="btn btn-lg">
                         <?= $this->lang->line('btn_cancel');?>
                     </a>
                 </div>

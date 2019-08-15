@@ -41,10 +41,10 @@
                 </table>
             </div>
         </div>
-        <h1 class="title-section"><?php echo $this->lang->line('title_questionnaire');?></h1>
+        <h1 class="title-section"><?= $this->lang->line('title_questionnaire');?></h1>
         <div class="row">
             <div class="col-xs-12 col-sm-4">
-                <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
+                <a href="<?= base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?= $this->lang->line('btn_add_questionnaire');?></a>
             </div>
         </div>
         <div class="row">
@@ -52,10 +52,10 @@
                 <table class="table table-hover" >
                     <thead>
                     <tr>
-                        <th><?php echo $this->lang->line('questionnaire');?></th>
-                        <th><?php echo $this->lang->line('pdf');?></th>
-                        <th><?php echo $this->lang->line('corrige');?></th>
-                        <th><?php echo $this->lang->line('regenerate');?></th>
+                        <th><?= $this->lang->line('questionnaire');?></th>
+                        <th><?= $this->lang->line('pdf');?></th>
+                        <th><?= $this->lang->line('corrige');?></th>
+                        <th><?= $this->lang->line('regenerate');?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,14 +63,14 @@
                     foreach ($questionnaires as $questionnaire){
                         ?>
                         <tr>
-                            <td><a href="<?= base_url('Questionnaire/update/'.$questionnaire->ID); ?>"><?php echo $questionnaire->Questionnaire_Name; ?></a></td>
-                            <td><a href="<?php echo base_url()."pdf_files/questionnaires/".$questionnaire->PDF; ?>" target="_blank">
-                                    <?php echo $this->lang->line('redirect_pdf');?></a></td>
-                            <td><a target="_blank" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>">
-                                    <?php echo $this->lang->line('redirect_corrige');?></a></td>
-                            <td><a href="<?php echo base_url(); ?>Questionnaire/generatePDF/<?php echo $questionnaire->ID; ?>">
-                                    <?php echo $this->lang->line('regenerate');?></a></td>
-                            <td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
+                            <td><a href="<?= base_url('Questionnaire/update/'.$questionnaire->ID); ?>"><?= $questionnaire->Questionnaire_Name; ?></a></td>
+                            <td><a href="<?= base_url('pdf_files/questionnaires/'.$questionnaire->PDF); ?>" target="_blank">
+                                    <?= $this->lang->line('redirect_pdf');?></a></td>
+                            <td><a target="_blank" href="<?= base_url('pdf_files/corriges/'.$questionnaire->Corrige_PDF); ?>">
+                                    <?= $this->lang->line('redirect_corrige');?></a></td>
+                            <td><a href="<?= base_url('Questionnaire/generatePDF/'.$questionnaire->ID); ?>">
+                                    <?= $this->lang->line('regenerate');?></a></td>
+                            <td><a href="<?= base_url('questionnaire/delete/'.$questionnaire->ID); ?>" class="close">×</a></td>
                         </tr>
                         <?php
                     }

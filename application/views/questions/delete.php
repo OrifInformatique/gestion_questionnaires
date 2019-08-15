@@ -14,20 +14,20 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                        <?php echo $this->lang->line('nav_question');?>
+                        <?= $this->lang->line('nav_question');?>
                     </a>
                 </li>
                 <li>
-                    <a href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add');?></a>
+                    <a href="<?= base_url('Question/add');?>"><?= $this->lang->line('btn_add');?></a>
                 </li>
                 <li>
-                    <a href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import');?></a>
+                    <a href="<?= base_url('Question/import');?>"><?= $this->lang->line('btn_import');?></a>
                 </li>
                 <li>
-                    <a id="btn_update"><?php echo $this->lang->line('btn_update');?></a>
+                    <a id="btn_update"><?= $this->lang->line('btn_update');?></a>
                 </li>
                 <li>
-                    <a id="btn_del"><?php echo $this->lang->line('btn_del');?></a>
+                    <a id="btn_del"><?= $this->lang->line('btn_del');?></a>
                 </li>
             </ul>
         </div>
@@ -35,30 +35,25 @@
     <div id="page-content-wrapper">
         <div class="container">
             <div class="row">
-                <h2><?php echo $this->lang->line('delete_questions_questionnaire_list'); ?></h2>
+                <h2><?= $this->lang->line('delete_questions_questionnaire_list'); ?></h2>
             </div>
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
                     <table class="table table-hover">
                         <thead>
-                        <tr>
-                            <th><?php echo $this->lang->line('title_questionnaire'); ?></th>
-                        </tr>
+                            <tr>
+                                <th><?= $this->lang->line('title_questionnaire'); ?></th>
+                            </tr>
                         </thead>
                         <?php
-                        $compteur = 0;
-
-                        foreach ($questionnaires as $objet => $questionnaire) {
-                            $compteur += 1;
+                        foreach ($questionnaires as $questionnaire) {
                             displayQuestion($questionnaire);
                         }
 
-                        if($compteur == 0){
-                            echo "<div class='well' style='border: solid 2px red;'><h4>"
-                                . $this->lang->line('no_question') . "</h4></div>";
+                        if(!count($questionnaires)){
+                            echo "<div class='well' style='border: solid 2px red;'><h4>".$this->lang->line('no_question')."</h4></div>";
                         }
-
                         ?>
                     </table>
                 </div>
@@ -68,11 +63,8 @@
     </div>
 <?php
 function displayQuestion($questionnaire)
-{
-    ?>
+{ ?>
     <tr>
-        <td><?php echo $questionnaire->Questionnaire_Name; ?></td>
+        <td><?= $questionnaire->Questionnaire_Name; ?></td>
     </tr>
-    <?php
-}
-?>
+<?php } ?>

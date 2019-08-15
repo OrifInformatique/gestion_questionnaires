@@ -18,8 +18,8 @@
             echo form_open('Question/form_update', $attributes);
             ?>
             <?php
-            if($error == true) {
-                echo "<p class='alert alert-warning'>" . $this->lang->line('update_question_form_err') . "</p>";
+            if(!empty(validation_errors())) {
+                echo "<p class='alert alert-warning'>".validation_errors()."</p>";
             }
             ?>
             <div class="form-group">

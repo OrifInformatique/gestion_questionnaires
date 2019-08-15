@@ -9,16 +9,16 @@
 ?>
 
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
+    <h1 class="title-section"><?= $this->lang->line('title_question_update'); ?></h1>
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");
-    echo form_open('Question/add_FreeAnswer', $attributes);
+    echo form_open('Question/add_FreeAnswer', $attributes, [
+        'question_type' => $question_type->ID
+    ]);
     ?>
-
         <!-- Hidden fields to put informations in $_POST -->
         <?php
-        echo form_hidden('question_type', $question_type->ID);
         if(isset($id)){
             echo form_hidden('id', $id);
         }
@@ -37,55 +37,38 @@
                 ?>
             </div>
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
+                <h4><?= $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
             </div>
         </div>
 
         <!-- ERROR MESSAGES -->
         <?php
         if (!empty(validation_errors())) {
-            echo '<div class="alert alert-danger">'.validation_errors().'</div>';}
+            echo '<div class="alert alert-danger">'.validation_errors().'</div>';
+        }
         ?>
 
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
-                <?php 
-                    if(isset($focus_topic)){
-                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
-                    } else {
-                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
-                    }
-                ?>
+                <?= form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?= form_dropdown('focus_topic', $topics, $focus_topic->ID ?? null, 'class="form-control"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
-                <?php 
-                    if(isset($name)){
-                        echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
-                    } else {
-                        echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
-                    }
-                ?>
+                <?= form_label($this->lang->line('question_text'), 'name'); ?>
+                <?= form_input('name', $name ?? '', 'maxlength="65535" class="form-control" id="name"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-1">
-                <?php echo form_label($this->lang->line('points'), 'points'); ?>
+                <?= form_label($this->lang->line('points'), 'points'); ?>
             </div>
             <div class="form-group col-md-1">
-                <?php 
-                    if(isset($name)){
-                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
-                    } else {
-                        echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
-                    }
-                ?>
+                <?= form_input('points', $points ?? '', 'maxlength="11" class="form-control" id="points"'); ?>
             </div>
         </div>
 
@@ -93,19 +76,13 @@
         
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('answer_question_add'), 'answer'); ?>
+                <?= form_label($this->lang->line('answer_question_add'), 'answer'); ?>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-12">
-                <?php 
-                    if(isset($name)){
-                        echo form_input('answer', $answer, 'maxlength="65535" class="form-control" id="name"');
-                    } else {
-                        echo form_input('answer', '', 'maxlength="65535" class="form-control" id="name"');
-                    }
-                ?>
+                <?= form_input('answer', $answer ?? '', 'maxlength="65535" class="form-control" id="answer"'); ?>
             </div>
         </div>
-    <?php echo form_close(); ?>
+    <?= form_close(); ?>
 </div>

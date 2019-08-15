@@ -9,17 +9,17 @@
 ?>
 
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_update'); ?></h1>
+    <h1 class="title-section"><?= $this->lang->line('title_question_update'); ?></h1>
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");
-    echo form_open('Question/add_MultipleChoice', $attributes);
+    echo form_open('Question/add_MultipleChoice', $attributes, [
+        'question_type' => $question_type->ID, 'nbAnswer' => $nbAnswer
+    ]);
     ?>
 
         <!-- Hidden fields to put informations in $_POST -->
         <?php
-        echo form_hidden('question_type', $question_type->ID);
-        echo form_hidden('nbAnswer', $nbAnswer);
         if(isset($id)){
             echo form_hidden('id', $id);
         }
@@ -29,7 +29,7 @@
         <div class="row">
             
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
+                <h4><?= $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
             </div>
         </div>
         <div class="row">   
@@ -45,47 +45,30 @@
         <!-- ERROR MESSAGES -->
         <?php
         if (!empty(validation_errors())) {
-            echo '<div class="alert alert-danger">'.validation_errors().'</div>';}
+            echo '<div class="alert alert-danger">'.validation_errors().'</div>';
+        }
         ?>
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
-                <?php 
-                    if(isset($focus_topic)){
-                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
-                    } else {
-                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
-                    }
-                ?>
+                <?= form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?= form_dropdown('focus_topic', $topics ?? null, $focus_topic->ID, 'class="form-control"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
-                <?php
-                    if(isset($name)){
-                        echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
-                    } else {
-                        echo form_input('name', '', 'maxlength="65535" class="form-control" id="name"');
-                    }
-                ?>
+                <?= form_label($this->lang->line('question_text'), 'name'); ?>
+                <?= form_input('name', $name ?? '', 'maxlength="65535" class="form-control" id="name"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-1 col-xs-3">
-                <?php echo form_label($this->lang->line('points'), 'points'); ?>
+                <?= form_label($this->lang->line('points'), 'points'); ?>
             </div>
             <div class="form-group col-md-1 col-xs-3">
-                <?php 
-                    if(isset($name)){
-                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="points"');
-                    } else {
-                        echo form_input('points', '', 'maxlength="11" class="form-control" id="points"');
-                    }
-                ?>
+                <?= form_input('points', $points ?? '', 'maxlength="11" class="form-control" id="points"'); ?>
             </div>
         </div>
         
@@ -94,8 +77,8 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th><?php echo form_label($this->lang->line('answers_list'), 'answer'); ?></th>
-                        <th><?php echo form_label($this->lang->line('valid_answer'), 'valid_answer'); ?></th>
+                        <th><?= form_label($this->lang->line('answers_list'), 'answer'); ?></th>
+                        <th><?= form_label($this->lang->line('valid_answer'), 'valid_answer'); ?></th>
 
                     </tr>
                 </thead>
@@ -112,33 +95,25 @@
                             
                             <td class="form-group col-xs-2" >
                                 <!-- YES radio button -->
-                                <?php 
-                                    if ($answers[$i]['answer']==1){
-                                        echo form_radio('reponses['.$i.'][answer]', 1, TRUE);
-                                    }else{
-                                        echo form_radio('reponses['.$i.'][answer]', 1);
-                                    }
-                                    echo form_label($this->lang->line('yes'), $answers[$i]['id'], null, true);
+                                <?php
+                                echo form_radio('reponses['.$i.'][answer]', 1, $answers[$i]['answer'] == 1);
+                                echo form_label($this->lang->line('yes'), $answers[$i]['id'], null, true);
                                 ?>
                                 
                                 <!-- NO radio button -->
-                                <?php 
-                                    if ($answers[$i]['answer']==0){
-                                        echo form_radio('reponses['.$i.'][answer]', 0, TRUE);
-                                    }else{
-                                        echo form_radio('reponses['.$i.'][answer]', 0);
-
-                                    }echo form_label($this->lang->line('no'), $answers[$i]['id'], null, true);
+                                <?php
+                                echo form_radio('reponses['.$i.'][answer]', 1, $answers[$i]['answer'] == 0);
+                                echo form_label($this->lang->line('no'), $answers[$i]['id'], null, true);
                                 ?>
                             </td>
                             <td class="form-group col-xs-1">
-                                <?php echo form_submit('del_answer'.$i, '-', 'class="btn btn-secondary no-border"');
+                                <?= form_submit('del_answer'.$i, '-', 'class="btn btn-secondary no-border"');
                                 ?>
                             </td>
                         </tr>
                     <?php } ?>
                     <tr>
-                        <td><?php echo form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?></td>
+                        <td><?= form_submit('add_answer', '+', 'class="btn btn-secondary"'); ?></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -147,5 +122,5 @@
                 </tbody>
             </table>
         </div>
-    <?php echo form_close(); ?>
+    <?= form_close(); ?>
 </div>

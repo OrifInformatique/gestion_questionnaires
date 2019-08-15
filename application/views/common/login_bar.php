@@ -20,11 +20,12 @@
 
         <?php } else { ?>
           <!-- Not logged in, display a "login" form -->
-          <form action="<?= base_url("auth/login"); ?>" method="post" >
-              <input type="hidden" id="after_login_redirect" name="after_login_redirect" value="<?= current_url() ?>">
-              <input type="submit" class="btn btn-link"
-                     value="<?= $this->lang->line('btn_login'); ?>" >
-          </form>
+          <?php
+          echo form_open('auth/login', [], [
+            'after_login_redirect' => current_url()
+          ]);
+            echo form_submit('submit', $this->lang->line('btn_login'), 'class="btn btn-link"');
+          echo form_close(); ?>
         <?php } ?>
       </div>
     </div>

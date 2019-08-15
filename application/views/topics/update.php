@@ -15,21 +15,27 @@
             $attributes = array("class" => "form-group",
                 "id" => "updateTopicForm",
                 "name" => "updateTopicForm");
-            echo form_open('Topic/form_validate_topic', $attributes);
+            echo form_open('Topic/form_validate_topic', $attributes,[
+                'id' => $id
+            ]);
             ?>
             <?php
-            if(!empty($this->form_validation->error_string())) {
-                echo "<p class='alert alert-warning'>" . $this->form_validation->error_string() . "</p>";
+            if(!empty(validation_errors())) {
+                echo "<p class='alert alert-warning'>" . validation_errors() . "</p>";
             }
             ?>
             <div class="col-xs-12">
-                <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
-                <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control col-xs-12" id="title" value="<?php echo $title; ?>">
+                <h4><?= form_label($this->lang->line('update_title_topic'), 'title'); ?></h4>
+                <?= form_input('title', $title, [
+                    'maxlength' => TOPIC_MAX_LENGTH, 'id' => 'title',
+                    'class' => 'form-control col-xs-12'
+                ]); ?>
             </div>
-            <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
             <div class="col-xs-12">
-                <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
-                <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
+                <a href="<?= base_url('Topic'); ?>" class="btn btn-danger col-xs-12 col-sm-4"><?= $this->lang->line('cancel'); ?></a>
+                <?= form_submit('submit', $this->lang->line('save'), [
+                    'class' => 'btn btn-success col-xs-12 col-sm-4 col-sm-offset-4'
+                ]); ?>
             </div>
 
             <?php echo form_close(); ?>

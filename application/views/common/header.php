@@ -16,7 +16,7 @@
     </title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?=base_url()?>assets/images/logo/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?=base_url('assets/images/logo/favicon.ico'); ?>" />
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?php echo base_url("assets/css/bootstrap.min.css"); ?>" />
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap.min.js"); ?>"></script>
 
     <!-- Application styles -->
-    <link rel="stylesheet" href="<?=base_url()?>assets/css/sidebar.css" />
+    <link rel="stylesheet" href="<?=base_url('assets/css/sidebar.css'); ?>" />
     <link rel="stylesheet" href="<?php echo base_url("assets/css/MY_styles.css"); ?>" />
   </head>
   <body>
-  <script src="<?=base_url()?>assets/js/javascript.js"></script>
+  <script src="<?=base_url('assets/js/javascript.js'); ?>"></script>

@@ -52,20 +52,20 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
     <div id="myNavbar" class="container">
         <ul class="nav navbar-nav">
             <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
-                <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
+                <li <?php checkactive(1); ?>><a href="<?= base_url('Questionnaire');?>">
                     <?= $this->lang->line('nav_questionnaire');?></a></li>
-                <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
+                <li <?php checkactive(2); ?>><a href="<?= base_url('Question');?>">
                     <?= $this->lang->line('nav_question');?></a></li>
-                <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
+                <li <?php checkactive(4); ?>><a href="<?= base_url('Topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
                 
                 <?php if($_SESSION['user_access'] == ACCESS_LVL_ADMIN) { ?>
-                    <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
+                    <li <?php checkactive(5); ?>><a href="<?= base_url('Admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
                 <?php } ?>
             <?php } else { ?>
-                <li <?php checkactive(0); ?>><a href="<?php echo base_url('Home');?>">
-                    <?php echo $this->lang->line('nav_home');?></a></li>
+                <li <?php checkactive(0); ?>><a href="<?= base_url('Home');?>">
+                    <?= $this->lang->line('nav_home');?></a></li>
            <?php } ?>
         </ul>
     </div>

@@ -12,59 +12,67 @@
             <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
             <div class="row">
                <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_module'); ?></h4>
+                    <h4><?= form_label($this->lang->line('focus_module'), 'module_selected'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="module_selected">
                         <?php
                         echo "<option selected disabled hidden></option>";
                         echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
-                        //Récupère chaque topics
-                        foreach ($topics as $object => $module) {
-                            if ($module->FK_Parent_Topic == 0) {
-                                ?>
-                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['module'])){if($module->ID==$_GET['module']){echo"selected";}}?>><?php echo $module->Topic; ?>
-                                    </option>
-                                <?php
-                            }
+                        // Loads every topic
+                        foreach ($topics as $module) {
+                            if($module->FK_Parent_Topic) continue;
+                            ?>
+                                <option value='<?= $module->ID; ?>'
+                                <?php if($module->ID == $this->input->get('module')) {
+                                    echo"selected";
+                                }?>><?= $module->Topic; ?>
+                                </option>
+                            <?php
                         }
                         ?>
                     </select>
                 </div>
                 <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
+                    <h4><?= form_label($this->lang->line('focus_topic'), 'topic_selected'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
 
                         echo "<option selected disabled hidden></option>";
                         echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
-                        //Récupère chaque topics
+                        // Loads every topic
                         if(empty($_GET['module'])){
-                            foreach ($topics as $object => $module) {
-                                if ($module->FK_Parent_Topic == 0) {
-                                    //Affiche le topic parent
-                                    echo "<optgroup label='$module->Topic' >";
+                            foreach ($topics as $module) {
+                                // Skip children topics
+                                if($module->FK_Parent_Topic) continue;
 
-                                    //Récupère chaque topic associé au topic parent
-                                    for ($i = 0; $i < count($topics); $i++) {
-                                        if ($module->ID == $topics[$i]->FK_Parent_Topic) {
-                                            //Affiche les topics associés ?>
-                                            <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
-                                            </option>
-                                            <?php
-                                        }
+                                // Displays the parent topic
+                                echo "<optgroup label='$module->Topic' >";
+
+                                // Selects the parent topic's children
+                                foreach ($topics as $topic) {
+                                    if ($module->ID == $topic->FK_Parent_Topic) {
+                                        // Displays the children ?>
+                                        <option value='<?= $topic->ID; ?>'
+                                            <?php if($topic->ID == $this->input->get('topic')) {
+                                                echo "selected";
+                                            }?>><?= $topic->Topic; ?>
+                                        </option>
+                                        <?php
                                     }
-
-                                    echo "</optgroup>";
                                 }
+
+                                echo "</optgroup>";
                                 
                             }
                         } else {
-                            foreach ($topics as $object => $module) {
+                            foreach ($topics as $module) {
                                 if ($module->FK_Parent_Topic == $_GET['module']) {
-                                    //Affiche le topic parent
-                                     ?>
-                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
+                                    // Display the parent topic ?>
+                                    <option value='<?= $module->ID; ?>' <?php 
+                                    if($module->ID == $this->input->get('topic')){
+                                        echo "selected";
+                                    }?>><?= $module->Topic; ?>
                                     </option>
                                     <?php
                                 }
@@ -74,7 +82,7 @@
                     </select>
                 </div>
                 <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
+                    <h4><?= form_label($this->lang->line('question_type'), 'question_type_selected'); ?></h4>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
                         
@@ -83,9 +91,11 @@
 
 
                         //Récupère chaque topics
-                        foreach ($questionTypes as $object => $module) {
+                        foreach ($questionTypes as $module) {
                                 ?>
-                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
+                                <option value='<?= $module->ID; ?>' <?php if($module->ID == $this->input->get('type')){
+                                    echo"selected";
+                                }?>><?= $module->Type_Name; ?></option>
                                 <?php
                         }
                         ?>
@@ -94,31 +104,37 @@
             </div>
             <div class="row">
                 <div class="col-lg-8">
-                    <h4><?php echo $this->lang->line('search'); ?></h4>
-                    <?php
-                        if(isset($_GET['search'])){
-                            echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
-                        } else {
-                            echo form_input('search', '', ' class="form-control" id="search"');
-                        }
-                    ?>
+                    <h4><?= form_label($this->lang->line('search'), 'search'); ?></h4>
+                    <?= form_input('search', ($this->input->get('search') ?? ''), [
+                        'class' => 'form-control', 'id' => 'search'
+                    ]); ?>
                 </div>
                 <div class="col-lg-4">
-                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></button>
+                    <?= form_button('', $this->lang->line('filter'), [
+                        'class' => 'col-xs-12 button-align btn btn-primary xs-space',
+                        'onclick' => 'changeselect()'
+                    ]); ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
-                    <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                    <a href="<?= base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" >
+                        <?= $this->lang->line('clear_filters'); ?>
+
+                    </a>
                 </div>
             </div>
                 <hr>
             <div class="row">
                 <div class="col-xs-12 col-sm-4">
-                    <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
+                    <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?= base_url('Question/add');?>">
+                        <?= $this->lang->line('btn_add_question');?>
+                    </a>
                 </div>
                 <div class="col-xs-12 col-sm-offset-4 col-sm-4">
-                    <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
+                    <a class="col-xs-12 btn btn-info" href="<?= base_url('Question/import');?>">
+                        <?= $this->lang->line('btn_import_question');?>
+                    </a>
                 </div>
             </div>
             <div id="pagination_top"><?=$pagination?></div>
@@ -157,39 +173,40 @@
                             <tr>
                                 <th>
                                     <?php 
-                                        echo $this->lang->line('question'); 
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
+                                        echo $this->lang->line('question');
+                                        echo '<a onclick=\'sortClick("'.((string)$this->input->get('sort')).'", "question")\'';
+                                        echo ' class="sorted_btn btn btn-default">';
+                                        echo $question_sort.'</a>';
                                     ?>
                                 </th>
                                 <th><?php 
                                         echo $this->lang->line('question_type');
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question_type\")' class='sorted_btn btn btn-default'>$question_type_sort</a>" 
+                                        echo '<a onclick=\'sortClick("'.((string)$this->input->get('sort')).'", "question_type")\'';
+                                        echo ' class="sorted_btn btn btn-default">';
+                                        echo $question_sort.'</a>';
                                     ?>  
                                     </th>
                                 <th>
                                     <?php   
-                                        echo $this->lang->line('points'); 
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"points\")' class='sorted_btn btn btn-default'>$points_sort</a>" 
+                                        echo $this->lang->line('points');
+                                        echo '<a onclick=\'sortClick("'.((string)$this->input->get('sort')).'", "points")\'';
+                                        echo ' class="sorted_btn btn btn-default">';
+                                        echo $question_sort.'</a>';
                                     ?>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                        
                             <?php
-                            $compteur = 0;
-                            foreach ($questions as $objet => $question) {
-
-                                $compteur ++;
+                            foreach ($questions as $question) {
                                 displayQuestion($question);
                             }
                             ?>
                         </tbody>
                     </table>
                     <?php
-                    if($compteur == 0){
-                        echo "<div class='well' style='border: solid 2px red;'><h4>"
-                        . $this->lang->line('no_question') . "</h4></div>";
+                    if(!count($questions)){
+                        echo "<div class='well' style='border: solid 2px red;'><h4>".$this->lang->line('no_question')."</h4></div>";
                     }
                     ?>
                 </div>
@@ -202,15 +219,14 @@
 function displayQuestion($question)
 {
     ?>
-    <tr id="<?php echo $question->ID; ?>" >
-        <td id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
-            <?php 
+    <tr id="question_<?= $question->ID; ?>" >
+        <td><a href="<?=base_url('Question/detail/').$question->ID;?>">
+            <?php
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);
             echo (strlen($question->Question)>=300)?"...":"";
-            echo "</a>";
-
-            if(count($question->cloze_text) > 0){
+            ?></a><?php
+            if(count($question->cloze_text)){
                 //if it's a "Cloze_text" question type, show the 75 first character of cloze_text
                 $cloze_text = str_replace('…', '...', $question->cloze_text[0]->Cloze_Text);
 
@@ -221,11 +237,9 @@ function displayQuestion($question)
             }
             ?>
         </td>
-        <td><?php echo $question->question_type->Type_Name ?></td>
-        <td style="text-align: center;"><?php echo $question->Points; ?></td>
-        <td style="text-align: center;"><a class="close" id="btn_update" href="<?=base_url()?>Question/update/<?php echo $question->ID ?>">✎</a></td>
-        <td style="text-align: center;"><a class="close" id="btn_del" href="<?=base_url()?>Question/delete/<?php echo $question->ID ?>">×</a></td>
+        <td><?= $question->question_type->Type_Name; ?></td>
+        <td style="text-align: center;"><?= $question->Points; ?></td>
+        <td style="text-align: center;"><a class="close" href="<?=base_url('Question/update/').$question->ID; ?>">✎</a></td>
+        <td style="text-align: center;"><a class="close" href="<?=base_url('Question/delete/').$question->ID; ?>">×</a></td>
     </tr>
-    <?php
-}
-?>
+<?php } ?>

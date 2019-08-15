@@ -8,15 +8,20 @@
                 echo form_open("auth/login", $attributes);
             ?>
             <fieldset>
-                <legend><?= lang('page_login'); ?></legend>
+                <legend><?= $this->lang->line('page_login'); ?></legend>
                 
                 <div class="form-group">
                     <div class="row colbox">
                         <div class="col-sm-4">
-                            <label for="username" class="control-label"><?= lang('field_username'); ?></label>
+                            <?= form_label($this->lang->line('field_username'), 'username', [
+                                'class' => 'control-label'
+                            ]); ?>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control" id="username" name="username" placeholder="<?= lang('field_username'); ?>" type="text" value="<?= set_value('username'); ?>" />
+                            <?= form_input('username', '', [
+                                'id' => 'username', 'placeholder' => $this->lang->line('field_username'),
+                                'class' => 'form-control'
+                            ]); ?>
                             <span class="text-danger"><?= form_error('username'); ?></span>
                         </div>
                     </div>
@@ -25,10 +30,15 @@
                 <div class="form-group">
                     <div class="row colbox">
                         <div class="col-sm-4">
-                            <label for="password" class="control-label"><?= lang('field_password'); ?></label>
+                            <?= form_label($this->lang->line('field_password'), 'username', [
+                                'class' => 'control-label'
+                            ]); ?>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control" id="password" name="password" placeholder="<?= lang('field_password'); ?>" type="password" value="<?= set_value('password'); ?>" />
+                            <?= form_password('password', '', [
+                                'id' => 'password', 'placeholder' => $this->lang->line('field_password'),
+                                'class' => 'form-control'
+                            ]); ?>
                             <span class="text-danger"><?= form_error('password'); ?></span>
                         </div>
                     </div>
@@ -36,8 +46,10 @@
                                   
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
-                        <input id="btn_login" name="btn_login" type="submit" class="btn btn-primary" value="<?= lang('btn_login'); ?>" />
-                        <a id="btn_cancel" class="btn btn-default" href="<?= base_url(); ?>"><?= lang('btn_cancel'); ?></a>
+                        <?= form_submit('btn_login', $this->lang->line('btn_login'), [
+                            'id' => 'btn_login', 'class' => 'btn btn-primary'
+                        ]); ?>
+                        <a id="btn_cancel" class="btn btn-default" href="<?= base_url(); ?>"><?= $this->lang->line('btn_cancel'); ?></a>
                     </div>
                 </div>
             </fieldset>

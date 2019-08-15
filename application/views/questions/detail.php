@@ -11,7 +11,7 @@
 <div class="container">
     <?php if($question->Archive) { ?>
         <div class="row alert alert-danger">
-            <?php echo $this->lang->line('question_deleted'); ?>
+            <?= $this->lang->line('question_deleted'); ?>
         </div>
     <?php } ?>
     <div class="row">
@@ -19,24 +19,22 @@
             <table class="table table-hover" id="table">
                 <tbody>
                     <tr>
-                        <td><h4 for="title">Type de question:&nbsp</h4><?php echo $question->question_type->Type_Name ?></td>
-                        <td><h4 for="title">Date de création:&nbsp</h4><?php echo $question->Creation_Date ?></td>
-                        <td><h4 for="title">ID:&nbsp</h4><?php echo $question->ID ?></td>
+                        <td><h4>Type de question:&nbsp</h4><?= $question->question_type->Type_Name ?></td>
+                        <td><h4>Date de création:&nbsp</h4><?= $question->Creation_Date ?></td>
+                        <td><h4>ID:&nbsp</h4><?= $question->ID ?></td>
                     </tr>
                     <tr>
-                        <td colspan=2><h4 for="title">Sujet:&nbsp</h4><?php echo $question->topic->Topic ?></td>
-                        <td><h4 for="title">Nb points:&nbsp</h4><?php echo $question->Points ?></td>
+                        <td colspan=2><h4>Sujet:&nbsp</h4><?= $question->topic->Topic ?></td>
+                        <td><h4>Nb points:&nbsp</h4><?= $question->Points ?></td>
                     </tr>
-                    <tr><td colspan=3><h4 for="title">Question:&nbsp</h4><?php echo $question->Question; ?></td></tr>
-                    <tr><td colspan=3><h4 for="title">Réponse:&nbsp</h4><?php echo $reponse; ?></td></tr>
+                    <tr><td colspan=3><h4>Question:&nbsp</h4><?= $question->Question; ?></td></tr>
+                    <tr><td colspan=3><h4>Réponse:&nbsp</h4><?= $reponse; ?></td></tr>
                 </tbody>
             </table>
             <?php if ($question->FK_Question_Type == 7) {
-            echo "<img src=".base_url('uploads/pictures/'.$image).">";
-            }?>
-             <?php echo form_button('retour', $this->lang->line('return'), 'class="btn btn-default col-xs-12 col-sm-4 col-md-2" onclick="location.href=\''.base_url('Question').'\'"'); ?>
-          
-                 
+                echo "<img src=".base_url('uploads/pictures/'.$image).">";
+            } ?>
+            <a href="<?= base_url('Question'); ?>">$this->lang->line('return')</a>
         </div>
     </div>
 </div>

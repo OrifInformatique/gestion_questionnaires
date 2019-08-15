@@ -132,10 +132,16 @@ class Topic extends MY_Controller
      * @param int $module = The id of the module to add it to
      */
     public function add_topic($module = 0){
+        $topics = $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)');
         $output = array(
-            'topics' => $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)'),
+            'topics' => [],
             'selected_module' => $module
         );
+
+        foreach($topics as $topic) {
+            $output['topics'][$topic->ID] = $topic->Topic;
+        }
+
         $this->display_view("topics/add", $output);
     }
 
