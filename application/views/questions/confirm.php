@@ -1,7 +1,7 @@
 <div id="page-content-wrapper">
     <div class="container">
         <div class="row">
-            <span class="fakeh3"><?= '"'.$Question.'"'; ?></span>
+            <span class="delete-title"><?= '"'.$Question.'"'; ?></span>
             <?php if($Archive) { ?>
                 <div class="alert alert-danger">
                     <?= $this->lang->line('question_already_deleted'); ?>

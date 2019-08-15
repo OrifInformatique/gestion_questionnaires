@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <span class="fakeh3"><?php echo $this->lang->line('del_module_form_title') . '"' . $Topic; ?>" ?</span>
+                    <span class="delete-title"><?php echo $this->lang->line('del_module_form_title') . '"' . $Topic; ?>" ?</span>
                 </div>
                 <div class="btn-group">
                     <a href="<?php echo base_url().uri_string()."/confirmed";?>" class="btn btn-danger btn-lg">

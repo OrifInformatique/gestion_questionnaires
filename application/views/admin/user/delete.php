@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <span class="fakeh3"><?= $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</span>
+                    <span class="delete-title"><?= $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</span>
                 </div>
                 <div class="btn-group">
                     <?php if(!$Archive) { ?>
