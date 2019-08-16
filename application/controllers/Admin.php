@@ -70,6 +70,7 @@ class Admin extends MY_Controller {
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), 'required');
+
         $this->form_validation->set_rules(
             'disactivate', $this->lang->line('btn_desactivate'),
             "callback_cb_not_inactive_user[{$userId}]",
