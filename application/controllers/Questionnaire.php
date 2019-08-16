@@ -118,6 +118,8 @@ class Questionnaire extends MY_Controller
                         $this->question_questionnaire_model->delete($question_questionnaire->ID);
                     }
                 }
+                unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+                unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
                 $this->questionnaire_model->delete($id);
                 redirect('Questionnaire');
             }
