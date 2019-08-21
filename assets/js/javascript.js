@@ -10,9 +10,11 @@ function changeselect() {
     var module = document.getElementById("module_selected").value;
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
-    var search = document.getElementById("search").value;
+    var search = encodeURI(document.getElementById("search").value);
 
     window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search;
+
+    return false;
 }
 
 

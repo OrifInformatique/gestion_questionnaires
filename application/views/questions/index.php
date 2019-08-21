@@ -10,103 +10,105 @@
     <div id="page-content-wrapper">
         <div class="container">
             <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
-            <div class="row">
-               <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_module'); ?></h4>
-                    <select onchange="changeselect()" class="form-control" id="module_selected">
-                        <?php
-                        echo "<option selected disabled hidden></option>";
-                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
+            <form onsubmit="return changeselect()">
+                <div class="row">
+                   <div class="col-lg-4">
+                        <h4><?php echo $this->lang->line('focus_module'); ?></h4>
+                        <select onchange="changeselect()" class="form-control" id="module_selected">
+                            <?php
+                            echo "<option selected disabled hidden></option>";
+                            echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
-                        //Récupère chaque topics
-                        foreach ($topics as $object => $module) {
-                            if ($module->FK_Parent_Topic == 0) {
-                                ?>
-                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['module'])){if($module->ID==$_GET['module']){echo"selected";}}?>><?php echo $module->Topic; ?>
-                                    </option>
-                                <?php
-                            }
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
-                    <select onchange="changeselect()" class="form-control" id="topic_selected">
-                        <?php
-
-                        echo "<option selected disabled hidden></option>";
-                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
-
-                        //Récupère chaque topics
-                        if(empty($_GET['module'])){
+                            //Récupère chaque topics
                             foreach ($topics as $object => $module) {
                                 if ($module->FK_Parent_Topic == 0) {
-                                    //Affiche le topic parent
-                                    echo "<optgroup label='$module->Topic' >";
-
-                                    //Récupère chaque topic associé au topic parent
-                                    for ($i = 0; $i < count($topics); $i++) {
-                                        if ($module->ID == $topics[$i]->FK_Parent_Topic) {
-                                            //Affiche les topics associés ?>
-                                            <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    }
-
-                                    echo "</optgroup>";
-                                }
-                                
-                            }
-                        } else {
-                            foreach ($topics as $object => $module) {
-                                if ($module->FK_Parent_Topic == $_GET['module']) {
-                                    //Affiche le topic parent
-                                     ?>
-                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
-                                    </option>
+                                    ?>
+                                        <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['module'])){if($module->ID==$_GET['module']){echo"selected";}}?>><?php echo $module->Topic; ?>
+                                        </option>
                                     <?php
                                 }
                             }
-                        }
-                        ?>
-                    </select>
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
+                        <select onchange="changeselect()" class="form-control" id="topic_selected">
+                            <?php
+
+                            echo "<option selected disabled hidden></option>";
+                            echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
+
+                            //Récupère chaque topics
+                            if(empty($_GET['module'])){
+                                foreach ($topics as $object => $module) {
+                                    if ($module->FK_Parent_Topic == 0) {
+                                        //Affiche le topic parent
+                                        echo "<optgroup label='$module->Topic' >";
+
+                                        //Récupère chaque topic associé au topic parent
+                                        for ($i = 0; $i < count($topics); $i++) {
+                                            if ($module->ID == $topics[$i]->FK_Parent_Topic) {
+                                                //Affiche les topics associés ?>
+                                                <option value='<?php echo $topics[$i]->ID; ?>' <?php if(isset($_GET['topic'])){if($topics[$i]->ID==$_GET['topic']){echo"selected";}}?>><?php echo $topics[$i]->Topic; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+
+                                        echo "</optgroup>";
+                                    }
+                                    
+                                }
+                            } else {
+                                foreach ($topics as $object => $module) {
+                                    if ($module->FK_Parent_Topic == $_GET['module']) {
+                                        //Affiche le topic parent
+                                         ?>
+                                        <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['topic'])){if($module->ID==$_GET['topic']){echo"selected";}}?>><?php echo $module->Topic; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <h4><?php echo $this->lang->line('question_type'); ?></h4>
+                        <select onchange="changeselect()" class="form-control" id="question_type_selected">
+                            <?php
+                            
+                            echo "<option selected disabled hidden></option>";
+                            echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
+
+
+                            //Récupère chaque topics
+                            foreach ($questionTypes as $object => $module) {
+                                    ?>
+                                    <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
+                                    <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-lg-4">
-                    <h4><?php echo $this->lang->line('question_type'); ?></h4>
-                    <select onchange="changeselect()" class="form-control" id="question_type_selected">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h4><?php echo $this->lang->line('search'); ?></h4>
                         <?php
-                        
-                        echo "<option selected disabled hidden></option>";
-                        echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
-
-
-                        //Récupère chaque topics
-                        foreach ($questionTypes as $object => $module) {
-                                ?>
-                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
-                                <?php
-                        }
+                            if(isset($_GET['search'])){
+                                echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
+                            } else {
+                                echo form_input('search', '', ' class="form-control" id="search"');
+                            }
                         ?>
-                    </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="submit" class="col-xs-12 button-align btn btn-primary xs-space" value="<?php echo $this->lang->line('filter'); ?>">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8">
-                    <h4><?php echo $this->lang->line('search'); ?></h4>
-                    <?php
-                        if(isset($_GET['search'])){
-                            echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
-                        } else {
-                            echo form_input('search', '', ' class="form-control" id="search"');
-                        }
-                    ?>
-                </div>
-                <div class="col-lg-4">
-                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></button>
-                </div>
-            </div>
+            </form>
             <div class="row">
                 <div class="col-lg-4">
                     <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
