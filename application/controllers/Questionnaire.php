@@ -775,7 +775,7 @@ class Questionnaire extends MY_Controller
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
             $answer = '';
             foreach($possible_answers as $possible_answer) {
-                $answer .= ', '.$possible_answer->Answer;
+                $answer .= ' / '.$possible_answer->Answer;
             }
             $answer = substr($answer, 2);
             $answers = $this->string_to_small_array($answer);
