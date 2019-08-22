@@ -16,7 +16,7 @@
 			}
 		?>
         <div class="row">
-            <b class="biggertext"><?php echo $this->lang->line('topic'); ?></b>
+            <b class="form-label"><?php echo $this->lang->line('topic'); ?></b>
             <div class="accordion" id="accordionExample">
                 <?php foreach ($modules as $module) { ?>
                     <div class="card">

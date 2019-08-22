@@ -61,10 +61,10 @@ option:disabled {
     margin: 0;
     border-top: 1px solid black
 }
-.delete-title {
+.form-header {
     font-size: 24px;
 }
-.biggertext {
+.form-label {
     font-size: 16px;
     font-weight: bold;
 }

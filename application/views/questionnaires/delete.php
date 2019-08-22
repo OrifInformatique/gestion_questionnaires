@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <span class="delete-title">
+                    <span class="form-header">
                         <?php echo $this->lang->line('del_questionnaire'.($model ? '_model' : '').'_form_title') . '"' . ($model ? $Base_Name : $Questionnaire_Name); ?>" ?
                     </span>
                 </div>
