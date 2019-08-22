@@ -21,10 +21,7 @@ class Questionnaire extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
-            'question_model', 'answer_distribution_model', 'multiple_choice_model',
-            'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
-            'picture_landmark_model', 'free_answer_model', 'multiple_answer_model',
+        $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
         $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));
     }
@@ -115,6 +112,8 @@ class Questionnaire extends MY_Controller
                 $output["title"] = $this->lang->line('delete_questionnaire');
                 $this->display_view("questionnaires/delete", $output);
             } else {
+                $this->load->model('question_questionnaire_model');
+
                 $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
                 if (count($questionnaire->question_questionnaires) > 0) {
                     foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
@@ -297,6 +296,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The id of the questionnaire to create
      */
     public function generateQuestions($idQuestionnaire) {
+        $this->load->model(['multiple_choice_model', 'picture_landmark_model']);
+
         $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $title = $questionnaire->Questionnaire_Name;
@@ -430,6 +431,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The id of the questionnaire to create
      */
     public function generateAnswers($idQuestionnaire) {
+        $this->load->model(['multiple_choice_model', 'picture_landmark_model']);
+
         $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $title = $questionnaire->Questionnaire_Name;
@@ -657,6 +660,8 @@ class Questionnaire extends MY_Controller
      */
     private function InsertNewQuestionnaire($tableTopics)
     {
+        $this->load->model('question_questionnaire_model');
+
         $listIDQuestions = array();
         // Prepare the questionnaire name and save the original
         $title_original = trim($tableTopics->getTitle());
@@ -714,6 +719,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The questionnaire's id
      */
     private function findQuestionByQuestionnaire($idQuestionnaire){
+        $this->load->model('question_questionnaire_model');
+
         $listIDQuestions = array();
         $rndQuestions = array();
 
@@ -735,6 +742,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function multipleChoicesPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('multiple_choice_model');
         // Prepare variables
         $multiChoiceQuestions = $this->multiple_choice_model->get_many_by("FK_Question = ".$question->ID);
 
@@ -777,6 +785,8 @@ class Questionnaire extends MY_Controller
      */
     private function multipleAnswersPdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
+            $this->load->model('multiple_answer_model');
+
             $pdf->SetTextColor(255, 0, 0);
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
             $answer = '';
@@ -813,6 +823,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function answerDistributionPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('answer_distribution_model');
+
         if($answerPdf) {
             /**
              * @todo
@@ -840,6 +852,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function clozeTextPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('cloze_text_model');
+
         $clozeText = $this->cloze_text_model->get_by("FK_Question = ".$question->ID);
         // Sometimes you can find … mixed with .
         $outputText = preg_split("/\[[…\.]*\]/", $clozeText->Cloze_Text, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -871,6 +885,8 @@ class Questionnaire extends MY_Controller
         }
 
         if($answerPdf) {
+            $this->load->model('cloze_text_answer_model');
+
             $allAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = ".$clozeText->ID);
             $answers = array();
             foreach($allAnswers as $a) {
@@ -913,6 +929,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function tablePdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('table_cell_model');
         if($answerPdf) {
             /**
              * @todo
@@ -958,6 +975,7 @@ class Questionnaire extends MY_Controller
      */
     private function displayTable($Question, $pdf)
     {
+        $this->load->model('table_cell_model');
         $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
         $maxColumn = 0;
         $maxRow = 0;
@@ -1027,6 +1045,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function simpleQuestionPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('free_answer_model');
         // Prepare variables
         $maxlength = 60;
         $answer = $this->free_answer_model->get_by('FK_Question', $question->ID)->Answer;
@@ -1068,6 +1087,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function pictureLandmarkPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('picture_landmark_model');
+
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = ".$question->ID);
         $picture = $question->Picture_Name;
         $fullPath = base_url((is_file('uploads/pictures/'.$picture) ? 'uploads/pictures/'.$picture : 'assets/images/not-found.png'));

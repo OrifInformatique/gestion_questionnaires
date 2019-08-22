@@ -15,7 +15,7 @@ class Topic extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('topic_model', 'question_model'));
+        $this->load->model('topic_model');
         $this->load->helper('date');
     }
 
@@ -78,6 +78,7 @@ class Topic extends MY_Controller
      * Delete selected topic and redirect to topic list
      */
     public function delete_topic($id = 0, $action = NULL){
+        $this->load->model('question_model');
 
         if($id != 0){
 
@@ -215,6 +216,8 @@ class Topic extends MY_Controller
      * @param any $action = Set to not null to delete the module
      */
     public function delete_module($id = 0, $action = NULL){
+        $this->load->model('question_model');
+
         if ($id != 0) {
             if (is_null($action)) {
                 $count = $this->topic_model->count_by('FK_Parent_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
