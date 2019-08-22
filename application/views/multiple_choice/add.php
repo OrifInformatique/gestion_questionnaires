@@ -29,7 +29,7 @@
         <div class="row">
             
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
+                <b class="form-header"><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></b>
             </div>
         </div>
         <div class="row">   
