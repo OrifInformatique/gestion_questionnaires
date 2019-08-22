@@ -25,7 +25,7 @@
 
     <div class="row">
         <div class="form-group col-xs-12">
-            <h4><?= form_label($this->lang->line('add_title_questionnaire'), 'title'); ?></h4>
+            <?= form_label($this->lang->line('add_title_questionnaire'), 'title', array('class' => 'form-label')); ?>
             <?= form_input('title', $model->Questionnaire_Name, array(
                 'maxlength' => 100, 'id' => 'title',
                 'class' => 'form-control'
@@ -35,7 +35,7 @@
 
     <div class="row">
         <div class="form-group col-xs-12">
-            <h4><?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle'); ?></h4>
+            <?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle', array('class' => 'form-label')); ?>
             <?= form_input('subtitle', $model->Questionnaire_Subtitle, array(
                 'maxlength' => 100, 'id' => 'subtitle',
                 'class' => 'form-control'

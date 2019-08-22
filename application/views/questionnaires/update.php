@@ -25,7 +25,7 @@
 
             <?php if($model) { ?>
                 <div class="form-group col-xs-12">
-                    <h4><?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName'); ?></h4>
+                    <?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName', array('class' => 'form-label')); ?>
                     <div class="row">
                         <div class="col-xs-12">
                             <?= form_input('modelName', $modelName, array(
@@ -37,10 +37,10 @@
             <?php } ?>
 
             <div class="form-group col-xs-12">
-                <h4><?= form_label($this->lang->line('add_title_questionnaire'), 'title'); ?></h4>
+                <?= form_label($this->lang->line('add_title_questionnaire'), 'title', array('class' => 'form-label')); ?>
                 <div class="row">
                     <div class="col-xs-12">
-                        <?= form_input('title', $title, array(
+                        <?= form_input('title', $quest_title, array(
                             'maxlength' => 100, 'id' => 'title', 'class' => 'form-control'
                         )); ?>
                     </div>
@@ -48,7 +48,7 @@
             </div>
 
             <div class="form-group col-xs-12">
-                <h4><?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle'); ?></h4>
+                <?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle', array('class' => 'form-label')); ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <?= form_input('subtitle', $subtitle, array(

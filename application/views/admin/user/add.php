@@ -36,7 +36,7 @@ $update = !is_null($user);
         <!-- USER FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('user_name'), 'user_name'); ?></h4>
+                <?= form_label($this->lang->line('user_name'), 'user_name', array('class' => 'form-label')); ?>
                 <?= form_input('user_name', $user->User ?? '', array(
                     'maxlength' => 45, 'class' => 'form-control', 'id' => 'user_name'
                 )); ?>
@@ -45,7 +45,7 @@ $update = !is_null($user);
 
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('user_usertype'), 'user_usertype'); ?></h4>
+                <?= form_label($this->lang->line('user_usertype'), 'user_usertype', array('class' => 'form-label')); ?>
                 <?= form_dropdown('user_usertype', $user_types, $user->FK_User_Type ?? null, array(
                     'class' => 'form-control'
                 )); ?>
@@ -55,7 +55,7 @@ $update = !is_null($user);
         <?php if(!$update) { ?>
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('user_password'), 'user_password'); ?></h4>
+                <?= form_label($this->lang->line('user_password'), 'user_password', array('class' => 'form-label')); ?>
                 <?= form_password('user_password', '', array(
                     'class' => 'form-control', 'id' => 'user_password'
                 )); ?>
@@ -64,7 +64,7 @@ $update = !is_null($user);
 
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('user_password_again'), 'user_password_again'); ?></h4>
+                <?= form_label($this->lang->line('user_password_again'), 'user_password_again', array('class' => 'form-label')); ?>
                 <?= form_password('user_password_again', '', array(
                     'class' => 'form-control', 'id' => 'user_password_again'
                 )); ?>

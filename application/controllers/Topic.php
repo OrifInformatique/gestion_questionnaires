@@ -15,7 +15,7 @@ class Topic extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('topic_model', 'question_model'));
+        $this->load->model('topic_model');
         $this->load->helper('date');
     }
 
@@ -25,6 +25,7 @@ class Topic extends MY_Controller
     public function index($error = "")
     {
         $output = array(
+            'title' => $this->lang->line('title_topic'),
             'modules' => $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)'),
             'topics' => $this->topic_model->get_many_by('FK_Parent_Topic IS NOT NULL AND (Archive IS NULL OR Archive = 0)'),
             'error' => $error
@@ -46,9 +47,10 @@ class Topic extends MY_Controller
             $topic = $this->topic_model->get($id);
             if (!is_null($topic)){
                 $outputs = array(
+                    'title' => $this->lang->line('title_module_update'),
                     'error' => $error,
                     'id' => $id,
-                    'title' => $topic->Topic
+                    'title_topic' => $topic->Topic
                 );
                 $this->display_view("topics/update", $outputs);
             } else show_error($this->lang->line('topic_error_404_message'), 404, $this->lang->line('topic_error_404_heading'));
@@ -76,6 +78,7 @@ class Topic extends MY_Controller
      * Delete selected topic and redirect to topic list
      */
     public function delete_topic($id = 0, $action = NULL){
+        $this->load->model('question_model');
 
         if($id != 0){
 
@@ -85,6 +88,7 @@ class Topic extends MY_Controller
                 $count = $this->question_model->count_by('FK_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
                 $output['ID'] = $id;
                 $output['Topic'] = $this->topic_model->get($id)->Topic;
+                $output['title'] = $this->lang->line('delete_topic');
                 if ($count == 0) {
                     $this->display_view("topics/delete", $output);
                 } else {
@@ -109,6 +113,7 @@ class Topic extends MY_Controller
      */
     public function add_topic($preselect_module = NULL, $error = NULL){
         $output = array(
+            'title' => $this->lang->line('title_topic_add'),
             'topics' => $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)'),
             'error' => ($error == NULL ? NULL : true),
             'selected_module' => $preselect_module
@@ -153,9 +158,10 @@ class Topic extends MY_Controller
             $topic = $this->topic_model->get($id);
             if (!is_null($topic)){
                 $outputs = array(
+                    'title' => $this->lang->line('title_module_update'),
                     'error' => $error,
                     'id' => $id,
-                    'title' => $topic->Topic,
+                    'title_module' => $topic->Topic,
                     'action' => 'update'
                 );
 
@@ -210,11 +216,14 @@ class Topic extends MY_Controller
      * @param any $action = Set to not null to delete the module
      */
     public function delete_module($id = 0, $action = NULL){
+        $this->load->model('question_model');
+
         if ($id != 0) {
             if (is_null($action)) {
                 $count = $this->topic_model->count_by('FK_Parent_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
                 $output['ID'] = $id;
                 $output['Topic'] = $this->topic_model->get($id)->Topic;
+                $output['title'] = $this->lang->line('delete_module');
                 if ($count == 0) {
                     $this->display_view("topics/delete", $output);
                 } else {
@@ -248,6 +257,7 @@ class Topic extends MY_Controller
      */
     public function add_module($error = NULL){
         $outputs = array(
+            'title' => $this->lang->line('title_module_add'),
             'error' => ($error == NULL ? NULL : true),
             'action' => 'add'
         );
