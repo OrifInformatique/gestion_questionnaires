@@ -87,7 +87,8 @@ class Auth extends MY_Controller
         }
 
         // Display login page
-        $this->display_view('auth/login_form');
+        $output = array('title' => $this->lang->line('btn_login'));
+        $this->display_view('auth/login_form', $output);
     }
 
     /**
@@ -159,7 +160,8 @@ class Auth extends MY_Controller
             }
 
             // Display the password change form
-            $this->display_view('auth/password_change_form');
+            $output['title'] = $this->lang->line('page_password_change');
+            $this->display_view('auth/password_change_form', $output);
         } else {
             // Access is not allowed
             $this->ask_for_login();

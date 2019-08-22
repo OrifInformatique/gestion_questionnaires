@@ -143,6 +143,7 @@ class Question extends MY_Controller
 		$this->pagination->initialize($config);
 
 		$output = array(
+			'title' => $this->lang->line('title_question'),
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
 			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
@@ -171,6 +172,7 @@ class Question extends MY_Controller
 			if (is_null($action)) {
 				$output = get_object_vars($this->question_model->get($id));
 				$output["question"] = $this->question_model->get_all();
+				$output["title"] = $this->lang->line("delete_question");
 				$this->display_view("questions/confirm", $output);
 			} else {
 				$this->question_model->delete($id);
@@ -220,6 +222,7 @@ class Question extends MY_Controller
 				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
 				$output['name'] = $question->Question;
 				$output['points'] = $question->Points;
+				$output['title'] = $this->lang->line('title_question_update');
 
 				switch ($question->FK_Question_Type){
 				case 1:
@@ -307,6 +310,7 @@ class Question extends MY_Controller
 	{
 		$output['error'] = $error;
 		$output['id'] = $id;
+		$output['title'] = $this->lang->line('detail_question');
 
 		if ($id != 0) {
 			$question = $this->question_model->with_all()->get($id);
@@ -382,6 +386,7 @@ class Question extends MY_Controller
 		if ($step==1){
 			// Display a form to choose a topic and a question type
 			$output = array(
+				'title' => $this->lang->line('title_question_add'),
 				'topics' => $this->topic_model->get_tree(),
 				'list_question_type' => $this->question_type_model->dropdown('Type_Name')
 			);;
@@ -389,6 +394,7 @@ class Question extends MY_Controller
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
+			$output['title'] = $this->lang->line('title_question_add');
 			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -546,6 +552,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();				
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('multiple_choice/add', $output);
 			}
 		} else {
@@ -606,6 +613,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();	
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('multiple_choice/add', $output);
 		}
 	}
@@ -726,6 +734,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('multiple_answer/add', $output);
 			}
 		} else {
@@ -784,6 +793,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('multiple_answer/add', $output);
 		}
 	}
@@ -924,6 +934,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('cloze_text/add', $output);
 			}
 		} else {
@@ -985,6 +996,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('cloze_text/add', $output);
 		}
 	}
@@ -1033,6 +1045,7 @@ class Question extends MY_Controller
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
 					}
+					$output['title'] = $this->lang->line('title_question_add');
 					$this->display_view('free_answers/add', $output);
 				}
 			}
@@ -1067,6 +1080,7 @@ class Question extends MY_Controller
 				} else {
 					$output['id'] = $_POST['id'];
 					$output['id_answer'] = $_POST['id_answer'];
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 					if(isset($_POST['name'])){
@@ -1078,7 +1092,8 @@ class Question extends MY_Controller
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
 					}
-					$this->display_view('free_answers/update', $output);
+					$output['title'] = $this->lang->line('title_question_add');
+					$this->display_view('free_answers/add', $output);
 				}
 			}
 		}
@@ -1139,6 +1154,7 @@ class Question extends MY_Controller
 			$output['topics'] = $this->topic_model->get_tree();
 
 			if (isset($_POST['cancel']) & isset($_POST['id'])){
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('picture_landmark/add', $output);
 			} elseif (isset($_POST['cancel']) & !isset($_POST['id'])){
 				redirect('/Question');
@@ -1158,12 +1174,14 @@ class Question extends MY_Controller
 					if ( ! $this->upload->do_upload('picture'))
 					{
 							$output['error'] = $this->upload->display_errors();
+							$output['title'] = $this->lang->line('title_question_add');
 							$this->display_view('picture_landmark/file', $output);
 					}
 					else
 					{
 							$output['upload_data'] = $this->upload->data();
 
+							$output['title'] = $this->lang->line('title_question_add');
 							$this->display_view('picture_landmark/add', $output);
 					}
 				}
@@ -1314,6 +1332,7 @@ class Question extends MY_Controller
 						}
 					}
 					$output['answers'] = $answers;
+					$output['title'] = $this->lang->line('title_question_add');
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
@@ -1384,7 +1403,8 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
-
+			
+				$output['title'] = $this->lang->line('title_question_add');
 				if(isset($_POST['change_picture'])){
 					$this->display_view('picture_landmark/file', $output);
 				} else {
