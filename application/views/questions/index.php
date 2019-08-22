@@ -7,9 +7,11 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 ?>
-    <div id="page-content-wrapper">
-        <div class="container">
-            <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
+<div id="page-content-wrapper">
+    <div class="container">
+        <h1 class="title-section"><?php echo $this->lang->line('title_question'); ?></h1>
+
+        <form onsubmit="return changeselect()">
             <div class="row">
                <div class="col-lg-4">
                     <b class="form-label"><?php echo $this->lang->line('focus_module'); ?></b>
@@ -57,7 +59,7 @@
 
                                     echo "</optgroup>";
                                 }
-                                
+
                             }
                         } else {
                             foreach ($topics as $object => $module) {
@@ -77,16 +79,15 @@
                     <b class="form-label"><?php echo $this->lang->line('question_type'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
-                        
                         echo "<option selected disabled hidden></option>";
                         echo '<option value="">'.$this->lang->line('clear_filter')."</option>";
 
 
                         //Récupère chaque topics
                         foreach ($questionTypes as $object => $module) {
-                                ?>
-                                <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
-                                <?php
+                            ?>
+                            <option value='<?php echo $module->ID; ?>' <?php if(isset($_GET['type'])){if($module->ID==$_GET['type']){echo"selected";}}?>><?php echo $module->Type_Name; ?></option>
+                            <?php
                         }
                         ?>
                     </select>
@@ -104,99 +105,100 @@
                     ?>
                 </div>
                 <div class="col-lg-4">
-                    <button class="col-xs-12 button-align btn btn-primary xs-space" onclick="changeselect()"><?php echo $this->lang->line('filter'); ?></button>
+                    <input type="submit" class="col-xs-12 button-align btn btn-primary xs-space" value="<?php echo $this->lang->line('filter'); ?>">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
-                </div>
+        </form>
+        <div class="row">
+            <div class="col-lg-4">
+                <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
             </div>
-                <hr>
-            <div class="row">
-                <div class="col-xs-12 col-sm-4">
-                    <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
-                </div>
-                <div class="col-xs-12 col-sm-offset-4 col-sm-4">
-                    <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
-                </div>
+        </div>
+            <hr>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
             </div>
-            <div id="pagination_top"><?=$pagination?></div>
-            <div class="row">
-                <?php 
-                    $question_sort='▲▼';
-                    $question_type_sort='▲▼';
-                    $points_sort='▲▼';
-                    if (isset($_GET['sort'])){
-                        switch ($_GET['sort']){
-                            case 'question_asc':
-                                $question_sort='▼';
-                                break;
-                            case 'question_desc':
-                                $question_sort='▲';
-                                break;
-                            case 'question_type_asc':
-                                $question_type_sort='▼';
-                                break;
-                            case 'question_type_desc':
-                                $question_type_sort='▲';
-                                break;
-                            case 'points_asc':
-                                $points_sort='▼';
-                                break;
-                            case 'points_desc':
-                                $points_sort='▲';
-                                break;
-                        }
+            <div class="col-xs-12 col-sm-offset-4 col-sm-4">
+                <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
+            </div>
+        </div>
+        <div id="pagination_top"><?=$pagination?></div>
+        <div class="row">
+            <?php 
+                $question_sort='▲▼';
+                $question_type_sort='▲▼';
+                $points_sort='▲▼';
+                if (isset($_GET['sort'])){
+                    switch ($_GET['sort']){
+                        case 'question_asc':
+                            $question_sort='▼';
+                            break;
+                        case 'question_desc':
+                            $question_sort='▲';
+                            break;
+                        case 'question_type_asc':
+                            $question_type_sort='▼';
+                            break;
+                        case 'question_type_desc':
+                            $question_type_sort='▲';
+                            break;
+                        case 'points_asc':
+                            $points_sort='▼';
+                            break;
+                        case 'points_desc':
+                            $points_sort='▲';
+                            break;
                     }
-                ?>
-                <br>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <?php 
-                                        echo $this->lang->line('question'); 
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
-                                    ?>
+                }
+            ?>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <?php 
+                                    echo $this->lang->line('question'); 
+                                    echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
+                                ?>
+                            </th>
+                            <th><?php 
+                                    echo $this->lang->line('question_type');
+                                    echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question_type\")' class='sorted_btn btn btn-default'>$question_type_sort</a>" 
+                                ?>  
                                 </th>
-                                <th><?php 
-                                        echo $this->lang->line('question_type');
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question_type\")' class='sorted_btn btn btn-default'>$question_type_sort</a>" 
-                                    ?>  
-                                    </th>
-                                <th>
-                                    <?php   
-                                        echo $this->lang->line('points'); 
-                                        echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"points\")' class='sorted_btn btn btn-default'>$points_sort</a>" 
-                                    ?>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        
-                            <?php
-                            $compteur = 0;
-                            foreach ($questions as $objet => $question) {
+                            <th>
+                                <?php   
+                                    echo $this->lang->line('points'); 
+                                    echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"points\")' class='sorted_btn btn btn-default'>$points_sort</a>" 
+                                ?>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                                $compteur ++;
-                                displayQuestion($question);
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                    <?php
-                    if($compteur == 0){
-                        echo "<div class='well' style='border: solid 2px red;'><b class='form-label'>"
-                        . $this->lang->line('no_question') . "</b></div>";
-                    }
-                    ?>
-                </div>
+                        <?php
+                        $compteur = 0;
+                        foreach ($questions as $objet => $question) {
+
+                            $compteur ++;
+                            displayQuestion($question);
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php
+                if($compteur == 0){
+                    echo "<div class='well' style='border: solid 2px red;'><b class='form-label'>"
+                    . $this->lang->line('no_question') . "</b></div>";
+                }
+                ?>
             </div>
-            <div id="pagination_top"><?=$pagination?></div>
-        </div> 
+        </div>
+        <div id="pagination_top"><?=$pagination?></div>
     </div>
+</div>
 
 <?php
 function displayQuestion($question)
