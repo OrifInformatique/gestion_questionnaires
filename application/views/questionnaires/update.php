@@ -40,7 +40,7 @@
                 <h4><?= form_label($this->lang->line('add_title_questionnaire'), 'title'); ?></h4>
                 <div class="row">
                     <div class="col-xs-12">
-                        <?= form_input('title', $title, array(
+                        <?= form_input('title', $quest_title, array(
                             'maxlength' => 100, 'id' => 'title', 'class' => 'form-control'
                         )); ?>
                     </div>
