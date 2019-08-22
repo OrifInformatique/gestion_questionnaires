@@ -601,7 +601,7 @@ class Questionnaire extends MY_Controller
         $modelId = $this->input->post('modelId');
 
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
-        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'), 'required');
+        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'));
 
         if($this->form_validation->run()) {
             $title = $this->input->post('title');
