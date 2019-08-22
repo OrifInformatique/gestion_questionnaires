@@ -121,6 +121,8 @@ class Questionnaire extends MY_Controller
                         $this->question_questionnaire_model->delete($question_questionnaire->ID);
                     }
                 }
+                unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+                unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
                 $this->questionnaire_model->delete($id);
                 redirect('Questionnaire');
             }
@@ -603,7 +605,7 @@ class Questionnaire extends MY_Controller
         $modelId = $this->input->post('modelId');
 
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
-        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'), 'required');
+        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'));
 
         if($this->form_validation->run()) {
             $title = $this->input->post('title');
@@ -779,7 +781,7 @@ class Questionnaire extends MY_Controller
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
             $answer = '';
             foreach($possible_answers as $possible_answer) {
-                $answer .= ', '.$possible_answer->Answer;
+                $answer .= ' / '.$possible_answer->Answer;
             }
             $answer = substr($answer, 2);
             $answers = $this->string_to_small_array($answer);
