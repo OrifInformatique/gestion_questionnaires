@@ -33,7 +33,7 @@ class Support extends MY_Controller {
         if($this->form_validation->run() == true){
             
 
-            $url = 'https://api.github.com/repos/OssrifInformatique/gestion_questionnaires/issues';
+            $url = 'https://api.github.com/repos/OrifInformatique/gestion_questionnaires/issues';
             $ch = curl_init($url);
 
             $body = array(
