@@ -39,7 +39,7 @@ class Support extends MY_Controller {
             $body = array(
                 'title' => $this->input->post('issue_title'),
                 'body' => $this->input->post('issue_body'),
-                'labels' => array('user_report')
+                'labels' => array('user report')
             );
             $json = json_encode($body);
 
