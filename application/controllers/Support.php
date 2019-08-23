@@ -36,8 +36,15 @@ class Support extends MY_Controller {
             $url = 'https://api.github.com/repos/OrifInformatique/gestion_questionnaires/issues';
             $ch = curl_init($url);
 
+            if (isset($_SESSION['username'])) {
+                // Add the user name in the issue title
+                $title = '['.$_SESSION['username'].'] '.$this->input->post('issue_title');
+            } else {
+                $title = $this->input->post('issue_title');
+            }
+            
             $body = array(
-                'title' => $this->input->post('issue_title'),
+                'title' => $title,
                 'body' => $this->input->post('issue_body'),
                 'labels' => array('user report')
             );
