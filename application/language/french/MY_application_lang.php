@@ -23,6 +23,7 @@ $lang['nav_question']                   = 'Questions';
 $lang['nav_questionnaire']              = 'Questionnaires';
 $lang['nav_module']                     = 'Modules';
 $lang['nav_topic']                      = 'Sujets';
+$lang['nav_support']                    = 'Signaler un problème';
 $lang['nav_admin']                      = 'Administration';
 
 // Fields labels
@@ -62,6 +63,7 @@ $lang['yes']                            = 'Oui';
 $lang['no']                             = 'Non';
 $lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
+$lang['post']                           = 'Envoyer';
 $lang['cancel']                         = 'Annuler';
 $lang['return']                         = 'Retour';
 $lang['btn_change_password']            = 'Modifier le mot de passe';
@@ -237,3 +239,10 @@ $lang['pdf_multiple_answer_2']          = 'attendue';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
+
+// Support Controller
+$lang['title_report_a_problem']         = 'Signaler un problème';
+$lang['issue_title']                    = 'Objet';
+$lang['issue_body']                     = 'Texte du problème';
+$lang['title_problem_submitted']        = 'Problème signalé';
+$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';
