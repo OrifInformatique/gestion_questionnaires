@@ -63,7 +63,12 @@ class Topic_Test extends Topic {
         if(array_search('topic_update', $this->tests) !== FALSE) {
             $dummy_id = $this->_create_dummy_topic();
 
-            //
+            $this->test_update_topic_no_errors($dummy_id);
+            // Reset dummy after each use
+            $this->_reset_dummy_topic($dummy_id);
+
+            $this->test_update_topic_long_title($dummy_id);
+            $this->_reset_dummy_topic($dummy_id);
 
             $this->_delete_dummy_topic($dummy_id);
         }
@@ -178,7 +183,8 @@ class Topic_Test extends Topic {
      * @param integer $dummy_id = ID of the dummy topic
      * @return void
      */
-    private function test_update_topic_no_errors(int $dummy_id) {
+    private function test_update_topic_no_errors(int $dummy_id)
+    {
         $title = 'topic_dummy';
 
         $this->_send_form_request('form_update_topic', [
@@ -193,6 +199,32 @@ class Topic_Test extends Topic {
             'errors_expected' => FALSE,
             'db_update' => $topic->Topic == $title,
             'db_update_expected' => TRUE
+        );
+    }
+    /**
+     * Test for topic update with a name too long
+     *
+     * @param integer $dummy_id = ID of the dummy topic
+     * @return void
+     */
+    private function test_update_topic_long_title(int $dummy_id)
+    {
+        $test_name = 'test_topic_long_title_error';
+        $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
+        $title = str_repeat($test_name, $repeat_count);
+
+        $this->_send_form_request('form_update_topic', [
+            'title' => $title,
+            'id' => $dummy_id
+        ]);
+
+        $topic = $this->topic_model->get($dummy_id);
+
+        $this->test_results['topic']['update']['long_title_error'] = (object) array(
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => TRUE,
+            'db_update' => $topic->Topic == $title,
+            'db_update_expected' => FALSE
         );
     }
 
