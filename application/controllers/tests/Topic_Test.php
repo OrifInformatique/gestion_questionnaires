@@ -83,15 +83,17 @@ class Topic_Test extends Topic {
     private function test_add_topic_no_errors()
     {
         $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
+        $title = 'test_topic_no_errors';
+
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
-            'title' => 'test_topic_no_errors'
+            'title' => $title
         ]);
 
         $this->test_results['topic']['creation']['no_errors'] = (object) array(
             'has_errors' => !empty(validation_errors()),
             'should_have_errors' => FALSE,
-            'is_added' => !is_null($this->topic_model->get_by('Topic', 'test_topic_no_errors')),
+            'is_added' => !is_null($this->topic_model->get_by('Topic', $title)),
             'should_be_added' => TRUE
         );
     }
@@ -106,16 +108,17 @@ class Topic_Test extends Topic {
         $test_name = 'test_topic_long_title_error';
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
+        $title = str_repeat($test_name, $repeat_count);
 
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
-            'title' => str_repeat($test_name, $repeat_count)
+            'title' => $title
         ]);
 
         $this->test_results['topic']['creation']['long_title_error'] = (object) array(
             'has_errors' => !empty(validation_errors()),
             'should_have_errors' => TRUE,
-            'is_added' => !is_null($this->topic_model->get_by('Topic', $_POST['title'])),
+            'is_added' => !is_null($this->topic_model->get_by('Topic', $title)),
             'should_be_added' => FALSE
         );
     }
@@ -128,10 +131,11 @@ class Topic_Test extends Topic {
     {
         // Grab the next available id and add 1
         $bad_id = $this->topic_model->get_next_id()+1;
+        $title = 'test_topic_module_selected_not_exist';
 
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
-            'title' => 'test_topic_module_selected_not_exist'
+            'title' => $title
         ]);
 
         $this->test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
@@ -150,16 +154,17 @@ class Topic_Test extends Topic {
     {
         // Grab a topic (not a module) and get its id
         $bad_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NOT NULL')->ID;
+        $title = 'test_topic_module_selected_not_module';
 
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
-            'title' => 'test_topic_module_selected_not_module'
+            'title' => $title
         ]);
 
         $this->test_results['topic']['creation']['module_selected_not_module'] = (object) array(
             'has_errors' => !empty(validation_errors()),
             'should_have_errors' => TRUE,
-            'is_added' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
+            'is_added' => is_null($this->topic_model->get_by('Topic', $title)),
             'should_be_added' => FALSE
         );
     }
@@ -175,6 +180,10 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($dummy_id);
 
+        $this->test_results['topic']['update']['no_errors'] = (object) array(
+            'has_errors' => !empty(validation_errors()),
+            'should_have_errors' => FALSE
+        );
     }
 
     /**************
