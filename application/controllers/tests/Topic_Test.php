@@ -18,10 +18,11 @@ class Topic_Test extends Topic {
      *
      * @var array
      */
-    private $test_results = [
+    private $_test_results = [
         'topic' => [
             'creation' => [],
-            'update' => []
+            'update' => [],
+            'delete' => []
         ]
     ];
     /**
@@ -29,9 +30,10 @@ class Topic_Test extends Topic {
      *
      * @var array
      */
-    private $tests = [
-        'topic_update'
+    private $_tests = [
+        'topic_delete'
     ];
+    private $_old_db_error;
 
     /**
      * The public instance to update
@@ -52,7 +54,7 @@ class Topic_Test extends Topic {
     public function test()
     {
         // Topic adding tests
-        if(array_search('topic_add', $this->tests) !== FALSE) {
+        if(array_search('topic_add', $this->_tests) !== FALSE) {
             $this->test_add_topic_no_errors();
             $this->test_add_topic_long_title();
             $this->test_add_topic_module_selected_not_exist();
@@ -61,20 +63,38 @@ class Topic_Test extends Topic {
 
         // Topic updating tests
         if(array_search('topic_update', $this->tests) !== FALSE) {
-            $dummy_id = $this->_create_dummy_topic();
+            $dummy_id = $this->_dummy_create();
+            // Reset dummy after each use
 
             $this->test_update_topic_no_errors($dummy_id);
-            // Reset dummy after each use
-            $this->_reset_dummy_topic($dummy_id);
+            $this->_dummy_reset($dummy_id);
 
             $this->test_update_topic_long_title($dummy_id);
-            $this->_reset_dummy_topic($dummy_id);
+            $this->_dummy_reset($dummy_id);
 
-            $this->_delete_dummy_topic($dummy_id);
+            $this->_dummy_delete($dummy_id);
+        }
+
+        // Topic deleting tests
+        if(array_search('topic_delete', $this->tests) !== FALSE) {
+            $dummy_id = $this->_dummy_create();
+            // Reset topic after each use
+
+            $this->test_delete_topic_no_delete($dummy_id);
+            $this->_dummy_reset($dummy_id);
+
+            $this->test_delete_topic_archive($dummy_id);
+            $this->_dummy_reset($dummy_id);
+
+            $this->test_delete_topic_not_exist();
+            // Just because it's not an argument does not mean it's not possible
+            $this->_dummy_reset($dummy_id);
+
+            $this->_dummy_delete($dummy_id);
         }
 
         // Display test results
-        print_r($this->test_results);
+        print_r($this->_test_results);
     }
 
     /********************
@@ -90,13 +110,14 @@ class Topic_Test extends Topic {
         $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
         $title = 'test_topic_no_errors';
 
+        $this->_db_error_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
             'title' => $title
         ]);
 
-        $this->test_results['topic']['creation']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['creation']['no_errors'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => FALSE,
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => TRUE
@@ -115,13 +136,14 @@ class Topic_Test extends Topic {
         $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
         $title = str_repeat($test_name, $repeat_count);
 
+        $this->_db_error_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
             'title' => $title
         ]);
 
-        $this->test_results['topic']['creation']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['creation']['long_title_error'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => TRUE,
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
@@ -138,13 +160,14 @@ class Topic_Test extends Topic {
         $bad_id = $this->topic_model->get_next_id()+1;
         $title = 'test_topic_module_selected_not_exist';
 
+        $this->_db_error_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
             'title' => $title
         ]);
 
-        $this->test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => TRUE,
             'db_update' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
             'db_update_expected' => FALSE
@@ -161,13 +184,14 @@ class Topic_Test extends Topic {
         $bad_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NOT NULL')->ID;
         $title = 'test_topic_module_selected_not_module';
 
+        $this->_db_error_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
             'title' => $title
         ]);
 
-        $this->test_results['topic']['creation']['module_selected_not_module'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['creation']['module_selected_not_module'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => TRUE,
             'db_update' => is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
@@ -187,6 +211,7 @@ class Topic_Test extends Topic {
     {
         $title = 'topic_dummy';
 
+        $this->_db_error_save();
         $this->_send_form_request('form_update_topic', [
             'title' => $title,
             'id' => $dummy_id
@@ -194,8 +219,8 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->test_results['topic']['update']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['update']['no_errors'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => FALSE,
             'db_update' => $topic->Topic == $title,
             'db_update_expected' => TRUE
@@ -213,6 +238,7 @@ class Topic_Test extends Topic {
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $title = str_repeat($test_name, $repeat_count);
 
+        $this->_db_error_save();
         $this->_send_form_request('form_update_topic', [
             'title' => $title,
             'id' => $dummy_id
@@ -220,10 +246,77 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->test_results['topic']['update']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()),
+        $this->_test_results['topic']['update']['long_title_error'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
             'errors_expected' => TRUE,
             'db_update' => $topic->Topic == $title,
+            'db_update_expected' => FALSE
+        );
+    }
+
+    /**********************
+     * TOPIC DELETING TESTS
+     **********************/
+    /**
+     * Test for topic deletion, without actually deleting the topic.
+     *
+     * @param integer $dummy_id = ID of the dummy topic
+     * @return void
+     */
+    private function test_delete_topic_no_delete(int $dummy_id)
+    {
+        $topicArchive = $this->topic_model->get($dummy_id)->Archive;
+
+        $this->_db_error_save();
+        $this->delete_topic($dummy_id);
+
+        $topic = $this->topic_model->get($dummy_id);
+
+        $this->_test_results['topic']['delete']['no_delete'] = (object) array(
+            'errors' => $this->_db_error_diff(),
+            'errors_expected' => FALSE,
+            'db_update' => $topic->Archive != $topicArchive,
+            'db_update_expected' => FALSE
+        );
+    }
+    /**
+     * Test for topic deletion, which ends up archiving it
+     *
+     * @param integer $dummy_id = The id of the dummy to archive
+     * @return void
+     */
+    private function test_delete_topic_archive(int $dummy_id)
+    {
+        $this->_db_error_save();
+        $this->delete_topic($dummy_id, 1);
+
+        $topic = $this->topic_model->get($dummy_id);
+
+        $this->_test_results['topic']['delete']['archive'] = (object) array(
+            'errors' => $this->_db_error_diff(),
+            'errors_expected' => FALSE,
+            'db_update' => $topic->Archive == 1,
+            'db_update_expected' => TRUE
+        );
+    }
+    /**
+     * Test for topic deletion, which should not do anything
+     *
+     * @return void
+     */
+    private function test_delete_topic_not_exist()
+    {
+        $bad_id = $this->topic_model->get_next_id()+1;
+        $this->_db_error_save();
+
+        $this->delete_topic($bad_id, 1);
+
+        $topic = $this->topic_model->get($bad_id);
+
+        $this->_test_results['topic']['delete']['not_exist'] = (object) array(
+            'errors' => $this->_db_error_diff(),
+            'errors_expected' => FALSE,
+            'db_update' => is_null($topic),
             'db_update_expected' => FALSE
         );
     }
@@ -238,7 +331,7 @@ class Topic_Test extends Topic {
      * @param array $data = The data to store in $_POST
      * @return void
      */
-    private function _send_form_request($form_validation, $data = [])
+    private function _send_form_request(string $form_validation, array $data = [])
     {
         if(!method_exists($this, $form_validation)) {
             return;
@@ -254,19 +347,40 @@ class Topic_Test extends Topic {
     }
 
     /**
+     * Saves the most recent database error.
+     *
+     * @return void
+     */
+    private function _db_error_save()
+    {
+        $this->_old_db_error = $this->topic_model->_database->error();
+    }
+    /**
+     * Compares the saved error and the most recent error.
+     *
+     * @return boolean = True if the 2 errors are different
+     */
+    private function _db_error_diff() : bool
+    {
+        return $this->_old_db_error != $this->topic_model->_database->error();
+    }
+
+    /**
      * Creates a dummy topic for the purpose of testing topic update.
      *
      * @return int = The id of the dummy topic
      */
-    private function _create_dummy_topic() : int
+    private function _dummy_create(bool $is_topic = TRUE) : int
     {
-        $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
         $datestring = '%Y-%m-%d %h:%i:%s';
         $topic = array(
             'Topic' => 'dummy_topic',
-            'FK_Parent_Topic' => $module_id,
             'Creation_Date' => mdate($datestring, time())
         );
+        if($is_topic) {
+            $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
+            $topic['FK_Parent_Topic'] = $module_id;
+        }
         return $this->topic_model->insert($topic);
     }
     /**
@@ -275,7 +389,7 @@ class Topic_Test extends Topic {
      * @param int $dummy_id = The id of the dummy topic
      * @return void
      */
-    private function _reset_dummy_topic(int $dummy_id)
+    private function _dummy_reset(int $dummy_id)
     {
         $topic = array(
             'Topic' => 'dummy_topic',
@@ -289,7 +403,7 @@ class Topic_Test extends Topic {
      * @param integer $dummy_id
      * @return boolean
      */
-    private function _delete_dummy_topic(int $dummy_id) : bool
+    private function _dummy_delete(int $dummy_id) : bool
     {
         return $this->topic_model->delete($dummy_id);
     }
