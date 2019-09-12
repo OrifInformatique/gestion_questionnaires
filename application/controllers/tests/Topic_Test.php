@@ -23,6 +23,11 @@ class Topic_Test extends Topic {
             'creation' => [],
             'update' => [],
             'delete' => []
+        ],
+        'module' => [
+            'creation' => [],
+            'update' => [],
+            'delete' => []
         ]
     ];
     /**
@@ -72,6 +77,9 @@ class Topic_Test extends Topic {
             $this->test_update_topic_long_title($dummy_id);
             $this->_dummy_reset($dummy_id);
 
+            $this->test_update_topic_not_exist();
+            $this->_dummy_reset($dummy_id);
+
             $this->_dummy_delete($dummy_id);
         }
 
@@ -92,6 +100,15 @@ class Topic_Test extends Topic {
 
             $this->_dummy_delete($dummy_id);
         }
+
+        // Module adding tests
+        if(array_search('module_add', $this->_tests) !== FALSE) {}
+
+        // Module updating tests
+        if(array_search('module_update', $this->_tests) !== FALSE) {}
+
+        // Module deleting tests
+        if(array_search('module_delete', $this->_tests) !== FALSE) {}
 
         // Display test results
         print_r($this->_test_results);
@@ -253,6 +270,31 @@ class Topic_Test extends Topic {
             'db_update_expected' => FALSE
         );
     }
+    /**
+     * Test for failed topic update due to inexistant topic.
+     *
+     * @return void
+     */
+    private function test_update_topic_not_exist()
+    {
+        $title = 'test_topic_not_exist';
+        $bad_id = $this->topic_model->get_next_id()+1;
+
+        $this->_db_error_save();
+        $this->_send_form_request('form_update_topic', [
+            'title' => $title,
+            'id' => $bad_id
+        ]);
+
+        $topic = $this->topic_model->get($bad_id);
+
+        $this->_test_results['topic']['update']['not_exist'] = (object) array(
+            'errors' => !empty(validation_errors()) && $this->_db_error_diff(),
+            'errors_expected' => FALSE,
+            'db_update' => !is_null($topic),
+            'db_update_expected' => FALSE
+        );
+    }
 
     /**********************
      * TOPIC DELETING TESTS
@@ -300,7 +342,7 @@ class Topic_Test extends Topic {
         );
     }
     /**
-     * Test for topic deletion, which should not do anything
+     * Test for failed topic deletion due to inexistant topic.
      *
      * @return void
      */
@@ -316,10 +358,22 @@ class Topic_Test extends Topic {
         $this->_test_results['topic']['delete']['not_exist'] = (object) array(
             'errors' => $this->_db_error_diff(),
             'errors_expected' => FALSE,
-            'db_update' => is_null($topic),
+            'db_update' => !is_null($topic),
             'db_update_expected' => FALSE
         );
     }
+
+    /*********************
+     * MODULE ADDING TESTS
+     *********************/
+
+    /***********************
+     * MODULE UPDATING TESTS
+     ***********************/
+
+    /***********************
+     * MODULE DELETING TESTS
+     ***********************/
 
     /**************
      * MISC METHODS
@@ -368,13 +422,14 @@ class Topic_Test extends Topic {
     /**
      * Creates a dummy topic for the purpose of testing topic update.
      *
+     * @param bool = True if it's a topic
      * @return int = The id of the dummy topic
      */
     private function _dummy_create(bool $is_topic = TRUE) : int
     {
         $datestring = '%Y-%m-%d %h:%i:%s';
         $topic = array(
-            'Topic' => 'dummy_topic',
+            'Topic' => 'dummy_'.($is_topic ? 'topic' : 'module'),
             'Creation_Date' => mdate($datestring, time())
         );
         if($is_topic) {
