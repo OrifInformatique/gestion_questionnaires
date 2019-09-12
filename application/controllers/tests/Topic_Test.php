@@ -91,10 +91,10 @@ class Topic_Test extends Topic {
         ]);
 
         $this->test_results['topic']['creation']['no_errors'] = (object) array(
-            'has_errors' => !empty(validation_errors()),
-            'should_have_errors' => FALSE,
-            'is_added' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'should_be_added' => TRUE
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => FALSE,
+            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
+            'db_update_expected' => TRUE
         );
     }
     /**
@@ -116,10 +116,10 @@ class Topic_Test extends Topic {
         ]);
 
         $this->test_results['topic']['creation']['long_title_error'] = (object) array(
-            'has_errors' => !empty(validation_errors()),
-            'should_have_errors' => TRUE,
-            'is_added' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'should_be_added' => FALSE
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => TRUE,
+            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
+            'db_update_expected' => FALSE
         );
     }
     /**
@@ -139,10 +139,10 @@ class Topic_Test extends Topic {
         ]);
 
         $this->test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
-            'has_errors' => !empty(validation_errors()),
-            'should_have_errors' => TRUE,
-            'is_added' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
-            'should_be_added' => FALSE
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => TRUE,
+            'db_update' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
+            'db_update_expected' => FALSE
         );
     }
     /**
@@ -162,27 +162,37 @@ class Topic_Test extends Topic {
         ]);
 
         $this->test_results['topic']['creation']['module_selected_not_module'] = (object) array(
-            'has_errors' => !empty(validation_errors()),
-            'should_have_errors' => TRUE,
-            'is_added' => is_null($this->topic_model->get_by('Topic', $title)),
-            'should_be_added' => FALSE
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => TRUE,
+            'db_update' => is_null($this->topic_model->get_by('Topic', $title)),
+            'db_update_expected' => FALSE
         );
     }
 
     /**********************
      * TOPIC UPDATING TESTS
      **********************/
+    /**
+     * Test for topic update
+     *
+     * @param integer $dummy_id = ID of the dummy topic
+     * @return void
+     */
     private function test_update_topic_no_errors(int $dummy_id) {
+        $title = 'topic_dummy';
+
         $this->_send_form_request('form_update_topic', [
-            'title' => 'topic_dummy',
+            'title' => $title,
             'id' => $dummy_id
         ]);
 
         $topic = $this->topic_model->get($dummy_id);
 
         $this->test_results['topic']['update']['no_errors'] = (object) array(
-            'has_errors' => !empty(validation_errors()),
-            'should_have_errors' => FALSE
+            'errors' => !empty(validation_errors()),
+            'errors_expected' => FALSE,
+            'db_update' => $topic->Topic == $title,
+            'db_update_expected' => TRUE
         );
     }
 
