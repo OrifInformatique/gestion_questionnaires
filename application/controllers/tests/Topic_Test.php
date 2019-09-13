@@ -36,26 +36,29 @@ class Topic_Test extends Topic {
      * @var array
      */
     private $_tests = [
-        'topic_delete'
+        'topic_add', 'topic_update', 'topic_delete',
+        'module_add', 'module_update', 'module_delete'
     ];
+    /**
+     * Last saved database error
+     *
+     * @var object
+     */
     private $_old_db_error;
 
     /**
-     * The public instance to update
+     * Does nothing
      *
-     * @var Topic_Test
+     * @param integer $error = Required by the parent, for some reason
+     * @return void
      */
-    public static $instance;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        self::$instance =& $this;
-    }
-
     public function index($error = 0) { }
 
+    /**
+     * Runs the tests
+     *
+     * @return void
+     */
     public function test()
     {
         // Topic adding tests
