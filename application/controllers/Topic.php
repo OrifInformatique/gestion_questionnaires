@@ -125,8 +125,6 @@ class Topic extends MY_Controller
      * Form validation to update a topic (parent topic)
      */
     public function form_add_topic(){
-        define('TIMEZONE', 'Europe/Zurich');
-        date_default_timezone_set(TIMEZONE);
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
 
@@ -180,9 +178,6 @@ class Topic extends MY_Controller
      * Form validate to update or add a module (parent topic)
      */
     public function form_validate_module(){
-
-        define('TIMEZONE', 'Europe/Zurich');
-        date_default_timezone_set(TIMEZONE);
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
 

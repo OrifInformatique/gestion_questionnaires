@@ -70,7 +70,7 @@ class Topic_Test extends Topic {
         }
 
         // Topic updating tests
-        if(array_search('topic_update', $this->tests) !== FALSE) {
+        if(array_search('topic_update', $this->_tests) !== FALSE) {
             $dummy_id = $this->_dummy_create();
             // Reset dummy after each use
 
@@ -87,7 +87,7 @@ class Topic_Test extends Topic {
         }
 
         // Topic deleting tests
-        if(array_search('topic_delete', $this->tests) !== FALSE) {
+        if(array_search('topic_delete', $this->_tests) !== FALSE) {
             $dummy_id = $this->_dummy_create();
             // Reset topic after each use
 
@@ -143,7 +143,8 @@ class Topic_Test extends Topic {
         }
 
         // Display test results
-        print_r($this->_test_results);
+        $output['test_results'] = $this->_test_results;
+        parent::display_view('tests/tests_results.php', $output);
     }
 
     /********************
@@ -466,7 +467,7 @@ class Topic_Test extends Topic {
 
         $module = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['module']['update']['no_errors'] == (object) array(
+        $this->_test_results['module']['update']['no_errors'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
             'errors_expected' => FALSE,
             'db_update' => $module->Topic == $title,
