@@ -12,6 +12,13 @@ include(__DIR__.'/../Topic.php');
  */
 function redirect($uri = '', $method = 'auto', $code = NULL) { }
 
+/**
+ * Test class for Topic controller
+ * 
+ * @author      Orif, section informatique (ViDi, MeSa, BuYa)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 class Topic_Test extends Topic {
     /**
      * Stores the tests' results
@@ -45,14 +52,6 @@ class Topic_Test extends Topic {
      * @var object
      */
     private $_old_db_error;
-
-    /**
-     * Does nothing
-     *
-     * @param integer $error = Required by the parent, for some reason
-     * @return void
-     */
-    public function index($error = 0) { }
 
     /**
      * Runs the tests
@@ -171,6 +170,7 @@ class Topic_Test extends Topic {
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => TRUE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
     /**
      * Test for failed topic addition due to the title being too long.
@@ -197,6 +197,7 @@ class Topic_Test extends Topic {
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
     /**
      * Test for failed topic addition due to inexistant module
@@ -221,6 +222,7 @@ class Topic_Test extends Topic {
             'db_update' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
             'db_update_expected' => FALSE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
     /**
      * Test for failed topic addition due to module selected being a topic
@@ -245,6 +247,7 @@ class Topic_Test extends Topic {
             'db_update' => is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
 
     /**********************
@@ -419,6 +422,7 @@ class Topic_Test extends Topic {
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => TRUE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
     /**
      * Test for failed module addition due to name being too long
@@ -442,6 +446,7 @@ class Topic_Test extends Topic {
             'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
         );
+        $this->topic_model->delete_by('Topic', $title);
     }
 
     /***********************
@@ -693,5 +698,5 @@ class Topic_Test extends Topic {
      * @param [type] $data
      * @return void
      */
-    public function display_view($view_parts, $data = NULL) {}
+    public function display_view($view_parts, $data = NULL) { }
 }
