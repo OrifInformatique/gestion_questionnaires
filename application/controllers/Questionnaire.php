@@ -144,11 +144,7 @@ class Questionnaire extends MY_Controller
     {
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
-            $Topic = urldecode($_POST['topic']);
-            $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
-            $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
-            echo $nbQuestion;
+            echo $this->question_model->getNbQuestionByTopic($this->input->post('topic'));
         } else {
             $output = array(
                 'title' => $this->lang->line('add_questionnaire_title'),
