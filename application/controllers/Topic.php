@@ -128,17 +128,28 @@ class Topic extends MY_Controller
         $datestring = '%Y-%m-%d %h:%i:%s';
         $time = time();
 
-        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
-        $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero');
+        $valid_modules_db = $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)');
+        $valid_modules = '';
+        foreach ($valid_modules_db as $module) {
+            $valid_modules .= $module->ID . ',';
+        }
+        $valid_modules = substr($valid_modules, 0, -1);
 
-        $title = array(
-            'Topic' => $this->input->post('title'),
-            'FK_Parent_Topic' => $this->input->post('module_selected'),
-            'Creation_Date' => mdate($datestring, $time));
-        if($this->form_validation->run() == true){
+        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
+        $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero|in_list['.$valid_modules.']');
+
+
+
+        if($this->form_validation->run()){
+
+            $title = array(
+                'Topic' => $this->input->post('title'),
+                'FK_Parent_Topic' => $this->input->post('module_selected'),
+                'Creation_Date' => mdate($datestring, $time));
+
             $this->topic_model->insert($title);
             redirect('topic');
-        }else{;
+        }else{
             $this->add_topic(NULL, 1);
         }
     }

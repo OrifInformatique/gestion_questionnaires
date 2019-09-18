@@ -156,7 +156,7 @@ class Topic_Test extends Topic {
      */
     private function test_add_topic_no_errors()
     {
-        $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
+        $module_id = $this->topic_model->get_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)')->ID;
         $title = 'test_topic_no_errors';
 
         $this->_db_error_save();
@@ -220,7 +220,7 @@ class Topic_Test extends Topic {
         $this->_test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
             'errors_expected' => TRUE,
-            'db_update' => is_null($this->topic_model->get_by('Topic', $_POST['title'])),
+            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
         );
         $this->topic_model->delete_by('Topic', $title);
@@ -245,7 +245,7 @@ class Topic_Test extends Topic {
         $this->_test_results['topic']['creation']['module_selected_not_module'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
             'errors_expected' => TRUE,
-            'db_update' => is_null($this->topic_model->get_by('Topic', $title)),
+            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
             'db_update_expected' => FALSE
         );
         $this->topic_model->delete_by('Topic', $title);

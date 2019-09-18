@@ -21,11 +21,13 @@
                 <?php foreach ($operation as $test => $result) { ?>
                     <tr>
                         <td><?=$test?></td>
-                        <td class="<?=$result->errors == $result->errors_expected ? 'success' : 'danger' ?>"><?=$result->errors == $result->errors_expected ? 'OK' : 'échoué'?></td>
-                        <td class="<?=$result->db_update == $result->db_update_expected ? 'success' : 'danger' ?>"><?=$result->db_update == $result->db_update_expected ? 'OK' : 'échoué'?></td>
+                        <td class="<?=$result->errors == $result->errors_expected ? 'success' : 'danger' ?>">
+                            <?=$result->errors == $result->errors_expected ? 'OK' : 'échoué'?>
+                        </td>
+                        <td class="<?=$result->db_update == $result->db_update_expected ? 'success' : 'danger' ?>">
+                            <?=$result->db_update == $result->db_update_expected ? 'OK' : 'échoué'?>
+                        </td>
                     </tr>
-                <?php } ?>
-            <?php } ?>
-        <?php } ?>
+        <?php } } } ?>
     </table>
 </div>
