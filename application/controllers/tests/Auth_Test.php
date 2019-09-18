@@ -549,9 +549,12 @@ class Auth_Test extends Auth {
      */
     private function _dummy_reset(int $dummy_id)
     {
+        $username = $this->_dummy_values['user'];
+        $password = $this->_dummy_values['password'];
+
         $user = array(
-            'User' => 'dummy_user',
-            'Password' => password_hash('test_password', PASSWORD_HASH_ALGORITHM),
+            'User' => $username,
+            'Password' => password_hash($password, PASSWORD_HASH_ALGORITHM),
             'FK_User_Type' => 1
         );
         $this->user_model->update($dummy_id, $user);
