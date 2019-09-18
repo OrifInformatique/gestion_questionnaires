@@ -63,6 +63,7 @@ class Admin extends MY_Controller {
     public function user_form() {
         $userId = $this->input->post('id');
 
+        $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_name', $this->lang->line('user_name'), [
             'required', 'trim',
             'min_length['.USERNAME_MIN_LENGTH.']',
@@ -118,7 +119,7 @@ class Admin extends MY_Controller {
      */
     public function user_delete($userId, $action = 0) {
         $user = $this->user_model->with_deleted()->get($userId);
-        if(is_null($user)) redirect('Admin/user_index');
+        if(is_null($user)) return redirect('Admin/user_index');
 
         switch($action) {
             case 0: // Display confirmation
@@ -163,6 +164,7 @@ class Admin extends MY_Controller {
         $userId = $this->input->post('id');
         $user = $this->user_model->get($userId);
 
+        $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
             'min_length['.PASSWORD_MIN_LENGTH.']',
@@ -183,5 +185,9 @@ class Admin extends MY_Controller {
         } else {
             $this->user_change_password($userId);
         }
+    }
+
+    public function not_null_user($id){
+        return $id == 0 || !is_null($this->user_model->with_deleted()->get($id));
     }
 }

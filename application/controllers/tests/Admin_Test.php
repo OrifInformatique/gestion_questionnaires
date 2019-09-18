@@ -459,7 +459,7 @@ class Admin_Test extends Admin {
             'disactivate' => 1
         ]);
 
-        $user = $this->user_model->get($dummy_user_id);
+        $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
         $this->_test_results['user']['update']['disactivate'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
@@ -488,11 +488,11 @@ class Admin_Test extends Admin {
             'disactivate' => 1
         ]);
 
-        $user = $this->user_model->get($dummy_user_id);
+        $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
         $this->_test_results['user']['update']['double_disactivate'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
+            'errors_expected' => FALSE,
             'db_update' => $user->Archive == 1,
             'db_update_expected' => TRUE
         );
@@ -517,7 +517,7 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['update']['double_disactivate'] = (object) array(
+        $this->_test_results['user']['update']['disactivate_not_exist'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
             'errors_expected' => TRUE,
             'db_update' => !is_null($user),
@@ -549,7 +549,7 @@ class Admin_Test extends Admin {
             'reactivate' => 1
         ]);
 
-        $user = $this->user_model->get($dummy_user_id);
+        $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
         $this->_test_results['user']['update']['reactivate'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
@@ -582,7 +582,7 @@ class Admin_Test extends Admin {
 
         $this->_test_results['user']['update']['double_reactivate'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
+            'errors_expected' => FALSE,
             'db_update' => $user->Archive == 0,
             'db_update_expected' => TRUE
         );
@@ -607,7 +607,7 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['update']['double_disactivate'] = (object) array(
+        $this->_test_results['user']['update']['reactivate_not_exist'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
             'errors_expected' => TRUE,
             'db_update' => !is_null($user),
@@ -685,7 +685,7 @@ class Admin_Test extends Admin {
             'errors' => $this->_db_errors_diff(),
             'errors_expected' => FALSE,
             'db_update' => $user->Archive == 1,
-            'db_update_expected' => FALSE
+            'db_update_expected' => TRUE
         );
     }
     /**
@@ -782,13 +782,13 @@ class Admin_Test extends Admin {
     private function test_user_change_pwd_no_change(int $dummy_user_id)
     {
         $this->_db_errors_save();
-        $this->_send_form_request('change_password', [
+        $this->_send_form_request('user_change_password_form', [
             'id' => $dummy_user_id
         ]);
 
         $this->_test_results['user']['change_pwd']['no_change'] = (object) array(
             'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
+            'errors_expected' => TRUE,
             'db_update' => $this->_db_errors_diff(),
             'db_update_expected' => FALSE
         );
@@ -893,6 +893,7 @@ class Admin_Test extends Admin {
         }
 
         $this->form_validation->reset_validation();
+        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }
