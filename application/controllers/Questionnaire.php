@@ -149,7 +149,7 @@ class Questionnaire extends MY_Controller
             $output = array(
                 'title' => $this->lang->line('add_questionnaire_title'),
                 'error' => ($error == NULL ? NULL : true),
-                'topicsList' => $this->topic_model->get_all(),
+                'topicsList' => $this->topic_model->get_many_by('Archive = 0 OR Archive IS NULL'),
                 'title' => $title,
                 'modelName' => $modelName,
                 'topics' => $topics,
@@ -280,8 +280,8 @@ class Questionnaire extends MY_Controller
         }
         if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('Questionnaire');
 
-        $this->generateQuestions($idQuestionnaire, false);
-        $this->generateAnswers($idQuestionnaire, false);
+        $this->generateQuestions($idQuestionnaire);
+        $this->generateAnswers($idQuestionnaire);
 
         redirect('Questionnaire');
     }
@@ -527,28 +527,8 @@ class Questionnaire extends MY_Controller
         $answers->SetTextColor(0,0,0);
         $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
 
-        if($idQuestionnaire == -1){
-            // Trim the name before using it to create a file
-            $title = trim($tableTopics->getTitle());
-
-            // Replace all non alphanum characters with dashes
-            // This would only fail on less than 1% of all operating systems
-            $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title));
-
-            // In case the questionnaire's pdf already exists, change the file's name
-            if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
-                $i = 1;
-                while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
-                    $i++;
-                }
-                $title .= '-'.$i;
-            }
-
-            $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
-        } else {
-            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-            $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
-        }
+        $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+        $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         redirect('Questionnaire');
     }
 
@@ -658,13 +638,12 @@ class Questionnaire extends MY_Controller
     {
         $this->load->model('question_questionnaire_model');
 
-        $listIDQuestions = array();
         // Prepare the questionnaire name and save the original
         $title_original = trim($tableTopics->getTitle());
 
         // Replace all non alphanum characters with dashes
         // This would only fail on less than 1% of all operating systems
-        $title = $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($title_original));
+        $title = preg_replace('/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -829,7 +808,7 @@ class Questionnaire extends MY_Controller
              * the page to create them has yet to be coded
              */
         } else {
-            $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
+            $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $question->ID");
 
             foreach ($anDistributionQuestions as $anDistributionQuestion) {
                 $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$anDistributionQuestion->Question_Part), 1, "C");
@@ -934,7 +913,7 @@ class Questionnaire extends MY_Controller
              * the page to create them has yet to be coded
              */
         } else {
-            $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
+            $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$question->ID);
 
             // Sort tableCells by amount of columns
             usort($tcCol, function($a, $b) {
