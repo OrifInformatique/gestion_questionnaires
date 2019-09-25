@@ -162,7 +162,6 @@ class Admin extends MY_Controller {
      */
     public function user_change_password_form() {
         $userId = $this->input->post('id');
-        $user = $this->user_model->get($userId);
 
         $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
@@ -187,6 +186,12 @@ class Admin extends MY_Controller {
         }
     }
 
+    /**
+     * Checks that the provided id is linked to an user
+     *
+     * @param int $id = ID of the user to check
+     * @return bool
+     */
     public function not_null_user($id){
         return $id == 0 || !is_null($this->user_model->with_deleted()->get($id));
     }

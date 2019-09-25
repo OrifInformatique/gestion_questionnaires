@@ -61,7 +61,7 @@ class Topic_Test extends Topic {
     public function test()
     {
         // Topic adding tests
-        if(array_search('topic_add', $this->_tests) !== FALSE) {
+        if(in_array('topic_add', $this->_tests)) {
             $this->test_add_topic_no_errors();
             $this->test_add_topic_long_title();
             $this->test_add_topic_module_selected_not_exist();
@@ -69,7 +69,7 @@ class Topic_Test extends Topic {
         }
 
         // Topic updating tests
-        if(array_search('topic_update', $this->_tests) !== FALSE) {
+        if(in_array('topic_update', $this->_tests)) {
             $dummy_id = $this->_dummy_create();
             // Reset dummy after each use
 
@@ -86,7 +86,7 @@ class Topic_Test extends Topic {
         }
 
         // Topic deleting tests
-        if(array_search('topic_delete', $this->_tests) !== FALSE) {
+        if(in_array('topic_delete', $this->_tests)) {
             $dummy_id = $this->_dummy_create();
             // Reset topic after each use
 
@@ -104,13 +104,13 @@ class Topic_Test extends Topic {
         }
 
         // Module adding tests
-        if(array_search('module_add', $this->_tests) !== FALSE) {
+        if(in_array('module_add', $this->_tests)) {
             $this->test_add_module_no_errors();
             $this->test_add_module_long_title();
         }
 
         // Module updating tests
-        if(array_search('module_update', $this->_tests) !== FALSE) {
+        if(in_array('module_update', $this->_tests)) {
             $dummy_id = $this->_dummy_create(FALSE);
 
             $this->test_update_module_no_errors($dummy_id);
@@ -126,7 +126,7 @@ class Topic_Test extends Topic {
         }
 
         // Module deleting tests
-        if(array_search('module_delete', $this->_tests) !== FALSE) {
+        if(in_array('module_delete', $this->_tests)) {
             $dummy_id = $this->_dummy_create(FALSE);
 
             $this->test_delete_module_no_delete($dummy_id);
@@ -143,7 +143,7 @@ class Topic_Test extends Topic {
 
         // Display test results
         $output['test_results'] = $this->_test_results;
-        parent::display_view('tests/tests_results.php', $output);
+        parent::display_view('tests/tests_results_new.php', $output);
     }
 
     /********************
@@ -159,18 +159,31 @@ class Topic_Test extends Topic {
         $module_id = $this->topic_model->get_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)')->ID;
         $title = 'test_topic_no_errors';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
             'title' => $title
         ]);
 
-        $this->_test_results['topic']['creation']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($this->topic_model->get_by('Topic', $title))) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected a topic named {$title}, but found none";
+        }
+
+        $this->_test_results['topic']['creation']['no_errors'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
     /**
@@ -181,23 +194,36 @@ class Topic_Test extends Topic {
     private function test_add_topic_long_title()
     {
         // repeat the title enough times to go past the limit
-        $test_name = 'test_topic_long_title_error';
+        $test_name = 'test_topic_long_title';
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $module_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NULL')->ID;
         $title = str_repeat($test_name, $repeat_count);
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $module_id,
             'title' => $title
         ]);
 
-        $this->_test_results['topic']['creation']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($this->topic_model->get_by('Topic', $title))) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected no topic named {$title}, but found one";
+        }
+
+        $this->_test_results['topic']['creation']['long_title'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
     /**
@@ -211,18 +237,31 @@ class Topic_Test extends Topic {
         $bad_id = $this->topic_model->get_next_id()+1;
         $title = 'test_topic_module_selected_not_exist';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
             'title' => $title
         ]);
 
-        $this->_test_results['topic']['creation']['module_selected_not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($this->topic_model->get_by('Topic', $title))) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected no topic named {$title}, but found one";
+        }
+
+        $this->_test_results['topic']['creation']['module_selected_not_exist'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
     /**
@@ -236,18 +275,31 @@ class Topic_Test extends Topic {
         $bad_id = (int) $this->topic_model->get_by('FK_Parent_Topic IS NOT NULL')->ID;
         $title = 'test_topic_module_selected_not_module';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_add_topic', [
             'module_selected' => $bad_id,
             'title' => $title
         ]);
 
-        $this->_test_results['topic']['creation']['module_selected_not_module'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($this->topic_model->get_by('Topic', $title))) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected no topic named {$title}, but found one";
+        }
+
+        $this->_test_results['topic']['creation']['module_selected_not_module'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
 
@@ -264,7 +316,7 @@ class Topic_Test extends Topic {
     {
         $title = 'topic_dummy';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_update_topic', [
             'title' => $title,
             'id' => $dummy_id
@@ -272,12 +324,25 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['update']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $topic->Topic == $title,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($topic->Topic != $title) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic's name to be '{$title}', but '{$topic->Topic}' was found";
+        }
+
+        $this->_test_results['topic']['update']['no_errors'] = $result;
     }
     /**
      * Test for failed topic update due to name being too long
@@ -291,7 +356,7 @@ class Topic_Test extends Topic {
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $title = str_repeat($test_name, $repeat_count);
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_update_topic', [
             'title' => $title,
             'id' => $dummy_id
@@ -299,12 +364,25 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['update']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => $topic->Topic == $title,
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($topic->Topic == $title) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic's name to not be updated, but it is";
+        }
+
+        $this->_test_results['topic']['update']['long_title'] = $result;
     }
     /**
      * Test for failed topic update due to inexistant topic.
@@ -316,7 +394,7 @@ class Topic_Test extends Topic {
         $title = 'test_topic_not_exist';
         $bad_id = $this->topic_model->get_next_id()+1;
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_update_topic', [
             'title' => $title,
             'id' => $bad_id
@@ -324,12 +402,25 @@ class Topic_Test extends Topic {
 
         $topic = $this->topic_model->get($bad_id);
 
-        $this->_test_results['topic']['update']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($topic),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($topic)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['topic']['update']['not_exist'] = $result;
     }
 
     /**********************
@@ -343,19 +434,26 @@ class Topic_Test extends Topic {
      */
     private function test_delete_topic_no_delete(int $dummy_id)
     {
-        $topicArchive = $this->topic_model->get($dummy_id)->Archive;
-
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_topic($dummy_id);
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['delete']['no_delete'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $topic->Archive != $topicArchive,
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($topic->Archive == 1) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected topic to not be archived, but it is';
+        }
+
+        $this->_test_results['topic']['delete']['no_delete'] = $result;
     }
     /**
      * Test for topic deletion, which ends up archiving it
@@ -365,17 +463,26 @@ class Topic_Test extends Topic {
      */
     private function test_delete_topic_archive(int $dummy_id)
     {
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_topic($dummy_id, 1);
 
         $topic = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['delete']['archive'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $topic->Archive == 1,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($topic->Archive != 1) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected topic to be archived, but it is not';
+        }
+
+        $this->_test_results['topic']['delete']['archive'] = $result;
     }
     /**
      * Test for failed topic deletion due to inexistant topic.
@@ -386,17 +493,26 @@ class Topic_Test extends Topic {
     {
         $bad_id = $this->topic_model->get_next_id()+1;
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_topic($bad_id, 1);
 
         $topic = $this->topic_model->get($bad_id);
 
-        $this->_test_results['topic']['delete']['not_exist'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($topic),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($topic)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['topic']['delete']['not_exist'] = $result;
     }
 
     /*********************
@@ -411,18 +527,31 @@ class Topic_Test extends Topic {
     {
         $title = 'test_module_no_errors';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'action' => 'add',
             'title' => $title
         ]);
 
-        $this->_test_results['module']['creation']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($this->topic_model->get_by('Topic', $title))) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected a module named {$title}, but found none";
+        }
+
+        $this->_test_results['module']['creation']['no_errors'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
     /**
@@ -436,17 +565,30 @@ class Topic_Test extends Topic {
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $title = str_repeat($test_name, $repeat_count);
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'title' => $title
         ]);
 
-        $this->_test_results['module']['creation']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($this->topic_model->get_by('Topic', $title)),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but was empty";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($this->topic_model->get_by('Topic', $title)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected no module named {$title}, but found one";
+        }
+
+        $this->_test_results['module']['creation']['long_title_error'] = $result;
         $this->topic_model->delete_by('Topic', $title);
     }
 
@@ -463,7 +605,7 @@ class Topic_Test extends Topic {
     {
         $title = 'module_dummy';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'title' => $title,
             'id' => $dummy_id,
@@ -472,12 +614,25 @@ class Topic_Test extends Topic {
 
         $module = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['module']['update']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $module->Topic == $title,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($module->Topic != $title) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected module's name to be '{$title}', but '{$module->Topic}' was found";
+        }
+
+        $this->_test_results['module']['update']['no_errors'] = $result;
     }
     /**
      * Test for failed module update due to name being too long
@@ -491,7 +646,7 @@ class Topic_Test extends Topic {
         $repeat_count = ceil(TOPIC_MAX_LENGTH / strlen($test_name)) + 1;
         $title = str_repeat($test_name, $repeat_count);
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'title' => $title,
             'id' => $dummy_id,
@@ -500,12 +655,25 @@ class Topic_Test extends Topic {
 
         $module = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['module']['update']['long_title_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => $module->Topic == $title,
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but was empty";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($module->Topic == $title) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected module\'s name to not be changed, but is';
+        }
+
+        $this->_test_results['module']['update']['long_title'] = $result;
     }
     /**
      * Test for failed module update due to inexistant module.
@@ -517,7 +685,7 @@ class Topic_Test extends Topic {
         $title = 'test_module_not_exist';
         $bad_id = $this->topic_model->get_next_id()+1;
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'id' => $bad_id,
             'title' => $title,
@@ -526,12 +694,25 @@ class Topic_Test extends Topic {
 
         $module = $this->topic_model->get($bad_id);
 
-        $this->_test_results['module']['update']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($module),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but was empty";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($module)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected module {$module->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['module']['update']['not_exist'] = $result;
     }
 
     /***********************
@@ -545,19 +726,26 @@ class Topic_Test extends Topic {
      */
     private function test_delete_module_no_delete(int $dummy_id)
     {
-        $moduleArchive = $this->topic_model->get($dummy_id)->Archive;
-
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_module($dummy_id);
 
         $module = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['delete']['no_delete'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $module->Archive != $moduleArchive,
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($module->Archive == 1) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected module to not be archived, but it is';
+        }
+
+        $this->_test_results['module']['delete']['no_delete'] = $result;
     }
     /**
      * Test for topic deletion, which ends up archiving it
@@ -567,17 +755,26 @@ class Topic_Test extends Topic {
      */
     private function test_delete_module_archive(int $dummy_id)
     {
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_topic($dummy_id, 1);
 
         $module = $this->topic_model->get($dummy_id);
 
-        $this->_test_results['topic']['delete']['archive'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $module->Archive == 1,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($module->Archive != 1) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected module to be archived, but it is not';
+        }
+
+        $this->_test_results['module']['delete']['archive'] = $result;
     }
     /**
      * Test for failed module deletion due to inexistant module
@@ -588,17 +785,26 @@ class Topic_Test extends Topic {
     {
         $bad_id = $this->topic_model->get_next_id()+1;
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->delete_topic($bad_id, 1);
 
         $module = $this->topic_model->get($bad_id);
 
-        $this->_test_results['module']['delete']['not_exist'] = (object) array(
-            'errors' => $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($module),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($module)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected module {$module->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['module']['delete']['not_exist'] = $result;
     }
 
     /**************
@@ -618,7 +824,6 @@ class Topic_Test extends Topic {
         }
 
         $this->form_validation->reset_validation();
-        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }
@@ -632,7 +837,7 @@ class Topic_Test extends Topic {
      *
      * @return void
      */
-    private function _db_error_save()
+    private function _db_errors_save()
     {
         $this->_old_db_error = $this->topic_model->_database->error();
     }
@@ -641,7 +846,7 @@ class Topic_Test extends Topic {
      *
      * @return boolean = True if the 2 errors are different
      */
-    private function _db_error_diff() : bool
+    private function _db_errors_diff() : bool
     {
         return $this->_old_db_error != $this->topic_model->_database->error();
     }

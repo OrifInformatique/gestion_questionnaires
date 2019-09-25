@@ -62,7 +62,7 @@ class Admin_Test extends Admin {
      */
     public function test()
     {
-        if(array_search('user_create', $this->_tests) !== FALSE) {
+        if(in_array('user_create', $this->_tests)) {
             $this->test_user_add_no_errors();
             $this->test_user_add_short_name();
             $this->test_user_add_long_name();
@@ -71,7 +71,7 @@ class Admin_Test extends Admin {
             $this->test_user_add_pwd_not_match();
         }
 
-        if(array_search('user_update', $this->_tests) !== FALSE) {
+        if(in_array('user_update', $this->_tests)) {
             $dummy_user_id = $this->_dummy_user_create();
 
             $this->test_user_update_empty_update($dummy_user_id);
@@ -104,7 +104,7 @@ class Admin_Test extends Admin {
             $this->user_model->hard_delete($dummy_user_id);
         }
 
-        if(array_search('user_delete', $this->_tests) !== FALSE) {
+        if(in_array('user_delete', $this->_tests)) {
             $dummy_user_id = $this->_dummy_user_create();
 
             $this->test_user_delete_no_delete($dummy_user_id);
@@ -124,7 +124,7 @@ class Admin_Test extends Admin {
             $this->user_model->hard_delete($dummy_user_id);
         }
 
-        if(array_search('user_pwd_change', $this->_tests) !== FALSE) {
+        if(in_array('user_pwd_change', $this->_tests)) {
             $dummy_user_id = $this->_dummy_user_create();
 
             $this->test_user_change_pwd_no_change($dummy_user_id);
@@ -144,7 +144,7 @@ class Admin_Test extends Admin {
 
         // Display test results
         $output['test_results'] = $this->_test_results;
-        parent::display_view('tests/tests_results.php', $output);
+        parent::display_view('tests/tests_results_new.php', $output);
     }
 
     /*********************
@@ -171,12 +171,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to exist, but it does not";
+        }
+
+        $this->_test_results['user']['create']['no_errors'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -205,12 +218,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['short_name'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['create']['short_name'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -240,12 +266,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['long_name'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['create']['long_name'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -274,12 +313,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['short_pwd'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['create']['short_pwd'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -309,12 +361,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['long_pwd'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['create']['long_pwd'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -341,12 +406,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['create']['pwd_not_match'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['create']['pwd_not_match'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -373,14 +451,27 @@ class Admin_Test extends Admin {
             'user_usertype' => 1
         ]);
 
-        $user = $this->user_model->get_by('User', $username);
+        $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['empty_update'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->User === $username) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not be updated, but it is";
+        }
+
+        $this->_test_results['user']['update']['empty_update'] = $result;
     }
     /**
      * Test for user updating without any problem
@@ -400,14 +491,27 @@ class Admin_Test extends Admin {
             'save' => 1
         ]);
 
-        $user = $this->user_model->get_by('User', $username);
+        $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['no_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->User !== $username) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to be updated, but it is not";
+        }
+
+        $this->_test_results['user']['update']['no_error'] = $result;
     }
     /**
      * Test for failed user updating due to non-existant user
@@ -429,12 +533,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['update']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain errors, but it does not";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['update']['not_exist'] = $result;
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
@@ -461,12 +578,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['disactivate'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 1,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive != 1) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to be archived, but it is not";
+        }
+
+        $this->_test_results['user']['update']['disactivate'] = $result;
     }
     /**
      * Test for failed user disactivating due to already being disactivated
@@ -490,12 +620,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['double_disactivate'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 1,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive != 1) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to be archived, but it is not";
+        }
+
+        $this->_test_results['user']['update']['double_disactivate'] = $result;
     }
     /**
      * Test for failed user disactivating due to non-existant user
@@ -517,12 +660,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['update']['disactivate_not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$user->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['update']['disactivate_not_exist'] = $result;
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
@@ -551,12 +707,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['reactivate'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 0,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive != 0) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to not be archived, but it is";
+        }
+
+        $this->_test_results['user']['update']['reactivate'] = $result;
     }
     /**
      * Test for failed user reactivating due to already being active
@@ -580,12 +749,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['update']['double_reactivate'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 0,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive != 0) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to not be archived, but it is";
+        }
+
+        $this->_test_results['user']['update']['double_reactive'] = $result;
     }
     /**
      * Test for failed user reactivation due to user not existing
@@ -607,12 +789,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get_by('User', $username);
 
-        $this->_test_results['user']['update']['reactivate_not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['update']['reactivate_not_exist'] = $result;
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
@@ -636,12 +831,21 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['delete']['no_delete'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 1,
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive == 1) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to not be archived, but it is";
+        }
+
+        $this->_test_results['user']['delete']['no_delete'] = $result;
     }
     /**
      * Test for failed user deletion due to user not existing
@@ -657,12 +861,21 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($bad_id);
 
-        $this->_test_results['user']['delete']['not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['delete']['not_exist'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -681,12 +894,21 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['delete']['disactivate'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $user->Archive == 1,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($user->Archive != 1) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$dummy_user_id} to be archived, but it is not";
+        }
+
+        $this->_test_results['user']['delete']['disactivate'] = $result;
     }
     /**
      * Test for failed user disactivation due to user not existing
@@ -702,12 +924,21 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($bad_id);
 
-        $this->_test_results['user']['delete']['disactivate_not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['delete']['disactivate_not_exist'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);
@@ -731,12 +962,25 @@ class Admin_Test extends Admin {
 
         $user_deleted = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['delete']['delete'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($user_deleted) == is_null($user_not_deleted),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($user_not_deleted)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected user to be deleted to exist, but it does not';
+        }
+        if(!is_null($user_deleted)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected deleted user to not exist, but it does';
+        }
+
+        $this->_test_results['user']['delete']['delete'] = $result;
 
         if(!is_null($user_deleted)) {
             $this->user_model->hard_delete($dummy_user_id);
@@ -758,12 +1002,23 @@ class Admin_Test extends Admin {
 
         $user_deleted = $this->user_model->get($bad_id);
 
-        $this->_test_results['user']['delete']['delete_not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => is_null($user_deleted) != is_null($user_not_deleted),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($user_not_deleted)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected non-existant user to be deleted to not exist, but it does';
+        }
+        if(!is_null($user_deleted)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected deleted non-existant user to not exist, but it does';
+        }
 
         if(!is_null($user_deleted)) {
             $this->user_model->hard_delete($bad_id);
@@ -786,12 +1041,21 @@ class Admin_Test extends Admin {
             'id' => $dummy_user_id
         ]);
 
-        $this->_test_results['user']['change_pwd']['no_change'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+
+        $this->_test_results['user']['change_pwd']['no_change'] = $result;
     }
     /**
      * Test for user password changing
@@ -812,12 +1076,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['change_pwd']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => password_verify($user_password_new, $user->Password),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!password_verify($user_password_new, $user->Password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected stored user password to be hash of new user password, but it is not';
+        }
+
+        $this->_test_results['user']['change_pwd']['no_errors'] = $result;
     }
     /**
      * Test for failed user password changing due to new passwords not matching.
@@ -838,12 +1115,26 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($dummy_user_id);
 
-        $this->_test_results['user']['change_pwd']['not_match'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => password_verify($user_password_new, $user->Password),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(password_verify($user_password_new, $user->Password) ||
+            password_verify($user_password_new.'_wrong', $user->Password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected stored user password to not be hash of new user password, but it is';
+        }
+
+        $this->_test_results['user']['change_pwd']['not_match'] = $result;
     }
     /**
      * Test for failed user password changing due to user not existing.
@@ -864,12 +1155,25 @@ class Admin_Test extends Admin {
 
         $user = $this->user_model->get($bad_id);
 
-        $this->_test_results['user']['change_pwd']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($user),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(!is_null($user)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected user {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['user']['change_pwd']['not_exist'] = $result;
 
         if(!is_null($user)) {
             $this->user_model->hard_delete($user->ID);

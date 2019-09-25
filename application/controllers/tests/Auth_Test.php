@@ -40,8 +40,7 @@ class Auth_Test extends Auth {
      * @var array
      */
     private $_tests = [
-        'login', 'logout', 'change_pwd',
-        'check_pwd'
+        'login', 'logout', 'change_pwd', 'check_pwd'
     ];
 
     /**
@@ -77,6 +76,14 @@ class Auth_Test extends Auth {
         $this->_user_login_state_save();
     }
 
+    public function __destruct()
+    {
+        if(method_exists(get_parent_class($this), '__destruct')) {
+            parent::__destruct();
+        }
+        $this->_user_login_state_restore();
+    }
+
     public function test()
     {
         // Prepare a dummy user for the tests
@@ -85,11 +92,11 @@ class Auth_Test extends Auth {
 
         // These tests depend on the ability to log in
         if($can_login) {
-            if(array_search('login', $this->_tests) !== FALSE) {
+            if(in_array('login', $this->_tests)) {
                 $this->test_login_no_login();
                 $this->_dummy_reset($dummy_id);
     
-                $this->test_login_no_errors($dummy_id);
+                $this->test_login_no_error($dummy_id);
                 $this->_dummy_reset($dummy_id);
     
                 $this->test_login_bad_password($dummy_id);
@@ -99,15 +106,15 @@ class Auth_Test extends Auth {
                 $this->_dummy_reset($dummy_id);
             }
     
-            if(array_search('logout', $this->_tests) !== FALSE) {
-                $this->test_logout_no_errors($dummy_id);
+            if(in_array('logout', $this->_tests)) {
+                $this->test_logout_no_error($dummy_id);
                 $this->_dummy_reset($dummy_id);
 
                 $this->test_logout_not_logged_in();
                 $this->_dummy_reset($dummy_id);
             }
 
-            if(array_search('change_pwd', $this->_tests) !== FALSE) {
+            if(in_array('change_pwd', $this->_tests)) {
                 // Being logged in is required for change password
                 $this->_dummy_login($dummy_id);
                 $this->test_change_password_no_change();
@@ -130,16 +137,13 @@ class Auth_Test extends Auth {
             $this->_test_results['auth']['login']['aborted'] =
             $this->_test_results['auth']['logout']['aborted'] =
             $this->_test_results['auth']['change_pwd']['aborted'] = (object) array(
-                'errors' => TRUE,
-                'errors_expected' => FALSE,
-                'db_update' => FALSE,
-                'db_update_expected' => FALSE
+                'success' => FALSE,
+                'errors' => ['Could not log in dummy user, there is a problem in auth']
             );
-            log_message('error', 'Could not log in dummy user, there is a problem in auth');
         }
 
         // If these tests fail, there is a major problem
-        if(array_search('check_pwd', $this->_tests) !== FALSE) {
+        if(in_array('check_pwd', $this->_tests)) {
             $this->test_check_password_no_error($dummy_id);
             $this->_dummy_reset($dummy_id);
 
@@ -153,7 +157,7 @@ class Auth_Test extends Auth {
         // Display test results
         $this->_user_login_state_restore();
         $output['test_results'] = $this->_test_results;
-        parent::display_view('tests/tests_results.php', $output);
+        parent::display_view('tests/tests_results_new.php', $output);
     }
 
     /******************
@@ -167,16 +171,28 @@ class Auth_Test extends Auth {
      */
     private function test_login_no_login()
     {
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->login();
 
-        $this->_test_results['auth']['login']['no_login'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff() ||
-                !is_null($this->session->flashdata('message-danger')),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($this->session->flashdata('message-danger'))) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected no error in flashdata(\'message-danger\'), but there is one';
+        }
+
+        $this->_test_results['auth']['login']['no_login'] = $result;
     }
     /**
      * Test for user login with the button being pressed
@@ -184,25 +200,41 @@ class Auth_Test extends Auth {
      * @param integer $dummy_id = ID of the dummy user
      * @return void
      */
-    private function test_login_no_errors(int $dummy_id)
+    private function test_login_no_error(int $dummy_id)
     {
         $username = $this->_dummy_values['user'];
         $password = $this->_dummy_values['password'];
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('login', [
             'btn_login' => 1,
             'username' => $username,
             'password' => $password
         ]);
 
-        $this->_test_results['auth']['login']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff() ||
-                $_SESSION['user_id'] != $dummy_id || !is_null($this->session->flashdata('message-danger')),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($_SESSION['user_id'] != $dummy_id) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected '{$dummy_id}' in \$_SESSION['user_id'], found '{$_SESSION['user_id']}'";
+        }
+        if(!is_null($this->session->flashdata('message-danger'))) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected no error in flashdata(\'message-danger\'), but there is one';
+        }
+
+        $this->_test_results['auth']['login']['no_error'] = $result;
     }
     /**
      * Test for failed user login due to bad password
@@ -215,20 +247,36 @@ class Auth_Test extends Auth {
         $username = $this->_dummy_values['user'];
         $password = $this->_dummy_values['password'].'_wrong';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('login', [
             'btn_login' => 1,
             'username' => $username,
             'password' => $password
         ]);
 
-        $this->_test_results['auth']['login']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff() ||
-                ($_SESSION['user_id'] ?? -1) == $dummy_id || !is_null($this->session->flashdata('message-danger')),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $dummy_id) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected nothin in \$_SESSION['user_id'], found '{$_SESSION['user_id']}'";
+        }
+        if(is_null($this->session->flashdata('message-danger'))) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected an error in flashdata(\'message-danger\'), found none';
+        }
+
+        $this->_test_results['auth']['login']['bad_password'] = $result;
     }
     /**
      * Test for failed user login due to bad username
@@ -247,20 +295,36 @@ class Auth_Test extends Auth {
         }
         $password = $this->_dummy_values['password'];
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('login', [
             'btn_login' => 1,
             'username' => $username,
             'password' => $password
         ]);
 
-        $this->_test_results['auth']['login']['no_errors'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff() ||
-            ($_SESSION['user_id'] ?? -1) || !is_null($this->session->flashdata('message-danger')),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $dummy_id) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected nothin in \$_SESSION['user_id'], found '{$_SESSION['user_id']}'";
+        }
+        if(is_null($this->session->flashdata('message-danger'))) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected an error in flashdata(\'message-danger\'), found none';
+        }
+
+        $this->_test_results['auth']['login']['bad_username'] = $result;
     }
 
     /*******************
@@ -273,19 +337,28 @@ class Auth_Test extends Auth {
      * @param integer $dummy_id = ID of the dummy user
      * @return void
      */
-    private function test_logout_no_errors(int $dummy_id)
+    private function test_logout_no_error(int $dummy_id)
     {
         $this->_dummy_login($dummy_id);
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->logout();
 
-        $this->_test_results['auth']['logout']['no_errors'] = (object) array(
-            'errors' => $_SESSION['logged_in'] ?? FALSE,
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($_SESSION['logged_in']) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected $_SESSION[\'logged_in\'] to be FALSE, found TRUE';
+        }
+
+        $this->_test_results['auth']['logout']['no_error'] = $result;
     }
     /**
      * Test for logging out without being logged in before
@@ -294,15 +367,24 @@ class Auth_Test extends Auth {
      */
     private function test_logout_not_logged_in()
     {
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->logout();
 
-        $this->_test_results['auth']['logout']['not_logged_in'] = (object) array(
-            'errors' => $_SESSION['logged_in'] ?? FALSE,
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($_SESSION['logged_in']) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected $_SESSION[\'logged_in\'] to be FALSE, found TRUE';
+        }
+
+        $this->_test_results['auth']['logout']['not_logged_in'] = $result;
     }
 
     /*************************
@@ -315,15 +397,24 @@ class Auth_Test extends Auth {
      */
     private function test_change_password_no_change()
     {
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('change_password');
 
-        $this->_test_results['auth']['change_pwd']['no_change'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+
+        $this->_test_results['auth']['change_pwd']['no_change'] = $result;
     }
     /**
      * Test for user password change without any error
@@ -336,7 +427,7 @@ class Auth_Test extends Auth {
         $old_password = $this->_dummy_values['password'];
         $new_password = 'password_test';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('change_password', [
             'btn_change_password' => 1,
             'old_password' => $old_password,
@@ -344,12 +435,25 @@ class Auth_Test extends Auth {
             'confirm_password' => $new_password
         ]);
 
-        $this->_test_results['auth']['change_pwd']['no_error'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => password_verify($new_password, $this->user_model->get($dummy_id)->Password),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to be empty, but contains an error";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!password_verify($new_password, $this->user_model->get($dummy_id)->Password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected stored user password to be hash of new user password, but it is not';
+        }
+
+        $this->_test_results['auth']['change_pwd']['no_error'] = $result;
     }
     /**
      * Test for failed user password change due to wrong new password confirmation
@@ -362,7 +466,7 @@ class Auth_Test extends Auth {
         $old_password = $this->_dummy_values['password'];
         $new_password = 'password_test';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('change_password', [
             'btn_change_password' => 1,
             'old_password' => $old_password,
@@ -370,12 +474,25 @@ class Auth_Test extends Auth {
             'confirm_password' => $new_password.'_wrong'
         ]);
 
-        $this->_test_results['auth']['change_pwd']['not_match_confirm'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => password_verify($new_password, $this->user_model->get($dummy_id)->Password),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but it is empty";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(password_verify($new_password, $this->user_model->get($dummy_id)->Password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected stored user password to not be hash of new password, but it is';
+        }
+
+        $this->_test_results['auth']['change_pwd']['not_match_confirm'] = $result;
     }
     /**
      * Test for failed user password change due to input password not matching
@@ -389,7 +506,7 @@ class Auth_Test extends Auth {
         $old_password = $this->_dummy_values['password'].'_wrong';
         $new_password = 'password_test';
 
-        $this->_db_error_save();
+        $this->_db_errors_save();
         $this->_send_form_request('change_password', [
             'btn_change_password' => 1,
             'old_password' => $old_password,
@@ -397,12 +514,25 @@ class Auth_Test extends Auth {
             'confirm_password' => $new_password.'_wrong'
         ]);
 
-        $this->_test_results['auth']['change_pwd']['not_match_old'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_error_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => password_verify($new_password, $this->user_model->get($dummy_id)->Password),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but it is empty";
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(password_verify($new_password, $this->user_model->get($dummy_id)->Password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected stored user password to not be hash of new password, but it is';
+        }
+
+        $this->_test_results['auth']['change_pwd']['not_match_old'] = $result;
     }
 
     /*****************************
@@ -421,15 +551,24 @@ class Auth_Test extends Auth {
         $password = $this->_dummy_values['password'];
         $username = $user->User;
 
-        $this->_db_error_save();
-        $result = $this->old_password_check($password, $username);
+        $this->_db_errors_save();
+        $check_result = $this->old_password_check($password, $username);
 
-        $this->_test_results['auth']['check_pwd']['no_error'] = (object) array(
-            'errors' => $this->_db_error_diff() || ($result != password_verify($password, $db_password)),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($check_result != password_verify($password, $db_password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'The result of <code>self::old_password_check()</code> does not match the result of <code>password_verify()</code>';
+        }
+
+        $this->_test_results['auth']['check_pwd']['no_error'] = $result;
     }
     /**
      * Test for failed password check due to wrong password
@@ -444,15 +583,24 @@ class Auth_Test extends Auth {
         $password = $this->_dummy_values['password'].'_wrong';
         $username = $user->User;
 
-        $this->_db_error_save();
-        $result = $this->old_password_check($password, $username);
+        $this->_db_errors_save();
+        $check_result = $this->old_password_check($password, $username);
 
-        $this->_test_results['auth']['check_pwd']['error'] = (object) array(
-            'errors' => $this->_db_error_diff() || ($result != password_verify($password, $db_password)),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_error_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($check_result != password_verify($password, $db_password)) {
+            $result->success = FALSE;
+            $result->errors[] = 'The result of <code>self::old_password_check()</code> does not match the result of <code>password_verify()</code>';
+        }
+
+        $this->_test_results['auth']['check_pwd']['error'] = $result;
     }
 
     /**************
@@ -486,7 +634,7 @@ class Auth_Test extends Auth {
      *
      * @return void
      */
-    private function _db_error_save()
+    private function _db_errors_save()
     {
         $this->_old_db_error = $this->user_model->_database->error();
     }
@@ -495,7 +643,7 @@ class Auth_Test extends Auth {
      *
      * @return boolean = True if the 2 errors are different
      */
-    private function _db_error_diff() : bool
+    private function _db_errors_diff() : bool
     {
         return $this->_old_db_error != $this->user_model->_database->error();
     }
