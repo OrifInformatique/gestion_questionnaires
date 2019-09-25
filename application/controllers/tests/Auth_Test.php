@@ -472,6 +472,7 @@ class Auth_Test extends Auth {
         }
 
         $this->form_validation->reset_validation();
+        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }

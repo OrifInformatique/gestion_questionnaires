@@ -618,6 +618,7 @@ class Topic_Test extends Topic {
         }
 
         $this->form_validation->reset_validation();
+        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }
