@@ -75,6 +75,17 @@ class Questionnaire extends MY_Controller
         $id = $this->input->post('id');
         $model = (bool) $this->input->post('model');
 
+        $object = NULL;
+        if($model) {
+            $object = $this->questionnaire_model_model->get($id);
+        } else {
+            $object = $this->questionnaire_model->get($id);
+        }
+        if(is_null($object)) {
+            redirect('Questionnaire');
+            return;
+        }
+
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
 
         $object = array(
@@ -115,14 +126,16 @@ class Questionnaire extends MY_Controller
                 $this->load->model('question_questionnaire_model');
 
                 $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-                if (count($questionnaire->question_questionnaires) > 0) {
-                    foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-                        $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                if(!is_null($questionnaire)) {
+                    if (count($questionnaire->question_questionnaires) > 0) {
+                        foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+                            $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                        }
                     }
+                    unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+                    unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
+                    $this->questionnaire_model->delete($id);
                 }
-                unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
-                unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
-                $this->questionnaire_model->delete($id);
                 redirect('Questionnaire');
             }
         } else {
@@ -179,6 +192,9 @@ class Questionnaire extends MY_Controller
         {
             //Get TableTopics object from session
             $tableTopics = unserialize($_SESSION[$temp_table_name]);
+            if($tableTopics instanceof TableTopics) {
+                $tableTopics = new TableTopics();
+            }
         }
 
         //Store title if defined
@@ -198,7 +214,7 @@ class Questionnaire extends MY_Controller
             unset($_SESSION[$temp_table_name]);
             redirect('/Questionnaire');
         }
-        else if (isset($_POST['delete_topic']))
+        elseif (isset($_POST['delete_topic']))
         {
             foreach ($_POST['delete_topic'] as $key => $topic) {
                 $tableTopics->removeArrayTopics($key);
@@ -210,7 +226,7 @@ class Questionnaire extends MY_Controller
             $_SESSION[$temp_table_name] = serialize($tableTopics);
             $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
-        else if (isset($_POST['add_form']))
+        elseif (isset($_POST['add_form']))
         {
             $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
             $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
@@ -242,7 +258,7 @@ class Questionnaire extends MY_Controller
 
             $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
-        else if(isset($_POST['save']))
+        elseif(isset($_POST['save']))
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');

@@ -30,7 +30,6 @@ class Topic extends MY_Controller
             'topics' => $this->topic_model->get_many_by('FK_Parent_Topic IS NOT NULL AND (Archive IS NULL OR Archive = 0)'),
             'error' => $error
         );
-
         $this->display_view("topics/index", $output);
     }
 
