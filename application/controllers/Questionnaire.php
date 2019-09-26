@@ -228,8 +228,8 @@ class Questionnaire extends MY_Controller
         }
         elseif (isset($_POST['add_form']))
         {
-            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
-            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
+            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required|callback_cb_topic_exists');
+            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required|is_natural_no_zero');
             if($this->form_validation->run() == true)
             {
                 //Get last inputs
@@ -642,6 +642,17 @@ class Questionnaire extends MY_Controller
             $this->questionnaire_model_model->delete($modelId);
             redirect('Questionnaire');
         }
+    }
+
+    /**
+     * Checks that provided topic id exists in the database
+     *
+     * @param int $idTopic = ID of the topic
+     * @return boolean = Whether or not it exists
+     */
+    public function cb_topic_exists($idTopic) : bool
+    {
+        return !is_null($this->topic_model->get($idTopic));
     }
 
     /**

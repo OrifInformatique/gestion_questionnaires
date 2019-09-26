@@ -954,9 +954,9 @@ class Questionnaire_Test extends Questionnaire {
             'errors' => []
         );
 
-        if(empty(validation_errors())) {
+        if(!empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
