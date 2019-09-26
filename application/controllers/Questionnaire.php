@@ -53,7 +53,10 @@ class Questionnaire extends MY_Controller
     {
         if($model) $object = $this->questionnaire_model_model->get($id);
         else $object = $this->questionnaire_model->get($id);
-        if(is_null($object)) redirect('Questionnaire');
+        if(is_null($object)) {
+            redirect('Questionnaire');
+            return;
+        }
 
         $outputs = array(
             'title' => $this->lang->line('title_questionnaire_update'),
@@ -75,18 +78,12 @@ class Questionnaire extends MY_Controller
         $id = $this->input->post('id');
         $model = (bool) $this->input->post('model');
 
-        $object = NULL;
-        if($model) {
-            $object = $this->questionnaire_model_model->get($id);
-        } else {
-            $object = $this->questionnaire_model->get($id);
-        }
-        if(is_null($object)) {
-            redirect('Questionnaire');
-            return;
-        }
-
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
+        $this->form_validation->set_rules(
+            'id', 'Id',
+            "callback_quest_or_model_exists[{$model}]",
+            $this->lang->line('msg_err_'.($model ? 'model' : 'questionnaire').'_not_exist')
+        );
 
         $object = array(
             'Questionnaire_Name' => $this->input->post('title'),
@@ -107,6 +104,17 @@ class Questionnaire extends MY_Controller
         }
         
         redirect('Questionnaire');
+    }
+
+    public function quest_or_model_exists($id, $model) : bool
+    {
+        $object = NULL;
+        if($model) {
+            $object = $this->questionnaire_model_model->get($id);
+        } else {
+            $object = $this->questionnaire_model->get($id);
+        }
+        return !is_null($object);
     }
 
     /**
@@ -217,9 +225,18 @@ class Questionnaire extends MY_Controller
         elseif (isset($_POST['delete_topic']))
         {
             foreach ($_POST['delete_topic'] as $key => $topic) {
-                $tableTopics->removeArrayTopics($key);
-                $tableTopics->removeArrayNbQuestion($key);
+                if($key < 0 || $key >= count($tableTopics->getArrayTopics())) {
+                    $this->form_validation->set_rules(
+                        "delete_topic[{$key}]", $this->lang->line('delete_topic'),
+                        'callback_get_false',
+                        $this->lang->line('topic_error_404_heading')
+                    );
+                } else {
+                    $tableTopics->removeArrayTopics($key);
+                    $tableTopics->removeArrayNbQuestion($key);
+                }
             }
+            $this->form_validation->run();
             $arrayTopics = $tableTopics->getArrayTopics();
             $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
 
@@ -262,6 +279,7 @@ class Questionnaire extends MY_Controller
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
+            if($model) $this->form_validation->set_rules('modelName', 'Name', 'required');
 
             //Check form validation
             if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
@@ -280,6 +298,16 @@ class Questionnaire extends MY_Controller
         } else {
             $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
+    }
+
+    /**
+     * For codeigniter callback on something already found to be wrong
+     *
+     * @return boolean
+     */
+    public function get_false() : bool
+    {
+        return FALSE;
     }
 
     /**

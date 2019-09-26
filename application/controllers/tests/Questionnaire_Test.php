@@ -180,9 +180,9 @@ class Questionnaire_Test extends Questionnaire {
             'errors' => []
         );
 
-        if(empty(validation_errors())) {
+        if(!empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -279,10 +279,6 @@ class Questionnaire_Test extends Questionnaire {
             'errors' => []
         );
 
-        if(empty(validation_errors())) {
-            $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
-        }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
             $result->errors[] = 'One or more errors occured in an SQL statement';
@@ -828,13 +824,13 @@ class Questionnaire_Test extends Questionnaire {
             $result->success = FALSE;
             $result->errors[] = 'One or more errors occured in an SQL statement';
         }
-        if(isset($tableTopics->getArrayNbQuestion()[0])) {
+        if(!isset($tableTopics->getArrayNbQuestion()[0])) {
             $result->success = FALSE;
-            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayNbQuestion()[0]</code>, but found a value';
+            $result->errors[] = 'Expected a value in <code>$tableTopics->getArrayNbQuestion()[0]</code>, but found nothing';
         }
-        if(isset($tableTopics->getArrayTopics()[0])) {
+        if(!isset($tableTopics->getArrayTopics()[0])) {
             $result->success = FALSE;
-            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayTopics()[0]</code>, but found a value';
+            $result->errors[] = 'Expected a value in <code>$tableTopics->getArrayTopics()[0]</code>, but found nothing';
         }
 
         $this->_test_results['questionnaire']['delete_topic']['negative'] = $result;
@@ -1159,7 +1155,7 @@ class Questionnaire_Test extends Questionnaire {
         }
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to be contain an error, but it is empty';
         }
         if(!is_null($model)) {
             $result->success = FALSE;
@@ -1258,10 +1254,6 @@ class Questionnaire_Test extends Questionnaire {
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
             $result->errors[] = 'One or more errors occured in an SQL statement';
-        }
-        if(empty(validation_errors())) {
-            $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if(!is_null($model)) {
             $result->success = FALSE;
