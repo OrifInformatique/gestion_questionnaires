@@ -192,7 +192,7 @@ class Questionnaire extends MY_Controller
         {
             //Get TableTopics object from session
             $tableTopics = unserialize($_SESSION[$temp_table_name]);
-            if($tableTopics instanceof TableTopics) {
+            if(!($tableTopics instanceof TableTopics)) {
                 $tableTopics = new TableTopics();
             }
         }

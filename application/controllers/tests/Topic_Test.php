@@ -212,7 +212,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -250,7 +250,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -288,7 +288,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -371,7 +371,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -409,7 +409,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but is empty';
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -577,7 +577,7 @@ class Topic_Test extends Topic {
 
         if(empty(validation_errors())) {
             $result->success = FALSE;
-            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but was empty";
+            $result->errors[] = "<code>validation_errors()</code> was expected to contain an error, but it is empty";
         }
         if($this->_db_errors_diff()) {
             $result->success = FALSE;
@@ -670,7 +670,7 @@ class Topic_Test extends Topic {
         }
         if($module->Topic == $title) {
             $result->success = FALSE;
-            $result->errors[] = 'Expected module\'s name to not be changed, but is';
+            $result->errors[] = 'Expected module\'s name to not be changed, but it is';
         }
 
         $this->_test_results['module']['update']['long_title'] = $result;

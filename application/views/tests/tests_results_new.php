@@ -23,7 +23,7 @@
                     <div class="col-sm-3 alert-<?=($result->success?'success':'danger');?>">
                         <?=($result->success?'✔️':'❌');?>
                     </div>
-                    <table class="col-sm-6 alert-danger">
+                    <table class="col-sm-6 alert-danger table-striped">
                     <?php foreach($result->errors as $error) { ?>
                         <tr><td><?=$error;?></td></tr>
                     <?php } ?>

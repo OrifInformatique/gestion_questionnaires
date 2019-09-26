@@ -146,7 +146,7 @@ class Questionnaire_Test extends Questionnaire {
 
         // Display test results
         $output['test_results'] = $this->_test_results;
-        parent::display_view('tests/tests_results.php', $output);
+        parent::display_view('tests/tests_results_new.php', $output);
     }
 
     /******************************
@@ -175,12 +175,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['questionnaire']['create']['no_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire {$questionnaire->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['questionnaire']['create']['no_tt'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -212,12 +225,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['questionnaire']['create']['no_error_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected questionnaire to exist, but it does not';
+        }
+
+        $this->_test_results['questionnaire']['create']['no_error_tt'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -248,12 +274,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['questionnaire']['create']['error_not_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected questionnaire to not exist, but it does';
+        }
+
+        $this->_test_results['questionnaire']['create']['error_not_tt'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -282,12 +321,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['questionnaire']['create']['no_subtitle'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected questionnaire to exist, but it does not';
+        }
+
+        $this->_test_results['questionnaire']['create']['no_subtitle'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -316,12 +368,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Subtitle', $subtitle);
 
-        $this->_test_results['questionnaire']['create']['no_title'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected questionnaire to not exist, but it does';
+        }
+
+        $this->_test_results['questionnaire']['create']['no_title'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -362,14 +427,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['add_topic']['no_error'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                $tableTopics->getArrayNbQuestion()[0] != $nb_questions ||
-                $tableTopics->getArrayTopics()[0]->ID != $topic_id,
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($tableTopics->getArrayNbQuestion()[0] != $nb_questions) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected {$nb_questions} questions in the first slot, but found {$tableTopics->getArrayNbQuestion()[0]}";
+        }
+        if($tableTopics->getArrayTopics()[0]->ID != $topic_id) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic {$topic_id} in the first slot, but found {$tableTopics->getArrayTopics()[0]->ID}";
+        }
+
+        $this->_test_results['questionnaire']['add_topic']['no_error'] = $result;
     }
     /**
      * Test for failed topic adding due to topic not existing
@@ -403,14 +483,33 @@ class Questionnaire_Test extends Questionnaire {
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
         $topic = $this->topic_model->get($bad_id);
 
-        $this->_test_results['questionnaire']['add_topic']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                $tableTopics->getArrayNbQuestion()[0] != $nb_questions ||
-                (isset($tableTopics->getArrayTopics()[0]->ID) && $tableTopics->getArrayTopics()[0]->ID != $bad_id),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff() || !is_null($topic),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayNbQuestion()</code>, but found a value';
+        }
+        if(!empty($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayTopics()</code>, but found a value';
+        }
+        if(!is_null($topic)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected topic {$topic->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['questionnaire']['add_topic']['not_exist'] = $result;
 
         if(!is_null($topic)) {
             $this->topic_model->delete($bad_id);
@@ -447,14 +546,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['add_topic']['negative'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                $tableTopics->getArrayNbQuestion()[0] != $nb_questions ||
-                (isset($tableTopics->getArrayTopics()[0]->ID) && $tableTopics->getArrayTopics()[0]->ID != $topic_id),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayNbQuestion()</code>, but found a value';
+        }
+        if(!empty($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayTopics()</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['add_topic']['negative'] = $result;
     }
     /**
      * Test for failed topic adding due to no topic being provided
@@ -484,14 +598,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['add_topic']['no_topic'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                is_null($tableTopics->getArrayNbQuestion()[0]) ||
-                is_null($tableTopics->getArrayTopics()[0]->ID),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayNbQuestion()</code>, but found a value';
+        }
+        if(!empty($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayTopics()</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['add_topic']['no_topic'] = $result;
     }
     /**
      * Test for failed topic adding due to no question amount being provided
@@ -522,14 +651,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['add_topic']['no_question'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                is_null($tableTopics->getArrayNbQuestion()[0]) ||
-                is_null($tableTopics->getArrayTopics()[0]->ID),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayNbQuestion()</code>, but found a value';
+        }
+        if(!empty($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in the first slot of <code>$tableTopics->getArrayTopics()</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['add_topic']['no_question'] = $result;
     }
 
     /************************************
@@ -566,14 +710,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['delete_topic']['no_error'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                isset($tableTopics->getArrayNbQuestion()[0]) ||
-                isset($tableTopics->getArrayTopics()[0]),
-            'errors_expected' => FALSE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(isset($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayNbQuestion()[0]</code>, but found a value';
+        }
+        if(isset($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayTopics()[0]</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['delete_topic']['no_error'] = $result;
     }
     /**
      * Test for failed topic deleting due to topic not existing
@@ -601,14 +760,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['delete_topic']['not_exist'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                isset($tableTopics->getArrayNbQuestion()[0]) ||
-                isset($tableTopics->getArrayTopics()[0]),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(isset($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayNbQuestion()[0]</code>, but found a value';
+        }
+        if(isset($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayTopics()[0]</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['delete_topic']['not_exist'] = $result;
     }
     /**
      * Test for failed topic deleting due to negative number
@@ -641,14 +815,29 @@ class Questionnaire_Test extends Questionnaire {
         // Get updated TableTopics
         $tableTopics = unserialize($_SESSION['temp_tableTopics']);
 
-        $this->_test_results['questionnaire']['delete_topic']['negative'] = (object) array(
-            'errors' => !empty(validation_errors()) ||
-                isset($tableTopics->getArrayNbQuestion()[0]) ||
-                isset($tableTopics->getArrayTopics()[0]),
-            'errors_expected' => TRUE,
-            'db_update' => $this->_db_errors_diff(),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(isset($tableTopics->getArrayNbQuestion()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayNbQuestion()[0]</code>, but found a value';
+        }
+        if(isset($tableTopics->getArrayTopics()[0])) {
+            $result->success = FALSE;
+            $result->errors[] = 'Expected nothing in <code>$tableTopics->getArrayTopics()[0]</code>, but found a value';
+        }
+
+        $this->_test_results['questionnaire']['delete_topic']['negative'] = $result;
     }
 
     /******************************
@@ -676,13 +865,29 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
-        $this->_test_results['questionnaire']['update']['no_error'] = (object) array(
-            'errors' => $this->_db_errors_diff() || !empty(validation_errors()),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire) &&
-                $questionnaire->Questionnaire_Name === $title,
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($questionnaire->Questionnaire_Name !== $title) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire name to be {$title}, but found {$questionnaire->Questionnaire_Name}";
+        }
+        if($questionnaire->Questionnaire_Subtitle !== $subtitle) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire subtitle to be {$subtitle}, but found {$questionnaire->Questionnaire_Subtitle}";
+        }
+
+        $this->_test_results['questionnaire']['update']['no_error'] = $result;
     }
     /**
      * Test for failed questionnaire update due to no title being provided
@@ -704,13 +909,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
-        $this->_test_results['questionnaire']['update']['no_title'] = (object) array(
-            'errors' => $this->_db_errors_diff() || !empty(validation_errors()),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($questionnaire) &&
-                is_null($questionnaire->Questionnaire_Name),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($questionnaire->Questionnaire_Subtitle === $subtitle) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire subtitle to not be updated, but it is";
+        }
+
+        $this->_test_results['questionnaire']['update']['no_title'] = $result;
     }
     /**
      * Test for questionnaire update even without a subtitle
@@ -732,13 +949,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
-        $this->_test_results['questionnaire']['update']['no_subtitle'] = (object) array(
-            'errors' => $this->_db_errors_diff() || !empty(validation_errors()),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire) &&
-                is_null($questionnaire->Questionnaire_Subtitle),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if($questionnaire->Questionnaire_Name !== $title) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire name to be updated, but it is not";
+        }
+
+        $this->_test_results['questionnaire']['update']['no_subtitle'] = $result;
     }
     /**
      * Test for failed questionnaire update due to not due to it not existing
@@ -762,12 +991,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['questionnaire']['update']['not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff() || !empty(validation_errors()),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire {$questionnaire->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['questionnaire']['update']['not_exist'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete((int) $questionnaire->ID);
@@ -791,12 +1033,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
-        $this->_test_results['questionnaire']['delete']['no_effect'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire {$dummy_quest_id} to exist, but it does not";
+        }
+
+        $this->_test_results['questionnaire']['delete']['no_effect'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete($dummy_quest_id);
@@ -816,12 +1067,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
-        $this->_test_results['questionnaire']['delete']['no_error'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire {$dummy_quest_id} to not exist, but it does";
+        }
+
+        $this->_test_results['questionnaire']['delete']['no_error'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->_dummy_questionnaire_delete($dummy_quest_id);
@@ -841,12 +1101,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $questionnaire = $this->questionnaire_model->get($bad_id);
 
-        $this->_test_results['questionnaire']['delete']['not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($questionnaire),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($questionnaire)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected questionnaire {$questionnaire->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['questionnaire']['delete']['not_exist'] = $result;
 
         if(!is_null($questionnaire)) {
             $this->questionnaire_model->delete($bad_id);
@@ -879,12 +1148,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Base_Name', $modelName);
 
-        $this->_test_results['model']['create']['no_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$model->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['create']['no_tt'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -918,12 +1200,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Base_Name', $modelName);
 
-        $this->_test_results['model']['create']['no_error_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if(is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model '{$modelName}' to exist, but it does not";
+        }
+
+        $this->_test_results['model']['create']['no_error_tt'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -955,12 +1250,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Base_Name', $modelName);
 
-        $this->_test_results['model']['create']['error_not_tt'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$model->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['create']['error_not_tt'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -991,12 +1299,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Base_Name', $modelName);
 
-        $this->_test_results['model']['create']['no_subtitle'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to be empty, but it contains an error';
+        }
+        if(is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model '{$modelName}' to exist, but it does not";
+        }
+
+        $this->_test_results['model']['create']['no_subtitle'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -1028,12 +1349,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Base_Name', $modelName);
 
-        $this->_test_results['model']['create']['no_title'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$model->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['create']['no_title']  = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -1065,12 +1399,25 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get_by('Questionnaire_Name', $title);
 
-        $this->_test_results['model']['create']['no_name'] = (object) array(
-            'errors' => !empty(validation_errors()) || $this->_db_errors_diff(),
-            'errors_expected' => TRUE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(empty(validation_errors())) {
+            $result->success = FALSE;
+            $result->errors[] = '<code>validation_errors()</code> was expected to contain an error, but it is empty';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$model->ID} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['create']['no_name']  = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete((int) $model->ID);
@@ -1094,12 +1441,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get($dummy_model_id);
 
-        $this->_test_results['model']['delete']['no_effect'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => TRUE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$dummy_model_id} to exist, but it does not";
+        }
+
+        $this->_test_results['model']['delete']['no_effect'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete($dummy_model_id);
@@ -1119,12 +1475,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get($dummy_model_id);
 
-        $this->_test_results['model']['delete']['no_error'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$dummy_model_id} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['delete']['no_error'] = $result;
 
         if(!is_null($model)) {
             $this->_dummy_model_delete($dummy_model_id);
@@ -1144,12 +1509,21 @@ class Questionnaire_Test extends Questionnaire {
 
         $model = $this->questionnaire_model_model->get($bad_id);
 
-        $this->_test_results['model']['delete']['not_exist'] = (object) array(
-            'errors' => $this->_db_errors_diff(),
-            'errors_expected' => FALSE,
-            'db_update' => !is_null($model),
-            'db_update_expected' => FALSE
+        $result = (object) array(
+            'success' => TRUE,
+            'errors' => []
         );
+
+        if($this->_db_errors_diff()) {
+            $result->success = FALSE;
+            $result->errors[] = 'One or more errors occured in an SQL statement';
+        }
+        if(!is_null($model)) {
+            $result->success = FALSE;
+            $result->errors[] = "Expected model {$bad_id} to not exist, but it does";
+        }
+
+        $this->_test_results['model']['delete']['not_exist'] = $result;
 
         if(!is_null($model)) {
             $this->questionnaire_model_model->delete($bad_id);
@@ -1301,6 +1675,7 @@ class Questionnaire_Test extends Questionnaire {
     private function _dummy_questionnaire_delete(int $dummy_quest_id)
     {
         // Delete related questions
+        $this->load->model('question_questionnaire_model');
         $this->question_questionnaire_model->delete_by('FK_Questionnaire = '.$dummy_quest_id);
         $questionnaire = $this->questionnaire_model->get($dummy_quest_id);
 
