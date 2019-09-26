@@ -38,12 +38,6 @@ $lang['invalid_id']                     = 'Ces informations de connexion ne sont
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
 $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
-$lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
-$lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
-$lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
-$lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
-$lang['msg_err_questionnaire_not_exist']    = 'Le questionnaire sélectionné n\'existe pas';
-$lang['msg_err_model_not_exist']        = 'Le modèle sélectionné n\'existe pas';
 
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
@@ -81,6 +75,12 @@ $lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne 
 $lang['msg_err_invalid_new_password']   = 'Le nouveau mot de passe et la confirmation ne correspondent pas';
 $lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas valide';
 $lang['msg_err_access_denied']          = 'Accès refusé';
+$lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
+$lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
+$lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
+$lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
+$lang['msg_err_questionnaire_not_exist']    = 'Le questionnaire sélectionné n\'existe pas';
+$lang['msg_err_model_not_exist']        = 'Le modèle sélectionné n\'existe pas';
 
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
