@@ -70,6 +70,17 @@ class Admin extends MY_Controller {
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), 'required');
+        $this->form_validation->set_rules(
+            'disactivate', $this->lang->line('btn_desactivate'),
+            "callback_cb_not_inactive_user[{$userId}]",
+            $this->lang->line('msg_err_user_already_inactivate')
+        );
+        $this->form_validation->set_rules(
+            'reactivate', $this->lang->line('btn_reactivate'),
+            "callback_cb_not_active_user[{$userId}]",
+            $this->lang->line('msg_err_user_already_reactivate')
+        );
+        
         if($userId == 0) {
             $this->form_validation->set_rules('user_password', $this->lang->line('user_password'), [
                 'required','trim',
@@ -194,5 +205,35 @@ class Admin extends MY_Controller {
      */
     public function not_null_user($id){
         return $id == 0 || !is_null($this->user_model->with_deleted()->get($id));
+    }
+
+    /**
+     * Checks that user is not active
+     *
+     * @param any $disactivate = Value of $_POST['disactivate']
+     * @param int $userId = ID of the user
+     * @return boolean
+     */
+    public function cb_not_inactive_user($disactivate, $userId) : bool
+    {
+        if(is_null($disactivate)) return TRUE;
+        $user = $this->user_model->get($userId);
+        if(is_null($user)) return FALSE;
+        return $user->Archive == 0;
+    }
+
+    /**
+     * Checks that user is already active
+     *
+     * @param any $reactivate = Value of $_POST['reactivate']
+     * @param int $userId = ID of the user
+     * @return boolean
+     */
+    public function cb_not_active_user($reactivate, $userId) : bool
+    {
+        if(is_null($reactivate)) return TRUE;
+        $user = $this->user_model->get($userId);
+        if(is_null($user)) return FALSE;
+        return $user->Archive == 1;
     }
 }

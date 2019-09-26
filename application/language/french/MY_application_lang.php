@@ -38,6 +38,7 @@ $lang['invalid_id']                     = 'Ces informations de connexion ne sont
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
 $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
+$lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
 
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
