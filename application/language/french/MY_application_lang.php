@@ -40,6 +40,8 @@ $lang['msg_err_access_denied_header']   = 'Accès interdit';
 $lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
 $lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
 $lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
+$lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
+$lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
 
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';

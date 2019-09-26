@@ -42,17 +42,15 @@ class Topic extends MY_Controller
      * Display the update topic view
      */
     public function update_topic($id = 0, $error = 0){
-        if($id != 0){
-            $topic = $this->topic_model->get($id);
-            if (!is_null($topic)){
-                $outputs = array(
-                    'title' => $this->lang->line('title_module_update'),
-                    'error' => $error,
-                    'id' => $id,
-                    'title_topic' => $topic->Topic
-                );
-                $this->display_view("topics/update", $outputs);
-            } else show_error($this->lang->line('topic_error_404_message'), 404, $this->lang->line('topic_error_404_heading'));
+        $topic = $this->topic_model->get($id);
+        if (!is_null($topic)){
+            $outputs = array(
+                'title' => $this->lang->line('title_module_update'),
+                'error' => $error,
+                'id' => $id,
+                'title_topic' => $topic->Topic
+            );
+            $this->display_view("topics/update", $outputs);
         } else redirect('topic');
     }
 
@@ -61,6 +59,7 @@ class Topic extends MY_Controller
      */
     public function form_update_topic(){
         $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
+        $this->form_validation->set_rules('id', 'Id', 'callback_cb_topic_exists', $this->lang->line('msg_err_topic_not_exist'));
 
         $id = $this->input->post('id');
         $title = array('Topic' => $this->input->post('title'));
@@ -162,26 +161,18 @@ class Topic extends MY_Controller
      * Display the update module view
      */
     public function update_module($id = 0, $error = 0){
-        if($id != 0){
-            $topic = $this->topic_model->get($id);
-            if (!is_null($topic)){
-                $outputs = array(
-                    'title' => $this->lang->line('title_module_update'),
-                    'error' => $error,
-                    'id' => $id,
-                    'title_module' => $topic->Topic,
-                    'action' => 'update'
-                );
+        $topic = $this->topic_model->get($id);
+        if (!is_null($topic)){
+            $outputs = array(
+                'title' => $this->lang->line('title_module_update'),
+                'error' => $error,
+                'id' => $id,
+                'title_module' => $topic->Topic,
+                'action' => 'update'
+            );
 
-                $this->display_view("modules/update", $outputs);
-            }
-            else
-                show_error($this->lang->line('module_error_404_message'), 404, $this->lang->line('module_error_404_heading'));
-
-        }else{
-            redirect('topic');
-        }
-
+            $this->display_view("modules/update", $outputs);
+        } else redirect('topic');
     }
 
     /**
@@ -192,6 +183,7 @@ class Topic extends MY_Controller
         $time = time();
 
         $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
+        $this->form_validation->set_rules('id', 'Id', 'callback_cb_topic_exists', $this->lang->line('msg_err_module_not_exist'));
 
         $id = $this->input->post('id');
         $action = $this->input->post('action');
@@ -269,4 +261,14 @@ class Topic extends MY_Controller
         $this->display_view("modules/add", $outputs);
     }
 
+    /**
+     * Checks that the topic exists
+     *
+     * @param int $topicId = ID of the topic
+     * @return boolean = Whether the topic exists
+     */
+    public function cb_topic_exists($topicId) : bool
+    {
+        return $topicId == 0 || !is_null($this->topic_model->with_deleted()->get($topicId));
+    }
 }

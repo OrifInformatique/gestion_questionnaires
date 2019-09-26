@@ -2,15 +2,17 @@
 
 include(__DIR__.'/../Topic.php');
 
-/**
- * Exists only to rewrite the `redirect` function from codeigniter.
- *
- * @param string $uri
- * @param string $method
- * @param integer $code
- * @return void
- */
-function redirect($uri = '', $method = 'auto', $code = NULL) { }
+if(!function_exists('redirect')) {
+    /**
+     * Exists only to rewrite the `redirect` function from codeigniter.
+     *
+     * @param string $uri
+     * @param string $method
+     * @param integer $code
+     * @return void
+     */
+    function redirect($uri = '', $method = 'auto', $code = NULL) { }
+}
 
 /**
  * Test class for Topic controller
@@ -530,7 +532,8 @@ class Topic_Test extends Topic {
         $this->_db_errors_save();
         $this->_send_form_request('form_validate_module', [
             'action' => 'add',
-            'title' => $title
+            'title' => $title,
+            'id' => 0
         ]);
 
         $result = (object) array(
