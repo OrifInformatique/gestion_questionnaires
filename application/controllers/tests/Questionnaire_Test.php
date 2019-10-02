@@ -2,15 +2,17 @@
 
 include(__DIR__.'/../Questionnaire.php');
 
-/**
- * Exists only to rewrite the `redirect` function from codeigniter.
- *
- * @param string $uri
- * @param string $method
- * @param integer $code
- * @return void
- */
-function redirect($uri = '', $method = 'auto', $code = NULL) { }
+if(!function_exists('redirect')) {
+    /**
+     * Exists only to rewrite the `redirect` function from codeigniter.
+     *
+     * @param string $uri
+     * @param string $method
+     * @param integer $code
+     * @return void
+     */
+    function redirect($uri = '', $method = 'auto', $code = NULL) { }
+}
 
 class Questionnaire_Test extends Questionnaire {
     /**
