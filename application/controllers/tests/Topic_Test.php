@@ -54,6 +54,15 @@ class Topic_Test extends Topic {
      * @var object
      */
     private $_old_db_error;
+    /**
+     * Default values for dummies
+     *
+     * @var array
+     */
+    private $_dummy_values = [
+        'topic' => ['topic' => 'dummy_topic'],
+        'module' => ['topic' => 'dummy_module']
+    ];
 
     /**
      * Runs the tests
@@ -864,7 +873,7 @@ class Topic_Test extends Topic {
     {
         $datestring = '%Y-%m-%d %h:%i:%s';
         $topic = array(
-            'Topic' => 'dummy_'.($is_topic ? 'topic' : 'module'),
+            'Topic' => $this->_dummy_values[($is_topic?'topic':'module')]['topic'],
             'Creation_Date' => mdate($datestring, time())
         );
         if($is_topic) {
@@ -882,7 +891,7 @@ class Topic_Test extends Topic {
     private function _dummy_reset(int $dummy_id, bool $is_topic = TRUE)
     {
         $topic = array(
-            'Topic' => 'dummy_'.($is_topic ? 'topic' : 'module'),
+            'Topic' => $this->_dummy_values[($is_topic?'topic':'module')]['topic'],
             'Archive' => NULL
         );
         $this->topic_model->update($dummy_id, $topic);
