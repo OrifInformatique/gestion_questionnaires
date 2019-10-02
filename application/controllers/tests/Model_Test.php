@@ -22,8 +22,8 @@ class Model_Test extends MY_Controller {
             'get_tree' => []
         ],
         'question_model' => [
-            'getrndquestion' => [],
-            'getnbquestionbytopic' => []
+            'getRNDQuestions' => [],
+            'getNbQuestionByTopic' => []
         ]
     ];
     /**
@@ -71,7 +71,10 @@ class Model_Test extends MY_Controller {
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->load->model($this->_models);
+        $this->load->model('question_type_model');
 
         // Question dummy values
         $this->_dummy_values['question']['topic'] = $this->topic_model->get_by('FK_Parent_Topic IS NOT NULL')->ID;
@@ -108,6 +111,10 @@ class Model_Test extends MY_Controller {
             $this->test_question_model_gnqbt_not_topic();
             $this->test_question_model_gnqbt_negative();
         }
+
+        // Display test results
+        $output['test_results'] = $this->_test_results;
+        parent::display_view('tests/tests_results_new.php', $output);
     }
 
     /************************************
@@ -183,6 +190,7 @@ class Model_Test extends MY_Controller {
         while(!is_null($this->user_model->get_by('User', $username.$loop))) {
             $loop++;
         }
+        $username .= $loop;
         $password = $this->_dummy_values['user']['password'];
 
         $this->_db_errors_save();
@@ -310,7 +318,7 @@ class Model_Test extends MY_Controller {
     private function test_question_model_grq_no_error()
     {
         $this->_db_errors_save();
-        $questions = $this->question_model->getRNDQuestions($this->_dummy_values['topic'], 5);
+        $questions = $this->question_model->getRNDQuestions($this->_dummy_values['question']['topic'], 5);
 
         $result = (object) array(
             'success' => TRUE,
@@ -395,7 +403,7 @@ class Model_Test extends MY_Controller {
     private function test_question_model_grq_negative_nb_question()
     {
         $this->_db_errors_save();
-        $questions = $this->question_model->getRNDQuestions($this->_dummy_values['topic'], -1);
+        $questions = $this->question_model->getRNDQuestions($this->_dummy_values['question']['topic'], -1);
 
         $result = (object) array(
             'success' => TRUE,
@@ -472,7 +480,7 @@ class Model_Test extends MY_Controller {
             $result->errors[] = "Expected result of <code>question_model->getNbQuestionByTopic</code> was {$nb_questions_expected}, but it is {$nb_questions}";
         }
 
-        $this->_test_results['question_model']['getRNDQuestions']['no_error'] = $result;
+        $this->_test_results['question_model']['getNbQuestionByTopic']['no_error'] = $result;
     }
     /**
      * Test for failed `question_model::getNbQuestionByTopic` due to
@@ -503,7 +511,7 @@ class Model_Test extends MY_Controller {
             $result->errors[] = "Expected result of <code>question_model->getNbQuestionByTopic</code> was {$nb_questions_expected}, but it is {$nb_questions}";
         }
 
-        $this->_test_results['question_model']['getRNDQuestions']['not_topic'] = $result;
+        $this->_test_results['question_model']['getNbQuestionByTopic']['not_topic'] = $result;
     }
     /**
      * Test for failed `question_model::getNbQuestionByTopic` due to
@@ -533,7 +541,7 @@ class Model_Test extends MY_Controller {
             $result->errors[] = "Expected result of <code>question_model->getNbQuestionByTopic</code> was {$nb_questions_expected}, but it is {$nb_questions}";
         }
 
-        $this->_test_results['question_model']['getRNDQuestions']['negative'] = $result;
+        $this->_test_results['question_model']['getNbQuestionByTopic']['negative'] = $result;
     }
 
     /**************
