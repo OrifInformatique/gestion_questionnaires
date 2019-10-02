@@ -32,6 +32,9 @@ class Model_Test extends MY_Controller {
      * @var array
      */
     private $_tests = [
+        'user_model_check_password', 'user_model_hard_delete',
+        'topic_model_get_tree',
+        'question_model_getrndquestion', 'question_model_getnbquestionbytopic'
     ];
     /**
      * Last saved database error
@@ -267,7 +270,6 @@ class Model_Test extends MY_Controller {
     }
 
     /*******************************
-     * @todo
      * `topic_model::get_tree` TESTS
      *******************************/
     /**
