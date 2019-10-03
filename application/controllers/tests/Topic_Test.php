@@ -1,18 +1,7 @@
 <?php
 
+include(__DIR__.'/../../core/MY_Test_Trait.php');
 include(__DIR__.'/../Topic.php');
-
-if(!function_exists('redirect')) {
-    /**
-     * Exists only to rewrite the `redirect` function from codeigniter.
-     *
-     * @param string $uri
-     * @param string $method
-     * @param integer $code
-     * @return void
-     */
-    function redirect($uri = '', $method = 'auto', $code = NULL) { }
-}
 
 /**
  * Test class for Topic controller
@@ -819,50 +808,6 @@ class Topic_Test extends Topic {
         $this->_test_results['module']['delete']['not_exist'] = $result;
     }
 
-    /**************
-     * MISC METHODS
-     **************/
-    /**
-     * Sends a request to the form_validation.
-     *
-     * @param string $form_validation = The name of the function to call
-     * @param array $data = The data to store in $_POST
-     * @return void
-     */
-    private function _send_form_request(string $form_validation, array $data = [])
-    {
-        if(!method_exists($this, $form_validation)) {
-            return;
-        }
-
-        $this->form_validation->reset_validation();
-        foreach($data as $key => $value) {
-            $_POST[$key] = $value;
-        }
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-
-        $this->{$form_validation}();
-    }
-
-    /**
-     * Saves the most recent database error.
-     *
-     * @return void
-     */
-    private function _db_errors_save()
-    {
-        $this->_old_db_error = $this->topic_model->_database->error();
-    }
-    /**
-     * Compares the saved error and the most recent error.
-     *
-     * @return boolean = True if the 2 errors are different
-     */
-    private function _db_errors_diff() : bool
-    {
-        return $this->_old_db_error != $this->topic_model->_database->error();
-    }
-
     /**
      * Creates a dummy topic for the purpose of testing topic update.
      *
@@ -907,15 +852,4 @@ class Topic_Test extends Topic {
         return $this->topic_model->delete($dummy_id);
     }
 
-    /***********
-     * OVERRIDES
-     ***********/
-    /**
-     * Prevents view displaying, call `parent::display_view` instead
-     *
-     * @param [type] $view_parts
-     * @param [type] $data
-     * @return void
-     */
-    public function display_view($view_parts, $data = NULL) { }
 }

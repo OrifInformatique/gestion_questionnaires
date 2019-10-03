@@ -1,18 +1,7 @@
 <?php
 
+include(__DIR__.'/../../core/MY_Test_Trait.php');
 include(__DIR__.'/../Questionnaire.php');
-
-if(!function_exists('redirect')) {
-    /**
-     * Exists only to rewrite the `redirect` function from codeigniter.
-     *
-     * @param string $uri
-     * @param string $method
-     * @param integer $code
-     * @return void
-     */
-    function redirect($uri = '', $method = 'auto', $code = NULL) { }
-}
 
 class Questionnaire_Test extends Questionnaire {
     /**
@@ -1524,63 +1513,6 @@ class Questionnaire_Test extends Questionnaire {
         }
     }
 
-    /**************
-     * MISC METHODS
-     **************/
-    /**
-     * Sends a request to the form_validation.
-     *
-     * @param string $form_validation = The name of the function to call
-     * @param array $data = The data to store in $_POST
-     * @return void
-     */
-    private function _send_form_request(string $form_validation, array $data = [])
-    {
-        if(!method_exists($this, $form_validation)) {
-            return;
-        }
-
-        // Reset post to prevent future problems
-        $_POST = array();
-        $this->form_validation->reset_validation();
-        foreach($data as $key => $value) {
-            $_POST[$key] = $value;
-        }
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-
-        $this->{$form_validation}();
-    }
-
-    /**
-     * Saves the most recent database errors.
-     *
-     * @return void
-     */
-    private function _db_errors_save()
-    {
-        $this->_old_db_error = array(
-            'questionnaire_error' => $this->questionnaire_model->_database->error(),
-            'topic_error' => $this->topic_model->_database->error(),
-            'question_error' => $this->question_model->_database->error(),
-            'quesionnaire_model_topic_error' => $this->questionnaire_model_topic_model->_database->error(),
-            'questionnaire_model_error' => $this->questionnaire_model_model->_database->error(),
-        );
-    }
-    /**
-     * Compares the saved errors and the most recent errors.
-     *
-     * @return boolean = True if the 2 errors are different
-     */
-    private function _db_errors_diff() : bool
-    {
-        $questionnaire_err_diff = $this->_old_db_error['questionnaire_error'] != $this->questionnaire_model->_database->error();
-        $topic_err_diff = $this->_old_db_error['topic_error'] != $this->topic_model->_database->error();
-        $question_err_diff = $this->_old_db_error['question_error'] != $this->question_model->_database->error();
-        $questionnaire_model_topic_err_diff = $this->_old_db_error['quesionnaire_model_topic_error'] != $this->questionnaire_model_topic_model->_database->error();
-        $questionnaire_model_err_diff = $this->_old_db_error['questionnaire_model_error'] != $this->questionnaire_model_model->_database->error();
-        return $questionnaire_err_diff || $topic_err_diff || $question_err_diff || $questionnaire_model_topic_err_diff || $questionnaire_model_err_diff;
-    }
-
     /**
      * Generates a random TableTopics for questionnaires and models
      *
@@ -1732,15 +1664,4 @@ class Questionnaire_Test extends Questionnaire {
         $this->questionnaire_model_model->delete($dummy_model_id);
     }
 
-    /***********
-     * OVERRIDES
-     ***********/
-    /**
-     * Prevents view displaying, call `parent::display_view` instead
-     *
-     * @param mixed $view_parts
-     * @param mixed|null $data
-     * @return void
-     */
-    public function display_view($view_parts, $data = NULL) { }
 }
