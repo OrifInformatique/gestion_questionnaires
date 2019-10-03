@@ -17,15 +17,15 @@ trait MY_Test_Trait {
     /**************
      * MISC METHODS
      **************/
-    
     /**
      * Sends a request to the form_validation.
      *
      * @param string $form_validation = The name of the function to call
      * @param array $data = The data to store in $_POST
+     * @param array $arguments = Arguments to give to the function, in the order of usage
      * @return void
      */
-    private function _send_form_request(string $form_validation, array $data = [])
+    private function _send_form_request(string $form_validation, array $data = [], array $arguments = [])
     {
         if(!method_exists($this, $form_validation)) {
             return;
@@ -38,25 +38,31 @@ trait MY_Test_Trait {
         }
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $this->{$form_validation}();
+        $this->{$form_validation}(...$arguments);
     }
+
     /**
-     * Saves the most recent database error.
+     * Saves the most recent database errors.
      *
      * @return void
      */
     private function _db_errors_save()
     {
-        $this->_old_db_error = $this->topic_model->_database->error();
+        $this->_old_db_error = array(
+            'user_error' => $this->user_model->_database->error(),
+            'user_type_error' => $this->user_type_model->_database->error(),
+        );
     }
     /**
-     * Compares the saved error and the most recent error.
+     * Compares the saved errors and the most recent errors.
      *
      * @return boolean = True if the 2 errors are different
      */
     private function _db_errors_diff() : bool
     {
-        return $this->_old_db_error != $this->topic_model->_database->error();
+        $user_err_diff = $this->_old_db_error['user_error'] != $this->user_model->_database->error();
+        $user_type_err_diff = $this->_old_db_error['user_type_error'] != $this->user_type_model->_database->error();
+        return $user_err_diff || $user_type_err_diff;
     }
 
     /***********
