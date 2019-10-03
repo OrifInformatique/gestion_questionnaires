@@ -48,21 +48,26 @@ trait MY_Test_Trait {
      */
     private function _db_errors_save()
     {
-        $this->_old_db_error = array(
-            'user_error' => $this->user_model->_database->error(),
-            'user_type_error' => $this->user_type_model->_database->error(),
-        );
+        $this->_old_db_error = array();
+        $models = dir(__DIR__.'/../models');
+        foreach($models as $model) {
+            if(!isset($this->{$model})) continue;
+            $this->_old_db_error[$model] = $this->{$model}->_database->error();
+        }
     }
     /**
      * Compares the saved errors and the most recent errors.
      *
-     * @return boolean = True if the 2 errors are different
+     * @return boolean = True if at least 1 error has changed since last check.
      */
     private function _db_errors_diff() : bool
     {
-        $user_err_diff = $this->_old_db_error['user_error'] != $this->user_model->_database->error();
-        $user_type_err_diff = $this->_old_db_error['user_type_error'] != $this->user_type_model->_database->error();
-        return $user_err_diff || $user_type_err_diff;
+        $models = dir(__DIR__.'/../models');
+        foreach($models as $model) {
+            if(!isset($this->{$model})) continue;
+            elseif($this->_old_db_error[$model] != $this->{$model}->_database->error()) return FALSE;
+        }
+        return TRUE;
     }
 
     /***********
