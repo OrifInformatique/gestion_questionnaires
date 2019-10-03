@@ -1192,7 +1192,7 @@ class Admin_Test extends Admin {
      * @param array $data = The data to store in $_POST
      * @return void
      */
-    private function _send_form_request(string $form_validation, array $data = [])
+    private function _send_form_request(string $form_validation, array $data = [], array $arguments = [])
     {
         if(!method_exists($this, $form_validation)) {
             return;
@@ -1205,7 +1205,7 @@ class Admin_Test extends Admin {
         }
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $this->{$form_validation}();
+        call_user_func_array(array($this, $form_validation), $arguments);
     }
 
     /**

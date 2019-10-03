@@ -1534,21 +1534,20 @@ class Questionnaire_Test extends Questionnaire {
      * @param array $data = The data to store in $_POST
      * @return void
      */
-    private function _send_form_request(string $form_validation, array $data = [])
+    private function _send_form_request(string $form_validation, array $data = [], array $arguments = [])
     {
         if(!method_exists($this, $form_validation)) {
             return;
         }
 
-        // Reset post to prevent future problems
-        $_POST = array();
         $this->form_validation->reset_validation();
+        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $this->{$form_validation}();
+        call_user_func_array(array($this, $form_validation), $arguments);
     }
 
     /**

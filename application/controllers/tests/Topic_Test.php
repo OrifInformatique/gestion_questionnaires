@@ -829,19 +829,20 @@ class Topic_Test extends Topic {
      * @param array $data = The data to store in $_POST
      * @return void
      */
-    private function _send_form_request(string $form_validation, array $data = [])
+    private function _send_form_request(string $form_validation, array $data = [], array $arguments = [])
     {
         if(!method_exists($this, $form_validation)) {
             return;
         }
 
         $this->form_validation->reset_validation();
+        $_POST = array();
         foreach($data as $key => $value) {
             $_POST[$key] = $value;
         }
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $this->{$form_validation}();
+        call_user_func_array(array($this, $form_validation), $arguments);
     }
 
     /**
