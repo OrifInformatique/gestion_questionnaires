@@ -58,8 +58,6 @@ class Auth_Test extends Auth {
         'password' => 'test_password'
     ];
 
-    protected $access_level = '*';
-
     public function __construct()
     {
         parent::__construct();

@@ -76,7 +76,7 @@ class Model_Test extends MY_Controller {
         $this->load->model($this->_models);
         $this->load->model('question_type_model');
 
-        // Question dummy values
+        // Dummy values
         $this->_dummy_values['question']['topic'] = $this->topic_model->get_by('FK_Parent_Topic IS NOT NULL')->ID;
         $this->_dummy_values['question']['question_type'] = $this->question_type_model->get_all()[0]->ID;
     }
