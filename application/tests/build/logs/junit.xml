@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="CodeIgniter Application Test Suite" tests="1" assertions="0" errors="0" failures="1" skipped="0" time="0.001773">
+    <testsuite name="User_model_test" file="C:\xampp\htdocs\gestion_questionnaires\application\tests\models\User_model_test.php" tests="1" assertions="0" errors="0" failures="1" skipped="0" time="0.001773">
+      <testsuite name="User_model_test::test_test" tests="1" assertions="0" errors="0" failures="1" skipped="0" time="0.001773">
+        <testcase name="Warning" assertions="0" time="0.001773">
+          <warning type="PHPUnit\Framework\Warning">Warning
+The data provider specified for User_model_test::test_test is invalid.
+Call to a member function insert() on null
+
+</warning>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
