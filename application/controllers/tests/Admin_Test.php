@@ -30,13 +30,6 @@ class Admin_Test extends Admin {
     ];
 
     /**
-     * Last saved database error
-     *
-     * @var object
-     */
-    private $_old_db_error;
-
-    /**
      * Contains the base values for dummies
      *
      * @var array

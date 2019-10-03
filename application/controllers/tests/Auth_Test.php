@@ -11,6 +11,7 @@ include(__DIR__.'/../Auth.php');
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class Auth_Test extends Auth {
+    use MY_Test_Trait;
     /**
      * Stores the tests' results
      *
@@ -33,13 +34,6 @@ class Auth_Test extends Auth {
     private $_tests = [
         'login', 'logout', 'change_pwd', 'check_pwd'
     ];
-
-    /**
-     * Last saved database error
-     *
-     * @var object
-     */
-    private $_old_db_error;
 
     /**
      * Saves the state of the user's login

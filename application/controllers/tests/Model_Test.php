@@ -1,5 +1,7 @@
 <?php
 
+include(__DIR__.'/../../core/MY_Test_Trait.php');
+
 /**
  * Controller for model testing
  * 
@@ -8,6 +10,7 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class Model_Test extends MY_Controller {
+    use MY_Test_Trait;
     /**
      * Stores the tests' results
      *
@@ -36,12 +39,6 @@ class Model_Test extends MY_Controller {
         'topic_model_get_tree',
         'question_model_getrndquestion', 'question_model_getnbquestionbytopic'
     ];
-    /**
-     * Last saved database error
-     *
-     * @var array
-     */
-    private $_old_db_error = [];
     /**
      * List of models to load
      *
@@ -547,34 +544,6 @@ class Model_Test extends MY_Controller {
     /**************
      * MISC METHODS
      **************/
-    /**
-     * Saves the most recent database error.
-     *
-     * @return void
-     */
-    private function _db_errors_save()
-    {
-        foreach($this->_models as $model) {
-            if(isset($this->{$model})) {
-                $this->_old_db_error[$model] = $this->{$model}->_database->error();
-            }
-        }
-    }
-    /**
-     * Compares the saved error and the most recent error.
-     *
-     * @return boolean = True if the 2 errors are different
-     */
-    private function _db_errors_diff() : bool
-    {
-        $result = FALSE;
-        foreach($this->_models as $model) {
-            if(isset($this->{$model})) {
-                $result |= $this->_old_db_error[$model] != $this->{$model}->_database->error();
-            }
-        }
-        return (bool) $result;
-    }
 
     /*************************
      * DUMMIES-RELATED METHODS

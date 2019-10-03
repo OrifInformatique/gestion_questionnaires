@@ -4,6 +4,7 @@ include(__DIR__.'/../../core/MY_Test_Trait.php');
 include(__DIR__.'/../Questionnaire.php');
 
 class Questionnaire_Test extends Questionnaire {
+    use MY_Test_Trait;
     /**
      * Stores the tests' results
      *
@@ -33,13 +34,6 @@ class Questionnaire_Test extends Questionnaire {
         'questionnaire_topic_delete', 'questionnaire_topic_add',
         'model_add', 'model_delete'
     ];
-
-    /**
-     * Last saved database error
-     *
-     * @var object
-     */
-    private $_old_db_error;
 
     /**
      * Contains the base values for dummies

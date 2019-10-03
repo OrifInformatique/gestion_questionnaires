@@ -12,7 +12,25 @@ if(!function_exists('redirect')) {
     function redirect($uri = '', $method = 'auto', $code = NULL) { }
 }
 
+/**
+ * Trait for tests.
+ * 
+ * Implements:
+ *  - `_send_form_request`
+ *  - database error checking
+ *  - an overwrite for `display_view`
+ * 
+ * @author      Orif, section informatique (ViDi, MeSa, BuYa)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 trait MY_Test_Trait {
+    /**
+     * The previous model errors
+     *
+     * @var array
+     */
+    private $_old_db_error = array();
 
     /**************
      * MISC METHODS

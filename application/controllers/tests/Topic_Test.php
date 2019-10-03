@@ -11,6 +11,7 @@ include(__DIR__.'/../Topic.php');
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class Topic_Test extends Topic {
+    use MY_Test_Trait;
     /**
      * Stores the tests' results
      *
@@ -37,12 +38,6 @@ class Topic_Test extends Topic {
         'topic_add', 'topic_update', 'topic_delete',
         'module_add', 'module_update', 'module_delete'
     ];
-    /**
-     * Last saved database error
-     *
-     * @var object
-     */
-    private $_old_db_error;
     /**
      * Default values for dummies
      *
