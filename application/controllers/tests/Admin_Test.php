@@ -1190,6 +1190,7 @@ class Admin_Test extends Admin {
      *
      * @param string $form_validation = The name of the function to call
      * @param array $data = The data to store in $_POST
+     * @param array $arguments = Arguments to give to the function, in the order of usage
      * @return void
      */
     private function _send_form_request(string $form_validation, array $data = [], array $arguments = [])
@@ -1205,7 +1206,7 @@ class Admin_Test extends Admin {
         }
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        call_user_func_array(array($this, $form_validation), $arguments);
+        $this->{$form_validation}(...$arguments);
     }
 
     /**
