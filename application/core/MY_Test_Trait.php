@@ -67,7 +67,20 @@ trait MY_Test_Trait {
     private function _db_errors_save()
     {
         $this->_old_db_error = array();
-        $models = dir(__DIR__.'/../models');
+        // No need to compute the list of models on each call, it's most likely not gonna change
+        static $models = NULL;
+        if(is_null($models)) {
+            $models = scandir(__DIR__.'/../models');
+            $models = array_filter($models, function($var) {
+                return preg_match('/^\w+\.php$/', $var);
+            });
+            $models = array_map(
+                function($value) {
+                    return strtolower(str_replace('.php', '', $value));
+                },
+                $models
+            );
+        }
         foreach($models as $model) {
             if(!isset($this->{$model})) continue;
             $this->_old_db_error[$model] = $this->{$model}->_database->error();
@@ -80,7 +93,20 @@ trait MY_Test_Trait {
      */
     private function _db_errors_diff() : bool
     {
-        $models = dir(__DIR__.'/../models');
+        // No need to compute the list of models on each call, it's most likely not gonna change
+        static $models = NULL;
+        if(is_null($models)) {
+            $models = scandir(__DIR__.'/../models');
+            $models = array_filter($models, function($var) {
+                return preg_match('/^\w+\.php$/', $var);
+            });
+            $models = array_map(
+                function($value) {
+                    return strtolower(str_replace('.php', '', $value));
+                },
+                $models
+            );
+        }
         foreach($models as $model) {
             if(!isset($this->{$model})) continue;
             elseif($this->_old_db_error[$model] != $this->{$model}->_database->error()) return FALSE;
