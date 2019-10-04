@@ -19,4 +19,5 @@ class Home_test extends TestCase
         $output = $this->request('GET', 'home');
         $this->assertContains(lang('page_login'), $output);
     }
+
 }
