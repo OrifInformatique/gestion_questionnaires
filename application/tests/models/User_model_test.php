@@ -2,7 +2,23 @@
 
 class User_model_test extends TestCase {
     /**
-     * List of user ids to remove afterward
+     * List of dummy values
+     *
+     * @var array
+     */
+    private $_dummy_values = [
+        'user' => 'dummy_user',
+        'user_type' => 1,
+        'password' => 'dummy_password'
+    ];
+    /**
+     * Previous db_error
+     *
+     * @var object
+     */
+    private $_old_db_error;
+    /**
+     * List of users created
      *
      * @var array
      */
@@ -13,16 +29,19 @@ class User_model_test extends TestCase {
         $this->resetInstance();
         $this->CI->load->model('user_model');
     }
-    public function tearDown()
+    public static function tearDownAfterClass()
     {
-        parent::tearDown();
+        parent::tearDownAfterClass();
 
-        $this->resetInstance();
-        $this->CI->load->model('user_model');
+        // Get a new CI instance
+		reset_instance();
+		CIPHPUnitTest::createCodeIgniterInstance();
+        $CI =& get_instance();
 
+        // Delete users
+        $CI->load->model('user_model');
         foreach(self::$user_ids as $user_id) {
-            $this->CI->user_model->hard_delete($user_id);
-            unset(self::$user_ids[array_search($user_id, self::$user_ids)]);
+            $CI->user_model->hard_delete($user_id);
         }
     }
 
@@ -41,15 +60,20 @@ class User_model_test extends TestCase {
      */
     public function test_hard_delete($user_id, $deleted_pre, $deleted_past)
     {
-        $user = $this->CI->user_model->get($user_id);
+        $this->_db_errors_save();
 
+        $user = $this->CI->user_model->get($user_id);
         $this->assertEquals($deleted_pre, is_null($user));
 
         $this->CI->user_model->hard_delete($user_id);
 
         $user = $this->CI->user_model->get($user_id);
-
         $this->assertEquals($deleted_past, is_null($user));
+
+        $this->assertFalse(
+            $this->_db_error_diff(),
+            'One or more error occured in an SQL statement'
+        );
     }
 
     /**
@@ -57,16 +81,23 @@ class User_model_test extends TestCase {
      * 
      * @dataProvider provider_check_password
      *
-     * @param string $username = username
-     * @param string $password = password
+     * @param string $username = Username to use
+     * @param string $password = Password to use
      * @param bool $shouldwork = Whether or not it should work
      * @return void
      */
     public function test_check_password($username, $password, $shouldwork)
     {
+        $this->_db_errors_save();
+
         $this->assertEquals(
             $shouldwork,
             $this->CI->user_model->check_password($username, $password)
+        );
+
+        $this->assertFalse(
+            $this->_db_error_diff(),
+            'One or more error occured in an SQL statement'
         );
     }
 
@@ -87,21 +118,20 @@ class User_model_test extends TestCase {
 
         // Create a basic dummy user
         $dummy_user = array(
-            'User' => 'dummy_user',
-            'FK_User_Type' => 1,
-            'Password' => password_hash('dummy_password', PASSWORD_HASH_ALGORITHM)
+            'User' => $this->_dummy_values['user'],
+            'FK_User_Type' => $this->_dummy_values['user_type'],
+            'Password' => password_hash($this->_dummy_values['password'], PASSWORD_HASH_ALGORITHM)
         );
 
         // Prepare some data for testing
         $data = [];
 
-        $user_id = $this->CI->user_model->insert($dummy_user);
+        self::$user_ids[] = $user_id = $this->CI->user_model->insert($dummy_user);
         $data['existing_user'] = [
             $user_id,
             FALSE,
             TRUE
         ];
-        self::$user_ids[] = $user_id;
 
         $data['user_not_exist'] = [
             $this->CI->user_model->get_next_id()+1,
@@ -124,15 +154,15 @@ class User_model_test extends TestCase {
         $this->CI->load->model('user_model');
 
         // Create a basic dummy user
-        $password = 'dummy_password';
-        $username = 'dummy_user';
+        $username = $this->_dummy_values['user'];
+        $password = $this->_dummy_values['password'];
 
         $dummy_user = array(
             'User' => $username,
-            'FK_User_Type' => 1,
+            'FK_User_Type' => $this->_dummy_values['user_type'],
             'Password' => password_hash($password, PASSWORD_HASH_ALGORITHM)
         );
-        $this->CI->user_model->insert($dummy_user);
+        self::$user_ids[] = $this->CI->user_model->insert($dummy_user);
 
         // Prepare some data for testing
         $data = [];
@@ -150,5 +180,36 @@ class User_model_test extends TestCase {
         ];
 
         return $data;
+    }
+
+    /**
+     * OTHERS
+     */
+    /**
+     * Saves the most recent database error
+     *
+     * @return void
+     */
+    private function _db_errors_save()
+    {
+        // Load the model
+        $this->resetInstance();
+        $this->CI->load->model('user_model');
+
+        $this->_old_db_error = $this->CI->user_model->_database->error();
+    }
+    /**
+     * Compares the saved error and returns true if it's different from the most
+     * recent one.
+     *
+     * @return boolean
+     */
+    private function _db_error_diff() : bool
+    {
+        // Load the model
+        $this->resetInstance();
+        $this->CI->load->model('user_model');
+
+        return $this->_old_db_error != $this->CI->user_model->_database->error();
     }
 }
