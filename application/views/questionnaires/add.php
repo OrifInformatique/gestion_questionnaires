@@ -6,7 +6,6 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright    Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
-$nbMaxQuestion = 0;
 ?>
 <script>
     $(document).ready(function(){
@@ -56,7 +55,7 @@ $nbMaxQuestion = 0;
             ?>
             <?php if($model) { ?>
                 <div class="form-group col-xs-12">
-                    <h4><?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName'); ?></h4>
+                    <?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName', array('class' => 'form-label')); ?>
                     <div class="row">
                         <div class="col-xs-12">
                             <?= form_input('modelName', $modelName, array(
@@ -67,7 +66,7 @@ $nbMaxQuestion = 0;
                 </div>
             <?php } ?>
             <div class="form-group col-xs-12">
-                <h4 for="title"><?php echo $this->lang->line('add_title_questionnaire'); ?></h4>
+                <?= form_label($this->lang->line('add_title_questionnaire'), 'title', array('class' => 'form-label')); ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <input maxlength="100" type="text" name="title" class="form-control" id="title"
@@ -76,7 +75,7 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-xs-12">
-                <h4><?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle'); ?></h4>
+                <?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle', array('class' => 'form-label')); ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <?= form_input('subtitle', $subtitle, array(
@@ -87,7 +86,7 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-xs-12 col-sm-4">
-                <h4 for="topic_selected"><?php echo $this->lang->line('add_topic_questionnaire'); ?></h4>
+                <?= form_label($this->lang->line('add_topic_questionnaire'), 'topic_selected', array('class' => 'form-label')); ?>
                 <div class="row">
                     <div class="col-xs-12">
                         <select class="form-control" id="topic_selected" name="topic_selected">
@@ -125,7 +124,7 @@ $nbMaxQuestion = 0;
                 </div>
             </div>
             <div class="form-group col-sm-4 colxs-12">
-                <h4 for="nb_questions"><?php echo $this->lang->line('nb_questions'); ?></h4>
+                <?= form_label($this->lang->line('nb_questions'), 'nb_questions', array('class' => 'form-label')); ?>
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-sm-4 col-xs-12">

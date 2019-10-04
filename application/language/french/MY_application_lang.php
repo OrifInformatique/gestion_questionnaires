@@ -23,6 +23,7 @@ $lang['nav_question']                   = 'Questions';
 $lang['nav_questionnaire']              = 'Questionnaires';
 $lang['nav_module']                     = 'Modules';
 $lang['nav_topic']                      = 'Sujets';
+$lang['nav_support']                    = 'Signaler un problème';
 $lang['nav_admin']                      = 'Administration';
 
 // Fields labels
@@ -62,6 +63,7 @@ $lang['yes']                            = 'Oui';
 $lang['no']                             = 'Non';
 $lang['ouinon']                         = 'Oui/Non';
 $lang['save']                           = 'Enregistrer';
+$lang['post']                           = 'Envoyer';
 $lang['cancel']                         = 'Annuler';
 $lang['return']                         = 'Retour';
 $lang['btn_change_password']            = 'Modifier le mot de passe';
@@ -73,6 +75,12 @@ $lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne 
 $lang['msg_err_invalid_new_password']   = 'Le nouveau mot de passe et la confirmation ne correspondent pas';
 $lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas valide';
 $lang['msg_err_access_denied']          = 'Accès refusé';
+$lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
+$lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
+$lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
+$lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
+$lang['msg_err_questionnaire_not_exist']    = 'Le questionnaire sélectionné n\'existe pas';
+$lang['msg_err_model_not_exist']        = 'Le modèle sélectionné n\'existe pas';
 
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
@@ -95,6 +103,7 @@ $lang['nb_questions']                   = 'Nombre de question(s)';
 $lang['add_form']                       = 'Ajouter';
 $lang['del_questionnaire_form_title']   = 'Voulez-vous vraiment supprimer le questionnaire ';
 $lang['del_questionnaire_form_err']     = 'Ce questionnaire possède des questions liées, il ne peut être supprimé...';
+$lang['delete_questionnaire']           = 'Supprimer le questionnaire';
 
 // Questionnaire model pages
 $lang['title_model']                    = 'Liste des modèles';
@@ -148,6 +157,8 @@ $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette 
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
 $lang['filter']                         = 'Filtrer';
+$lang['delete_question']                = 'Supprimer la question';
+$lang['detail_question']                = 'Détails de la question';
 
 
 // Topics pages
@@ -170,6 +181,7 @@ $lang['topic_no_module_error']          = 'Vous devez d\'abord créer un module 
 $lang['delete_topic_questions_list']    = array('Si vous supprimez ce sujet, ', ' questions seront supprimées.');
 $lang['delete_module_topics_list']      = array('Si vous supprimez ce module, ', ' sujets et leurs questions seront supprimés.');
 $lang['view_questions_list']            = 'Voir la liste des questions';
+$lang['delete_topic']                   = 'Supprimer le topic';
 
 
 //Modules pages
@@ -185,6 +197,23 @@ $lang['del_module_form_err']            = 'Ce module possède des questions et/o
 $lang['del_module_form_title']          = 'Voulez-vous vraiment supprimer le module ';
 $lang['module_error_404_message']       = 'Vous essayez d\'accéder à un module qui n\'existe pas .';
 $lang['module_error_404_heading']       = 'Module inexistant';
+$lang['delete_module']                  = 'Supprimer le module';
+
+
+//Admin/users pages
+$lang['users']                          = 'Utilisateur(s)';
+$lang['title_users']                    = 'Liste des utilisateurs';
+$lang['title_user_new']                 = 'Nouvel utilisateur';
+$lang['title_user_update']              = 'Modifier l\'utilisateur';
+$lang['title_user_change_password']     = 'Modifier le mot de passe';
+$lang['user_name']                      = 'Nom d\'utilisateur';
+$lang['user_usertype']                  = 'Type d\'utilisateur';
+$lang['user_active']                    = 'Actif';
+$lang['user_password']                  = 'Mot de passe';
+$lang['user_password_again']            = 'Répétez le mot de passe';
+$lang['user_password_force']            = 'Forcer le changement de mot de passe';
+$lang['del_user_form_title']            = 'Voulez-vous vraiment supprimer l\'utilisateur ';
+$lang['delete_user']                    = 'Supprimer l\'utilisateur';
 
 
 //Admin/users pages
@@ -216,3 +245,10 @@ $lang['pdf_multiple_answer_2']          = 'attendue';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
+
+// Support Controller
+$lang['title_report_a_problem']         = 'Signaler un problème';
+$lang['issue_title']                    = 'Sujet';
+$lang['issue_body']                     = 'Description du problème';
+$lang['title_problem_submitted']        = 'Problème signalé';
+$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';

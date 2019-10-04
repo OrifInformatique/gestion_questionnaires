@@ -29,7 +29,7 @@
     <div class="row">
         <div class="form-group">
             <div class="col-sm-8">
-                <h4><?php echo $this->lang->line('focus_topic'); ?></h4>
+                <?= form_label($this->lang->line('focus_topic'), 'topic_selected', array('class' => 'form-label')); ?>
                 <?php echo form_dropdown('topic_selected', $topics, NULL, 'id="topic_selected" class="form-control"'); ?>
             </div>
             <div class="col-sm-4">

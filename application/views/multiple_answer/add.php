@@ -36,7 +36,7 @@
                 ?>
             </div>
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
+                <b class="form-header"><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></b>
             </div>
         </div>
 
@@ -49,7 +49,7 @@
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($focus_topic)){
                         echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
@@ -62,7 +62,7 @@
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
+                <?php echo form_label($this->lang->line('question_text'), 'name', array('class' => 'form-label')); ?>
                 <?php
                     if(isset($name)){
                         echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
@@ -75,7 +75,7 @@
 
         <div class="row">
             <div class="form-group col-sm-8">
-                <?php echo form_label($this->lang->line('points'), 'points'); ?>
+                <?php echo form_label($this->lang->line('points'), 'points', array('class' => 'form-label')); ?>
             </div>
             <div class="form-group col-sm-4">
                 <?php 
@@ -92,7 +92,7 @@
         <!-- ANSWERS FIELDS -->
         <div class="row">
             <div class="form-group col-sm-8">
-                <?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers'); ?>
+                <?php echo form_label($this->lang->line('nb_desired_answers'), 'nb_desired_answers', array('class' => 'form-label')); ?>
             </div>
             <div class="form-group col-sm-4">
                 <?php 
@@ -108,7 +108,7 @@
         
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('valid_answers_list'), 'answer'); ?>
+                <?php echo form_label($this->lang->line('valid_answers_list'), 'answer', array('class' => 'form-label')); ?>
             </div>
         </div>
         

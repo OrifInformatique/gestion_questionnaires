@@ -37,7 +37,7 @@
                 ?>
             </div>
             <div class="form-group col-md-8 text-right">
-                <h4><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></h4>
+                <b class="form-header"><?php echo $this->lang->line('question_type').' : '.$question_type->Type_Name; ?></b>
             </div>
         </div>
 
@@ -50,7 +50,7 @@
         <!-- QUESTION FIELDS -->
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
+                <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($focus_topic)){
                         echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
@@ -63,7 +63,7 @@
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('question_text'), 'name'); ?>
+                <?php echo form_label($this->lang->line('question_text'), 'name', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($name)){
                         echo form_input('name', $name, 'maxlength="65535" class="form-control" id="name"');
@@ -76,7 +76,7 @@
 
         <div class="row">
             <div class="form-group col-md-1">
-                <?php echo form_label($this->lang->line('points'), 'points'); ?>
+                <?php echo form_label($this->lang->line('points'), 'points', array('class' => 'form-label')); ?>
             </div>
             <div class="form-group col-md-1">
                 <?php 
@@ -93,7 +93,7 @@
         
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('answer_question_add'), 'answer'); ?>
+                <?php echo form_label($this->lang->line('answer_question_add'), 'answer', array('class' => 'form-label')); ?>
             </div>
         </div>
         <div class="row">

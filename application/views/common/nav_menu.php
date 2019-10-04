@@ -40,6 +40,9 @@ function checkactive($page){
         case 5:
             test_regex('/\/Admin/');
             break;
+        case 6:
+            test_regex('/\/Support/');
+            break;
         default:
             break;
     }
@@ -58,15 +61,21 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     <?= $this->lang->line('nav_question');?></a></li>
                 <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
-                
-                <?php if($_SESSION['user_access'] == ACCESS_LVL_ADMIN) { ?>
+                <?php if($_SESSION['user_access'] >= ACCESS_LVL_ADMIN) { ?>
                     <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
                 <?php } ?>
+                
             <?php } else { ?>
                 <li <?php checkactive(0); ?>><a href="<?php echo base_url('Home');?>">
                     <?php echo $this->lang->line('nav_home');?></a></li>
            <?php } ?>
         </ul>
+        
+        <!-- Button to submit a problem -->
+        <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
+            <a class="btn btn-warning pull-right" href="<?php echo base_url('Support');?>">
+                    <?= $this->lang->line('nav_support');?></a>
+        <?php } ?>
     </div>
 <?php } ?>

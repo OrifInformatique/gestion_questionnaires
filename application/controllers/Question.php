@@ -143,6 +143,7 @@ class Question extends MY_Controller
 		$this->pagination->initialize($config);
 
 		$output = array(
+			'title' => $this->lang->line('title_question'),
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
 			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
@@ -167,15 +168,18 @@ class Question extends MY_Controller
 	 */
 	public function delete($id = 0, $action = NULL)
 	{
-		if ($id != 0) {
-			if (is_null($action)) {
-				$output = get_object_vars($this->question_model->get($id));
-				$output["question"] = $this->question_model->get_all();
-				$this->display_view("questions/confirm", $output);
-			} else {
-				$this->question_model->delete($id);
-				redirect('/Question');
-			}
+		$question = $this->question_model->get($id);
+		if(is_null($question)) {
+			redirect('question');
+			return;
+		} elseif (is_null($action)) {
+			$output = get_object_vars($question);
+			$output["question"] = $this->question_model->get_all();
+			$output["title"] = $this->lang->line("delete_question");
+			$this->display_view("questions/confirm", $output);
+		} else {
+			$this->question_model->delete($id);
+			redirect('/Question');
 		}
 	}
 
@@ -209,97 +213,94 @@ class Question extends MY_Controller
 	 */
 	public function update($id = 0, $error = 0)
 	{
+		$question = $this->question_model->get($id);
+		if(is_null($question)) {
+			redirect('question');
+			return;
+		}
+
 		$output['error'] = $error;
 		$output['id'] = $id;
+		$output['topics'] = $this->topic_model->get_tree();
+		$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
+		$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
+		$output['name'] = $question->Question;
+		$output['points'] = $question->Points;
+		$output['title'] = $this->lang->line('title_question_update');
 
-		if ($id != 0) {
-			$question = $this->question_model->get($id);
-			if (!is_null($question)){
-				$output['topics'] = $this->topic_model->get_tree();
-				$output['focus_topic'] = $this->topic_model->get($question->FK_Topic);
-				$output['question_type'] = $this->question_type_model->get($question->FK_Question_Type);
-				$output['name'] = $question->Question;
-				$output['points'] = $question->Points;
-
-				switch ($question->FK_Question_Type){
-				case 1:
-					// MUTLIPLE CHOICE
-					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-					$i = 0;
-					foreach ($reponses as $reponse) {
-						$answers[$i]['id'] = $reponse->ID;
-						$answers[$i]['question'] = $reponse->Answer;
-						$answers[$i]['answer'] = $reponse->Valid;
-						$i++;
-					}
-					$output['nbAnswer'] = count($reponses);
-					$output['answers'] = $answers;
-					$this->display_view('multiple_choice/add', $output);
-					break;
-				case 2:
-					// MUTLIPLE ANSWER
-					$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
-					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-					$i = 0;
-					foreach ($reponses as $reponse) {
-						$answers[$i]['id'] = $reponse->ID;
-						$answers[$i]['answer'] = $reponse->Answer;
-						$i++;
-					}
-					$output['nbAnswer'] = count($reponses);
-					$output['answers'] = $answers;
-					$this->display_view('multiple_answer/add', $output);
-					break;
-				case 3:
-					// TODO
-					break;
-				case 4:
-					// CLOZE TEXT
-					$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-					$this->db->order_by("Answer_Order");
-					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
-					$i = 0;
-					foreach ($reponses as $reponse) {
-						$answers[$i]['id'] = $reponse->ID;
-						$answers[$i]['answer'] = $reponse->Answer;
-						$i++;
-					}
-					$output['nbAnswer'] = count($reponses);
-					$output['answers'] = $answers;
-					$output['cloze_text'] = $cloze_text->Cloze_Text;
-					$output['id_cloze_text'] = $cloze_text->ID;
-					$this->display_view('cloze_text/add', $output);
-					break;
-				case 5:
-					// TODO
-					break;
-				case 6:
-					// FREE ANSWER
-					$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
-					$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
-					$this->display_view('free_answers/add', $output);
-					break;
-				case 7:
-					// PICTURE LANDMARK
-					$output['picture_name'] = $question->Picture_Name;
-					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-					$i = 0;
-					foreach ($reponses as $reponse) {
-						$answers[$i]['id'] = $reponse->ID;
-						$answers[$i]['symbol'] = $reponse->Symbol;
-						$answers[$i]['answer'] = $reponse->Answer;
-						$i++;
-					}
-					$output['nbAnswer'] = count($reponses);
-					$output['answers'] = $answers;
-
-					$this->display_view('picture_landmark/add', $output);
+		switch ($question->FK_Question_Type){
+			case 1:
+				// MUTLIPLE CHOICE
+				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['question'] = $reponse->Answer;
+					$answers[$i]['answer'] = $reponse->Valid;
+					$i++;
 				}
-			}else{
-				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
-			}
-		} else {
-			$this->index();
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+				$this->display_view('multiple_choice/add', $output);
+				break;
+			case 2:
+				// MUTLIPLE ANSWER
+				$output['nb_desired_answers'] = $question->Nb_Desired_Answers;
+				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['answer'] = $reponse->Answer;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+				$this->display_view('multiple_answer/add', $output);
+				break;
+			case 3:
+				// TODO
+				break;
+			case 4:
+				// CLOZE TEXT
+				$cloze_text = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+				$this->db->order_by("Answer_Order");
+				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $cloze_text->ID);
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['answer'] = $reponse->Answer;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+				$output['cloze_text'] = $cloze_text->Cloze_Text;
+				$output['id_cloze_text'] = $cloze_text->ID;
+				$this->display_view('cloze_text/add', $output);
+				break;
+			case 5:
+				// TODO
+				break;
+			case 6:
+				// FREE ANSWER
+				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
+				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
+				$this->display_view('free_answers/add', $output);
+				break;
+			case 7:
+				// PICTURE LANDMARK
+				$output['picture_name'] = $question->Picture_Name;
+				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+				$i = 0;
+				foreach ($reponses as $reponse) {
+					$answers[$i]['id'] = $reponse->ID;
+					$answers[$i]['symbol'] = $reponse->Symbol;
+					$answers[$i]['answer'] = $reponse->Answer;
+					$i++;
+				}
+				$output['nbAnswer'] = count($reponses);
+				$output['answers'] = $answers;
+
+				$this->display_view('picture_landmark/add', $output);
 		}
 	}
 
@@ -307,6 +308,7 @@ class Question extends MY_Controller
 	{
 		$output['error'] = $error;
 		$output['id'] = $id;
+		$output['title'] = $this->lang->line('detail_question');
 
 		if ($id != 0) {
 			$question = $this->question_model->with_all()->get($id);
@@ -382,13 +384,15 @@ class Question extends MY_Controller
 		if ($step==1){
 			// Display a form to choose a topic and a question type
 			$output = array(
+				'title' => $this->lang->line('title_question_add'),
 				'topics' => $this->topic_model->get_tree(),
 				'list_question_type' => $this->question_type_model->dropdown('Type_Name')
-			);;
+			);
 			$this->display_view('questions/add', $output);
 
 		} elseif ($step==2){
 			// Display a specific form for the choosen question type
+			$output['title'] = $this->lang->line('title_question_add');
 			$output['topics'] = $this->topic_model->get_tree();
 			$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 			$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -546,6 +550,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();				
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('multiple_choice/add', $output);
 			}
 		} else {
@@ -606,6 +611,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();	
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('multiple_choice/add', $output);
 		}
 	}
@@ -726,6 +732,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('multiple_answer/add', $output);
 			}
 		} else {
@@ -784,6 +791,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('multiple_answer/add', $output);
 		}
 	}
@@ -924,6 +932,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['topics'] = $this->topic_model->get_tree();
 
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('cloze_text/add', $output);
 			}
 		} else {
@@ -985,6 +994,7 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();
 
+			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('cloze_text/add', $output);
 		}
 	}
@@ -1033,6 +1043,7 @@ class Question extends MY_Controller
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
 					}
+					$output['title'] = $this->lang->line('title_question_add');
 					$this->display_view('free_answers/add', $output);
 				}
 			}
@@ -1067,6 +1078,7 @@ class Question extends MY_Controller
 				} else {
 					$output['id'] = $_POST['id'];
 					$output['id_answer'] = $_POST['id_answer'];
+					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 					$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
 					if(isset($_POST['name'])){
@@ -1078,7 +1090,8 @@ class Question extends MY_Controller
 					if(isset($_POST['answer'])){
 						$output['answer'] = $_POST['answer'];
 					}
-					$this->display_view('free_answers/update', $output);
+					$output['title'] = $this->lang->line('title_question_add');
+					$this->display_view('free_answers/add', $output);
 				}
 			}
 		}
@@ -1139,6 +1152,7 @@ class Question extends MY_Controller
 			$output['topics'] = $this->topic_model->get_tree();
 
 			if (isset($_POST['cancel']) & isset($_POST['id'])){
+				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('picture_landmark/add', $output);
 			} elseif (isset($_POST['cancel']) & !isset($_POST['id'])){
 				redirect('/Question');
@@ -1158,12 +1172,14 @@ class Question extends MY_Controller
 					if ( ! $this->upload->do_upload('picture'))
 					{
 							$output['error'] = $this->upload->display_errors();
+							$output['title'] = $this->lang->line('title_question_add');
 							$this->display_view('picture_landmark/file', $output);
 					}
 					else
 					{
 							$output['upload_data'] = $this->upload->data();
 
+							$output['title'] = $this->lang->line('title_question_add');
 							$this->display_view('picture_landmark/add', $output);
 					}
 				}
@@ -1314,6 +1330,7 @@ class Question extends MY_Controller
 						}
 					}
 					$output['answers'] = $answers;
+					$output['title'] = $this->lang->line('title_question_add');
 					$this->display_view('picture_landmark/add', $output);
 				}
 			} else {
@@ -1384,7 +1401,8 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
-
+			
+				$output['title'] = $this->lang->line('title_question_add');
 				if(isset($_POST['change_picture'])){
 					$this->display_view('picture_landmark/file', $output);
 				} else {

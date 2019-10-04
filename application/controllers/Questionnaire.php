@@ -21,10 +21,7 @@ class Questionnaire extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'topic_model',
-            'question_model', 'answer_distribution_model', 'multiple_choice_model',
-            'cloze_text_model', 'cloze_text_answer_model', 'table_cell_model',
-            'picture_landmark_model', 'free_answer_model', 'multiple_answer_model',
+        $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
         $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));
     }
@@ -37,6 +34,7 @@ class Questionnaire extends MY_Controller
     public function index($error = "")
     {
         $outputs = array(
+            'title' => $this->lang->line('title_questionnaire'),
             'questionnaires' => $this->questionnaire_model->get_all(),
             'models' => $this->questionnaire_model_model->get_all(),
             'error' => $error
@@ -55,13 +53,17 @@ class Questionnaire extends MY_Controller
     {
         if($model) $object = $this->questionnaire_model_model->get($id);
         else $object = $this->questionnaire_model->get($id);
-        if(is_null($object)) redirect('Questionnaire');
+        if(is_null($object)) {
+            redirect('Questionnaire');
+            return;
+        }
 
         $outputs = array(
+            'title' => $this->lang->line('title_questionnaire_update'),
             'error' => $error,
             'id' => $id,
             'model' => $model,
-            'title' => $object->Questionnaire_Name,
+            'quest_title' => $object->Questionnaire_Name,
             'subtitle' => $object->Questionnaire_Subtitle,
             'modelName' => $object->Base_Name ?? ''
         );
@@ -77,6 +79,11 @@ class Questionnaire extends MY_Controller
         $model = (bool) $this->input->post('model');
 
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
+        $this->form_validation->set_rules(
+            'id', 'Id',
+            "callback_quest_or_model_exists[{$model}]",
+            $this->lang->line('msg_err_'.($model ? 'model' : 'questionnaire').'_not_exist')
+        );
 
         $object = array(
             'Questionnaire_Name' => $this->input->post('title'),
@@ -99,6 +106,17 @@ class Questionnaire extends MY_Controller
         redirect('Questionnaire');
     }
 
+    public function quest_or_model_exists($id, $model) : bool
+    {
+        $object = NULL;
+        if($model) {
+            $object = $this->questionnaire_model_model->get($id);
+        } else {
+            $object = $this->questionnaire_model->get($id);
+        }
+        return !is_null($object);
+    }
+
     /**
      * Delete selected questionnaire and redirect to questionnaire list
      * @param int $id = id of the selected questionnaire
@@ -110,15 +128,22 @@ class Questionnaire extends MY_Controller
             if (is_null($action)) {
                 $output = get_object_vars($this->questionnaire_model->get($id));
                 $output["model"] = false;
+                $output["title"] = $this->lang->line('delete_questionnaire');
                 $this->display_view("questionnaires/delete", $output);
             } else {
+                $this->load->model('question_questionnaire_model');
+
                 $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-                if (count($questionnaire->question_questionnaires) > 0) {
-                    foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-                        $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                if(!is_null($questionnaire)) {
+                    if (count($questionnaire->question_questionnaires) > 0) {
+                        foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+                            $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                        }
                     }
+                    unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+                    unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
+                    $this->questionnaire_model->delete($id);
                 }
-                $this->questionnaire_model->delete($id);
                 redirect('Questionnaire');
             }
         } else {
@@ -140,15 +165,12 @@ class Questionnaire extends MY_Controller
     {
         // Removing this will make it so that you can't set the amount of questions
         if(isset($_POST['topic'])) {
-            $Topic = urldecode($_POST['topic']);
-            $Topic = str_replace("_apostrophe_", "\'", $Topic);
-            $idTopic = $this->topic_model->get_by("ID = '" .  $Topic . "'")->ID;
-            $nbQuestion = $this->question_model->getNbQuestionByTopic($idTopic);
-            echo $nbQuestion;
+            echo $this->question_model->getNbQuestionByTopic($this->input->post('topic'));
         } else {
             $output = array(
+                'title' => $this->lang->line('add_questionnaire_title'),
                 'error' => ($error == NULL ? NULL : true),
-                'topicsList' => $this->topic_model->get_all(),
+                'topicsList' => $this->topic_model->get_many_by('Archive = 0 OR Archive IS NULL'),
                 'title' => $title,
                 'modelName' => $modelName,
                 'topics' => $topics,
@@ -178,6 +200,9 @@ class Questionnaire extends MY_Controller
         {
             //Get TableTopics object from session
             $tableTopics = unserialize($_SESSION[$temp_table_name]);
+            if(!($tableTopics instanceof TableTopics)) {
+                $tableTopics = new TableTopics();
+            }
         }
 
         //Store title if defined
@@ -197,22 +222,31 @@ class Questionnaire extends MY_Controller
             unset($_SESSION[$temp_table_name]);
             redirect('/Questionnaire');
         }
-        else if (isset($_POST['delete_topic']))
+        elseif (isset($_POST['delete_topic']))
         {
             foreach ($_POST['delete_topic'] as $key => $topic) {
-                $tableTopics->removeArrayTopics($key);
-                $tableTopics->removeArrayNbQuestion($key);
+                if($key < 0 || $key >= count($tableTopics->getArrayTopics())) {
+                    $this->form_validation->set_rules(
+                        "delete_topic[{$key}]", $this->lang->line('delete_topic'),
+                        'callback_get_false',
+                        $this->lang->line('topic_error_404_heading')
+                    );
+                } else {
+                    $tableTopics->removeArrayTopics($key);
+                    $tableTopics->removeArrayNbQuestion($key);
+                }
             }
+            $this->form_validation->run();
             $arrayTopics = $tableTopics->getArrayTopics();
             $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
 
             $_SESSION[$temp_table_name] = serialize($tableTopics);
             $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
-        else if (isset($_POST['add_form']))
+        elseif (isset($_POST['add_form']))
         {
-            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required');
-            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required');
+            $this->form_validation->set_rules('topic_selected', $this->lang->line('add_topic_questionnaire'), 'required|callback_cb_topic_exists');
+            $this->form_validation->set_rules('nb_questions', $this->lang->line('nb_questions'), 'required|is_natural_no_zero');
             if($this->form_validation->run() == true)
             {
                 //Get last inputs
@@ -241,10 +275,11 @@ class Questionnaire extends MY_Controller
 
             $this->add($model, NULL, $title, $arrayTopics, $arrayNbQuestion, $subtitle, $modelName);
         }
-        else if(isset($_POST['save']))
+        elseif(isset($_POST['save']))
         {
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
+            if($model) $this->form_validation->set_rules('modelName', 'Name', 'required');
 
             //Check form validation
             if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
@@ -266,6 +301,16 @@ class Questionnaire extends MY_Controller
     }
 
     /**
+     * For codeigniter callback on something already found to be wrong
+     *
+     * @return boolean
+     */
+    public function get_false() : bool
+    {
+        return FALSE;
+    }
+
+    /**
      * Loads the id of the questionnaire to create
      * If it does not exist yet, create it from $tableTopics
      *
@@ -279,8 +324,8 @@ class Questionnaire extends MY_Controller
         }
         if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('Questionnaire');
 
-        $this->generateQuestions($idQuestionnaire, false);
-        $this->generateAnswers($idQuestionnaire, false);
+        $this->generateQuestions($idQuestionnaire);
+        $this->generateAnswers($idQuestionnaire);
 
         redirect('Questionnaire');
     }
@@ -291,6 +336,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The id of the questionnaire to create
      */
     public function generateQuestions($idQuestionnaire) {
+        $this->load->model(['multiple_choice_model', 'picture_landmark_model']);
+
         $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $title = $questionnaire->Questionnaire_Name;
@@ -424,6 +471,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The id of the questionnaire to create
      */
     public function generateAnswers($idQuestionnaire) {
+        $this->load->model(['multiple_choice_model', 'picture_landmark_model']);
+
         $listRndQuestions = $this->findQuestionByQuestionnaire($idQuestionnaire);
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $title = $questionnaire->Questionnaire_Name;
@@ -522,28 +571,8 @@ class Questionnaire extends MY_Controller
         $answers->SetTextColor(0,0,0);
         $answers->SetFont('Arial','', self::QUESTIONFONT_SIZE);
 
-        if($idQuestionnaire == -1){
-            // Trim the name before using it to create a file
-            $title = trim($tableTopics->getTitle());
-
-            // Replace all non alphanum characters with dashes
-            // This would only fail on less than 1% of all operating systems
-            $title = $file_name = preg_replace( '/[^a-z0-9]+/', '-', strtolower($title));
-
-            // In case the questionnaire's pdf already exists, change the file's name
-            if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
-                $i = 1;
-                while(file_exists("pdf_files/questionnaires/".$title.'-'.$i.".pdf") || file_exists("pdf_files/corriges/".$title.'-'.$i."_corrige.pdf")){
-                    $i++;
-                }
-                $title .= '-'.$i;
-            }
-
-            $answers->Output('F', "pdf_files/corriges/" . $title.'_corrige.pdf', true);
-        } else {
-            $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
-            $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
-        }
+        $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
+        $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
         redirect('Questionnaire');
     }
 
@@ -599,7 +628,7 @@ class Questionnaire extends MY_Controller
         $modelId = $this->input->post('modelId');
 
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
-        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'), 'required');
+        $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'));
 
         if($this->form_validation->run()) {
             $title = $this->input->post('title');
@@ -644,6 +673,17 @@ class Questionnaire extends MY_Controller
     }
 
     /**
+     * Checks that provided topic id exists in the database
+     *
+     * @param int $idTopic = ID of the topic
+     * @return boolean = Whether or not it exists
+     */
+    public function cb_topic_exists($idTopic) : bool
+    {
+        return !is_null($this->topic_model->get($idTopic));
+    }
+
+    /**
      * Creates a new questionnaire in pdf format
      *
      * @param TableTopics $tableTopics = The questionnaire topics
@@ -651,13 +691,14 @@ class Questionnaire extends MY_Controller
      */
     private function InsertNewQuestionnaire($tableTopics)
     {
-        $listIDQuestions = array();
+        $this->load->model('question_questionnaire_model');
+
         // Prepare the questionnaire name and save the original
         $title_original = trim($tableTopics->getTitle());
 
         // Replace all non alphanum characters with dashes
         // This would only fail on less than 1% of all operating systems
-        $title = $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($title_original));
+        $title = preg_replace('/[^a-z0-9]+/', '-', strtolower($title_original));
 
         // In case the questionnaire's pdf already exists, change the file's name
         if(file_exists("pdf_files/questionnaires/".$title.".pdf") || file_exists("pdf_files/corriges/".$title."_corrige.pdf")) {
@@ -708,6 +749,8 @@ class Questionnaire extends MY_Controller
      * @param integer $idQuestionnaire = The questionnaire's id
      */
     private function findQuestionByQuestionnaire($idQuestionnaire){
+        $this->load->model('question_questionnaire_model');
+
         $listIDQuestions = array();
         $rndQuestions = array();
 
@@ -729,6 +772,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function multipleChoicesPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('multiple_choice_model');
         // Prepare variables
         $multiChoiceQuestions = $this->multiple_choice_model->get_many_by("FK_Question = ".$question->ID);
 
@@ -771,6 +815,8 @@ class Questionnaire extends MY_Controller
      */
     private function multipleAnswersPdf($question, $pdf, $answerPdf = FALSE) {
         if($answerPdf) {
+            $this->load->model('multiple_answer_model');
+
             $pdf->SetTextColor(255, 0, 0);
             $possible_answers = $this->multiple_answer_model->get_many_by("FK_Question = ".$question->ID);
             $answer = '';
@@ -807,6 +853,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function answerDistributionPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('answer_distribution_model');
+
         if($answerPdf) {
             /**
              * @todo
@@ -815,7 +863,7 @@ class Questionnaire extends MY_Controller
              * the page to create them has yet to be coded
              */
         } else {
-            $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $Question->ID");
+            $anDistributionQuestions = $this->answer_distribution_model->get_many_by("FK_Question = $question->ID");
 
             foreach ($anDistributionQuestions as $anDistributionQuestion) {
                 $pdf->Cell(80,20,iconv('UTF-8', 'windows-1252',$anDistributionQuestion->Question_Part), 1, "C");
@@ -834,6 +882,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function clozeTextPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('cloze_text_model');
+
         $clozeText = $this->cloze_text_model->get_by("FK_Question = ".$question->ID);
         // Sometimes you can find … mixed with .
         $outputText = preg_split("/\[[…\.]*\]/", $clozeText->Cloze_Text, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -865,6 +915,8 @@ class Questionnaire extends MY_Controller
         }
 
         if($answerPdf) {
+            $this->load->model('cloze_text_answer_model');
+
             $allAnswers = $this->cloze_text_answer_model->get_many_by("FK_Cloze_Text = ".$clozeText->ID);
             $answers = array();
             foreach($allAnswers as $a) {
@@ -907,6 +959,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function tablePdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('table_cell_model');
         if($answerPdf) {
             /**
              * @todo
@@ -915,7 +968,7 @@ class Questionnaire extends MY_Controller
              * the page to create them has yet to be coded
              */
         } else {
-            $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
+            $tcCol = $tcRow = $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$question->ID);
 
             // Sort tableCells by amount of columns
             usort($tcCol, function($a, $b) {
@@ -952,6 +1005,7 @@ class Questionnaire extends MY_Controller
      */
     private function displayTable($Question, $pdf)
     {
+        $this->load->model('table_cell_model');
         $tableCells = $this->table_cell_model->get_many_by("FK_Question = ".$Question->ID);
         $maxColumn = 0;
         $maxRow = 0;
@@ -1021,6 +1075,7 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function simpleQuestionPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('free_answer_model');
         // Prepare variables
         $maxlength = 60;
         $answer = $this->free_answer_model->get_by('FK_Question', $question->ID)->Answer;
@@ -1062,6 +1117,8 @@ class Questionnaire extends MY_Controller
      * @param boolean $answerPdf = Whether or not the pdf is for correction
      */
     private function pictureLandmarkPdf($question, $pdf, $answerPdf = FALSE) {
+        $this->load->model('picture_landmark_model');
+
         $pictureLandmarks = $this->picture_landmark_model->with_all()->get_many_by("FK_Question = ".$question->ID);
         $picture = $question->Picture_Name;
         $fullPath = base_url((is_file('uploads/pictures/'.$picture) ? 'uploads/pictures/'.$picture : 'assets/images/not-found.png'));

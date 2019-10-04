@@ -40,3 +40,7 @@ define('PDF_FOOTER_COLOR', [
     'green' => 0,
     'blue' => 0
 ]);
+
+define('GITHUB_USERNAME', 'orif-support');
+define('GITHUB_PASSWORD', '8iw83FDewVA6');
+

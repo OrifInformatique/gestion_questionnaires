@@ -18,6 +18,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 #-------------------------
 /nbproject/
 .idea/*
+.vscode/launch.json
 
 ## Sublime Text cache files
 *.tmlanguage.cache
@@ -29,6 +30,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 application/config/config.php
 *.jpeg
 
+# Data files (images and documents)
+#--------------------------
 pdf_files/
 uploads/
-.vscode/launch.json

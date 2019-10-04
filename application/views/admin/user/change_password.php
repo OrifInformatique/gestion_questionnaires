@@ -28,7 +28,7 @@
 
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('field_new_password'), 'user_password_new'); ?></h4>
+                <?= form_label($this->lang->line('field_new_password'), 'user_password_new', array('class' => 'form-label')); ?>
                 <?= form_password('user_password_new', '', array(
                     'class' => 'form-control', 'id' => 'user_password_new'
                 )); ?>
@@ -37,7 +37,7 @@
 
         <div class="row">
             <div class="form-group col-md-12">
-                <h4><?= form_label($this->lang->line('field_password_confirm'), 'user_password_again'); ?></h4>
+                <?= form_label($this->lang->line('field_password_confirm'), 'user_password_again', array('class' => 'form-label')); ?>
                 <?= form_password('user_password_again', '', array(
                     'class' => 'form-control', 'id' => 'user_password_again'
                 )); ?>

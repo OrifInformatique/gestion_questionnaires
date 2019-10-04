@@ -36,6 +36,7 @@ class Admin extends MY_Controller {
      */
     public function user_index() {
         $output = array(
+            'title' => $this->lang->line('title_users'),
             'users' => $this->user_model->with_deleted()->get_all(),
             'user_types' => $this->user_type_model->dropdown('name')
         );
@@ -49,6 +50,7 @@ class Admin extends MY_Controller {
      */
     public function user_add($userId = 0) {
         $output = array(
+            'title' => $this->lang->line('title_user_new'),
             'user' => $this->user_model->with_deleted()->get($userId) ?? NULL,
             'user_types' => $this->user_type_model->dropdown('name')
         );
@@ -61,13 +63,25 @@ class Admin extends MY_Controller {
     public function user_form() {
         $userId = $this->input->post('id');
 
+        $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_name', $this->lang->line('user_name'), [
             'required', 'trim',
             'min_length['.USERNAME_MIN_LENGTH.']',
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), 'required');
-        if($userId === 0) {
+        $this->form_validation->set_rules(
+            'disactivate', $this->lang->line('btn_desactivate'),
+            "callback_cb_not_inactive_user[{$userId}]",
+            $this->lang->line('msg_err_user_already_inactivate')
+        );
+        $this->form_validation->set_rules(
+            'reactivate', $this->lang->line('btn_reactivate'),
+            "callback_cb_not_active_user[{$userId}]",
+            $this->lang->line('msg_err_user_already_reactivate')
+        );
+        
+        if($userId == 0) {
             $this->form_validation->set_rules('user_password', $this->lang->line('user_password'), [
                 'required','trim',
                 'min_length['.PASSWORD_MIN_LENGTH.']',
@@ -116,11 +130,12 @@ class Admin extends MY_Controller {
      */
     public function user_delete($userId, $action = 0) {
         $user = $this->user_model->with_deleted()->get($userId);
-        if(is_null($user)) redirect('Admin/user_index');
+        if(is_null($user)) return redirect('Admin/user_index');
 
         switch($action) {
             case 0: // Display confirmation
                 $output = get_object_vars($user);
+                $output['title'] = $this->lang->line('delete_user');
                 $this->display_view('admin/user/delete', $output);
                 break;
             case 1: // Deactivate user
@@ -146,7 +161,8 @@ class Admin extends MY_Controller {
         if(is_null($user)) redirect('Admin/user_index');
 
         $output = array(
-            'user' => $user
+            'user' => $user,
+            'title' => $this->lang->line('page_password_change')
         );
 
         $this->display_view('admin/user/change_password', $output);
@@ -157,8 +173,8 @@ class Admin extends MY_Controller {
      */
     public function user_change_password_form() {
         $userId = $this->input->post('id');
-        $user = $this->user_model->get($userId);
 
+        $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
             'min_length['.PASSWORD_MIN_LENGTH.']',
@@ -179,5 +195,45 @@ class Admin extends MY_Controller {
         } else {
             $this->user_change_password($userId);
         }
+    }
+
+    /**
+     * Checks that the provided id is linked to an user
+     *
+     * @param int $id = ID of the user to check
+     * @return bool
+     */
+    public function not_null_user($id){
+        return $id == 0 || !is_null($this->user_model->with_deleted()->get($id));
+    }
+
+    /**
+     * Checks that user is not active
+     *
+     * @param any $disactivate = Value of $_POST['disactivate']
+     * @param int $userId = ID of the user
+     * @return boolean
+     */
+    public function cb_not_inactive_user($disactivate, $userId) : bool
+    {
+        if(is_null($disactivate)) return TRUE;
+        $user = $this->user_model->get($userId);
+        if(is_null($user)) return FALSE;
+        return $user->Archive == 0;
+    }
+
+    /**
+     * Checks that user is already active
+     *
+     * @param any $reactivate = Value of $_POST['reactivate']
+     * @param int $userId = ID of the user
+     * @return boolean
+     */
+    public function cb_not_active_user($reactivate, $userId) : bool
+    {
+        if(is_null($reactivate)) return TRUE;
+        $user = $this->user_model->get($userId);
+        if(is_null($user)) return FALSE;
+        return $user->Archive == 1;
     }
 }
