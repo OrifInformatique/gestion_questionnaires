@@ -176,6 +176,18 @@ class User_model_test extends TestCase {
             FALSE
         ];
 
+        $data['not_exist'] = [
+            (function() use ($username) {
+                $loop = 0;
+                while(!is_null($this->CI->user_model->get_by('User', $username.$loop))) {
+                    $loop++;
+                }
+                return $username.$loop;
+            })(),
+            $password,
+            FALSE
+        ];
+
         return $data;
     }
 }
