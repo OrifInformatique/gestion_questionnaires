@@ -35,29 +35,28 @@ class question_model extends MY_Model
 
     /**
      * Select some random questions for the questionnaire
-     * @param $idTopic = Id of topic
-     * @param $nbQuestion = number of questions to return
-     * @return an array with the questions
+     * @param int $idTopic = Id of topic
+     * @param int $nbQuestion = number of questions to return
+     * @return array an array with the questions
      */
     public function getRNDQuestions($idTopic, $nbQuestion)
     {
-        $query = $this->_database
-                        ->select($this->primary_key)
-                        ->limit($nbQuestion)
-                        ->where("FK_Topic = $idTopic AND Archive = 0")
-                        ->order_by("RAND()")
-                        ->get($this->_table);
+        if($nbQuestion <= 0) return [];
 
-        return $query->result_array();
+        return $this->limit($nbQuestion)->
+            as_array()->
+            order_by('RAND()')->
+            get_many_by("FK_Topic = {$idTopic} AND Archive = 0");
     }
 
+    /**
+     * Gets the amount of questions in a topic
+     *
+     * @param int $idTopic = ID of the topic
+     * @return int = Amount of questions linked to the topic
+     */
     public function getNbQuestionByTopic($idTopic)
     {
-        $query = $this->_database
-                        ->select($this->primary_key)
-                        ->where("FK_Topic = $idTopic AND Archive = 0")
-                        ->get($this->_table);
-
-        return $query->num_rows();
+        return $this->count_by("FK_Topic = {$idTopic} AND Archive = 0");
     }
 }

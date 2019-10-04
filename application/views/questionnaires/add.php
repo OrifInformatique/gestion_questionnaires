@@ -6,7 +6,6 @@
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright    Copyright (c) Orif section informatique, Switzerland (http://www.sectioninformatique.ch)
  */
-$nbMaxQuestion = 0;
 ?>
 <script>
     $(document).ready(function(){

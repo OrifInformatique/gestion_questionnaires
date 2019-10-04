@@ -9,7 +9,7 @@
       </div>
     </a>
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" >
-      <div class="nav nav-pills" style="margin-top:20px;">
+      <div class="nav nav-pills text-right" style="margin-top:20px;">
         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
 
           <!-- Password change -->
@@ -19,7 +19,7 @@
           <a href="<?= base_url("auth/logout"); ?>" ><?= $this->lang->line('btn_logout'); ?></a>
 
         <?php } else { ?>
-          <!-- Not logged in, display a "login" form -->
+          <!-- Not logged in, display a "login" link -->
           <form action="<?= base_url("auth/login"); ?>" method="post" >
               <input type="hidden" id="after_login_redirect" name="after_login_redirect" value="<?= current_url() ?>">
               <input type="submit" class="btn btn-link"
