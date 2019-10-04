@@ -1,13 +1,13 @@
 # Exclude some files and directories from the project's releases
-/application/tests/ export-ignore
-/application/controllers/tests/ export-ignore
-/pdf_files/ export-ignore
-/uploads/ export-ignore
+/application/tests export-ignore
+/application/controllers/tests export-ignore
+/pdf_files export-ignore
+/uploads export-ignore
 /.gitignore export-ignore
 /.gitattributes export-ignore
 /contributing.md export-ignore
 /readme.md export-ignore
-/license.txt
+/license.txt export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto
