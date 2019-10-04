@@ -32,5 +32,5 @@ application/config/config.php
 
 # Data files (images and documents)
 #--------------------------
-#pdf_files/
-#uploads/
+pdf_files/
+uploads/
