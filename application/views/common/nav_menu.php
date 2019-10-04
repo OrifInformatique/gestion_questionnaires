@@ -61,16 +61,21 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     <?= $this->lang->line('nav_question');?></a></li>
                 <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
-                <li <?php checkactive(6); ?>><a class="text-warning bg-warning" href="<?php echo base_url('Support');?>">
-                    <?= $this->lang->line('nav_support');?></a></li>
                 <?php if($_SESSION['user_access'] >= ACCESS_LVL_ADMIN) { ?>
                     <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
                 <?php } ?>
+                
             <?php } else { ?>
                 <li <?php checkactive(0); ?>><a href="<?php echo base_url('Home');?>">
                     <?php echo $this->lang->line('nav_home');?></a></li>
            <?php } ?>
         </ul>
+        
+        <!-- Button to submit a problem -->
+        <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
+            <a class="btn btn-warning pull-right" href="<?php echo base_url('Support');?>">
+                    <?= $this->lang->line('nav_support');?></a>
+        <?php } ?>
     </div>
 <?php } ?>
