@@ -1,6 +1,9 @@
 <?php
+include(__DIR__.'/../../third_party/Test_Trait.php');
 
 class User_model_test extends TestCase {
+    use Test_Trait;
+
     /**
      * List of dummy values
      *
@@ -11,12 +14,6 @@ class User_model_test extends TestCase {
         'user_type' => 1,
         'password' => 'dummy_password'
     ];
-    /**
-     * Previous db_error
-     *
-     * @var object
-     */
-    private $_old_db_error;
     /**
      * List of users created
      *
@@ -71,7 +68,7 @@ class User_model_test extends TestCase {
         $this->assertEquals($deleted_past, is_null($user));
 
         $this->assertFalse(
-            $this->_db_error_diff(),
+            $this->_db_errors_diff(),
             'One or more error occured in an SQL statement'
         );
     }
@@ -96,7 +93,7 @@ class User_model_test extends TestCase {
         );
 
         $this->assertFalse(
-            $this->_db_error_diff(),
+            $this->_db_errors_diff(),
             'One or more error occured in an SQL statement'
         );
     }
@@ -180,36 +177,5 @@ class User_model_test extends TestCase {
         ];
 
         return $data;
-    }
-
-    /**
-     * OTHERS
-     */
-    /**
-     * Saves the most recent database error
-     *
-     * @return void
-     */
-    private function _db_errors_save()
-    {
-        // Load the model
-        $this->resetInstance();
-        $this->CI->load->model('user_model');
-
-        $this->_old_db_error = $this->CI->user_model->_database->error();
-    }
-    /**
-     * Compares the saved error and returns true if it's different from the most
-     * recent one.
-     *
-     * @return boolean
-     */
-    private function _db_error_diff() : bool
-    {
-        // Load the model
-        $this->resetInstance();
-        $this->CI->load->model('user_model');
-
-        return $this->_old_db_error != $this->CI->user_model->_database->error();
     }
 }
