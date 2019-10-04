@@ -27,14 +27,14 @@
         <div class="row">
             <div class="form-group col-md-12">
                 <?php echo form_label($this->lang->line('issue_title'), 'issue_title'); ?>
-                <?php echo form_input('issue_title', set_value('issue_title'), 'maxlength="65535" class="form-control" id="issue_title"'); ?>
+                <?php echo form_input('issue_title', set_value('issue_title'), 'maxlength="200" class="form-control" id="issue_title"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-12">
                 <?php echo form_label($this->lang->line('issue_body'), 'issue_body'); ?>
-                <?php echo form_input('issue_body', set_value('issue_body'), 'maxlength="65535" class="form-control" id="issue_body"'); ?>
+                <?php echo form_textarea('issue_body', set_value('issue_body'), 'maxlength="65535" class="form-control" rows="8" id="issue_body"'); ?>
             </div>
         </div>
     <?php echo form_close(); ?>

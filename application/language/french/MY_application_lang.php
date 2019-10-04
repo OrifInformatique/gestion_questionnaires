@@ -248,7 +248,7 @@ $lang['pdf_error']                      = "Erreur lors de la génération des qu
 
 // Support Controller
 $lang['title_report_a_problem']         = 'Signaler un problème';
-$lang['issue_title']                    = 'Objet';
-$lang['issue_body']                     = 'Texte du problème';
+$lang['issue_title']                    = 'Sujet';
+$lang['issue_body']                     = 'Description du problème';
 $lang['title_problem_submitted']        = 'Problème signalé';
 $lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';
