@@ -96,6 +96,7 @@ class Auth extends MY_Controller
      */
     public function logout()
     {
+        $_SESSION['logged_in'] = FALSE;
         $this->session->sess_destroy();
 
         redirect(base_url());

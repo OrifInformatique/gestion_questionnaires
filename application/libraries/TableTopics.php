@@ -32,7 +32,7 @@ class TableTopics
     }
 
     /**
-     * @param array $arrayNbQuestion
+     * @param any $arrayNbQuestion
      */
     public function setArrayNbQuestion($arrayNbQuestion)
     {
@@ -56,7 +56,7 @@ class TableTopics
     }
 
     /**
-     * @param array $arrayTopics
+     * @param any $arrayTopics
      */
     public function setArrayTopics($arrayTopics)
     {
@@ -128,6 +128,6 @@ class TableTopics
      */
     public function setPDFName($title)
     {
-        $this->PDFName = $PDFName;
+        $this->PDFName = $title;
     }
 }
