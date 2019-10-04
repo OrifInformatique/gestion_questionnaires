@@ -1,6 +1,10 @@
-# Exclude some files and directories from the project's releases
+# Exclude TEST files and directories from the project's releases
 /application/tests/ export-ignore
 /application/controllers/tests/ export-ignore
+/application/views/tests/ export-ignore
+/application/core/MY_Test_Trait.php export-ignore
+
+# Exclude some other files and directories from the project's releases
 /.gitignore export-ignore
 /.gitattributes export-ignore
 /contributing.md export-ignore
