@@ -445,7 +445,7 @@ class Question_Test extends Question {
 
         // No deletion for questionnaires, as they are not linked here
         // Delete question, nothing is left
-        $this->question_model->delete($dummy_question_id);
+        $this->question_model->delete($dummy_question_id, TRUE);
     }
 
     /**

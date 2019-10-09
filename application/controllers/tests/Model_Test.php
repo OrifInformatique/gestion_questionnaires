@@ -223,7 +223,7 @@ class Model_Test extends MY_Controller {
         $dummy_user_id = $this->_dummy_user_create();
 
         $this->_db_errors_save();
-        $this->user_model->hard_delete($dummy_user_id);
+        $this->user_model->delete($dummy_user_id, TRUE);
 
         $user = $this->user_model->with_deleted()->get($dummy_user_id);
 
@@ -253,7 +253,7 @@ class Model_Test extends MY_Controller {
         $bad_id = $this->user_model->get_next_id()+1;
 
         $this->_db_errors_save();
-        $this->user_model->hard_delete($bad_id);
+        $this->user_model->delete($bad_id, TRUE);
 
         $user = $this->user_model->with_deleted()->get($bad_id);
 
@@ -593,6 +593,6 @@ class Model_Test extends MY_Controller {
      */
     private function _dummy_user_delete(int $dummy_user_id)
     {
-        $this->user_model->hard_delete($dummy_user_id);
+        $this->user_model->delete($dummy_user_id, TRUE);
     }
 }

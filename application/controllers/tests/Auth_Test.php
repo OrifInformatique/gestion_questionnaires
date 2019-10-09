@@ -685,9 +685,7 @@ class Auth_Test extends Auth {
             session_destroy();
         }
         // Delete the dummy user instead of archiving it
-        $db =& $this->user_model->_database;
-        $db->where('ID', $dummy_id);
-        $db->delete('t_user');
+        $this->user_model->delete($dummy_id, TRUE);
     }
 
 }
