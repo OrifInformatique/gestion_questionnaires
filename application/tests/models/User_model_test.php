@@ -1,5 +1,7 @@
 <?php
-include(__DIR__.'/../../third_party/Test_Trait.php');
+if(!trait_exists('Test_Trait', TRUE)) {
+    include(__DIR__.'/../../third_party/Test_Trait.php');
+}
 
 class User_model_test extends TestCase {
     use Test_Trait;
@@ -45,7 +47,6 @@ class User_model_test extends TestCase {
     /*******
      * TESTS
      *******/
-
     /**
      * Test for `user_model::hard_delete`
      * 
@@ -101,7 +102,6 @@ class User_model_test extends TestCase {
     /****************
      * DATA PROVIDERS
      ****************/
-
     /**
      * Data provider for `test_hard_delete`
      *
