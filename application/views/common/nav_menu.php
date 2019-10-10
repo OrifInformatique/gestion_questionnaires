@@ -1,50 +1,54 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * Test the pattern to find the active page
- * @param $pattern = related tab
- */
-function test_regex($pattern)
-{
-    $subject = $_SERVER['REQUEST_URI'];
+if(!function_exists('test_regex')) {
+    /**
+     * Test the pattern to find the active page
+     * @param $pattern = related tab
+     */
+    function test_regex($pattern)
+    {
+        $subject = $_SERVER['REQUEST_URI'];
 
-    if (preg_match($pattern, $subject)) {
-        echo "class='active'";
+        if (preg_match($pattern, $subject)) {
+            echo "class='active'";
+        }
     }
 }
-/**
- * Test of the current active page
- * @param $page =
- * 1 => Questionnaire
- * 2 => Question
- * 3 => Module
- * 4 => Topic
- * **/
-function checkactive($page){
-    switch ($page){
-        case 0;
-            test_regex('/\/Home/');
-            test_regex('/\//');
-            break;
-        case 1;
-            test_regex('/\/Questionnaire/');
-            break;
-        case 2:
-            test_regex('/\/(Question[^n]|Question$)/');
-            break;
-        case 3:
-            test_regex('/\/Module/');
-            break;
-        case 4:
-            test_regex('/\/Topic/');
-            break;
-        case 5:
-            test_regex('/\/Admin/');
-            break;
-        case 6:
-            test_regex('/\/Support/');
-            break;
-        default:
-            break;
+if(!function_exists('checkactive')) {
+    /**
+     * Test of the current active page
+     * @param $page =
+     * 1 => Questionnaire
+     * 2 => Question
+     * 3 => Module
+     * 4 => Topic
+     * **/
+    function checkactive($page){
+        switch ($page){
+            case 0;
+                test_regex('/\/Home/');
+                test_regex('/\//');
+                break;
+            case 1;
+                test_regex('/\/Questionnaire/');
+                break;
+            case 2:
+                test_regex('/\/(Question[^n]|Question$)/');
+                break;
+            case 3:
+                test_regex('/\/Module/');
+                break;
+            case 4:
+                test_regex('/\/Topic/');
+                break;
+            case 5:
+                test_regex('/\/Admin/');
+                break;
+            case 6:
+                test_regex('/\/Support/');
+                break;
+            default:
+                break;
+        }
     }
 }
 
