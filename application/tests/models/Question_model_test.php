@@ -3,6 +3,13 @@ if(!trait_exists('Test_Trait', TRUE)) {
     include(__DIR__.'/../../third_party/Test_Trait.php');
 }
 
+/**
+ * Class for tests for question model
+ * 
+ * @author      Orif, section informatique (ViDi, MeSa, BuYa)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 class Question_model_test extends TestCase {
     use Test_Trait;
 
@@ -16,12 +23,6 @@ class Question_model_test extends TestCase {
         'topic' => 0,
         'question_type' => 0
     ];
-    /**
-     * List of users created
-     *
-     * @var array
-     */
-    private static $question_ids = [];
 
     public function setUp()
     {

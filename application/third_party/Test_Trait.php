@@ -43,8 +43,10 @@ trait Test_Trait {
         $CI =& get_instance();
 
         foreach($models as $model) {
-            if(isset($CI->{$model}) && $this->_old_db_errors[$model] != $CI->{$model}->_database->error()) {
-                return TRUE;
+            if(isset($CI->{$model})) {
+                if(isset($this->_old_db_errors[$model]) && $this->_old_db_errors[$model] != $CI->{$model}->_database->error()) {
+                    return TRUE;
+                }
             }
         }
         return FALSE;

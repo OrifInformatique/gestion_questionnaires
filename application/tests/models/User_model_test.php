@@ -3,6 +3,13 @@ if(!trait_exists('Test_Trait', TRUE)) {
     include(__DIR__.'/../../third_party/Test_Trait.php');
 }
 
+/**
+ * Class for tests for user model
+ * 
+ * @author      Orif, section informatique (ViDi, MeSa, BuYa)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 class User_model_test extends TestCase {
     use Test_Trait;
 
@@ -11,7 +18,7 @@ class User_model_test extends TestCase {
      *
      * @var array
      */
-    private $_dummy_values = [
+    private static $_dummy_values = [
         'user' => 'dummy_user',
         'user_type' => 1,
         'password' => 'dummy_password'
@@ -32,16 +39,7 @@ class User_model_test extends TestCase {
     {
         parent::tearDownAfterClass();
 
-        // Get a new CI instance
-		reset_instance();
-		CIPHPUnitTest::createCodeIgniterInstance();
-        $CI =& get_instance();
-
-        // Delete users
-        $CI->load->model('user_model');
-        foreach(self::$user_ids as $user_id) {
-            $CI->user_model->hard_delete($user_id);
-        }
+		self::_dummy_users_delete();
     }
 
     /*******
@@ -115,9 +113,9 @@ class User_model_test extends TestCase {
 
         // Create a basic dummy user
         $dummy_user = array(
-            'User' => $this->_dummy_values['user'],
-            'FK_User_Type' => $this->_dummy_values['user_type'],
-            'Password' => password_hash($this->_dummy_values['password'], PASSWORD_HASH_ALGORITHM)
+            'User' => self::$_dummy_values['user'],
+            'FK_User_Type' => self::$_dummy_values['user_type'],
+            'Password' => password_hash(self::$_dummy_values['password'], PASSWORD_HASH_ALGORITHM)
         );
 
         // Prepare some data for testing
@@ -151,12 +149,12 @@ class User_model_test extends TestCase {
         $this->CI->load->model('user_model');
 
         // Create a basic dummy user
-        $username = $this->_dummy_values['user'];
-        $password = $this->_dummy_values['password'];
+        $username = self::$_dummy_values['user'];
+        $password = self::$_dummy_values['password'];
 
         $dummy_user = array(
             'User' => $username,
-            'FK_User_Type' => $this->_dummy_values['user_type'],
+            'FK_User_Type' => self::$_dummy_values['user_type'],
             'Password' => password_hash($password, PASSWORD_HASH_ALGORITHM)
         );
         self::$user_ids[] = $this->CI->user_model->insert($dummy_user);
@@ -189,5 +187,38 @@ class User_model_test extends TestCase {
         ];
 
         return $data;
+    }
+
+    /**
+     * Deletes all the dummy users
+     *
+     * @return void
+     */
+    private static function _dummy_users_delete()
+    {
+		reset_instance();
+		CIPHPUnitTest::createCodeIgniterInstance();
+        $CI =& get_instance();
+        $CI->load->model('user_model');
+
+        $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']]);
+        foreach($users as $user) {
+            if(method_exists($CI->user_model, 'hard_delete')) {
+                $CI->user_model->hard_delete($user->ID);
+            } else {
+                $CI->user_model->delete($user->ID, TRUE);
+            }
+        }
+
+        $users = $CI->user_model->with_deleted()->get_many_by(['User' => 'user_dummy']);
+        foreach($users as $user) {
+            if(method_exists($CI->user_model, 'hard_delete')) {
+                $CI->user_model->hard_delete($user->ID);
+            } else {
+                $CI->user_model->delete($user->ID, TRUE);
+            }
+        }
+
+        self::$dummy_ids['users'] = [];
     }
 }
