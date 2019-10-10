@@ -34,7 +34,7 @@ class Admin extends MY_Controller {
     /**
      * Displays the list of users
      */
-    public function user_index($error = 0) {
+    public function user_index() {
         $output = array(
             'title' => $this->lang->line('title_users'),
             'users' => $this->user_model->with_deleted()->get_all(),
