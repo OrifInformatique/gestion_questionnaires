@@ -169,7 +169,7 @@ class Topic extends MY_Controller
                 'id' => $id,
                 'title_module' => $topic->Topic,
                 'action' => 'update'
-            
+            );
             $this->display_view("modules/update", $outputs);
         } else redirect('topic');
     }
