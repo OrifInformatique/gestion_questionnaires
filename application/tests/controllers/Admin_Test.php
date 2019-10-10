@@ -268,6 +268,20 @@ class Admin_Test extends TestCase {
         );
         if(!is_null($upuser)) self::$dummy_ids[] = $upuser->ID;
     }
+    public function test_user_delete_nothing()
+    {
+        $this->resetInstance();
+
+        $this->_db_errors_save();
+
+        $this->request('GET', 'admin/user_delete/1/-1');
+        $this->assertRedirect('admin/user_index');
+
+        $this->assertFalse(
+            $this->_db_errors_diff(),
+            'One or more error occured in an SQL statement'
+        );
+    }
     /**
      * Test for `Admin::user_change_password`
      * 

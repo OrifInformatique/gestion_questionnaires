@@ -143,11 +143,9 @@ class Admin extends MY_Controller {
             case 1: // Deactivate user
                 $this->user_model->delete($userId);
                 redirect('admin/user_index');
-                break;
             case 2: // Delete user
                 $this->user_model->hard_delete($userId);
                 redirect('admin/user_index');
-                break;
             default: // Do nothing
                 redirect('admin/user_index');
         }
