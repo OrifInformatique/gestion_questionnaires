@@ -15,30 +15,32 @@ class Home_test extends TestCase
      */
     public function test_unregistered()
     {
-        // TODO This test doesn't work, to be fixed
-        $output = $this->request('GET', 'home');
-        $this->assertContains(lang('page_login'), $output);
+        $this->request('GET', 'home');
+        $this->assertRedirect('auth/login');
     }
 
-    public function test_index_as_user()
+    /**
+     * @dataProvider provider_index
+     */
+    public function test_index($user_access, $expected_func, $expected_arg)
     {
-        $this->register_login(1);
+        $this->register_login($user_access);
         $this->request('GET', 'home');
-        $this->assertResponseCode(200);
+        $this->$expected_func($expected_arg);
     }
 
-    public function test_index_as_manager()
+    public function provider_index()
     {
-        $this->register_login(2);
-        $this->request('GET', 'home');
-        $this->assertRedirect('Questionnaire');
-    }
+        $this->resetInstance();
+        $this->CI->load->model('user_model');
 
-    public function test_index_as_admin()
-    {
-        $this->register_login(4);
-        $this->request('GET', 'home');
-        $this->assertRedirect('Questionnaire');
+        $data = [];
+
+        $data['user'] = [ACCESS_LVL_USER, 'assertResponseCode', 200];
+        $data['manager'] = [ACCESS_LVL_MANAGER, 'assertRedirect', 'Questionnaire'];
+        $data['admin'] = [ACCESS_LVL_ADMIN, 'assertRedirect', 'Questionnaire'];
+
+        return $data;
     }
 
     public function register_login($user_access)
