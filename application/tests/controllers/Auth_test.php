@@ -1,6 +1,6 @@
 <?php
 /**
- * Test of the Home.php controller
+ * Test of the Auth.php controller
  *
  * @author     Section informatique de l'Orif
  * @copyright  2019 Orif
@@ -78,6 +78,16 @@ class Auth_test extends TestCase
         return $data;
     }
 
+    public function test_logout(){
+        $this->set_session();
+        $this->test_logout_not_logged_in();
+    }
+
+    public function test_logout_not_logged_in(){
+        $this->request('GET', 'auth/logout');
+        $this->assertRedirect('');
+    }
+
     public function dummy_user_create(){
         $this->dummy_id = $this->CI->user_model->insert([
             'User' => $this->username,
@@ -92,6 +102,8 @@ class Auth_test extends TestCase
 
     public function set_session()
     {
+        $_SESSION = [];
+        session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = 'user_test';
         $_SESSION['user_access'] = ACCESS_LVL_USER;
