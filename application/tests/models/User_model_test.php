@@ -209,7 +209,6 @@ class User_model_test extends TestCase {
                 $CI->user_model->delete($user->ID, TRUE);
             }
         }
-
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => 'user_dummy']);
         foreach($users as $user) {
             if(method_exists($CI->user_model, 'hard_delete')) {
@@ -219,6 +218,6 @@ class User_model_test extends TestCase {
             }
         }
 
-        self::$dummy_ids['users'] = [];
+        self::$user_ids['users'] = [];
     }
 }

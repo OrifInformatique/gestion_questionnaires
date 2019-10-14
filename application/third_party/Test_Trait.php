@@ -70,4 +70,18 @@ trait Test_Trait {
         }
         return $models;
     }
+    /**
+     * 'Logs in' with the specified access level
+     *
+     * @param integer $access_level = Access level to log in with
+     * @return void
+     */
+    private function _login_as(int $access_level)
+    {
+        $_SESSION = [];
+        session_reset();
+
+        $_SESSION['logged_in'] = (bool)$access_level;
+        $_SESSION['user_access'] = $access_level;
+    }
 }
