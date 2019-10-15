@@ -410,11 +410,10 @@ class Topic_Test extends TestCase {
         $this->resetInstance();
         $this->CI->load->model('topic_model');
 
-        $topic = array(
+        $this->CI->topic_model->insert([
             'FK_Parent_Topic' => $module_id,
             'Topic' => self::$_dummy_values['topic']['topic']
-        );
-        $topic_id = (int) $this->CI->topic_model->insert($topic);
+        ]);
 
         $this->_db_errors_save();
         
@@ -429,8 +428,6 @@ class Topic_Test extends TestCase {
             $this->_db_errors_diff(),
             'One or more error occured in an SQL statement'
         );
-
-        $this->CI->topic_model->delete($topic_id);
     }
     /**
      * Test for `Topic::delete_module` with a module linked to a topic linked
@@ -467,16 +464,6 @@ class Topic_Test extends TestCase {
             $this->_db_errors_diff(),
             'One or more error occured in an SQL statement'
         );
-
-        // Clean up question
-        $questions = $this->CI->question_model->get_many_by(['Question' => 'dummy_question']);
-        foreach($questions as $question) {
-            if(method_exists($this->CI->question_model, 'hard_delete')) {
-                $this->CI->question_model->hard_delete($question->ID);
-            } else {
-                $this->CI->question_model->delete($question->ID, TRUE);
-            }
-        }
     }
     /**
      * Test for `Topic::add_module`
@@ -1248,11 +1235,26 @@ class Topic_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('topic_model');
+        $CI->load->model(['topic_model', 'question_model']);
 
-        $CI->topic_model->delete_by(['Topic' => self::$_dummy_values['topic']['topic']]);
-        $CI->topic_model->delete_by(['Topic' => self::$_dummy_values['topic']['topic_alt']]);
-        $CI->topic_model->delete_by(['Topic' => self::$_dummy_values['module']['topic']]);
-        $CI->topic_model->delete_by(['Topic' => self::$_dummy_values['module']['topic_alt']]);
+        $filters = array(
+            self::$_dummy_values['topic']['topic'],
+            self::$_dummy_values['topic']['topic_alt'],
+            self::$_dummy_values['module']['topic'],
+            self::$_dummy_values['module']['topic_alt']
+        );
+        foreach($filters as $filter) {
+            $topics = $CI->topic_model->get_many_by(['Topic' => $filter]);
+            foreach($topics as $topic) {
+                $questions = $CI->question_model->get_many_by(['FK_Topic' => $topic->ID]);
+                foreach($questions as $question) {
+                    if(method_exists($CI->question_model, 'hard_delete')) {
+                        $CI->question_model->hard_delete($question->ID);
+                    } else {
+                        $CI->question_model->delete($question->ID, TRUE);
+                    }
+                }
+            }
+        }
     }
 }

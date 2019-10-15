@@ -73,13 +73,16 @@ trait Test_Trait {
     /**
      * 'Logs in' with the specified access level
      *
-     * @param integer $access_level = Access level to log in with
+     * @param integer $access_level = Access level to log in with. Set to 0 to
+     *      log out
      * @return void
      */
     private function _login_as(int $access_level)
     {
         $_SESSION = [];
+        
         session_reset();
+        session_unset();
 
         $_SESSION['logged_in'] = (bool)$access_level;
         $_SESSION['user_access'] = $access_level;

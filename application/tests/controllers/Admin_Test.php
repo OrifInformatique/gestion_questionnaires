@@ -23,7 +23,8 @@ class Admin_Test extends TestCase {
      */
     private static $_dummy_values = [
         'user' => [
-            'user' => 'dummy_user',
+            'user' => 'dummy_admin_user',
+            'user_alt' => 'user_admin_dummy',
             'user_type' => 1,
             'password' => 'dummy_password'
         ],
@@ -635,6 +636,7 @@ class Admin_Test extends TestCase {
         $this->CI->load->model('user_type_model');
         $user_name = self::$_dummy_values['user']['user'];
         $user_type = self::$_dummy_values['user']['user_type'];
+        $user_name_alt = self::$_dummy_values['user']['user_alt'];
 
         $data = [];
 
@@ -642,7 +644,7 @@ class Admin_Test extends TestCase {
             [
                 'save' => TRUE,
                 'id' => $user_id,
-                'user_name' => 'user_dummy',
+                'user_name' => $user_name_alt,
                 'user_usertype' => $user_type
             ],
             FALSE,
@@ -1194,7 +1196,7 @@ class Admin_Test extends TestCase {
             }
         }
 
-        $users = $CI->user_model->with_deleted()->get_many_by(['User' => 'user_dummy']);
+        $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']['user_alt']]);
         foreach($users as $user) {
             if(method_exists($CI->user_model, 'hard_delete')) {
                 $CI->user_model->hard_delete($user->ID);
