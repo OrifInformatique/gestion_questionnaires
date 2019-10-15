@@ -9,8 +9,6 @@ if(!trait_exists('Test_Trait', TRUE)) {
 /**
  * Class for tests for Support controller
  * 
- * @covers Support
- * 
  * @author      Orif, section informatique (ViDi, MeSa, BuYa)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)

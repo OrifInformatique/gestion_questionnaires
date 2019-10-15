@@ -54,8 +54,7 @@ class Questionnaire extends MY_Controller
         if($model) $object = $this->questionnaire_model_model->get($id);
         else $object = $this->questionnaire_model->get($id);
         if(is_null($object)) {
-            redirect('Questionnaire');
-            return;
+            redirect('questionnaire');
         }
 
         $outputs = array(
@@ -103,9 +102,16 @@ class Questionnaire extends MY_Controller
             $this->update($id, $model, true);
         }
         
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
+    /**
+     * Checks that the questionnaire or model exists from the ID
+     *
+     * @param integer $id = ID to check
+     * @param boolean $model = Whether it is a model or a questionnaire
+     * @return boolean = TRUE if it exists, FALSE otherwise
+     */
     public function quest_or_model_exists($id, $model) : bool
     {
         $object = NULL;
@@ -124,30 +130,27 @@ class Questionnaire extends MY_Controller
      */
     public function delete($id = 0, $action = NULL)
     {
-        if ($id != 0) {
-            if (is_null($action)) {
-                $output = get_object_vars($this->questionnaire_model->get($id));
-                $output["model"] = false;
-                $output["title"] = $this->lang->line('delete_questionnaire');
-                $this->display_view("questionnaires/delete", $output);
-            } else {
-                $this->load->model('question_questionnaire_model');
-
-                $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-                if(!is_null($questionnaire)) {
-                    if (count($questionnaire->question_questionnaires) > 0) {
-                        foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-                            $this->question_questionnaire_model->delete($question_questionnaire->ID);
-                        }
-                    }
-                    unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
-                    unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
-                    $this->questionnaire_model->delete($id);
-                }
-                redirect('Questionnaire');
-            }
+        if(!$this->quest_or_model_exists($id, FALSE) && !!$this->quest_or_model_exists($id, TRUE)) {
+            redirect('questionnaire');
+        }
+        if (is_null($action)) {
+            $output = get_object_vars($this->questionnaire_model->get($id));
+            $output["model"] = false;
+            $output["title"] = $this->lang->line('delete_questionnaire');
+            $this->display_view("questionnaires/delete", $output);
         } else {
-            redirect('Questionnaire');
+            $this->load->model('question_questionnaire_model');
+
+            $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
+            if (count($questionnaire->question_questionnaires) > 0) {
+                foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+                    $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                }
+            }
+            unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+            unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
+            $this->questionnaire_model->delete($id);
+            redirect('questionnaire');
         }
     }
 
@@ -301,9 +304,12 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * For codeigniter callback on something already found to be wrong
+     * For codeigniter callback on something already found to be wrong.
+     * 
+     * I wish it were possible to pass 2 objects, but ci callbacks only allow
+     * strings, so this'll have to do.
      *
-     * @return boolean
+     * @return boolean = FALSE, 100% of the time
      */
     public function get_false() : bool
     {
@@ -319,15 +325,15 @@ class Questionnaire extends MY_Controller
      */
     public function generatePDF($idQuestionnaire = -1, $tableTopics = NULL) {
         if($idQuestionnaire == -1) {
-            if(is_null($tableTopics)) redirect('Questionnaire');
+            if(is_null($tableTopics)) redirect('questionnaire');
             $idQuestionnaire = $this->InsertNewQuestionnaire($tableTopics);
         }
-        if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('Questionnaire');
+        if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('questionnaire');
 
         $this->generateQuestions($idQuestionnaire);
         $this->generateAnswers($idQuestionnaire);
 
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
     /**
@@ -573,7 +579,7 @@ class Questionnaire extends MY_Controller
 
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
     /**
@@ -604,7 +610,7 @@ class Questionnaire extends MY_Controller
                 $this->questionnaire_model_topic_model->insert($newQuestionnaireModelTopic);
             }
         }
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
     /**
@@ -657,7 +663,7 @@ class Questionnaire extends MY_Controller
      */
     public function model_delete($modelId, $action = NULL) {
         $questionnaireModel = $this->questionnaire_model_model->get($modelId);
-        if(is_null($questionnaireModel)) redirect('Questionnaire');
+        if(is_null($questionnaireModel)) redirect('questionnaire');
         if(is_null($action)) {
             $output = get_object_vars($questionnaireModel);
             $output['model'] = true;
@@ -668,7 +674,7 @@ class Questionnaire extends MY_Controller
                 $this->questionnaire_model_topic_model->delete($questmodtop->ID);
             }
             $this->questionnaire_model_model->delete($modelId);
-            redirect('Questionnaire');
+            redirect('questionnaire');
         }
     }
 
