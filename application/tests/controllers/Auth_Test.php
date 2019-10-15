@@ -362,7 +362,6 @@ class Auth_Test extends TestCase {
     /**************
      * MISC METHODS
      **************/
-
     /**
      * Creates a dummy user according to dummy values.
      * 
