@@ -1,11 +1,15 @@
 <?php
-/*if(!trait_exists('Test_Trait', TRUE)) {
-    include(__DIR__.'/../../third_party/Test_Trait.php');
-}*/
 if(!class_exists('TableTopics')) {
     include(__DIR__.'/../../libraries/TableTopics.php');
 }
 
+/**
+ * Class for tests for TableTopics class
+ * 
+ * @author      Orif, section informatique (ViDi, MeSa, BuYa)
+ * @link        https://github.com/OrifInformatique/gestion_questionnaires
+ * @copyright   Copyright (c) Orif (http://www.orif.ch)
+ */
 class TableTopics_Test extends TestCase {
     /**
      * Instance of TableTopics for tests
@@ -303,8 +307,4 @@ class TableTopics_Test extends TestCase {
 
         return $data;
     }
-
-    /**************
-     * MISC METHODS
-     **************/
 }

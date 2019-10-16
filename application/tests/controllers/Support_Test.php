@@ -97,8 +97,4 @@ class Support_Test extends TestCase {
 
         return $data;
     }
-
-    /**************
-     * MISC METHODS
-     **************/
 }
