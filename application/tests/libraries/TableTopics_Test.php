@@ -1,7 +1,5 @@
 <?php
-if(!class_exists('TableTopics')) {
-    include(__DIR__.'/../../libraries/TableTopics.php');
-}
+require_once(__DIR__.'/../../libraries/TableTopics.php');
 
 /**
  * Class for tests for TableTopics class

@@ -1,13 +1,7 @@
 <?php
-if(!trait_exists('Test_Trait', TRUE)) {
-    include(__DIR__.'/../../third_party/Test_Trait.php');
-}
-if(!class_exists('TableTopics')) {
-    include(__DIR__.'/../../libraries/TableTopics.php');
-}
-if(!class_exists('Questionnaire')) {
-    include(__DIR__.'/../../controllers/Questionnaire.php');
-}
+require_once(__DIR__.'/../../third_party/Test_Trait.php');
+require_once(__DIR__.'/../../libraries/TableTopics.php');
+require_once(__DIR__.'/../../controllers/Questionnaire.php');
 
 /**
  * Class for tests for Questionnaire controller
@@ -1804,7 +1798,7 @@ class Questionnaire_Test extends TestCase {
         $question = $CI->question_model->with_deleted()->get(self::$_dummy_ids['question']);
         if(is_null($question)) {
             // Question no longer exists, create a new one
-            $dummy_values =& self::$_dummy_values['question'];
+            $dummy_values = self::$_dummy_values['question'];
 
             $question = array(
                 'FK_Topic' => self::$_dummy_ids['topic'],
@@ -1865,13 +1859,13 @@ class Questionnaire_Test extends TestCase {
             CIPHPUnitTest::createCodeIgniterInstance();
             $CI =& get_instance();
         }
-        $CI->load->model(['question_model', 'question_questionnaire_model']);
+        $CI->load->model(['question_model', 'question_questionnaire_model', 'user_model']);
 
         $question = $CI->question_model->with_deleted()->get(self::$_dummy_ids['question']);
         if(!is_null($question)) {
             $CI->question_questionnaire_model->delete_by(['FK_Question' => $question->ID]);
 
-            if(method_exists($CI->question_model, 'hard_delete')) {
+            if(method_exists($CI->user_model, 'hard_delete')) {
                 $CI->question_model->hard_delete($question->ID);
             } else {
                 $CI->question_model->delete($question->ID, TRUE);

@@ -1,10 +1,5 @@
 <?php
-if(!trait_exists('Test_Trait', TRUE)) {
-    include(__DIR__.'/../../third_party/Test_Trait.php');
-}
-/*if(!class_exists('Support')) {
-    include(__DIR__.'/../../controllers/Support.php');
-}*/
+require_once(__DIR__.'/../../third_party/Test_Trait.php');
 
 /**
  * Class for tests for Support controller

@@ -1,7 +1,4 @@
 <?php
-if(!class_exists('Home')) {
-    include(__DIR__.'/../../controllers/Home.php');
-}
 
 class Home_Test extends TestCase {
     /**************

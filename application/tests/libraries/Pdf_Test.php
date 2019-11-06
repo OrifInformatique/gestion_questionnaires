@@ -1,10 +1,6 @@
 <?php
-if(!class_exists('FPDF')) {
-    include(__DIR__.'/../../libraries/fpdf181/Fpdf.php');
-}
-if(!class_exists('PDF')) {
-    include(__DIR__.'/../../libraries/Pdf.php');
-}
+require_once(__DIR__.'/../../libraries/fpdf181/Fpdf.php');
+require_once(__DIR__.'/../../libraries/Pdf.php');
 
 /**
  * Class for tests for PDF class
