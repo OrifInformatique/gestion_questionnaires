@@ -87,7 +87,7 @@ class Admin_Test extends Admin {
             $this->test_user_update_reactivate_not_exist();
             $this->_dummy_user_reset($dummy_user_id);
 
-            $this->user_model->hard_delete($dummy_user_id);
+            $this->user_model->delete($dummy_user_id, TRUE);
         }
 
         if(in_array('user_delete', $this->_tests)) {
@@ -107,7 +107,7 @@ class Admin_Test extends Admin {
 
             $this->test_user_delete_delete_not_exist();
 
-            $this->user_model->hard_delete($dummy_user_id);
+            $this->user_model->delete($dummy_user_id, TRUE);
         }
 
         if(in_array('user_pwd_change', $this->_tests)) {
@@ -125,7 +125,7 @@ class Admin_Test extends Admin {
             $this->test_user_change_pwd_not_exist();
             $this->_dummy_user_reset($dummy_user_id);
 
-            $this->user_model->hard_delete($dummy_user_id);
+            $this->user_model->delete($dummy_user_id, TRUE);
         }
 
         // Display test results
@@ -178,7 +178,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['no_errors'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -225,7 +225,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['short_name'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -273,7 +273,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['long_name'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -320,7 +320,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['short_pwd'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -368,7 +368,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['long_pwd'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -413,7 +413,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['create']['pwd_not_match'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
 
@@ -541,7 +541,7 @@ class Admin_Test extends Admin {
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -668,7 +668,7 @@ class Admin_Test extends Admin {
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -797,7 +797,7 @@ class Admin_Test extends Admin {
 
         // In case the user is created by accident, delete it
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
 
@@ -864,7 +864,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['delete']['not_exist'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -927,7 +927,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['delete']['disactivate_not_exist'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
     /**
@@ -969,7 +969,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['delete']['delete'] = $result;
 
         if(!is_null($user_deleted)) {
-            $this->user_model->hard_delete($dummy_user_id);
+            $this->user_model->delete($dummy_user_id, TRUE);
         }
     }
     /**
@@ -1007,7 +1007,7 @@ class Admin_Test extends Admin {
         }
 
         if(!is_null($user_deleted)) {
-            $this->user_model->hard_delete($bad_id);
+            $this->user_model->delete($bad_id, TRUE);
         }
     }
 
@@ -1162,7 +1162,7 @@ class Admin_Test extends Admin {
         $this->_test_results['user']['change_pwd']['not_exist'] = $result;
 
         if(!is_null($user)) {
-            $this->user_model->hard_delete($user->ID);
+            $this->user_model->delete($user->ID, TRUE);
         }
     }
 

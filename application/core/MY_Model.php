@@ -324,14 +324,17 @@ class MY_Model extends CI_Model
 
     /**
      * Delete a row from the table by the primary value
+     * 
+     * @param boolean $force_hard_delete Force deletion from table even if
+     *                                   soft_delete is set to true.
      */
-    public function delete($id)
+    public function delete($id, $force_hard_delete = false)
     {
         $this->trigger('before_delete', $id);
 
         $this->_database->where($this->primary_key, $id);
 
-        if ($this->soft_delete) {
+        if ($this->soft_delete && !$force_hard_delete) {
             $result = $this->_database->update($this->_table, array($this->soft_delete_key => TRUE));
         } else {
             $result = $this->_database->delete($this->_table);
@@ -367,14 +370,17 @@ class MY_Model extends CI_Model
 
     /**
      * Delete many rows from the database table by multiple primary values
+     * 
+     * @param boolean $force_hard_delete Force deletion from table even if
+     *                                   soft_delete is set to true.
      */
-    public function delete_many($primary_values)
+    public function delete_many($primary_values, $force_hard_delete = false)
     {
         $primary_values = $this->trigger('before_delete', $primary_values);
 
         $this->_database->where_in($this->primary_key, $primary_values);
 
-        if ($this->soft_delete) {
+        if ($this->soft_delete && !$force_hard_delete) {
             $result = $this->_database->update($this->_table, array($this->soft_delete_key => TRUE));
         } else {
             $result = $this->_database->delete($this->_table);
