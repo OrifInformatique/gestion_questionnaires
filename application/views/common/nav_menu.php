@@ -59,26 +59,26 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
     <div id="myNavbar" class="container">
         <ul class="nav navbar-nav">
             <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
-                <li <?php checkactive(1); ?>><a href="<?php echo base_url('Questionnaire');?>">
+                <li <?php checkactive(1); ?>><a href="<?php echo base_url('questionnaire');?>">
                     <?= $this->lang->line('nav_questionnaire');?></a></li>
-                <li <?php checkactive(2); ?>><a href="<?php echo base_url('Question');?>">
+                <li <?php checkactive(2); ?>><a href="<?php echo base_url('question');?>">
                     <?= $this->lang->line('nav_question');?></a></li>
-                <li <?php checkactive(4); ?>><a href="<?php echo base_url('Topic');?>">
+                <li <?php checkactive(4); ?>><a href="<?php echo base_url('topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
                 <?php if($_SESSION['user_access'] >= ACCESS_LVL_ADMIN) { ?>
-                    <li <?php checkactive(5); ?>><a href="<?php echo base_url('Admin');?>">
+                    <li <?php checkactive(5); ?>><a href="<?php echo base_url('admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
                 <?php } ?>
                 
             <?php } else { ?>
-                <li <?php checkactive(0); ?>><a href="<?php echo base_url('Home');?>">
+                <li <?php checkactive(0); ?>><a href="<?php echo base_url('home');?>">
                     <?php echo $this->lang->line('nav_home');?></a></li>
            <?php } ?>
         </ul>
         
         <!-- Button to submit a problem -->
         <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
-            <a class="btn btn-warning pull-right" href="<?php echo base_url('Support');?>">
+            <a class="btn btn-warning pull-right" href="<?php echo base_url('support');?>">
                     <?= $this->lang->line('nav_support');?></a>
         <?php } ?>
     </div>

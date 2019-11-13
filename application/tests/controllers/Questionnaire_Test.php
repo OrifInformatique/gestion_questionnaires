@@ -1866,7 +1866,10 @@ class Questionnaire_Test extends TestCase {
             $CI->question_questionnaire_model->delete_by(['FK_Question' => $question->ID]);
 
             if(method_exists($CI->user_model, 'hard_delete')) {
-                $CI->question_model->hard_delete($question->ID);
+                // New delete method does not exist yet
+                $db =& $CI->question_model->_database;
+                $db->where('ID', $question->ID);
+                $db->delete($CI->question_model->table());
             } else {
                 $CI->question_model->delete($question->ID, TRUE);
             }
