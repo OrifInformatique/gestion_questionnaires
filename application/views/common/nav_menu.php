@@ -65,8 +65,6 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     <?= $this->lang->line('nav_question');?></a></li>
                 <li <?php checkactive(4); ?>><a href="<?php echo base_url('topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
-                <li <?php checkactive(6); ?>><a class="text-warning bg-warning" href="<?php echo base_url('Support');?>">
-                    <?= $this->lang->line('nav_support');?></a></li>
                 <?php if($_SESSION['user_access'] >= ACCESS_LVL_ADMIN) { ?>
                     <li <?php checkactive(5); ?>><a href="<?php echo base_url('admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
