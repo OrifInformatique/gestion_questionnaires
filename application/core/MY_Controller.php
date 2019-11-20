@@ -2,9 +2,9 @@
 /**
  * A base controller with permission check functions
  * 
- * @author      Didier Viret
- * @link        https://github.com/OrifInformatique/stock
- * @copyright   Copyright (c) 2016, Orif <http://www.orif.ch>
+ * @author      Orif (ViDi)
+ * @link        https://github.com/OrifInformatique
+ * @copyright   Copyright (c) 2019, Orif <http://www.orif.ch>
  */
 
 class MY_Controller extends CI_Controller
@@ -20,14 +20,13 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         /* Check permission on construct */
         if (!$this->check_permission()) {
-            show_error($this->lang->line('msg_err_access_denied_message'), 403, $this->lang->line('msg_err_access_denied_header'));
+            show_error(lang('msg_err_access_denied_message'), 403, lang('msg_err_access_denied_header'));
         }
     }
 
-    
     /**
      * Display the login form.
      * Store the current URL in session to be able to redirect after login.

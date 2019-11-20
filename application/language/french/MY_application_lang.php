@@ -37,7 +37,7 @@ $lang['field_old_password']             = 'Ancien mot de passe';
 $lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
-$lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
+$lang['msg_err_access_denied_message']  = 'Vous n\'êtes pas autorisé à accéder à cette fonction';
 
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
