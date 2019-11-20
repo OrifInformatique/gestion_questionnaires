@@ -23,8 +23,8 @@ class Admin extends MY_Controller {
     /**
      * Redirects to the user index
      */
-    public function index() {
-        $this->user_index();
+    public function index(...$args) {
+        $this->user_index(...$args);
     }
 
     /*************************
@@ -69,7 +69,9 @@ class Admin extends MY_Controller {
             'min_length['.USERNAME_MIN_LENGTH.']',
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
-        $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), 'required');
+        $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), [
+            'required','callback_cb_type_exists'
+        ]);
         $this->form_validation->set_rules(
             'disactivate', $this->lang->line('btn_desactivate'),
             "callback_cb_not_inactive_user[{$userId}]",
@@ -116,7 +118,7 @@ class Admin extends MY_Controller {
                 $user['Password'] = password_hash($password, PASSWORD_HASH_ALGORITHM);
                 $this->user_model->insert($user);
             }
-            redirect('Admin/user_index');
+            redirect('admin/user_index');
         } else {
             $this->user_add($userId);
         }
@@ -130,7 +132,7 @@ class Admin extends MY_Controller {
      */
     public function user_delete($userId, $action = 0) {
         $user = $this->user_model->with_deleted()->get($userId);
-        if(is_null($user)) return redirect('Admin/user_index');
+        if(is_null($user)) return redirect('admin/user_index');
 
         switch($action) {
             case 0: // Display confirmation
@@ -140,14 +142,13 @@ class Admin extends MY_Controller {
                 break;
             case 1: // Deactivate user
                 $this->user_model->delete($userId);
-                redirect('Admin/user_index');
-                break;
+                redirect('admin/user_index');
             case 2: // Delete user
                 $this->user_model->delete($userId, TRUE);
                 redirect('Admin/user_index');
                 break;
             default: // Do nothing
-                redirect('Admin/user_index');
+                redirect('admin/user_index');
         }
     }
 
@@ -156,9 +157,9 @@ class Admin extends MY_Controller {
      *
      * @param integer $userId = The id of the user to modify
      */
-    public function user_change_password($userId) {
+    public function user_change_password($userId, bool $preventRedirect = FALSE) {
         $user = $this->user_model->with_deleted()->get($userId);
-        if(is_null($user)) redirect('Admin/user_index');
+        if(is_null($user) && !$preventRedirect || $userId == 0) redirect('admin/user_index');
 
         $output = array(
             'user' => $user,
@@ -174,7 +175,11 @@ class Admin extends MY_Controller {
     public function user_change_password_form() {
         $userId = $this->input->post('id');
 
-        $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
+        $this->form_validation->set_rules(
+            'id', $this->lang->line('id'),
+            'callback_not_null_user',
+            $this->lang->line('msg_err_user_not_exist')
+        );
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
             'min_length['.PASSWORD_MIN_LENGTH.']',
@@ -191,9 +196,9 @@ class Admin extends MY_Controller {
             $new_password = $this->input->post('user_password_new');
             $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
             $this->user_model->update($userId, ['Password' => $new_password]);
-            redirect('Admin/user_index');
+            redirect('admin/user_index');
         } else {
-            $this->user_change_password($userId);
+            $this->user_change_password($userId, TRUE);
         }
     }
 
@@ -217,7 +222,7 @@ class Admin extends MY_Controller {
     public function cb_not_inactive_user($disactivate, $userId) : bool
     {
         if(is_null($disactivate)) return TRUE;
-        $user = $this->user_model->get($userId);
+        $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
         return $user->Archive == 0;
     }
@@ -232,8 +237,13 @@ class Admin extends MY_Controller {
     public function cb_not_active_user($reactivate, $userId) : bool
     {
         if(is_null($reactivate)) return TRUE;
-        $user = $this->user_model->get($userId);
+        $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
         return $user->Archive == 1;
+    }
+
+    public function cb_type_exists($user_type_id) : bool
+    {
+        return !is_null($this->user_type_model->get($user_type_id));
     }
 }

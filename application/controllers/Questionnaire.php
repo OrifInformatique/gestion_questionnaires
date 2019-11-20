@@ -51,11 +51,13 @@ class Questionnaire extends MY_Controller
      */
     public function update($id = 0, $model = FALSE, $error = FALSE)
     {
-        if($model) $object = $this->questionnaire_model_model->get($id);
-        else $object = $this->questionnaire_model->get($id);
+        if($model) {
+            $object = $this->questionnaire_model_model->get($id);
+        } else {
+            $object = $this->questionnaire_model->get($id);
+        }
         if(is_null($object)) {
-            redirect('Questionnaire');
-            return;
+            redirect('questionnaire');
         }
 
         $outputs = array(
@@ -82,7 +84,7 @@ class Questionnaire extends MY_Controller
         $this->form_validation->set_rules(
             'id', 'Id',
             "callback_quest_or_model_exists[{$model}]",
-            $this->lang->line('msg_err_'.($model ? 'model' : 'questionnaire').'_not_exist')
+            $this->lang->line('msg_err_'.($model?'model':'questionnaire').'_not_exist')
         );
 
         $object = array(
@@ -90,7 +92,9 @@ class Questionnaire extends MY_Controller
             'Questionnaire_Subtitle' => $this->input->post('subtitle')
         );
 
-        if($model) $object['Base_Name'] = $this->input->post('modelName');
+        if($model) {
+            $object['Base_Name'] = $this->input->post('modelName');
+        }
 
         if ($this->form_validation->run() == true) {
             if($model)
@@ -99,15 +103,22 @@ class Questionnaire extends MY_Controller
                 $this->questionnaire_model->update($id, $object);
                 $this->generatePDF($id);
             }
+            redirect('questionnaire');
         } else {
             $this->update($id, $model, true);
         }
-        
-        redirect('Questionnaire');
     }
 
+    /**
+     * Checks that the questionnaire or model exists from the ID
+     *
+     * @param integer $id = ID to check
+     * @param boolean $model = Whether it is a model or a questionnaire
+     * @return boolean = TRUE if it exists, FALSE otherwise
+     */
     public function quest_or_model_exists($id, $model) : bool
     {
+        if(is_null($id)) return FALSE;
         $object = NULL;
         if($model) {
             $object = $this->questionnaire_model_model->get($id);
@@ -124,31 +135,38 @@ class Questionnaire extends MY_Controller
      */
     public function delete($id = 0, $action = NULL)
     {
-        if ($id != 0) {
-            if (is_null($action)) {
-                $output = get_object_vars($this->questionnaire_model->get($id));
-                $output["model"] = false;
-                $output["title"] = $this->lang->line('delete_questionnaire');
-                $this->display_view("questionnaires/delete", $output);
-            } else {
-                $this->load->model('question_questionnaire_model');
-
-                $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
-                if(!is_null($questionnaire)) {
-                    if (count($questionnaire->question_questionnaires) > 0) {
-                        foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
-                            $this->question_questionnaire_model->delete($question_questionnaire->ID);
-                        }
-                    }
-                    unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
-                    unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
-                    $this->questionnaire_model->delete($id);
-                }
-                redirect('Questionnaire');
-            }
-        } else {
-            redirect('Questionnaire');
+        if(!$this->quest_or_model_exists($id, FALSE)) {
+            redirect('questionnaire');
         }
+        if (is_null($action)) {
+            $output = get_object_vars($this->questionnaire_model->get($id));
+            $output["model"] = false;
+            $output["title"] = $this->lang->line('delete_questionnaire');
+            $this->display_view("questionnaires/delete", $output);
+        } else {
+            $this->load->model('question_questionnaire_model');
+
+            $questionnaire = $this->questionnaire_model->with("question_questionnaires")->get($id);
+            if (count($questionnaire->question_questionnaires) > 0) {
+                foreach ($questionnaire->question_questionnaires as $question_questionnaire) {
+                    $this->question_questionnaire_model->delete($question_questionnaire->ID);
+                }
+            }
+            unlink('pdf_files/questionnaires/'.$questionnaire->PDF);
+            unlink('pdf_files/corriges/'.$questionnaire->Corrige_PDF);
+            $this->questionnaire_model->delete($id);
+            redirect('questionnaire');
+        }
+    }
+
+    /**
+     * Echoes the amount of questions in a topic. Used for the view
+     * questionnaires/add
+     *
+     * @return void
+     */
+    public function get_nb_questions() {
+        echo $this->question_model->getNbQuestionByTopic($_POST['topic']);
     }
 
     /**
@@ -163,23 +181,18 @@ class Questionnaire extends MY_Controller
      */
     public function add($model = 0, $error = NULL, $title = '', $topics = array(), $nbQuestions = array(), $subtitle = '', $modelName = '')
     {
-        // Removing this will make it so that you can't set the amount of questions
-        if(isset($_POST['topic'])) {
-            echo $this->question_model->getNbQuestionByTopic($this->input->post('topic'));
-        } else {
-            $output = array(
-                'title' => $this->lang->line('add_questionnaire_title'),
-                'error' => ($error == NULL ? NULL : true),
-                'topicsList' => $this->topic_model->get_many_by('Archive = 0 OR Archive IS NULL'),
-                'title' => $title,
-                'modelName' => $modelName,
-                'topics' => $topics,
-                'nbQuestions' => $nbQuestions,
-                'model' => (bool) $model,
-                'subtitle' => $subtitle
-            );
-            $this->display_view('questionnaires/add', $output);
-        }
+        $output = array(
+            'title' => $this->lang->line('add_questionnaire_title'),
+            'error' => ($error == NULL ? NULL : true),
+            'topicsList' => $this->topic_model->get_many_by('Archive = 0 OR Archive IS NULL'),
+            'title' => $title,
+            'modelName' => $modelName,
+            'topics' => $topics,
+            'nbQuestions' => $nbQuestions,
+            'model' => (bool) $model,
+            'subtitle' => $subtitle
+        );
+        $this->display_view('questionnaires/add', $output);
     }
 
     /**
@@ -220,7 +233,7 @@ class Questionnaire extends MY_Controller
         if (isset($_POST['cancel']))
         {
             unset($_SESSION[$temp_table_name]);
-            redirect('/Questionnaire');
+            redirect('questionnaire');
         }
         elseif (isset($_POST['delete_topic']))
         {
@@ -237,6 +250,7 @@ class Questionnaire extends MY_Controller
                 }
             }
             $this->form_validation->run();
+
             $arrayTopics = $tableTopics->getArrayTopics();
             $arrayNbQuestion = $tableTopics->getArrayNbQuestion();
 
@@ -259,8 +273,8 @@ class Questionnaire extends MY_Controller
 
                 $arrayTopics = $tableTopics->getArrayTopics();
                 for($i = 0; $i < count($arrayTopics); $i++) {
-                    if($arrayTopics[$i]->ID == $topic->ID) {
-                        $nbQuestions--;
+                    if(!is_null($arrayTopics[$i]) && $arrayTopics[$i]->ID == $topic->ID) {
+                        $tableTopics->removeArrayNbQuestion($i);
                         $tableTopics->removeArrayTopics($i);
                     }
                 }
@@ -277,12 +291,14 @@ class Questionnaire extends MY_Controller
         }
         elseif(isset($_POST['save']))
         {
+            $_POST['topic_amount'] = count($tableTopics->getArrayTopics());
             //Set form validation rules
             $this->form_validation->set_rules('title', 'Title', 'required');
+            $this->form_validation->set_rules('topic_amount', 'Title', 'is_natural_no_zero');
             if($model) $this->form_validation->set_rules('modelName', 'Name', 'required');
 
             //Check form validation
-            if($this->form_validation->run() == true && isset($tableTopics->getArrayTopics()[0]))
+            if($this->form_validation->run())
             {
                 $tableTopics->setTitle($this->input->post('title'));
                 $tableTopics->setSubtitle($this->input->post('subtitle'));
@@ -301,9 +317,12 @@ class Questionnaire extends MY_Controller
     }
 
     /**
-     * For codeigniter callback on something already found to be wrong
+     * For codeigniter callback on something already found to be wrong.
+     * 
+     * If it were possible to pass objects instead of strings through CI callbacks,
+     * this method wouldn't need to exist.
      *
-     * @return boolean
+     * @return boolean = FALSE, 100% of the time
      */
     public function get_false() : bool
     {
@@ -319,15 +338,15 @@ class Questionnaire extends MY_Controller
      */
     public function generatePDF($idQuestionnaire = -1, $tableTopics = NULL) {
         if($idQuestionnaire == -1) {
-            if(is_null($tableTopics)) redirect('Questionnaire');
+            if(!($tableTopics instanceof TableTopics)) redirect('questionnaire');
             $idQuestionnaire = $this->InsertNewQuestionnaire($tableTopics);
         }
-        if(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('Questionnaire');
+        elseif(is_null($this->questionnaire_model->get($idQuestionnaire))) redirect('questionnaire');
 
         $this->generateQuestions($idQuestionnaire);
         $this->generateAnswers($idQuestionnaire);
 
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
     /**
@@ -573,7 +592,6 @@ class Questionnaire extends MY_Controller
 
         $questionnaire = $this->questionnaire_model->get($idQuestionnaire);
         $answers->Output('F', "pdf_files/corriges/" . $questionnaire->Corrige_PDF, true);
-        redirect('Questionnaire');
     }
 
     /**
@@ -582,7 +600,7 @@ class Questionnaire extends MY_Controller
      * @param TableTopics $tableTopics = The object containing all the data
      */
     public function generateModel($tableTopics = NULL) {
-        if(!is_null($tableTopics)) { // Prevent users from going in here
+        if($tableTopics instanceof TableTopics) { // Prevent users from going in here
             $nbQuestions = $tableTopics->getArrayNbQuestion();
             $arrayTopics = $tableTopics->getArrayTopics();
             $modelName = $tableTopics->getModelName();
@@ -604,7 +622,7 @@ class Questionnaire extends MY_Controller
                 $this->questionnaire_model_topic_model->insert($newQuestionnaireModelTopic);
             }
         }
-        redirect('Questionnaire');
+        redirect('questionnaire');
     }
 
     /**
@@ -614,6 +632,9 @@ class Questionnaire extends MY_Controller
      */
     public function generate_pdf_from_model($modelId) {
         $questionnaireModel = $this->questionnaire_model_model->get($modelId);
+        if(is_null($questionnaireModel)) {
+            redirect('questionnaire');
+        }
         $output = array(
             'model' => $questionnaireModel
         );
@@ -627,6 +648,7 @@ class Questionnaire extends MY_Controller
     public function model_generate_pdf() {
         $modelId = $this->input->post('modelId');
 
+        $this->form_validation->set_rules('modelId', $this->lang->line('msg_err_model_not_exist'), 'callback_quest_or_model_exists[1]');
         $this->form_validation->set_rules('title', $this->lang->line('add_title_questionnaire'), 'required');
         $this->form_validation->set_rules('subtitle', $this->lang->line('add_subtitle_questionnaire'));
 
@@ -657,7 +679,7 @@ class Questionnaire extends MY_Controller
      */
     public function model_delete($modelId, $action = NULL) {
         $questionnaireModel = $this->questionnaire_model_model->get($modelId);
-        if(is_null($questionnaireModel)) redirect('Questionnaire');
+        if(is_null($questionnaireModel)) redirect('questionnaire');
         if(is_null($action)) {
             $output = get_object_vars($questionnaireModel);
             $output['model'] = true;
@@ -668,7 +690,7 @@ class Questionnaire extends MY_Controller
                 $this->questionnaire_model_topic_model->delete($questmodtop->ID);
             }
             $this->questionnaire_model_model->delete($modelId);
-            redirect('Questionnaire');
+            redirect('questionnaire');
         }
     }
 

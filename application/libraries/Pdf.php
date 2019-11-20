@@ -19,8 +19,8 @@ class PDF extends FPDF {
      */
     function __construct($page = '', $out_of = '/') {
         parent::__construct();
-        $this->footerPage = ($page ?: $this->footerPage);
-        $this->footerOutOf = ($out_of ?: $this->footerOutOf);
+        $this->footerPage = $page;
+        $this->footerOutOf = $out_of;
     }
 
     /**
@@ -68,7 +68,7 @@ class PDF extends FPDF {
      */
     function SetTitle($title, $isUTF8 = false) {
         parent::SetTitle($title, $isUTF8);
-        $this->title = ($isUTF8 ? iconv('UTF-8', 'windows-1252', $title) : $title);
+        $this->title = ($isUTF8 ? utf8_encode($title) : $title);
     }
 
     /**

@@ -20,7 +20,8 @@ class Question extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model', 'question_type_model', 'topic_model', 'multiple_choice_model',
+		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model',
+							'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
 		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel'));
@@ -159,7 +160,7 @@ class Question extends MY_Controller
 	 */
 	public function resetFilters() {
 		unset($_SESSION['filtres']);
-		redirect('Question');
+		redirect('question');
 	}
 
 	/**
@@ -171,7 +172,6 @@ class Question extends MY_Controller
 		$question = $this->question_model->get($id);
 		if(is_null($question)) {
 			redirect('question');
-			return;
 		} elseif (is_null($action)) {
 			$output = get_object_vars($question);
 			$output["question"] = $this->question_model->get_all();
@@ -179,7 +179,7 @@ class Question extends MY_Controller
 			$this->display_view("questions/confirm", $output);
 		} else {
 			$this->question_model->delete($id);
-			redirect('/Question');
+			redirect('question');
 		}
 	}
 
@@ -190,17 +190,34 @@ class Question extends MY_Controller
 	{
 		$this->form_validation->set_rules('name', 'Title', 'required');
 		$this->form_validation->set_rules('points', 'Points', 'required');
+		$this->form_validation->set_rules(
+			'id', 'Id', 'callback_cb_question_exists',
+			['callback_cb_question_exists' => 'lang:question_error_404_heading']
+		);
 
 		$id = $this->input->post('id');
-		$title = array(	'Question' => $this->input->post('name'),
-						'Points' => $this->input->post('points'));
+		$title = array(
+			'Question' => $this->input->post('name'),
+			'Points' => $this->input->post('points')
+		);
 
-		if ($this->form_validation->run() == true) {
+		if ($this->form_validation->run()) {
 			$this->question_model->update($id, $title);
-			$this->index();
+			redirect('question');
 		} else {
 			$this->update($id, 1);
 		}
+	}
+
+	/**
+	 * Checks that a question exists
+	 *
+	 * @param int $idQuestion = ID of the question
+	 * @return boolean = TRUE if it exists, FALSE otherwise
+	 */
+	public function cb_question_exists($idQuestion) : bool
+	{
+		return is_null($idQuestion) || !is_null($this->question_model->get($idQuestion));
 	}
 
 	/**
@@ -216,7 +233,6 @@ class Question extends MY_Controller
 		$question = $this->question_model->get($id);
 		if(is_null($question)) {
 			redirect('question');
-			return;
 		}
 
 		$output['error'] = $error;
@@ -306,73 +322,68 @@ class Question extends MY_Controller
 
 	public function detail($id = 0, $error = 0)
 	{
+		$question = $this->question_model->with_all()->with_deleted()->get($id);
+
+		if(is_null($question)) {
+			redirect('question');
+		}
+
 		$output['error'] = $error;
 		$output['id'] = $id;
 		$output['title'] = $this->lang->line('detail_question');
-
-		if ($id != 0) {
-			$question = $this->question_model->with_all()->get($id);
-			$output['question'] = $question;
-			$output['image'] = "";
-			$output['reponse'] = "";
-			if (!is_null($question)){
-				switch ($question->FK_Question_Type){
-				case 1:
-					$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-					foreach ($reponses as $reponse) {
-						if ($reponse->Valid == '1'){
-							$cocher = $this->lang->line('yes');
-						} else {
-							$cocher = $this->lang->line('no');
-						}
-						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
+		$output['question'] = $question;
+		$output['image'] = "";
+		$output['reponse'] = "";
+		switch ($question->FK_Question_Type){
+			case 1:
+				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					if ($reponse->Valid == '1'){
+						$cocher = $this->lang->line('yes');
+					} else {
+						$cocher = $this->lang->line('no');
 					}
-					break;
-				case 2:
-					$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-					foreach ($reponses as $reponse) {
-						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
-					}
-					break;
-				case 3:
-					$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
-					foreach ($reponses as $reponse) {
-						$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
-					}
-					break;
-				case 4:
-					$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-					$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
-					$this->db->order_by("Answer_Order");
-					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
-					foreach ($reponses as $reponse) {
-						$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
-					}
-					break;
-				case 5:
-					$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
-					break;
-				case 6:
-					$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
-					foreach ($reponses as $reponse) {
-						$output['reponse'] = $output['reponse']." ".$reponse->Answer;
-					}
-					break;
-				case 7:
-					$output['image'] = $question->Picture_Name;
-					$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-					foreach ($reponses as $reponse) {
-						$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
-					}
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
 				}
-				//var_dump($reponses);
-				$this->display_view('questions/detail', $output);
-			} else {
-				show_error($this->lang->line('question_error_404_message'), 404, $this->lang->line('question_error_404_heading'));
-			}
-		} else {
-			$this->index();
+				break;
+			case 2:
+				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
+				}
+				break;
+			case 3:
+				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
+				}
+				break;
+			case 4:
+				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
+				$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
+				$this->db->order_by("Answer_Order");
+				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
+				}
+				break;
+			case 5:
+				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
+				break;
+			case 6:
+				$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
+				}
+				break;
+			case 7:
+				$output['image'] = $question->Picture_Name;
+				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
+				foreach ($reponses as $reponse) {
+					$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
+				}
 		}
+		$this->display_view('questions/detail', $output);
 	}
 
 
@@ -404,28 +415,28 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 
 			switch ($_POST['question_type']){
-			case 1:
-				$this->display_view('multiple_choice/add', $output);
-				break;
-			case 2:
-				$this->display_view('multiple_answer/add', $output);
-				break;
-			case 3:
-				$this->display_view('questions/noimplemented');
-				// TODO
-				break;
-			case 4:
-				$this->display_view('cloze_text/add', $output);
-				break;
-			case 5:
-				$this->display_view('questions/noimplemented');
-				// TODO
-				break;
-			case 6:
-				$this->display_view('free_answers/add', $output);
-				break;
-			case 7:
-				$this->display_view('picture_landmark/file', $output);
+				case 1:
+					$this->display_view('multiple_choice/add', $output);
+					break;
+				case 2:
+					$this->display_view('multiple_answer/add', $output);
+					break;
+				case 3:
+					$this->display_view('questions/noimplemented');
+					// TODO
+					break;
+				case 4:
+					$this->display_view('cloze_text/add', $output);
+					break;
+				case 5:
+					$this->display_view('questions/noimplemented');
+					// TODO
+					break;
+				case 6:
+					$this->display_view('free_answers/add', $output);
+					break;
+				case 7:
+					$this->display_view('picture_landmark/file', $output);
 			}
 		}
 	}
@@ -437,12 +448,16 @@ class Question extends MY_Controller
 	public function add_MultipleChoice()
 	{
 		if (isset($_POST['cancel'])){
-			redirect('/Question');
+			redirect('question');
 		}
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural_no_zero');
+			$this->form_validation->set_rules(
+				'id', 'Id', 'callback_cb_question_exists',
+				['callback_cb_question_exists' => 'lang:question_error_404_heading']
+			);
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][question]', $this->lang->line('answers_list'), 'required');
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('valid_answer'), 'required');
@@ -512,7 +527,7 @@ class Question extends MY_Controller
 						$this->multiple_choice_model->delete($answerDb);
 					}
 				}
-				redirect('/Question');
+				redirect('question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -548,7 +563,7 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
-				$output['topics'] = $this->topic_model->get_tree();				
+				$output['topics'] = $this->topic_model->get_tree();
 
 				$output['title'] = $this->lang->line('title_question_add');
 				$this->display_view('multiple_choice/add', $output);
@@ -609,7 +624,7 @@ class Question extends MY_Controller
 			}
 
 			$output['answers'] = $answers;
-			$output['topics'] = $this->topic_model->get_tree();	
+			$output['topics'] = $this->topic_model->get_tree();
 
 			$output['title'] = $this->lang->line('title_question_add');
 			$this->display_view('multiple_choice/add', $output);
@@ -623,8 +638,12 @@ class Question extends MY_Controller
 	{
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
-			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required|integer|greater_than[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural');
+			$this->form_validation->set_rules('nb_desired_answers', $this->lang->line('nb_desired_answers'), 'required|integer|is_natural_no_zero');
+			$this->form_validation->set_rules(
+				'id', 'Id', 'callback_cb_question_exists',
+				['callback_cb_question_exists' => 'lang:question_error_404_heading']
+			);
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
@@ -693,7 +712,7 @@ class Question extends MY_Controller
 						$this->multiple_answer_model->delete($answerDb);
 					}
 				}
-				redirect('/Question');
+				redirect('question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -802,13 +821,17 @@ class Question extends MY_Controller
 	public function add_ClozeText()
 	{
 		if (isset($_POST['cancel'])){
-			redirect('/Question');
+			redirect('question');
 		}
 
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('cloze_text_consign'), 'required');
-			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+			$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural');
 			$this->form_validation->set_rules('cloze_text', $this->lang->line('text'), 'required');
+			$this->form_validation->set_rules(
+				'id', 'Id', 'callback_cb_question_exists',
+				['callback_cb_question_exists' => 'lang:question_error_404_heading']
+			);
 			for($i=0; $i < $_POST['nbAnswer']; $i++){
 				$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
 			}
@@ -861,6 +884,7 @@ class Question extends MY_Controller
 					$this->db->order_by("Answer_Order");
 					$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $_POST['id_cloze_text']);
 					$i = 0;
+					$answersDb = array();
 					foreach ($reponses as $reponse) {
 						$answersDb[$i] = $reponse->ID;
 						$i++;
@@ -892,7 +916,7 @@ class Question extends MY_Controller
 						$this->cloze_text_answer_model->delete($answerDb);
 					}
 				}
-				redirect('/Question');
+				redirect('question');
 			} else {
 				$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
 				$output['question_type'] = $this->question_type_model->get($_POST['question_type']);
@@ -1004,14 +1028,14 @@ class Question extends MY_Controller
 	 */
 	public function add_FreeAnswer()
 	{
+		if (isset($_POST['cancel'])){
+			redirect('question');
+		}
 		if (!isset($_POST['id'])){
-			if (isset($_POST['cancel'])){
-				redirect('/Question');
-			}
 			if (isset($_POST['save'])){
 				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
 
 				if ($this->form_validation->run()){
@@ -1029,7 +1053,7 @@ class Question extends MY_Controller
 					);
 					$this->free_answer_model->insert($inputAnswer);
 
-					redirect('/Question');
+					redirect('question');
 				} else {
 					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
@@ -1048,14 +1072,15 @@ class Question extends MY_Controller
 				}
 			}
 		} else {
-			if (isset($_POST['cancel'])){
-				redirect('/Question');
-			}
 			if (isset($_POST['save'])){
 				$_SESSION['filtres'] = "Question?module=&topic=&type=";
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural');
 				$this->form_validation->set_rules('answer', $this->lang->line('answer_question_add'), 'required');
+				$this->form_validation->set_rules(
+					'id', 'Id', 'callback_cb_question_exists',
+					['callback_cb_question_exists' => 'lang:question_error_404_heading']
+				);
 
 				if ($this->form_validation->run()){
 					$id = $this->input->post('id');
@@ -1074,7 +1099,7 @@ class Question extends MY_Controller
 					);
 					$this->free_answer_model->update($_POST['id_answer'], $inputAnswer);
 
-					redirect('/Question');
+					redirect('question');
 				} else {
 					$output['id'] = $_POST['id'];
 					$output['id_answer'] = $_POST['id_answer'];
@@ -1151,11 +1176,13 @@ class Question extends MY_Controller
 			$output['answers'] = $answers;
 			$output['topics'] = $this->topic_model->get_tree();
 
-			if (isset($_POST['cancel']) & isset($_POST['id'])){
-				$output['title'] = $this->lang->line('title_question_add');
-				$this->display_view('picture_landmark/add', $output);
-			} elseif (isset($_POST['cancel']) & !isset($_POST['id'])){
-				redirect('/Question');
+			if (isset($_POST['cancel'])){
+				if(isset($_POST['id'])) {
+					$output['title'] = $this->lang->line('title_question_add');
+					$this->display_view('picture_landmark/add', $output);
+				} else {
+					redirect('question');
+				}
 			} else {
 				if(isset($_FILES['picture'])) {
 					$config['upload_path']          = './uploads/pictures';
@@ -1182,14 +1209,21 @@ class Question extends MY_Controller
 							$output['title'] = $this->lang->line('title_question_add');
 							$this->display_view('picture_landmark/add', $output);
 					}
+				} else {
+					// Whatever was pressed, it is not recognized yet
+					redirect('question');
 				}
 			}
 		} elseif($step==2){
 			if (isset($_POST['cancel'])){
-				redirect('/Question');
+				redirect('question');
 			} elseif (isset($_POST['save'])){
 				$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
-				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|greater_than_equal_to[0]');
+				$this->form_validation->set_rules('points', $this->lang->line('points'), 'required|numeric|is_natural');
+				$this->form_validation->set_rules(
+					'id', 'Id', 'callback_cb_question_exists',
+					['callback_cb_question_exists' => 'lang:question_error_404_heading']
+				);
 				for($i=0; $i < $_POST['nbAnswer']; $i++){
 					$this->form_validation->set_rules('reponses['.$i.'][symbol]', $this->lang->line('landmark'), 'required');
 					$this->form_validation->set_rules('reponses['.$i.'][answer]', $this->lang->line('answers_list'), 'required');
@@ -1222,6 +1256,7 @@ class Question extends MY_Controller
 							$this->picture_landmark_model->insert($inputAnswer);
 						}
 					} else {
+						$file_name = $_POST['picture_name'] ?? '';
 						if(isset($_POST['upload_data'])){
 							$inputQuestion = array(
 								"FK_Topic" => $_POST['focus_topic'],
@@ -1230,6 +1265,7 @@ class Question extends MY_Controller
 								"Points" => $_POST['points'],
 								"Picture_Name" => $_POST['upload_data']['file_name']
 							);
+							$file_name = $_POST['upload_data']['file_name'];
 						} else {
 							$inputQuestion = array(
 								"FK_Topic" => $_POST['focus_topic'],
@@ -1243,7 +1279,7 @@ class Question extends MY_Controller
 
 						$list = scandir("./uploads/pictures");
 						foreach ($list as $file) {
-							if(strpos($file, $_POST['id']."_") !== false && $file != $_POST['upload_data']['file_name']){
+							if(strpos($file, $_POST['id']."_") !== false && $file != $file_name){
 								unlink("uploads/pictures/".$file);
 							}
 						}
@@ -1255,10 +1291,10 @@ class Question extends MY_Controller
 						}
 
 						$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $_POST['id']);
-						$i = 0;
+                                                $i = 0;
 						foreach ($reponses as $reponse) {
 							$answersDb[$i] = $reponse->ID;
-							$i++;
+                                                        $i++;
 						}
 
 						for($i=0; $i < $_POST['nbAnswer']; $i++){
@@ -1285,7 +1321,7 @@ class Question extends MY_Controller
 							$this->picture_landmark_model->delete($answerDb);
 						}
 					}
-					redirect('/Question');
+					redirect('question');
 				} else {
 					$output['topics'] = $this->topic_model->get_tree();
 					$output['focus_topic'] = $this->topic_model->get($_POST['focus_topic']);
@@ -1401,7 +1437,7 @@ class Question extends MY_Controller
 				}
 
 				$output['answers'] = $answers;
-			
+
 				$output['title'] = $this->lang->line('title_question_add');
 				if(isset($_POST['change_picture'])){
 					$this->display_view('picture_landmark/file', $output);

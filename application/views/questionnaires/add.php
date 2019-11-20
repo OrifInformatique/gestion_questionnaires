@@ -11,26 +11,23 @@
     $(document).ready(function(){
         $("#topic_selected").change(function(){
 
-            var topic = $( "#topic_selected" ).val();
+            let topic = $( "#topic_selected" ).val();
 
-            topic = topic.replace("'", "_apostrophe_");
-
-            $.post("./add/", {topic: topic}, function (nbQuestion) {
+            $.post("./get_nb_questions/", {topic: topic}, function (nbQuestion) {
 
                 $("#nb_questions")
                     .find('option')
                     .remove()
                     .end()
 
-                var i;
-                for (i = 0; i < nbQuestion; i++){
+                for (let i = 0; i < nbQuestion; i++){
                     $("#nb_questions")
                         .append('<option>' + (i+1) + '</option>')
 
                 }
             }).fail(function(xhr, status, error) {
-                    alert(error);
-                });
+                alert(error);
+            });
         });
     });
 </script>
@@ -106,7 +103,7 @@
 
                                             $disabled = false;
                                             foreach ($topics as $topic_selected) {
-                                                if($topic_selected->ID == $topicsList[$i]->ID) {
+                                                if(is_object($topic_selected) && $topic_selected->ID == $topicsList[$i]->ID) {
                                                     $disabled = true;
                                                 }
                                             }
@@ -152,7 +149,7 @@
                     $compteur = 1;
                     //Display each row of topic and number answer asked
                     foreach($topics as $key => $topic)
-                    {
+                    { if(!is_object($topic)) continue;
                         ?>
                         <tr>
                             <td><?php echo $compteur?></td>

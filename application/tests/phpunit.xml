@@ -16,6 +16,10 @@
 			<directory suffix=".php">../libraries</directory>
 			<directory suffix=".php">../helpers</directory>
 			<directory suffix=".php">../hooks</directory>
+			<exclude>
+				<directory>../libraries/PHPExcel-1.8</directory>
+				<directory>../libraries/fpdf181</directory>
+			</exclude>
 		</whitelist>
 	</filter>
 	<logging>

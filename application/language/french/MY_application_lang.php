@@ -77,6 +77,7 @@ $lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas val
 $lang['msg_err_access_denied']          = 'Accès refusé';
 $lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
 $lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
+$lang['msg_err_user_not_exist']         = 'L\'utilisateur sélectionné n\'existe pas';
 $lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
 $lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
 $lang['msg_err_questionnaire_not_exist']    = 'Le questionnaire sélectionné n\'existe pas';

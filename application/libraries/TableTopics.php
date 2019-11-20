@@ -17,13 +17,6 @@ class TableTopics
     private $arrayNbQuestion = array();
 
     /**
-     * TableTopics constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @return array
      */
     public function getArrayNbQuestion()
