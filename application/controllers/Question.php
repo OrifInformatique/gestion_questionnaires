@@ -1291,8 +1291,10 @@ class Question extends MY_Controller
 						}
 
 						$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $_POST['id']);
+                                                $i = 0;
 						foreach ($reponses as $reponse) {
 							$answersDb[$i] = $reponse->ID;
+                                                        $i++;
 						}
 
 						for($i=0; $i < $_POST['nbAnswer']; $i++){
