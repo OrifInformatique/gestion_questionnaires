@@ -1185,20 +1185,12 @@ class Admin_Test extends TestCase {
 
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']['user']]);
         foreach($users as $user) {
-            if(method_exists($CI->user_model, 'hard_delete')) {
-                $CI->user_model->hard_delete($user->ID);
-            } else {
-                $CI->user_model->delete($user->ID, TRUE);
-            }
+            $CI->user_model->delete($user->ID, TRUE);
         }
 
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']['user_alt']]);
         foreach($users as $user) {
-            if(method_exists($CI->user_model, 'hard_delete')) {
-                $CI->user_model->hard_delete($user->ID);
-            } else {
-                $CI->user_model->delete($user->ID, TRUE);
-            }
+            $CI->user_model->delete($user->ID, TRUE);
         }
 
         self::$dummy_ids['users'] = [];
