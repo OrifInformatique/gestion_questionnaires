@@ -22,7 +22,7 @@ class Home extends MY_Controller {
      */
     public function index(){
     	if($this->session->user_access >= ACCESS_LVL_MANAGER)
-            redirect('Questionnaire');
+            redirect('questionnaire');
         else
             $this->display_view("home/home_view");
     }

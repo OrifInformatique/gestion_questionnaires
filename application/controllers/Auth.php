@@ -96,8 +96,10 @@ class Auth extends MY_Controller
      */
     public function logout()
     {
-        $_SESSION['logged_in'] = FALSE;
+        // Restart session with empty parameters
+        $_SESSION = [];
         session_reset();
+        session_unset();
 
         redirect(base_url());
     }

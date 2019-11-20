@@ -51,19 +51,14 @@ class user_model extends MY_Model
 
     /**
      * Deletes the item permanently
+     * 
+     * @deprecated Use `user_model::delete($id, TRUE)` instead
      *
      * @param integer $id = The id of the item to delete
      * @return integer =
      */
     public function hard_delete($id) {
-        $this->trigger('before_delete', $id);
-
-        $this->_database->where($this->primary_key, $id);
-
-        $result = $this->_database->delete($this->_table);
-
-        $this->trigger('after_delete', $result);
-
-        return $result;
+        trigger_error('Usage of deprecated hard_delete', E_USER_DEPRECATED);
+        return $this->delete($id, TRUE);
     }
 }
