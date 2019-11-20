@@ -235,11 +235,7 @@ class Topic_Test extends TestCase {
         // Clean up question
         $questions = $this->CI->question_model->get_many_by(['Question' => 'dummy_question']);
         foreach($questions as $question) {
-            if(method_exists($this->CI->question_model, 'hard_delete')) {
-                $this->CI->question_model->hard_delete($question->ID);
-            } else {
-                $this->CI->question_model->delete($question->ID, TRUE);
-            }
+            $this->CI->question_model->delete($question->ID, TRUE);
         }
     }
     /**
@@ -1244,11 +1240,7 @@ class Topic_Test extends TestCase {
             foreach($topics as $topic) {
                 $questions = $CI->question_model->get_many_by(['FK_Topic' => $topic->ID]);
                 foreach($questions as $question) {
-                    if(method_exists($CI->question_model, 'hard_delete')) {
-                        $CI->question_model->hard_delete($question->ID);
-                    } else {
-                        $CI->question_model->delete($question->ID, TRUE);
-                    }
+                    $CI->question_model->delete($question->ID, TRUE);
                 }
             }
         }

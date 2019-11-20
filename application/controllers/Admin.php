@@ -69,9 +69,11 @@ class Admin extends MY_Controller {
             'min_length['.USERNAME_MIN_LENGTH.']',
             'max_length['.USERNAME_MAX_LENGTH.']'
         ]);
+
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), [
             'required','callback_cb_type_exists'
         ]);
+
         $this->form_validation->set_rules(
             'disactivate', $this->lang->line('btn_desactivate'),
             "callback_cb_not_inactive_user[{$userId}]",

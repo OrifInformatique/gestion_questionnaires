@@ -48,17 +48,4 @@ class user_model extends MY_Model
             return false;
         }
     }
-
-    /**
-     * Deletes the item permanently
-     * 
-     * @deprecated Use `user_model::delete($id, TRUE)` instead
-     *
-     * @param integer $id = The id of the item to delete
-     * @return integer =
-     */
-    public function hard_delete($id) {
-        trigger_error('Usage of deprecated hard_delete', E_USER_DEPRECATED);
-        return $this->delete($id, TRUE);
-    }
 }

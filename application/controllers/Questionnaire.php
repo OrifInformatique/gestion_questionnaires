@@ -715,6 +715,7 @@ class Questionnaire extends MY_Controller
     {
         $this->load->model('question_questionnaire_model');
 
+
         // Prepare the questionnaire name and save the original
         $title_original = trim($tableTopics->getTitle());
 

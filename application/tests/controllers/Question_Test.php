@@ -2072,14 +2072,7 @@ class Question_Test extends TestCase {
                     unlink("uploads/pictures/{$question->Picture_Name}");
                 }
 
-                if(method_exists($CI->user_model, 'hard_delete')) {
-                    // New delete method does not exist yet
-                    $db =& $CI->question_model->_database;
-                    $db->where('ID', $question->ID);
-                    $db->delete($CI->question_model->table());
-                } else {
-                    $CI->question_model->delete($question->ID);
-                }
+                $CI->question_model->delete($question->ID);
             }
         }
     }

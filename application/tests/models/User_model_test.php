@@ -44,33 +44,6 @@ class User_model_test extends TestCase {
      * TESTS
      *******/
     /**
-     * Test for `user_model::hard_delete`
-     * 
-     * @dataProvider provider_hard_delete
-     * 
-     * @param int $user_id = ID of the user to test
-     * @param bool $deleted_pre = Whether or not it exists before hard_delete
-     * @param bool $deleted_past = Whether or not it exists after hard_delete
-     */
-    public function test_hard_delete($user_id, $deleted_pre, $deleted_past)
-    {
-        $this->_db_errors_save();
-
-        $user = $this->CI->user_model->get($user_id);
-        $this->assertEquals($deleted_pre, is_null($user));
-
-        $this->CI->user_model->hard_delete($user_id);
-
-        $user = $this->CI->user_model->get($user_id);
-        $this->assertEquals($deleted_past, is_null($user));
-
-        $this->assertFalse(
-            $this->_db_errors_diff(),
-            'One or more error occured in an SQL statement'
-        );
-    }
-
-    /**
      * Test for `user_model::check_password`
      * 
      * @dataProvider provider_check_password
@@ -98,43 +71,6 @@ class User_model_test extends TestCase {
     /****************
      * DATA PROVIDERS
      ****************/
-    /**
-     * Data provider for `test_hard_delete`
-     *
-     * @return array
-     */
-    public function provider_hard_delete() : array
-    {
-        // Load the model
-        $this->resetInstance();
-        $this->CI->load->model('user_model');
-
-        // Create a basic dummy user
-        $dummy_user = array(
-            'User' => self::$_dummy_values['user'],
-            'FK_User_Type' => self::$_dummy_values['user_type'],
-            'Password' => password_hash(self::$_dummy_values['password'], PASSWORD_HASH_ALGORITHM)
-        );
-
-        // Prepare some data for testing
-        $data = [];
-
-        self::$user_ids[] = $user_id = $this->CI->user_model->insert($dummy_user);
-        $data['existing_user'] = [
-            $user_id,
-            FALSE,
-            TRUE
-        ];
-
-        $data['user_not_exist'] = [
-            $this->CI->user_model->get_next_id()+1,
-            TRUE,
-            TRUE
-        ];
-
-        return $data;
-    }
-
     /**
      * Data provider for `test_check_password`
      *
@@ -201,19 +137,11 @@ class User_model_test extends TestCase {
 
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']]);
         foreach($users as $user) {
-            if(method_exists($CI->user_model, 'hard_delete')) {
-                $CI->user_model->hard_delete($user->ID);
-            } else {
-                $CI->user_model->delete($user->ID, TRUE);
-            }
+            $CI->user_model->delete($user->ID, TRUE);
         }
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => 'user_dummy']);
         foreach($users as $user) {
-            if(method_exists($CI->user_model, 'hard_delete')) {
-                $CI->user_model->hard_delete($user->ID);
-            } else {
-                $CI->user_model->delete($user->ID, TRUE);
-            }
+            $CI->user_model->delete($user->ID, TRUE);
         }
 
         self::$user_ids['users'] = [];
