@@ -125,8 +125,8 @@ class Auth extends MY_Controller
                         'field' => 'old_password',
                         'label' => 'lang:field_old_password',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']|'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']|'
                                  . 'callback_old_password_check['.$username.']',
                         'errors' => array(
                             'old_password_check' => lang('msg_err_invalid_old_password')
@@ -136,15 +136,15 @@ class Auth extends MY_Controller
                         'field' => 'new_password',
                         'label' => 'lang:field_new_password',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']'
                     ),
                     array(
                         'field' => 'confirm_password',
                         'label' => 'lang:field_password_confirm',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']|'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']|'
                                  . 'matches[new_password]'
                     )
                 );
