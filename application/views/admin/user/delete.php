@@ -3,10 +3,10 @@
         <div class="row">
             <div class="col-xs-12">
                 <div>
-                    <span class="form-header"><?= $this->lang->line('del_user_form_title') . '"' . $User; ?>" ?</span>
+                    <span class="form-header"><?= $this->lang->line('del_user_form_title') . '"' . $username; ?>" ?</span>
                 </div>
                 <div class="btn-group">
-                    <?php if(!$Archive) { ?>
+                    <?php if(!$archive) { ?>
                     <a href="<?= base_url().uri_string()."/1";?>" class="btn btn-warning btn-lg">
                         <?= $this->lang->line('btn_desactivate');?>
                     </a>

@@ -30,10 +30,10 @@
                 <tbody>
                     <?php foreach($users as $user) { ?>
                         <tr>
-                            <td><a href="<?= base_url('Admin/user_add/'.$user->ID); ?>"><?= $user->User; ?></a></td>
-                            <td><?= $user_types[$user->FK_User_Type]; ?></td>
-                            <td><?= $this->lang->line($user->Archive ? 'no' : 'yes'); ?></td>
-                            <td><a href="<?= base_url('Admin/user_delete/'.$user->ID); ?>" class="close">×</a></td>
+                            <td><a href="<?= base_url('Admin/user_add/'.$user->id); ?>"><?= $user->username; ?></a></td>
+                            <td><?= $user_types[$user->fk_user_type]; ?></td>
+                            <td><?= $this->lang->line($user->archive ? 'no' : 'yes'); ?></td>
+                            <td><a href="<?= base_url('Admin/user_delete/'.$user->id); ?>" class="close">×</a></td>
                         </tr>
                     <?php } ?>
                 </tbody>

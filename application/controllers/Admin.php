@@ -18,6 +18,9 @@ class Admin extends MY_Controller {
         parent::__construct();
 
         $this->load->model(['user_model', 'user_type_model']);
+
+        $this->load->library('form_validation');
+        $this->form_validation->CI =& $this;
     }
 
     /**
@@ -100,8 +103,8 @@ class Admin extends MY_Controller {
 
         if($this->form_validation->run()) {
             $user = array(
-                'User' => $this->input->post('user_name'),
-                'FK_User_Type' => $this->input->post('user_usertype')
+                'username' => $this->input->post('user_name'),
+                'fk_user_type' => $this->input->post('user_usertype')
             );
             if($userId > 0) {
                 if(isset($_POST['save'])) {
@@ -111,7 +114,7 @@ class Admin extends MY_Controller {
                     $this->user_add($userId);
                     return;
                 } elseif(isset($_POST['reactivate'])) {
-                    $this->user_model->update($userId, array('Archive' => 0));
+                    $this->user_model->update($userId, array('archive' => 0));
                     $this->user_add($userId);
                     return;
                 }
@@ -164,7 +167,7 @@ class Admin extends MY_Controller {
         if(is_null($user) && !$preventRedirect || $userId == 0) redirect('admin/user_index');
 
         $output = array(
-            'user' => $user,
+            'username' => $user,
             'title' => $this->lang->line('page_password_change')
         );
 
@@ -197,7 +200,7 @@ class Admin extends MY_Controller {
         if($this->form_validation->run()) {
             $new_password = $this->input->post('user_password_new');
             $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
-            $this->user_model->update($userId, ['Password' => $new_password]);
+            $this->user_model->update($userId, ['password' => $new_password]);
             redirect('admin/user_index');
         } else {
             $this->user_change_password($userId, TRUE);
@@ -226,7 +229,7 @@ class Admin extends MY_Controller {
         if(is_null($disactivate)) return TRUE;
         $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
-        return $user->Archive == 0;
+        return $user->archive == 0;
     }
 
     /**
@@ -241,7 +244,7 @@ class Admin extends MY_Controller {
         if(is_null($reactivate)) return TRUE;
         $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
-        return $user->Archive == 1;
+        return $user->archive == 1;
     }
 
     public function cb_type_exists($user_type_id) : bool

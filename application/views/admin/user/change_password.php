@@ -8,12 +8,12 @@
  */
 ?>
 <div class="container">
-	<h1 class="title-section"><?= $this->lang->line('title_user_change_password').' "'.($user->User ?? ''); ?>"</h1>
+	<h1 class="title-section"><?= $this->lang->line('title_user_change_password').' "'.($user->username ?? ''); ?>"</h1>
     <?php
     $attributes = array('id' => 'user_change_password_form',
                         'name' => 'user_change_password_form');
     echo form_open('Admin/user_change_password_form', $attributes, array(
-        'id' => ($user->ID ?? 0)
+        'id' => ($user->id ?? 0)
     ));
     if(!empty(validation_errors())) {
         echo '<div class="alert alert-danger">'.validation_errors().'</div>';

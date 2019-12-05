@@ -25,26 +25,26 @@ if(!function_exists('checkactive')) {
     function checkactive($page){
         switch ($page){
             case 0;
-                test_regex('/\/Home/');
+                test_regex('/\/Home/i');
                 test_regex('/\//');
                 break;
             case 1;
-                test_regex('/\/Questionnaire/');
+                test_regex('/\/Questionnaire/i');
                 break;
             case 2:
-                test_regex('/\/(Question[^n]|Question$)/');
+                test_regex('/\/(Question[^n]|Question$)/i');
                 break;
             case 3:
-                test_regex('/\/Module/');
+                test_regex('/\/Module/i');
                 break;
             case 4:
-                test_regex('/\/Topic/');
+                test_regex('/\/Topic/i');
                 break;
             case 5:
-                test_regex('/\/Admin/');
+                test_regex('/\/Admin/i');
                 break;
             case 6:
-                test_regex('/\/Support/');
+                test_regex('/\/Support/i');
                 break;
             default:
                 break;
