@@ -37,7 +37,7 @@ class Auth_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model('user_model');
-        $this->_login_as(ACCESS_LVL_ADMIN);
+        $this->_login_as($this->config->item('access_lvl_admin'));
     }
     public function tearDown()
     {

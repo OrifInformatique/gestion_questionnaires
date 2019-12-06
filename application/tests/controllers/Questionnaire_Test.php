@@ -64,7 +64,7 @@ class Questionnaire_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model(['questionnaire_model', 'questionnaire_model_model']);
-        $this->_login_as(ACCESS_LVL_MANAGER);
+        $this->_login_as($this->config->item('access_lvl_manager'));
 
         // Clear tabletopics
         unset($_SESSION['temp_tableTopics']);

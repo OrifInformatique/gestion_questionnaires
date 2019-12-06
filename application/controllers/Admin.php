@@ -8,14 +8,13 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class Admin extends MY_Controller {
-    /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_ADMIN;
-
+    
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct();
+        $this->access_level = $this->config->item('access_lvl_admin');
 
         $this->load->model(['user_model', 'user_type_model']);
 

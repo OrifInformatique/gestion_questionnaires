@@ -17,7 +17,7 @@ class Support_Test extends TestCase {
     public function setUp()
     {
         $this->resetInstance();
-        $this->_login_as(ACCESS_LVL_ADMIN);
+        $this->_login_as($this->config->item('access_lvl_admin'));
     }
 
     /*******

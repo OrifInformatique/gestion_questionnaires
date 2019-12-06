@@ -58,14 +58,14 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
 ?>
     <div id="myNavbar" class="container">
         <ul class="nav navbar-nav">
-            <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
+            <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
                 <li <?php checkactive(1); ?>><a href="<?php echo base_url('questionnaire');?>">
                     <?= $this->lang->line('nav_questionnaire');?></a></li>
                 <li <?php checkactive(2); ?>><a href="<?php echo base_url('question');?>">
                     <?= $this->lang->line('nav_question');?></a></li>
                 <li <?php checkactive(4); ?>><a href="<?php echo base_url('topic');?>">
                     <?= $this->lang->line('nav_topic');?></a></li>
-                <?php if($_SESSION['user_access'] >= ACCESS_LVL_ADMIN) { ?>
+                <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_admin')) { ?>
                     <li <?php checkactive(5); ?>><a href="<?php echo base_url('admin');?>">
                         <?= $this->lang->line('nav_admin');?></a></li>
                 <?php } ?>
@@ -77,7 +77,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
         </ul>
         
         <!-- Button to submit a problem -->
-        <?php if($_SESSION['user_access'] >= ACCESS_LVL_MANAGER) { ?>
+        <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
             <a class="btn btn-warning pull-right" href="<?php echo base_url('support');?>">
                     <?= $this->lang->line('nav_support');?></a>
         <?php } ?>

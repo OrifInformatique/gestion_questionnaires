@@ -12,15 +12,13 @@ class Questionnaire extends MY_Controller
     CONST TITLEFONT_SIZE = 18;
     CONST QUESTIONFONT_SIZE = 12;
 
-    /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_MANAGER;
-
     /**
      * Constructor
      */
     public function __construct()
     {
         parent::__construct();
+        $this->access_level = $this->config->item('access_lvl_manager');
         $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
         $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));

@@ -117,7 +117,7 @@ class Question_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model('question_model');
-        $this->_login_as(ACCESS_LVL_MANAGER);
+        $this->_login_as($this->config->item('access_lvl_manager'));
 
         self::_dummy_question_get();
         self::_dummy_cloze_text_get();

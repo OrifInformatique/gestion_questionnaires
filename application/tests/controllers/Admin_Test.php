@@ -1096,7 +1096,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_ADMIN;
+        $_SESSION['user_access'] = $this->config->item('access_lvl_admin');
         $_SESSION['logged_in'] = TRUE;
     }
     /**
@@ -1109,7 +1109,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_MANAGER;
+        $_SESSION['user_access'] = $this->config->item('access_lvl_manager');
         $_SESSION['logged_in'] = TRUE;
     }
     /**
@@ -1122,7 +1122,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_USER;
+        $_SESSION['user_access'] = $this->config->item('access_lvl_user');
         $_SESSION['logged_in'] = TRUE;
     }
 

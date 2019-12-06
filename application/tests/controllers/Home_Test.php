@@ -52,17 +52,17 @@ class Home_Test extends TestCase {
         $data = [];
 
         $data['user'] = [
-            ACCESS_LVL_USER,
+            $this->config->item('access_lvl_user'),
             FALSE
         ];
 
         $data['manager'] = [
-            ACCESS_LVL_MANAGER,
+            $this->config->item('access_lvl_manager'),
             TRUE
         ];
 
         $data['admin'] = [
-            ACCESS_LVL_ADMIN,
+            $this->config->item('access_lvl_admin'),
             TRUE
         ];
 

@@ -9,13 +9,13 @@
  */
 class Support extends MY_Controller {
     /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_USER;
 
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct();
+        $this->access_level = $this->config->item('access_lvl_user');
     }
 
     public function index($sumbitted = false) {
