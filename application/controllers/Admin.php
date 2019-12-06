@@ -65,11 +65,13 @@ class Admin extends MY_Controller {
     public function user_form() {
         $userId = $this->input->post('id');
 
+        $this->load->config('auth/MY_auth_config');
+
         $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_name', $this->lang->line('user_name'), [
             'required', 'trim',
-            'min_length['.USERNAME_MIN_LENGTH.']',
-            'max_length['.USERNAME_MAX_LENGTH.']'
+            'min_length['.$this->config->item('username_min_length').']',
+            'max_length['.$this->config->item('username_max_length').']'
         ]);
 
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), [
@@ -90,13 +92,13 @@ class Admin extends MY_Controller {
         if($userId == 0) {
             $this->form_validation->set_rules('user_password', $this->lang->line('user_password'), [
                 'required','trim',
-                'min_length['.PASSWORD_MIN_LENGTH.']',
-                'max_length['.PASSWORD_MAX_LENGTH.']'
+                'min_length['.$this->config->item('password_min_length').']',
+                'max_length['.$this->config->item('password_max_length').']'
             ]);
             $this->form_validation->set_rules('user_password_again', $this->lang->line('user_password_again'), [
                 'required','trim','matches[user_password]',
-                'min_length['.PASSWORD_MIN_LENGTH.']',
-                'max_length['.PASSWORD_MAX_LENGTH.']'
+                'min_length['.$this->config->item('password_min_length').']',
+                'max_length['.$this->config->item('password_max_length').']'
             ]);
         }
 
@@ -166,7 +168,7 @@ class Admin extends MY_Controller {
         if(is_null($user) && !$preventRedirect || $userId == 0) redirect('admin/user_index');
 
         $output = array(
-            'username' => $user,
+            'user' => $user,
             'title' => $this->lang->line('page_password_change')
         );
 
@@ -179,6 +181,8 @@ class Admin extends MY_Controller {
     public function user_change_password_form() {
         $userId = $this->input->post('id');
 
+        $this->load->config('auth/MY_auth_config');
+
         $this->form_validation->set_rules(
             'id', $this->lang->line('id'),
             'callback_not_null_user',
@@ -186,19 +190,19 @@ class Admin extends MY_Controller {
         );
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
-            'min_length['.PASSWORD_MIN_LENGTH.']',
-            'max_length['.PASSWORD_MAX_LENGTH.']'
+            'min_length['.$this->config->item('password_min_length').']',
+            'max_length['.$this->config->item('password_max_length').']'
         ]);
         $this->form_validation->set_rules('user_password_again', $this->lang->line('field_password_confirm'), [
             'trim', 'required',
-            'min_length['.PASSWORD_MIN_LENGTH.']',
-            'max_length['.PASSWORD_MAX_LENGTH.']',
+            'min_length['.$this->config->item('password_min_length').']',
+            'max_length['.$this->config->item('password_max_length').']',
             'matches[user_password_new]'
         ]);
 
         if($this->form_validation->run()) {
             $new_password = $this->input->post('user_password_new');
-            $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
+            $new_password = password_hash($new_password, $this->config->item('password_hash_algorithm'));
             $this->user_model->update($userId, ['password' => $new_password]);
             redirect('admin/user_index');
         } else {
