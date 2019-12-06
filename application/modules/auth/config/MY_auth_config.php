@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /* Access levels */
 $config['access_lvl_guest'] = 1;
 $config['access_lvl_registered'] = 2;
-$config['$this->config->item('access_lvl_admin')'] = 4;
+$config['access_lvl_admin'] = 4;
 
 /* Validation rules */
 $config['username_min_length'] = 3;
