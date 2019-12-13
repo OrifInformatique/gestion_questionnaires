@@ -21,6 +21,9 @@ class Auth extends MY_Controller
         $this->load->model('user_model');
         $this->load->model('user_type_model');
 
+        $this->config->load('auth/MY_auth_config');
+        $this->lang->load('auth/MY_auth');
+
         $this->load->library('form_validation');
         $this->form_validation->CI =& $this;
     }
