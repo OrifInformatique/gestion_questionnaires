@@ -34,7 +34,7 @@ class Support extends MY_Controller {
         if($this->form_validation->run() == true){
             
 
-            $url = 'https://api.github.com/repos/OrifInformatique/gestion_questionnaires/issues';
+            $url = 'https://api.github.com/repos/'.$this->config->item('github_repo').'/issues';
             $ch = curl_init($url);
 
             if (isset($_SESSION['username'])) {
@@ -53,7 +53,7 @@ class Support extends MY_Controller {
 
             $header = array(
                 'Content-Type: application/json; charset=utf-8',
-                'Authorization: Basic '.base64_encode($this->config->item('github_username').':'.$this->config->item('github_password')),
+                'Authorization: Basic '.base64_encode($this->config->item('github_username').':'.$this->config->item('github_token')),
                 'User-Agent: PHP-Server'
             );
 
