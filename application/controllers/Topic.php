@@ -9,12 +9,10 @@
 
 class Topic extends MY_Controller
 {
-    /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_MANAGER;
-
     public function __construct()
     {
         parent::__construct();
+        $this->access_level = $this->config->item('access_lvl_manager');
         $this->load->model('topic_model');
         $this->load->helper('date');
     }

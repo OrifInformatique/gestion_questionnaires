@@ -10,16 +10,13 @@
 
 class Question extends MY_Controller
 {
-	/* MY_Controller variables definition */
-	protected $access_level = ACCESS_LVL_MANAGER;
-
-
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
+        $this->access_level = $this->config->item('access_lvl_manager');
 		$this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model',
 							'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',

@@ -37,7 +37,7 @@ class Auth_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model('user_model');
-        $this->_login_as(ACCESS_LVL_ADMIN);
+        $this->_login_as($this->config->item('access_lvl_admin'));
     }
     public function tearDown()
     {
@@ -286,7 +286,7 @@ class Auth_Test extends TestCase {
             ]
         ];
 
-        $repeat_count = ceil(PASSWORD_MAX_LENGTH / strlen($new_password))+1;
+        $repeat_count = ceil($this->config->item('password_max_length') / strlen($new_password))+1;
         $long_password = str_repeat($new_password, $repeat_count);
         $data['long_password'] = [
             [
@@ -306,7 +306,7 @@ class Auth_Test extends TestCase {
             ]
         ];
 
-        $short_password = substr($new_password, 0, PASSWORD_MIN_LENGTH-1);
+        $short_password = substr($new_password, 0, $this->config->item('password_min_length')-1);
         $data['short_password'] = [
             [
                 'id' => $user_id,
@@ -375,7 +375,7 @@ class Auth_Test extends TestCase {
         $dummy_user = array(
             'User' => self::$_dummy_values['user'],
             'FK_User_Type' => self::$_dummy_values['user_type'],
-            'Password' => password_hash(self::$_dummy_values['password'], PASSWORD_HASH_ALGORITHM),
+            'Password' => password_hash(self::$_dummy_values['password'], $this->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
 
@@ -396,7 +396,7 @@ class Auth_Test extends TestCase {
         $dummy_user = array(
             'User' => self::$_dummy_values['user'],
             'FK_User_Type' => self::$_dummy_values['user_type'],
-            'Password' => password_hash(self::$_dummy_values['password'], PASSWORD_HASH_ALGORITHM),
+            'Password' => password_hash(self::$_dummy_values['password'], $this->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
         $CI->user_model->update_many(self::$dummy_ids, $dummy_user);

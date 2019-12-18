@@ -14,7 +14,7 @@ $update = !is_null($user);
     $attributes = array('id' => 'addUserForm',
                         'name' => 'addUserForm');
     echo form_open('Admin/user_form', $attributes, array(
-        'id' => $user->ID ?? 0
+        'id' => $user->id ?? 0
     ));
     ?>
 
@@ -37,7 +37,7 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?= form_label($this->lang->line('user_name'), 'user_name', array('class' => 'form-label')); ?>
-                <?= form_input('user_name', $user->User ?? '', array(
+                <?= form_input('user_name', $user->username ?? '', array(
                     'maxlength' => 45, 'class' => 'form-control', 'id' => 'user_name'
                 )); ?>
             </div>
@@ -46,7 +46,7 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?= form_label($this->lang->line('user_usertype'), 'user_usertype', array('class' => 'form-label')); ?>
-                <?= form_dropdown('user_usertype', $user_types, $user->FK_User_Type ?? null, array(
+                <?= form_dropdown('user_usertype', $user_types, $user->fk_user_type ?? null, array(
                     'class' => 'form-control'
                 )); ?>
             </div>
@@ -74,13 +74,13 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?php
-                if($user->Archive) {
+                if($user->archive) {
                     echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
                 } else {
                     echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-warning col-xs-12 col-sm-4"');
                 }
                 ?>
-                <a href="<?= base_url('Admin/user_change_password/'.$user->ID); ?>"
+                <a href="<?= base_url('Admin/user_change_password/'.$user->id); ?>"
                     class="btn btn-default col-xs-12 col-sm-4 col-sm-offset-4">
                     <?= $this->lang->line("title_user_change_password"); ?>
                 </a>

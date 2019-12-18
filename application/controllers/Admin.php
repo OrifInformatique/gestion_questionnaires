@@ -8,16 +8,20 @@
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
 class Admin extends MY_Controller {
-    /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_ADMIN;
-
+    
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct();
+        $this->config->load('auth/MY_auth_config');
+        $this->lang->load('auth/MY_auth');
+        $this->access_level = $this->config->item('access_lvl_admin');
 
         $this->load->model(['user_model', 'user_type_model']);
+
+        $this->load->library('form_validation');
+        $this->form_validation->CI =& $this;
     }
 
     /**
@@ -63,11 +67,13 @@ class Admin extends MY_Controller {
     public function user_form() {
         $userId = $this->input->post('id');
 
+        $this->load->config('auth/MY_auth_config');
+
         $this->form_validation->set_rules('id', $this->lang->line('id'), 'callback_not_null_user');
         $this->form_validation->set_rules('user_name', $this->lang->line('user_name'), [
             'required', 'trim',
-            'min_length['.USERNAME_MIN_LENGTH.']',
-            'max_length['.USERNAME_MAX_LENGTH.']'
+            'min_length['.$this->config->item('username_min_length').']',
+            'max_length['.$this->config->item('username_max_length').']'
         ]);
 
         $this->form_validation->set_rules('user_usertype', $this->lang->line('user_usertype'), [
@@ -88,20 +94,20 @@ class Admin extends MY_Controller {
         if($userId == 0) {
             $this->form_validation->set_rules('user_password', $this->lang->line('user_password'), [
                 'required','trim',
-                'min_length['.PASSWORD_MIN_LENGTH.']',
-                'max_length['.PASSWORD_MAX_LENGTH.']'
+                'min_length['.$this->config->item('password_min_length').']',
+                'max_length['.$this->config->item('password_max_length').']'
             ]);
             $this->form_validation->set_rules('user_password_again', $this->lang->line('user_password_again'), [
                 'required','trim','matches[user_password]',
-                'min_length['.PASSWORD_MIN_LENGTH.']',
-                'max_length['.PASSWORD_MAX_LENGTH.']'
+                'min_length['.$this->config->item('password_min_length').']',
+                'max_length['.$this->config->item('password_max_length').']'
             ]);
         }
 
         if($this->form_validation->run()) {
             $user = array(
-                'User' => $this->input->post('user_name'),
-                'FK_User_Type' => $this->input->post('user_usertype')
+                'username' => $this->input->post('user_name'),
+                'fk_user_type' => $this->input->post('user_usertype')
             );
             if($userId > 0) {
                 if(isset($_POST['save'])) {
@@ -111,7 +117,7 @@ class Admin extends MY_Controller {
                     $this->user_add($userId);
                     return;
                 } elseif(isset($_POST['reactivate'])) {
-                    $this->user_model->update($userId, array('Archive' => 0));
+                    $this->user_model->update($userId, array('archive' => 0));
                     $this->user_add($userId);
                     return;
                 }
@@ -177,6 +183,8 @@ class Admin extends MY_Controller {
     public function user_change_password_form() {
         $userId = $this->input->post('id');
 
+        $this->load->config('auth/MY_auth_config');
+
         $this->form_validation->set_rules(
             'id', $this->lang->line('id'),
             'callback_not_null_user',
@@ -184,20 +192,20 @@ class Admin extends MY_Controller {
         );
         $this->form_validation->set_rules('user_password_new', $this->lang->line('field_new_password'), [
             'trim', 'required',
-            'min_length['.PASSWORD_MIN_LENGTH.']',
-            'max_length['.PASSWORD_MAX_LENGTH.']'
+            'min_length['.$this->config->item('password_min_length').']',
+            'max_length['.$this->config->item('password_max_length').']'
         ]);
         $this->form_validation->set_rules('user_password_again', $this->lang->line('field_password_confirm'), [
             'trim', 'required',
-            'min_length['.PASSWORD_MIN_LENGTH.']',
-            'max_length['.PASSWORD_MAX_LENGTH.']',
+            'min_length['.$this->config->item('password_min_length').']',
+            'max_length['.$this->config->item('password_max_length').']',
             'matches[user_password_new]'
         ]);
 
         if($this->form_validation->run()) {
             $new_password = $this->input->post('user_password_new');
-            $new_password = password_hash($new_password, PASSWORD_HASH_ALGORITHM);
-            $this->user_model->update($userId, ['Password' => $new_password]);
+            $new_password = password_hash($new_password, $this->config->item('password_hash_algorithm'));
+            $this->user_model->update($userId, ['password' => $new_password]);
             redirect('admin/user_index');
         } else {
             $this->user_change_password($userId, TRUE);
@@ -226,7 +234,7 @@ class Admin extends MY_Controller {
         if(is_null($disactivate)) return TRUE;
         $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
-        return $user->Archive == 0;
+        return $user->archive == 0;
     }
 
     /**
@@ -241,7 +249,7 @@ class Admin extends MY_Controller {
         if(is_null($reactivate)) return TRUE;
         $user = $this->user_model->with_deleted()->get($userId);
         if(is_null($user)) return FALSE;
-        return $user->Archive == 1;
+        return $user->archive == 1;
     }
 
     public function cb_type_exists($user_type_id) : bool

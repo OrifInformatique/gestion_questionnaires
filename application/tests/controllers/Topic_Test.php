@@ -54,7 +54,7 @@ class Topic_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model('topic_model');
-        $this->_login_as(ACCESS_LVL_MANAGER);
+        $this->_login_as($this->config->item('access_lvl_manager'));
     }
     public function tearDown()
     {
@@ -521,19 +521,19 @@ class Topic_Test extends TestCase {
         ];
 
         $data['logged_user'] = [
-            ACCESS_LVL_USER,
+            $this->config->item('access_lvl_user'),
             FALSE,
             TRUE
         ];
 
         $data['logged_manager'] = [
-            ACCESS_LVL_MANAGER,
+            $this->config->item('access_lvl_manager'),
             FALSE,
             FALSE
         ];
 
         $data['logged_admin'] = [
-            ACCESS_LVL_ADMIN,
+            $this->config->item('access_lvl_admin'),
             FALSE,
             FALSE
         ];

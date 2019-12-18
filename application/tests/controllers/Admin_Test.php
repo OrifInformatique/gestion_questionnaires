@@ -41,6 +41,7 @@ class Admin_Test extends TestCase {
     {
         $this->resetInstance();
         $this->_login_admin();
+        $this->CI->load->helper('url');
     }
     public function tearDown()
     {
@@ -153,7 +154,7 @@ class Admin_Test extends TestCase {
         $this->_db_errors_save();
 
         if(!is_null($action)) {
-            $this->CI->load->model('user_model');
+            $this->CI->load->model('../../modules/auth/models/user_model');
             if($action === 'archive')
                 $this->CI->user_model->update($user_id, ['Archive' => 1]);
             elseif($action === 'unarchive')
@@ -184,7 +185,7 @@ class Admin_Test extends TestCase {
     public function test_user_delete_confirm(int $user_id)
     {
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $this->_db_errors_save();
 
@@ -195,7 +196,7 @@ class Admin_Test extends TestCase {
         if($redirect_expected) {
             $this->assertRedirect('admin/user_index');
         } else {
-            $this->assertContains($user->User, $output);
+            $this->assertContains($user->username, $output);
         }
 
         $this->assertFalse(
@@ -214,7 +215,7 @@ class Admin_Test extends TestCase {
     public function test_user_delete_deactivate(int $user_id)
     {
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $this->_db_errors_save();
 
@@ -250,7 +251,7 @@ class Admin_Test extends TestCase {
     public function test_user_delete_delete(int $user_id)
     {
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $this->_db_errors_save();
 
@@ -290,7 +291,7 @@ class Admin_Test extends TestCase {
     public function test_user_change_password(int $user_id)
     {
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $this->_db_errors_save();
 
@@ -301,7 +302,7 @@ class Admin_Test extends TestCase {
         if($redirect_expected) {
             $this->assertRedirect('admin/user_index');
         } else {
-            $this->assertContains($user->User, $output);
+            $this->assertContains($user->username, $output);
         }
 
         $this->assertFalse(
@@ -332,9 +333,9 @@ class Admin_Test extends TestCase {
         if($error_expected) {
             $this->assertContains($error_div, $output);
         } else {
-            $this->CI->load->model('user_model');
+            $this->CI->load->model('../../modules/auth/models/user_model');
             $user = $this->CI->user_model->get($user_id);
-            $this->assertTrue(password_verify($password, $user->Password));
+            $this->assertTrue(password_verify($password, $user->password));
         }
 
         $this->assertFalse(
@@ -544,7 +545,7 @@ class Admin_Test extends TestCase {
             FALSE
         ];
 
-        $short_user_name = substr($user_name, 0, USERNAME_MIN_LENGTH-1);
+        $short_user_name = substr($user_name, 0, $this->CI->config->item('username_min_length')-1);
         $data['new_short_user_name'] = [
             [
                 'id' => 0,
@@ -556,7 +557,7 @@ class Admin_Test extends TestCase {
             TRUE
         ];
 
-        $repeat_count = ceil(USERNAME_MAX_LENGTH / strlen($user_name)) + 1;
+        $repeat_count = ceil($this->CI->config->item('username_max_length') / strlen($user_name)) + 1;
         $long_user_name = str_repeat($user_name, $repeat_count);
         $data['new_long_user_name'] = [
             [
@@ -569,7 +570,7 @@ class Admin_Test extends TestCase {
             TRUE
         ];
 
-        $short_password = substr($password, 0, PASSWORD_MIN_LENGTH-1);
+        $short_password = substr($password, 0, $this->CI->config->item('password_min_length')-1);
         $data['new_short_password'] = [
             [
                 'id' => 0,
@@ -581,7 +582,7 @@ class Admin_Test extends TestCase {
             TRUE
         ];
 
-        $repeat_count = ceil(PASSWORD_MAX_LENGTH / strlen($password));
+        $repeat_count = ceil($this->CI->config->item('password_max_length') / strlen($password));
         $long_password = str_repeat($password, $repeat_count);
         $data['new_long_password'] = [
             [
@@ -647,7 +648,7 @@ class Admin_Test extends TestCase {
             $user_id
         ];
 
-        $short_user_name = substr($user_name, 0, USERNAME_MIN_LENGTH-1);
+        $short_user_name = substr($user_name, 0, $this->CI->config->item('username_min_length')-1);
         $data['update_short_user_name'] = [
             [
                 'save' => TRUE,
@@ -659,7 +660,7 @@ class Admin_Test extends TestCase {
             $user_id
         ];
 
-        $repeat_count = ceil(USERNAME_MAX_LENGTH / strlen($user_name)) + 1;
+        $repeat_count = ceil($this->CI->config->item('username_max_length') / strlen($user_name)) + 1;
         $long_user_name = str_repeat($user_name, $repeat_count);
         $data['update_long_user_name'] = [
             [
@@ -778,7 +779,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -800,7 +801,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -822,7 +823,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -844,7 +845,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -867,7 +868,7 @@ class Admin_Test extends TestCase {
         $password = 'password_dummy';
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -882,7 +883,7 @@ class Admin_Test extends TestCase {
             $password
         ];
 
-        $short_password = substr($password, 0, PASSWORD_MIN_LENGTH-1);
+        $short_password = substr($password, 0, $this->CI->config->item('password_min_length')-1);
         $data['short_password'] = [
             [
                 'id' => $user_id,
@@ -894,7 +895,7 @@ class Admin_Test extends TestCase {
             $short_password
         ];
 
-        $repeat_count = ceil(PASSWORD_MAX_LENGTH / strlen($password)) + 1;
+        $repeat_count = ceil($this->CI->config->item('password_max_length') / strlen($password)) + 1;
         $long_password = str_repeat($password, $repeat_count);
         $data['long_password'] = [
             [
@@ -931,7 +932,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -967,7 +968,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -976,7 +977,7 @@ class Admin_Test extends TestCase {
             TRUE,
             function($user_id) {
                 $CI =& get_instance();
-                $CI->load->model('user_model');
+                $CI->load->model('../../modules/auth/models/user_model');
                 $CI->user_model->update($user_id, ['Archive' => 0]);
             }
         ];
@@ -986,7 +987,7 @@ class Admin_Test extends TestCase {
             FALSE,
             function($user_id) {
                 $CI =& get_instance();
-                $CI->load->model('user_model');
+                $CI->load->model('../../modules/auth/models/user_model');
                 $CI->user_model->update($user_id, ['Archive' => 1]);
             }
         ];
@@ -1015,7 +1016,7 @@ class Admin_Test extends TestCase {
         $user_id = self::_dummy_user_create();
 
         $this->resetInstance();
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('../../modules/auth/models/user_model');
 
         $data = [];
 
@@ -1024,7 +1025,7 @@ class Admin_Test extends TestCase {
             TRUE,
             function($user_id) {
                 $CI =& get_instance();
-                $CI->load->model('user_model');
+                $CI->load->model('../../modules/auth/models/user_model');
                 $CI->user_model->update($user_id, ['Archive' => 1]);
             }
         ];
@@ -1034,7 +1035,7 @@ class Admin_Test extends TestCase {
             FALSE,
             function($user_id) {
                 $CI =& get_instance();
-                $CI->load->model('user_model');
+                $CI->load->model('../../modules/auth/models/user_model');
                 $CI->user_model->update($user_id, ['Archive' => 0]);
             }
         ];
@@ -1066,7 +1067,7 @@ class Admin_Test extends TestCase {
         $data = [];
 
         $data['no_error'] = [
-            $this->CI->user_type_model->get_all()[0]->ID,
+            $this->CI->user_type_model->get_all()[0]->id,
             TRUE
         ];
 
@@ -1096,7 +1097,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_ADMIN;
+        $_SESSION['user_access'] = $this->CI->config->item('access_lvl_admin');
         $_SESSION['logged_in'] = TRUE;
     }
     /**
@@ -1109,7 +1110,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_MANAGER;
+        $_SESSION['user_access'] = $this->CI->config->item('access_lvl_manager');
         $_SESSION['logged_in'] = TRUE;
     }
     /**
@@ -1122,7 +1123,7 @@ class Admin_Test extends TestCase {
         session_reset();
         $_SESSION['user_id'] = 1;
         $_SESSION['username'] = '';
-        $_SESSION['user_access'] = ACCESS_LVL_USER;
+        $_SESSION['user_access'] = $this->CI->config->item('access_lvl_user');
         $_SESSION['logged_in'] = TRUE;
     }
 
@@ -1138,13 +1139,15 @@ class Admin_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('../../modules/auth/models/user_model');
+
+        $CI->load->config('../../modules/auth/config/MY_auth_config');
 
         $dummy_user_values = self::$_dummy_values['user'];
         $dummy_user = array(
-            'User' => $dummy_user_values['user'],
+            'Username' => $dummy_user_values['user'],
             'FK_User_Type' => $dummy_user_values['user_type'],
-            'Password' => password_hash($dummy_user_values['password'], PASSWORD_HASH_ALGORITHM),
+            'Password' => password_hash($dummy_user_values['password'], $CI->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
 
@@ -1160,13 +1163,15 @@ class Admin_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('../../modules/auth/models/user_model');
+
+        $CI->load->config('../../modules/auth/config/MY_auth_config');
 
         $dummy_user_values = self::$_dummy_values['user'];
         $dummy_user = array(
-            'User' => $dummy_user_values['user'],
+            'Username' => $dummy_user_values['user'],
             'FK_User_Type' => $dummy_user_values['user_type'],
-            'Password' => password_hash($dummy_user_values['password'], PASSWORD_HASH_ALGORITHM),
+            'Password' => password_hash($dummy_user_values['password'], $CI->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
         $CI->user_model->update_many(self::$dummy_ids['users'], $dummy_user);
@@ -1181,7 +1186,7 @@ class Admin_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('../../modules/auth/models/user_model');
 
         $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']['user']]);
         foreach($users as $user) {

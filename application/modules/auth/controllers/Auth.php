@@ -2,9 +2,9 @@
 /**
  * Authentication System
  *
- * @author      Orif, section informatique (ViDi)
- * @link        https://github.com/OrifInformatique/stock
- * @copyright   Copyright (c), Orif <http://www.orif.ch>
+ * @author      Orif (ViDi)
+ * @link        https://github.com/OrifInformatique
+ * @copyright   Copyright (c), Orif (https://www.orif.ch)
  * @version     2.0
  */
 class Auth extends MY_Controller
@@ -18,8 +18,14 @@ class Auth extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-
         $this->load->model('user_model');
+        $this->load->model('user_type_model');
+
+        $this->config->load('auth/MY_auth_config');
+        $this->lang->load('auth/MY_auth');
+
+        $this->load->library('form_validation');
+        $this->form_validation->CI =& $this;
     }
 
     /**
@@ -47,15 +53,15 @@ class Auth extends MY_Controller
                     'field' => 'username',
                     'label' => 'lang:field_username',
                     'rules' => 'trim|required|'
-                             . 'min_length['.USERNAME_MIN_LENGTH.']|'
-                             . 'max_length['.USERNAME_MAX_LENGTH.']'
+                             . 'min_length['.$this->config->item('username_min_length').']|'
+                             . 'max_length['.$this->config->item('username_max_length').']'
                 ),
                 array(
                     'field' => 'password',
                     'label' => 'lang:field_password',
                     'rules' => 'trim|required|'
-                             . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                             . 'max_length['.PASSWORD_MAX_LENGTH.']'
+                             . 'min_length['.$this->config->item('password_min_length').']|'
+                             . 'max_length['.$this->config->item('password_max_length').']'
                 )
             );
             $this->form_validation->set_rules($validation_rules);
@@ -64,15 +70,15 @@ class Auth extends MY_Controller
             if ($this->form_validation->run() == true) {
                 $username = $this->input->post('username');
                 $password = $this->input->post('password');
-
+                
                 if ($this->user_model->check_password($username, $password)) {
                     // Login success
                     $user = $this->user_model->with('user_type')
-                                             ->get_by('User', $username);
+                                             ->get_by('username', $username);
 
                     // Set session variables
-                    $_SESSION['user_id'] = (int)$user->ID;
-                    $_SESSION['username'] = (string)$user->User;
+                    $_SESSION['user_id'] = (int)$user->id;
+                    $_SESSION['username'] = (string)$user->username;
                     $_SESSION['user_access'] = (int)$user->user_type->access_level;
                     $_SESSION['logged_in'] = (bool)true;
 
@@ -82,12 +88,12 @@ class Auth extends MY_Controller
                 } else {
                     // Login failed
                     $this->session->set_flashdata('message-danger', lang('msg_err_invalid_password'));
-                }
+                }               
             }
         }
 
         // Display login page
-        $output = array('title' => $this->lang->line('btn_login'));
+        $output = array('title' => lang('page_login'));
         $this->display_view('auth/login_form', $output);
     }
 
@@ -122,8 +128,8 @@ class Auth extends MY_Controller
                         'field' => 'old_password',
                         'label' => 'lang:field_old_password',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']|'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']|'
                                  . 'callback_old_password_check['.$username.']',
                         'errors' => array(
                             'old_password_check' => lang('msg_err_invalid_old_password')
@@ -133,15 +139,15 @@ class Auth extends MY_Controller
                         'field' => 'new_password',
                         'label' => 'lang:field_new_password',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']'
                     ),
                     array(
                         'field' => 'confirm_password',
                         'label' => 'lang:field_password_confirm',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.PASSWORD_MIN_LENGTH.']|'
-                                 . 'max_length['.PASSWORD_MAX_LENGTH.']|'
+                                 . 'min_length['.$this->config->item('username_min_length').']|'
+                                 . 'max_length['.$this->config->item('username_max_length').']|'
                                  . 'matches[new_password]'
                     )
                 );
@@ -155,7 +161,7 @@ class Auth extends MY_Controller
 
                     $this->load->model('user_model');
                     $this->user_model->update($_SESSION['user_id'],
-                            array("password" => password_hash($new_password, PASSWORD_HASH_ALGORITHM)));
+                            array("password" => password_hash($new_password, $this->config->item('password_hash_algorithm'))));
 
                     // Send the user back to the site's root
                     redirect(base_url());

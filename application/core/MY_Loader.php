@@ -1,22 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
-/**
- * Question controller
- *
- * @author      Orif, section informatique (UlSi, ViDi)
- * @link        https://github.com/OrifInformatique/gestion_questionnaires
- * @copyright   Copyright (c) Orif (http://www.orif.ch)
- */
-class MY_Loader extends CI_Loader
+/* load the MX_Loader class */
+require APPPATH . 'third_party/MX/Loader.php';
+
+class MY_Loader extends MX_Loader
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function iface($strInterface)
-    {
-        require_once APPPATH . '/interfaces/' . $strInterface . '.php';
-    }
 }

@@ -7,7 +7,7 @@
  * @copyright   Copyright (c) 2019, Orif <http://www.orif.ch>
  */
 
-class MY_Controller extends CI_Controller
+class MY_Controller extends MX_Controller
 {
 
     /**
@@ -23,7 +23,7 @@ class MY_Controller extends CI_Controller
 
         /* Check permission on construct */
         if (!$this->check_permission()) {
-            show_error(lang('msg_err_access_denied_message'), 403, lang('msg_err_access_denied_header'));
+            show_error($this->lang->line('msg_err_access_denied'));
         }
     }
 
@@ -38,6 +38,7 @@ class MY_Controller extends CI_Controller
     }
 
     
+
     /**
     * Check if user access level matches the required access level.
     * Required level can be the controller's default level or a custom
@@ -60,8 +61,8 @@ class MY_Controller extends CI_Controller
         else {
             // check if user is logged in
             // if not, redirect to login page
-            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
-                $this->ask_for_login();
+            if ($_SESSION['logged_in'] != true) {
+                redirect("auth/login");
             }
             // check if page is accessible for all logged in users
             elseif ($required_level == "@") {
