@@ -5,7 +5,7 @@
     <?php
     $attributes = array("id" => "reportProbleme",
                         "name" => "reportProbleme");
-    echo form_open('Support/form_report_problem', $attributes);
+    echo form_open('support/form_report_problem', $attributes);
     ?>
 
         <div class="row">

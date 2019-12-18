@@ -3,7 +3,7 @@
 /**
  * Support controller
  *
- * @author      Orif, section informatique (UlSi, ViDi, MeDa)
+ * @author      Orif, section informatique (UlSi, ViDi, MeDa, BuYa)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
@@ -14,8 +14,9 @@ class Support extends MY_Controller {
      * Constructor
      */
     public function __construct() {
+        $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
-        $this->access_level = $this->config->item('access_lvl_user');
+        $this->form_validation->CI =& $this;
     }
 
     public function index($sumbitted = false) {
@@ -52,7 +53,7 @@ class Support extends MY_Controller {
 
             $header = array(
                 'Content-Type: application/json; charset=utf-8',
-                'Authorization: Basic '.base64_encode(GITHUB_USERNAME.':'.GITHUB_PASSWORD),
+                'Authorization: Basic '.base64_encode($this->config->item('github_username').':'.$this->config->item('github_password')),
                 'User-Agent: PHP-Server'
             );
 

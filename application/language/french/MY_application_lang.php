@@ -246,10 +246,3 @@ $lang['pdf_multiple_answer_2']          = 'attendue';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
-
-// Support Controller
-$lang['title_report_a_problem']         = 'Signaler un problème';
-$lang['issue_title']                    = 'Sujet';
-$lang['issue_body']                     = 'Description du problème';
-$lang['title_problem_submitted']        = 'Problème signalé';
-$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';
