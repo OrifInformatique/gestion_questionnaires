@@ -34,7 +34,3 @@ application/config/config.php
 #--------------------------
 pdf_files/
 uploads/
-
-# Passwords, tokens
-#--------------------------
-application/modules/support/config/MY_support_token.php
