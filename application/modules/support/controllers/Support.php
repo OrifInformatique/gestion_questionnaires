@@ -28,8 +28,8 @@ class Support extends MY_Controller {
     }
 
     public function form_report_problem() {
-        $this->form_validation->set_rules('issue_title', $this->lang->line('issue_title'), 'required');
-        $this->form_validation->set_rules('issue_body', $this->lang->line('issue_body'), 'required');
+        $this->form_validation->set_rules('issue_title', $this->lang->line('field_issue_title'), 'required');
+        $this->form_validation->set_rules('issue_body', $this->lang->line('field_issue_body'), 'required');
 
         if($this->form_validation->run() == true){
             
