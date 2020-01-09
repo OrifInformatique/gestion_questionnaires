@@ -7,15 +7,11 @@
  * @copyright   Copyright (c), Orif (http://www.orif.ch)
  */
 
-// Pages titles
+// Form page
 $lang['title_report_a_problem']         = 'Signaler un problème';
+$lang['field_issue_title']              = 'Sujet';
+$lang['field_issue_body']               = 'Description du problème';
 
-// Fields labels
-$lang['issue_title']                    = 'Sujet';
-$lang['issue_body']                     = 'Description du problème';
-
-// Buttons
-
-// Messages
+// Confirmation page
 $lang['title_problem_submitted']        = 'Problème signalé';
-$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';
+$lang['msg_problem_submitted']          = 'Merci, le problème nous a été signalé.';
