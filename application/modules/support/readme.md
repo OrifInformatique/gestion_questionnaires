@@ -1,4 +1,4 @@
-# auth module
+# support module
 This module contains a form to reporting issue directly on GitHub.
 
 ## Configuration
