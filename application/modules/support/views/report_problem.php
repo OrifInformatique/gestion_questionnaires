@@ -5,7 +5,7 @@
     <?php
     $attributes = array("id" => "reportProbleme",
                         "name" => "reportProbleme");
-    echo form_open('Support/form_report_problem', $attributes);
+    echo form_open('support/form_report_problem', $attributes);
     ?>
 
         <div class="row">
@@ -26,14 +26,14 @@
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('issue_title'), 'issue_title'); ?>
+                <?php echo form_label($this->lang->line('field_issue_title'), 'issue_title'); ?>
                 <?php echo form_input('issue_title', set_value('issue_title'), 'maxlength="200" class="form-control" id="issue_title"'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-12">
-                <?php echo form_label($this->lang->line('issue_body'), 'issue_body'); ?>
+                <?php echo form_label($this->lang->line('field_issue_body'), 'issue_body'); ?>
                 <?php echo form_textarea('issue_body', set_value('issue_body'), 'maxlength="65535" class="form-control" rows="8" id="issue_body"'); ?>
             </div>
         </div>

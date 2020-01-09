@@ -3,7 +3,7 @@
 /**
  * Support controller
  *
- * @author      Orif, section informatique (UlSi, ViDi, MeDa)
+ * @author      Orif, section informatique (UlSi, ViDi, MeDa, BuYa)
  * @link        https://github.com/OrifInformatique/gestion_questionnaires
  * @copyright   Copyright (c) Orif (http://www.orif.ch)
  */
@@ -14,8 +14,9 @@ class Support extends MY_Controller {
      * Constructor
      */
     public function __construct() {
+        $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
-        $this->access_level = $this->config->item('access_lvl_user');
+        $this->form_validation->CI =& $this;
     }
 
     public function index($sumbitted = false) {
@@ -27,13 +28,13 @@ class Support extends MY_Controller {
     }
 
     public function form_report_problem() {
-        $this->form_validation->set_rules('issue_title', $this->lang->line('issue_title'), 'required');
-        $this->form_validation->set_rules('issue_body', $this->lang->line('issue_body'), 'required');
+        $this->form_validation->set_rules('issue_title', $this->lang->line('field_issue_title'), 'required');
+        $this->form_validation->set_rules('issue_body', $this->lang->line('field_issue_body'), 'required');
 
         if($this->form_validation->run() == true){
             
 
-            $url = 'https://api.github.com/repos/OrifInformatique/gestion_questionnaires/issues';
+            $url = 'https://api.github.com/repos/'.$this->config->item('github_repo').'/issues';
             $ch = curl_init($url);
 
             if (isset($_SESSION['username'])) {
@@ -52,7 +53,7 @@ class Support extends MY_Controller {
 
             $header = array(
                 'Content-Type: application/json; charset=utf-8',
-                'Authorization: Basic '.base64_encode(GITHUB_USERNAME.':'.GITHUB_PASSWORD),
+                'Authorization: Basic '.base64_encode($this->config->item('github_username').':'.$this->config->item('github_token')),
                 'User-Agent: PHP-Server'
             );
 
