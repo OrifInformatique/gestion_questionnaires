@@ -34,17 +34,17 @@
             </div>
             <div class="col-sm-4">
                 
-                <a href="../Topic" class="btn btn-info col-xs-12 xs-space"><?php echo $this->lang->line('btn_add_topic');?></a>
+                <a href="../Topic" class="btn btn-info col-12 xs-space"><?php echo $this->lang->line('btn_add_topic');?></a>
             </div>
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="col-xs-12 col-sm-8 xs-space"> 
+        <div class="col-12 col-sm-8 xs-space"> 
             <input class="form-control-file" type="file" name="excelfile" id="excelfile" accept=".xlsx">
          </div>
-        <div class="col-xs-12 col-sm-4 xs-space"> 
-            <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_question'); ?>" name="submitExcel">
+        <div class="col-12 col-sm-4 xs-space"> 
+            <input class="btn btn-success col-12" type="submit" value="<?php echo $this->lang->line('btn_import_question'); ?>" name="submitExcel">
         </div>
     </div>
     <?=form_close();?>
@@ -66,11 +66,11 @@
     echo form_open('Question/import', $attributes);
     ?>
     <div class="row"> 
-        <div class="col-xs-12 col-sm-8 xs-space">
+        <div class="col-12 col-sm-8 xs-space">
                 <input class="form-control-file text-center" type="file" name="picturesfile[]" id="picturesfile" accept="image/*" multiple>
         </div> 
-        <div class="col-xs-12 col-sm-4 xs-space">
-                <input class="btn btn-success col-xs-12" type="submit" value="<?php echo $this->lang->line('btn_import_image'); ?>" name="submitPictures">
+        <div class="col-12 col-sm-4 xs-space">
+                <input class="btn btn-success col-12" type="submit" value="<?php echo $this->lang->line('btn_import_image'); ?>" name="submitPictures">
         </div>
     </div>
     <?=form_close();?>

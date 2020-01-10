@@ -28,7 +28,7 @@
         }
         ?>
 
-        <div class="col-xs-12">
+        <div class="col-12">
             <h4 for="module"><?php echo $this->lang->line('focus_module'); ?></h4>
             <select  class="form-control" name="module_selected" id="module_selected">
              <?php
@@ -40,13 +40,13 @@
             ?>
             </select>
         </div>
-        <div class="col-xs-12">
+        <div class="col-12">
             <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
             <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control" id="title" value="">
         </div>
-        <div class="col-xs-12">
-              <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
-            <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
+        <div class="col-12">
+              <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
+            <input type="submit" class="btn btn-success col-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
                  
         </div>
         <?php echo form_close(); ?>

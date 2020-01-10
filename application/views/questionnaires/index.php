@@ -11,12 +11,12 @@
     <div class="container">
         <h1><?= $this->lang->line('title_model'); ?></h1>
         <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <a href="<?= base_url('Questionnaire/form_add/1'); ?>" class="btn btn-success col-xs-12"><?= $this->lang->line('btn_add_questionnaire_model'); ?></a>
+            <div class="col-12 col-sm-4">
+                <a href="<?= base_url('Questionnaire/form_add/1'); ?>" class="btn btn-success col-12"><?= $this->lang->line('btn_add_questionnaire_model'); ?></a>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 table-responsive">
+            <div class="col-12 table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -48,12 +48,12 @@
             }
         ?>
         <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-xs-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
+            <div class="col-12 col-sm-4">
+                <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-success col-12" style="margin-bottom:10px;"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 table-responsive">
+            <div class="col-12 table-responsive">
                 <table class="table table-hover" >
                     <thead>
                     <tr>

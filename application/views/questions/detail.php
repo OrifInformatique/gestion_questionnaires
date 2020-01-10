@@ -15,7 +15,7 @@
         </div>
     <?php } ?>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <table class="table table-hover" id="table">
                 <tbody>
                     <tr>
@@ -32,11 +32,9 @@
                 </tbody>
             </table>
             <?php if ($question->FK_Question_Type == 7) {
-            echo "<img src=".base_url('uploads/pictures/'.$image).">";
+                echo "<img src=".base_url('uploads/pictures/'.$image).">";
             }?>
-             <?php echo form_button('retour', $this->lang->line('return'), 'class="btn btn-default col-xs-12 col-sm-4 col-md-2" onclick="location.href=\''.base_url('Question').'\'"'); ?>
-          
-                 
+            <a id="btn_cancel" class="btn btn-default" href="<?=base_url('question')?>"><?=$this->lang->line('return')?></a>  
         </div>
     </div>
 </div>

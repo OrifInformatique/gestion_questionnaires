@@ -2,7 +2,7 @@
 <div id="page-content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div>
                     <span class="form-header"><?php echo $this->lang->line('del_module_form_title') . '"' . $Topic; ?>" ?</span>
                 </div>

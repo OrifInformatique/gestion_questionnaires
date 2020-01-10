@@ -22,14 +22,14 @@
                 echo "<p class='alert alert-warning'>" . $this->lang->line('update_topic_form_err') . "</p>";
             }
             ?>
-            <div class="col-xs-12">
+            <div class="col-12">
                 <h4 for="title"><?php echo $this->lang->line('update_title_topic'); ?></h4>
-                <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control col-xs-12" id="title" value="<?php echo $title_topic; ?>">
+                <input maxlength="<?=TOPIC_MAX_LENGTH?>" type="text" name="title" class="form-control col-12" id="title" value="<?php echo $title_topic; ?>">
             </div>
             <input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
-            <div class="col-xs-12">
-                <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
-                <input type="submit" class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
+            <div class="col-12">
+                <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-12 col-sm-4" onclick="location.href=\''.base_url('Topic').'\'"'); ?>
+                <input type="submit" class="btn btn-success col-12 col-sm-4 col-sm-offset-4" value="<?php echo $this->lang->line('save') ?>"/>
             </div>
 
             <?php echo form_close(); ?>

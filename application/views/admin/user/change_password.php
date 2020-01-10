@@ -22,9 +22,9 @@
 
         <div class="row">
             <div class="form-group">
-                <a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
+                <a name="cancel" class="btn btn-danger col-12 col-sm-4" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
                 <?php
-                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
+                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-12 col-sm-4 col-sm-offset-4"'); 
                 ?>
             </div>
         </div>

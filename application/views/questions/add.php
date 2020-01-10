@@ -8,7 +8,7 @@
  */
 ?>
 <div class="container">
-    <h1 class="title-section"><?php echo $this->lang->line('title_question_add'); ?></h1>
+    <h1 class="title-section"><?= $this->lang->line('title_question_add'); ?></h1>
     <div class="row">
         <?php
         $attributes = array("class" => "form-group",
@@ -16,26 +16,29 @@
                             "name" => "addQuestionForm");
         echo form_open('Question/add/2', $attributes);
         ?>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
-                </div>
-                <div class="col-md-8"><?php echo form_dropdown('focus_topic', $topics); ?></div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-4">
-                    <?php echo form_label($this->lang->line('question_type'), 'list_question_type', 'for="question_type"'); ?>
-                </div>
-                <div class="col-md-8"><?php echo form_dropdown('question_type', $list_question_type); ?></div>
-            </div>
-            <div class="form-group row" style="text-align: right;">
-                <div class=" col-sm-4 col-xs-12" >
-                    <?php echo form_button('annuler', $this->lang->line('cancel'), 'class="btn btn-danger col-xs-12" onclick="location.href=\''.base_url('Question').'\'"'); ?>
-                </div>
-                <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                    <?php echo form_submit('suivant', $this->lang->line('btn_next'), 'class="btn btn-success col-xs-12"'); ?>
+            <div class="form-group">
+                <div class="row colbox">
+                    <div class="col-md-4">
+                        <?= form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
+                    </div>
+                    <div class="col-md-8"><?= form_dropdown('focus_topic', $topics, null, 'class="form-control"'); ?></div>
                 </div>
             </div>
-        <?php echo form_close(); ?>
+            <div class="form-group">
+                <div class="row colbox">
+                    <div class="col-md-4">
+                        <?= form_label($this->lang->line('question_type'), 'list_question_type', 'for="question_type"'); ?>
+                    </div>
+                    <div class="col-md-8"><?= form_dropdown('question_type', $list_question_type, null, 'class="form-control"'); ?></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                    <a id="btn_cancel" class="btn btn-default" href="<?= base_url('question'); ?>"><?= lang('btn_cancel'); ?></a>
+                    <input id="btn_next" name="btn_next" type="submit" class="btn btn-primary" value="<?= lang('btn_next'); ?>" />
+                </div>
+            </div>
+        <?= form_close(); ?>
     </div>
 </div>

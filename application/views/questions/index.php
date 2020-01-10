@@ -105,22 +105,22 @@
                     ?>
                 </div>
                 <div class="col-lg-4">
-                    <input type="submit" class="col-xs-12 button-align btn btn-primary xs-space" value="<?php echo $this->lang->line('filter'); ?>">
+                    <input type="submit" class="col-12 button-align btn btn-primary xs-space" value="<?php echo $this->lang->line('filter'); ?>">
                 </div>
             </div>
         </form>
         <div class="row">
             <div class="col-lg-4">
-                <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                <a href="<?php echo base_url('Question/resetFilters');?>" class="col-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
             </div>
         </div>
             <hr>
         <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
+            <div class="col-12 col-sm-4">
+                <a class="col-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
             </div>
-            <div class="col-xs-12 col-sm-offset-4 col-sm-4">
-                <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
+            <div class="col-12 col-sm-offset-4 col-sm-4">
+                <a class="col-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
             </div>
         </div>
         <div id="pagination_top"><?=$pagination?></div>

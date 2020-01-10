@@ -22,6 +22,7 @@ class Question extends MY_Controller
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
 		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel'));
+		$this->form_validation->CI =& $this;
 	}
 
 	/**
@@ -120,22 +121,23 @@ class Question extends MY_Controller
 			'full_tag_close' => '</ul>',
 
 			'first_link' => '&laquo;',
-			'first_tag_open' => '<li>',
+			'first_tag_open' => '<li class="page-item">',
 			'first_tag_close' => '</li>',
 
 			'last_link' => '&raquo;',
-			'last_tag_open' => '<li>',
+			'last_tag_open' => '<li class="page-item">',
 			'last_tag_close' => '</li>',
 
 			'next_link' => FALSE,
 			'prev_link' => FALSE,
 
-			'cur_tag_open' => '<li class="active"><a>',
-			'cur_tag_close' => '</li></a>',
+			'cur_tag_open' => '<li class="page-item active"><a class="page-link" href="#">',
+			'cur_tag_close' => '</a></li>',
 			'num_links' => 5,
 
-			'num_tag_open' => '<li>',
-			'num_tag_close' => '</li>'
+			'num_tag_open' => '<li class="page-item">',
+			'num_tag_close' => '</li>',
+			'attributes' => ['class' => 'page-link']
 		);
 
 		$this->pagination->initialize($config);
