@@ -73,7 +73,7 @@
                                     <?php echo $this->lang->line('redirect_pdf');?></a></td>
                             <td><a target="_blank" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>">
                                     <?php echo $this->lang->line('redirect_corrige');?></a></td>
-                            <td><a href="<?php echo base_url(); ?>Questionnaire/generatePDF/<?php echo $questionnaire->ID; ?>">
+                            <td><a href="<?php echo base_url(); ?>Questionnaire/generate_pdf/<?php echo $questionnaire->ID; ?>">
                                     <?php echo $this->lang->line('regenerate');?></a></td>
                             <td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>
