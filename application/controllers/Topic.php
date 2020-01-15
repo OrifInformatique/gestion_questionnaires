@@ -15,6 +15,7 @@ class Topic extends MY_Controller
         $this->access_level = $this->config->item('access_lvl_manager');
         $this->load->model('topic_model');
         $this->load->helper('date');
+        $this->form_validation->CI =& $this;
     }
 
     /**

@@ -13,7 +13,7 @@
 
             let topic = $( "#topic_selected" ).val();
 
-            $.post("./get_nb_questions/", {topic: topic}, function (nbQuestion) {
+            $.post("<?=base_url('questionnaire/get_nb_questions')?>", {topic: topic}, function (nbQuestion) {
 
                 $("#nb_questions")
                     .find('option')
@@ -120,12 +120,13 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group col-sm-4 colxs-12">
+            <div class="form-group col-sm-4 col-xs-12">
                 <?= form_label($this->lang->line('nb_questions'), 'nb_questions', array('class' => 'form-label')); ?>
                 <select class="form-control" id="nb_questions" name="nb_questions"></select>
             </div>
             <div class="col-sm-4 col-12">
-                <input type="submit" class="btn btn-success col-12 xs-space"  value="<?php echo $this->lang->line('add_form')?>" name="add_form"/>
+                <br>
+                <input type="submit" class="btn btn-secondary col-12"  value="<?php echo $this->lang->line('add_form')?>" name="add_form"/>
             </div>
         </div>
         <div class="row">
@@ -136,11 +137,11 @@
                         <th class="col-lg-1">
                             <span>#</span>
                         </th>
-                        <th class="col-lg-9">
-                            <span>Nom du sujet</span>
+                        <th class="col-lg-8">
+                            <span><?=$this->lang->line('topic')?></span>
                         </th>
-                        <th class="col-lg-2">
-                            <span>Nb questions</span>
+                        <th class="col-lg-3">
+                            <span><?=$this->lang->line('nb_questions')?></span>
                         </th>
                     </tr>
                     </thead>
@@ -170,15 +171,11 @@
                     </tbody>
                 </table>
                
-
-                
-            </div>
-            <div class="col-sm-4 col-12" > 
-            <input type="submit" class="btn btn-danger col-12" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
-
-            </div>
-            <div class="col-sm-offset-4 col-sm-4 col-12">
-                 <input type="submit" class="btn btn-success col-12" name="save" value="<?php echo $this->lang->line('save');?>">
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                    <input type="submit" class="btn btn-default" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
+                    <input type="submit" class="btn btn-primary" name="save" value="<?php echo $this->lang->line('save');?>">
+                </div>
             </div>
 
         </div>
