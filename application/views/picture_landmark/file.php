@@ -13,7 +13,7 @@
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");
-    echo form_open_multipart('Question/add_PictureLandmark', $attributes);
+    echo form_open_multipart('Question/add_picture_landmark', $attributes);
     ?>
 
         <!-- Hidden fields to put informations in $_POST -->

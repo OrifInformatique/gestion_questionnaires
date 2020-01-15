@@ -13,7 +13,7 @@
 	<?php
 	$attributes = array("id" => "addQuestionForm",
 						"name" => "addQuestionForm");
-	echo form_open('Question/add_ClozeText', $attributes);
+	echo form_open('Question/add_cloze_text', $attributes);
 	?>
 	
 		

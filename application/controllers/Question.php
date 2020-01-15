@@ -21,7 +21,6 @@ class Question extends MY_Controller
 							'question_type_model', 'topic_model', 'multiple_choice_model',
 							'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
 							'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-		$this->load->library(array('PHPExcel-1.8/Classes/PHPExcel'));
 		$this->form_validation->CI =& $this;
 	}
 
@@ -157,7 +156,7 @@ class Question extends MY_Controller
 	 * Resets the index filters stored in $_SESSION['filtres']
 	 * and redirects the user to index
 	 */
-	public function resetFilters() {
+	public function reset_filters() {
 		unset($_SESSION['filtres']);
 		redirect('question');
 	}
@@ -444,7 +443,7 @@ class Question extends MY_Controller
 	/**
 	 * Function to save a multiple choice question
 	 */
-	public function add_MultipleChoice()
+	public function add_multiple_choice()
 	{
 		if (isset($_POST['cancel'])){
 			redirect('question');
@@ -633,7 +632,7 @@ class Question extends MY_Controller
 	/**
 	 * Function for save multiple answer
 	 */
-	public function add_MultipleAnswer()
+	public function add_multiple_answer()
 	{
 		if (isset($_POST['save'])){
 			$this->form_validation->set_rules('name', $this->lang->line('question_text'), 'required');
@@ -817,7 +816,7 @@ class Question extends MY_Controller
 	/**
 	 * Function for save cloze text
 	 */
-	public function add_ClozeText()
+	public function add_cloze_text()
 	{
 		if (isset($_POST['cancel'])){
 			redirect('question');
@@ -1025,7 +1024,7 @@ class Question extends MY_Controller
 	/**
 	 * Function for save free answer
 	 */
-	public function add_FreeAnswer()
+	public function add_free_answer()
 	{
 		if (isset($_POST['cancel'])){
 			redirect('question');
@@ -1124,7 +1123,7 @@ class Question extends MY_Controller
 	/**
 	 * Function for save picture landmark
 	 */
-	public function add_PictureLandmark($step=1)
+	public function add_picture_landmark($step=1)
 	{
 		if ($step==1){
 			if(isset($_POST['focus_topic'])){

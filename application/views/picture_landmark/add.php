@@ -13,7 +13,7 @@
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");
-    echo form_open('Question/add_PictureLandmark/2', $attributes);
+    echo form_open('Question/add_picture_landmark/2', $attributes);
     ?>
     
         

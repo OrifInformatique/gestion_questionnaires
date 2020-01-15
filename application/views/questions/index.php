@@ -113,7 +113,7 @@
         <div class="row">
             <div class="col-lg-4 form-group">
                 <br>
-                <a href="<?php echo base_url('Question/resetFilters');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                <a href="<?php echo base_url('Question/reset_filters');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('clear_filters'); ?></a>
             </div>
         </div>
             <hr>

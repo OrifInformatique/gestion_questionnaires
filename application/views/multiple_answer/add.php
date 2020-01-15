@@ -13,7 +13,7 @@
     <?php
     $attributes = array("id" => "addQuestionForm",
                         "name" => "addQuestionForm");
-    echo form_open('Question/add_MultipleAnswer', $attributes);
+    echo form_open('Question/add_multiple_answer', $attributes);
     ?>
         
         <!-- Hidden fields to put informations in $_POST -->
