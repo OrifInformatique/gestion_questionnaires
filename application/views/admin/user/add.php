@@ -18,15 +18,6 @@ $update = !is_null($user);
     ));
     ?>
 
-        <div class="row">
-            <div class="form-group">
-                <a name="cancel" class="btn btn-danger col-12 col-sm-4" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
-                <?php
-                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-12 col-sm-4 col-sm-offset-4"'); 
-                ?>
-            </div>
-        </div>
-
         <!-- ERROR MESSAGES -->
         <?php
         if (!empty(validation_errors())) {
@@ -75,7 +66,7 @@ $update = !is_null($user);
             <div class="form-group col-md-12">
                 <?php
                 if($user->archive) {
-                    echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-primary col-12 col-sm-4"');
+                    echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-info col-12 col-sm-4"');
                 } else {
                     echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-warning col-12 col-sm-4"');
                 }
@@ -87,6 +78,15 @@ $update = !is_null($user);
             </div>
         </div>
         <?php } ?>
+
+        <div class="row">
+            <div class="col-12 text-right">
+                <a name="cancel" class="btn btn-default" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
+                <?php
+                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-primary"'); 
+                ?>
+            </div>
+        </div>
 
     <?= form_close(); ?>
 </div>
