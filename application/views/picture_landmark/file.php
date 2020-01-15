@@ -68,7 +68,7 @@
 
         <!-- Display buttons and display topic and question type as information -->
         <div class="row">
-            <div class="col text-right">
+            <div class="col-12 text-right">
                 <a id="btn_cancel" class="btn btn-default" href="<?=base_url('/Question')?>"><?=$this->lang->line('btn_cancel')?></a>
                 <?php
                     echo form_submit('save', $this->lang->line('save'), 'class="btn btn-primary"'); 

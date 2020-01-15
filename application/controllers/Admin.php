@@ -15,7 +15,6 @@ class Admin extends MY_Controller {
     public function __construct() {
         $this->config->load('auth/MY_auth_config');
         $this->access_level = $this->config->item('access_lvl_admin');
-        var_dump($this->access_level);
         parent::__construct();
         $this->lang->load('auth/MY_auth');
 
