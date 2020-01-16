@@ -14,7 +14,7 @@
     $attributes = array("class" => "form-group",
         "id" => "addTopicForm",
         "name" => "addTopicForm");
-    echo form_open('Topic/form_add_topic', $attributes);
+    echo form_open('Topic/add_topic', $attributes);
     if(count($topics) == 0){
         echo '<div class="alert alert-warning">'.$this->lang->line('topic_no_module_error').'</div>';
     }
