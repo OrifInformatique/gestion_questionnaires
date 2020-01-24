@@ -57,7 +57,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
 {
 ?>
     <div class="container" >
-        <nav class="navbar navbar-expand-lg bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
             <ul class="navbar-nav mr-auto">
                 <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
                     <li class="nav-item <?php checkactive(1); ?>">
@@ -93,7 +93,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
             
             <!-- Button to submit a problem -->
             <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
-                <a class="btn btn-warning pull-right" href="<?php echo base_url('support');?>">
+                <a class="btn btn-outline-warning pull-right" href="<?php echo base_url('support');?>">
                     <?= $this->lang->line('nav_support');?>
                 </a>
             <?php } ?>
