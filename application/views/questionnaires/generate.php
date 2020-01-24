@@ -47,7 +47,7 @@
         <div class="form-group col-12">
             <div class="col-sm-12 text-right">
                 <input type="submit" class="btn btn-default" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
-                <input type="submit" class="btn btn-primary" name="generate" value="<?php echo $this->lang->line('generate');?>">
+                <input type="submit" class="btn btn-primary" name="generate" value="<?php echo $this->lang->line('generate_questionnaire');?>">
             </div>
         </div>
     </div>

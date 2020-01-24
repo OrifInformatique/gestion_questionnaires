@@ -11,7 +11,7 @@
     <div class="container">
         <h1><?= $this->lang->line('title_model'); ?></h1>
         <div class="row">
-            <div class="col-12 col-sm-4">
+            <div class="col-sm-3">
                 <a href="<?= base_url('Questionnaire/form_add/1'); ?>" class="btn btn-primary col-12"><?= $this->lang->line('btn_add_questionnaire_model'); ?></a>
             </div>
         </div>
@@ -20,9 +20,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th><?= $this->lang->line('questionnaire_model'); ?></th>
+                            <th><?= $this->lang->line('questionnaire_model_name'); ?></th>
                             <th><?= $this->lang->line('questionnaire_model_titles');?></th>
-                            <th><?= $this->lang->line('questionnaire_model_subtitles');?></th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -32,8 +31,7 @@
                         <tr>
                             <td><a href="<?= base_url('Questionnaire/update/'.$model->ID.'/1'); ?>"><?= $model->Base_Name; ?></a></td>
                             <td><?= $model->Questionnaire_Name; ?></td>
-                            <td><?= $model->Questionnaire_Subtitle; ?></td>
-                            <td><a href="<?= base_url('Questionnaire/generate_pdf_from_model/'.$model->ID) ?>"><?= $this->lang->line('generate'); ?></a></td>
+                            <td><a class="btn btn-secondary btn-sm" href="<?= base_url('Questionnaire/generate_pdf_from_model/'.$model->ID) ?>"><?= $this->lang->line('generate_questionnaire'); ?></a></td>
                             <td><a href="<?= base_url('Questionnaire/model_delete/'.$model->ID); ?>" class="close">×</a></td>
                         </tr>
                     <?php } ?>
@@ -48,7 +46,7 @@
             }
         ?>
         <div class="row">
-            <div class="col-12 col-sm-4">
+            <div class="col-sm-3">
                 <a href="<?php echo base_url(); ?>Questionnaire/form_add/" class="btn btn-primary col-12"><?php echo $this->lang->line('btn_add_questionnaire');?></a>
             </div>
         </div>
@@ -69,12 +67,12 @@
                         ?>
                         <tr>
                             <td><a href="<?= base_url('Questionnaire/update/'.$questionnaire->ID); ?>"><?php echo $questionnaire->Questionnaire_Name; ?></a></td>
-                            <td><a href="<?php echo base_url()."pdf_files/questionnaires/".$questionnaire->PDF; ?>" target="_blank">
+                            <td><a class="btn btn-secondary btn-sm" href="<?php echo base_url()."pdf_files/questionnaires/".$questionnaire->PDF; ?>" target="_blank">
                                     <?php echo $this->lang->line('redirect_pdf');?></a></td>
-                            <td><a target="_blank" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>">
+                            <td><a class="btn btn-secondary btn-sm" href="<?php echo base_url()."pdf_files/corriges/".$questionnaire->Corrige_PDF; ?>" target="_blank">
                                     <?php echo $this->lang->line('redirect_corrige');?></a></td>
-                            <td><a href="<?php echo base_url(); ?>Questionnaire/generate_pdf/<?php echo $questionnaire->ID; ?>">
-                                    <?php echo $this->lang->line('regenerate');?></a></td>
+                            <td><a class="btn btn-secondary btn-sm" href="<?php echo base_url(); ?>Questionnaire/generate_pdf/<?php echo $questionnaire->ID; ?>">
+                                    <?php echo $this->lang->line('regenerate_questionnaire');?></a></td>
                             <td><a href="<?php echo base_url(); ?>questionnaire/delete/<?php echo $questionnaire->ID; ?>" class="close">×</a></td>
                         </tr>
                         <?php
