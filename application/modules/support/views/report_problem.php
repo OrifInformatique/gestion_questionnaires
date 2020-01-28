@@ -7,17 +7,6 @@
                         "name" => "reportProbleme");
     echo form_open('support/form_report_problem', $attributes);
     ?>
-
-        <div class="row">
-            <div class="form-group">
-                <a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url()?>"><?=$this->lang->line('cancel')?></a>
-                <?php
-                    echo form_submit('post', $this->lang->line('post'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
-                    echo form_submit('test', '', 'style="visibility: hidden; height:0;"');//for cancel "Enter" key in form 
-                ?>
-            </div>
-        </div>
-
         <!-- ERROR MESSAGES -->
         <?php
         if (!empty(validation_errors())) {
@@ -35,6 +24,15 @@
             <div class="form-group col-md-12">
                 <?php echo form_label($this->lang->line('field_issue_body'), 'issue_body'); ?>
                 <?php echo form_textarea('issue_body', set_value('issue_body'), 'maxlength="65535" class="form-control" rows="8" id="issue_body"'); ?>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-right">
+                <a name="cancel" class="btn btn-default" href="<?=base_url()?>"><?=$this->lang->line('cancel')?></a>
+                <?php
+                    echo form_submit('post', $this->lang->line('post'), 'class="btn btn-primary"');
+                ?>
             </div>
         </div>
     <?php echo form_close(); ?>

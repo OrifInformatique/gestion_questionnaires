@@ -24,7 +24,7 @@
     ?>
 
     <div class="row">
-        <div class="form-group col-xs-12">
+        <div class="form-group col-12">
             <?= form_label($this->lang->line('add_title_questionnaire'), 'title', array('class' => 'form-label')); ?>
             <?= form_input('title', $model->Questionnaire_Name, array(
                 'maxlength' => 100, 'id' => 'title',
@@ -34,7 +34,7 @@
     </div>
 
     <div class="row">
-        <div class="form-group col-xs-12">
+        <div class="form-group col-12">
             <?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle', array('class' => 'form-label')); ?>
             <?= form_input('subtitle', $model->Questionnaire_Subtitle, array(
                 'maxlength' => 100, 'id' => 'subtitle',
@@ -44,14 +44,10 @@
     </div>
 
     <div class="row">
-        <div class="form-group col-xs-12">
-            <div class="col-sm-4 col-xs-12">
-                <a href="<?= base_url('Questionnaire'); ?>" class="btn btn-danger col-xs-12"><?= $this->lang->line('cancel'); ?></a>
-            </div>
-            <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                <?= form_submit('generate', $this->lang->line('generate'), array(
-                    'class' => 'btn btn-success col-xs-12'
-                )); ?>
+        <div class="form-group col-12">
+            <div class="col-sm-12 text-right">
+                <input type="submit" class="btn btn-default" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
+                <input type="submit" class="btn btn-primary" name="generate" value="<?php echo $this->lang->line('generate_questionnaire');?>">
             </div>
         </div>
     </div>

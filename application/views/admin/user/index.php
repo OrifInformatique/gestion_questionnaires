@@ -10,14 +10,14 @@
 <div class="container">
     <h1 class="title-section"><?= $this->lang->line('title_users'); ?></h1>
     <div class="row">
-        <div class="col-xs-12 col-sm-4">
-            <a href="<?= base_url('Admin/user_add'); ?>" class="btn btn-success col-xs-12">
+        <div class="col-12 col-sm-4">
+            <a href="<?= base_url('Admin/user_add'); ?>" class="btn btn-primary">
                 <?= $this->lang->line('btn_add_user'); ?>
             </a>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 table-responsive">
+        <div class="col-12 table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>

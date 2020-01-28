@@ -1,7 +1,7 @@
 <div id="page-content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div>
                     <span class="form-header"><?= $this->lang->line('del_user_form_title') . '"' . $username; ?>" ?</span>
                 </div>

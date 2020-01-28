@@ -8,10 +8,10 @@
 ?>
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <br>
             <?= "<p class='alert alert-warning'>" . $this->lang->line('no_implemented_question_type') . "</p>" ; ?>
-            <a href="<?=base_url('Question/add')?>"><button class="btn btn-success"><?=$this->lang->line('return')?></button></a>
+            <a href="<?=base_url('Question/add')?>"><button class="btn btn-default"><?=$this->lang->line('return')?></button></a>
         </div>
     </div>
 </div>

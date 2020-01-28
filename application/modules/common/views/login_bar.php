@@ -1,13 +1,15 @@
 <div class="container" >
   <div class="row xs-center">
-    <a href="<?= base_url(); ?>" style="color:inherit">
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
+      <a href="<?= base_url(); ?>" style="color:inherit">
         <img src="<?= base_url("assets/images/logo/logo_64.png"); ?>" >
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      </a>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <a href="<?= base_url(); ?>" style="color:inherit">
         <h1><?= $this->lang->line('app_title'); ?></h1>
-      </div>
-    </a>
+      </a>
+    </div>
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" >
       <div class="nav nav-pills text-right" style="margin-top:20px;">
         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>

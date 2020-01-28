@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__.'/../../third_party/Test_Trait.php');
-require_once(__DIR__.'/../../controllers/Auth.php');
+require_once(__DIR__.'/../../modules/auth/controllers/Auth.php');
 
 /**
  * Class for tests for Auth controller

@@ -24,10 +24,10 @@
             <?php } ?>
 
             <?php if($model) { ?>
-                <div class="form-group col-xs-12">
+                <div class="form-group col-12">
                     <?= form_label($this->lang->line('add_title_questionnaire_model'), 'modelName', array('class' => 'form-label')); ?>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-12">
                             <?= form_input('modelName', $modelName, array(
                                 'maxlength' => 100, 'class' => 'form-control', 'id' => 'modelName'
                             )); ?>
@@ -36,10 +36,10 @@
                 </div>
             <?php } ?>
 
-            <div class="form-group col-xs-12">
+            <div class="form-group col-12">
                 <?= form_label($this->lang->line('add_title_questionnaire'), 'title', array('class' => 'form-label')); ?>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <?= form_input('title', $quest_title, array(
                             'maxlength' => 100, 'id' => 'title', 'class' => 'form-control'
                         )); ?>
@@ -47,29 +47,21 @@
                 </div>
             </div>
 
-            <div class="form-group col-xs-12">
+            <div class="form-group col-12">
                 <?= form_label($this->lang->line('add_subtitle_questionnaire'), 'subtitle', array('class' => 'form-label')); ?>
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-12">
                         <?= form_input('subtitle', $subtitle, array(
                             'maxlength' => 100, 'id' => 'subtitle', 'class' => 'form-control'
                         )); ?>
                     </div>
                 </div>
             </div>
-
-            <div class="form-group col-xs-12">
-                <div class="row">
-                    <div class="col-sm-4 col-xs-12">
-                        <a href="<?= base_url('Questionnaire'); ?>" class="btn btn-danger col-xs-12">
-                            <?= $this->lang->line('cancel'); ?>
-                        </a>
-                    </div>
-                    <div class="col-sm-offset-4 col-sm-4 col-xs-12">
-                        <?= form_submit('save', $this->lang->line('save'), array(
-                            'class' => 'btn btn-success col-xs-12'
-                        )); ?>
-                    </div>
+            
+            <div class="form-group">
+                <div class="col-sm-12 text-right">
+                    <input type="submit" class="btn btn-default" name="cancel" value="<?php echo $this->lang->line('cancel');?>">
+                    <input type="submit" class="btn btn-primary" name="save" value="<?php echo $this->lang->line('save');?>">
                 </div>
             </div>
 

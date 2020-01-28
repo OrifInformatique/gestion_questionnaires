@@ -13,7 +13,7 @@
 
         <form onsubmit="return changeselect()">
             <div class="row">
-               <div class="col-lg-4">
+                <div class="col-lg-4 form-group">
                     <b class="form-label"><?php echo $this->lang->line('focus_module'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="module_selected">
                         <?php
@@ -32,7 +32,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4 form-group">
                     <b class="form-label"><?php echo $this->lang->line('focus_topic'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
@@ -75,7 +75,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4 form-group">
                     <b class="form-label"><?php echo $this->lang->line('question_type'); ?></b>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
@@ -94,8 +94,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8">
-                    <b class="form-label"><?php echo $this->lang->line('search'); ?></b>
+                <div class="col-12 form-group">
+                    <b class="form-label"><?php echo $this->lang->line('text_search'); ?></b>
                     <?php
                         if(isset($_GET['search'])){
                             echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
@@ -104,23 +104,20 @@
                         }
                     ?>
                 </div>
-                <div class="col-lg-4">
-                    <input type="submit" class="col-xs-12 button-align btn btn-primary xs-space" value="<?php echo $this->lang->line('filter'); ?>">
+            </div>
+            <div class="row">
+                <div class="col-lg-4 form-group">
+                    <a href="<?php echo base_url('Question/reset_filters');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                </div>
+                <div class="col-lg-4 form-group">
+                    <input type="submit" class="col-12 button-align btn btn-primary no-border" value="<?php echo $this->lang->line('filter'); ?>">
                 </div>
             </div>
         </form>
+        <hr>
         <div class="row">
-            <div class="col-lg-4">
-                <a href="<?php echo base_url('Question/resetFilters');?>" class="col-xs-12 button-align btn btn-default xs-space" ><?php echo $this->lang->line('clear_filters'); ?></a>
-            </div>
-        </div>
-            <hr>
-        <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <a class="col-xs-12 btn btn-success" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
-            </div>
-            <div class="col-xs-12 col-sm-offset-4 col-sm-4">
-                <a class="col-xs-12 btn btn-info"  href="<?php echo base_url('Question/import');?>"><?php echo $this->lang->line('btn_import_question');?></a>
+            <div class="col-12 col-sm-4 form-group">
+                <a class="col-12 btn btn-primary" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
             </div>
         </div>
         <div id="pagination_top"><?=$pagination?></div>
@@ -167,7 +164,7 @@
                                     echo $this->lang->line('question_type');
                                     echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question_type\")' class='sorted_btn btn btn-default'>$question_type_sort</a>" 
                                 ?>  
-                                </th>
+                            </th>
                             <th>
                                 <?php   
                                     echo $this->lang->line('points'); 
@@ -190,8 +187,8 @@
                 </table>
                 <?php
                 if($compteur == 0){
-                    echo "<div class='well' style='border: solid 2px red;'><b class='form-label'>"
-                    . $this->lang->line('no_question') . "</b></div>";
+                    echo "<div class='alert alert-danger'>"
+                    . $this->lang->line('no_question') . "</div>";
                 }
                 ?>
             </div>
@@ -205,7 +202,7 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
+        <td id="question"><a href="<?=base_url()?>Question/update/<?php echo $question->ID;?>">
             <?php 
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);

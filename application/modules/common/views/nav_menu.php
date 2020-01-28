@@ -9,7 +9,7 @@ if(!function_exists('test_regex')) {
         $subject = $_SERVER['REQUEST_URI'];
         
         if (preg_match($pattern, $subject)) {
-            echo "class='active'";
+            echo "active";
         }
     }
 }
@@ -56,30 +56,47 @@ if(!function_exists('checkactive')) {
 if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
 {
 ?>
-    <div id="myNavbar" class="container">
-        <ul class="nav navbar-nav">
+    <div class="container" >
+        <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+            <ul class="navbar-nav mr-auto">
+                <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
+                    <li class="nav-item <?php checkactive(1); ?>">
+                        <a class="nav-link" href="<?php echo base_url('questionnaire');?>">
+                            <?= $this->lang->line('nav_questionnaire');?>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php checkactive(2); ?>">
+                        <a class="nav-link" href="<?php echo base_url('question');?>">
+                            <?= $this->lang->line('nav_question');?>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php checkactive(4); ?>">
+                        <a class="nav-link" href="<?php echo base_url('topic');?>">
+                            <?= $this->lang->line('nav_topic');?>
+                        </a>
+                    </li>
+                    <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_admin')) { ?>
+                        <li class="nav-item <?php checkactive(5); ?>">
+                            <a class="nav-link" href="<?php echo base_url('admin');?>">
+                                <?= $this->lang->line('nav_admin');?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                <?php } else { ?>
+                    <li class="nav-item <?php checkactive(0); ?>">
+                        <a class="nav-link" href="<?php echo base_url('home');?>">
+                            <?php echo $this->lang->line('nav_home');?>
+                        </a>
+                    </li>
+               <?php } ?>
+            </ul>
+            
+            <!-- Button to submit a problem -->
             <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
-                <li <?php checkactive(1); ?>><a href="<?php echo base_url('questionnaire');?>">
-                    <?= $this->lang->line('nav_questionnaire');?></a></li>
-                <li <?php checkactive(2); ?>><a href="<?php echo base_url('question');?>">
-                    <?= $this->lang->line('nav_question');?></a></li>
-                <li <?php checkactive(4); ?>><a href="<?php echo base_url('topic');?>">
-                    <?= $this->lang->line('nav_topic');?></a></li>
-                <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_admin')) { ?>
-                    <li <?php checkactive(5); ?>><a href="<?php echo base_url('admin');?>">
-                        <?= $this->lang->line('nav_admin');?></a></li>
-                <?php } ?>
-                
-            <?php } else { ?>
-                <li <?php checkactive(0); ?>><a href="<?php echo base_url('home');?>">
-                    <?php echo $this->lang->line('nav_home');?></a></li>
-           <?php } ?>
-        </ul>
-        
-        <!-- Button to submit a problem -->
-        <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
-            <a class="btn btn-warning pull-right" href="<?php echo base_url('support');?>">
-                    <?= $this->lang->line('nav_support');?></a>
-        <?php } ?>
+                <a class="btn btn-outline-warning pull-right" href="<?php echo base_url('support');?>">
+                    <?= $this->lang->line('nav_support');?>
+                </a>
+            <?php } ?>
+        </nav>
     </div>
 <?php } ?>
