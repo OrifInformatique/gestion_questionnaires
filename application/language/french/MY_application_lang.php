@@ -165,7 +165,7 @@ $lang['detail_question']                = 'Détails de la question';
 
 
 // Topics pages
-$lang['title_topic']                    = 'Liste des sujets';
+$lang['title_topic']                    = 'Liste des sujets groupés par module';
 $lang['focus_module']                   = 'Module concerné';
 $lang['title_topic_update']             = 'Modifier un sujet';
 $lang['title_topic_add']                = 'Ajouter un sujet';

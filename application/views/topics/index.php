@@ -15,11 +15,7 @@
 				echo "<p class='alert alert-danger'>" . $error . "</p>";
 			}
 		?>
-        <div class="row">
-            <div class="col-12">
-                <b class="form-label"><?php echo $this->lang->line('topic'); ?></b>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="accordion" id="accordion">
