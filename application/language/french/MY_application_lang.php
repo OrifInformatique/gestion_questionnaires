@@ -158,6 +158,7 @@ $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette question ?';
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
+$lang['text_search']                    = 'Recherche dans le texte';
 $lang['filter']                         = 'Filtrer';
 $lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
@@ -165,7 +166,7 @@ $lang['detail_question']                = 'Détails de la question';
 
 // Topics pages
 $lang['title_topic']                    = 'Liste des sujets';
-$lang['focus_module']                   = 'Module concerné :';
+$lang['focus_module']                   = 'Module concerné';
 $lang['title_topic_update']             = 'Modifier un sujet';
 $lang['title_topic_add']                = 'Ajouter un sujet';
 $lang['topic']                          = 'Sujet';

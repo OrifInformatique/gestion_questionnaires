@@ -94,8 +94,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8 form-group">
-                    <b class="form-label"><?php echo $this->lang->line('search'); ?></b>
+                <div class="col-12 form-group">
+                    <b class="form-label"><?php echo $this->lang->line('text_search'); ?></b>
                     <?php
                         if(isset($_GET['search'])){
                             echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
@@ -104,19 +104,17 @@
                         }
                     ?>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-4 form-group">
-                    <br>
+                    <a href="<?php echo base_url('Question/reset_filters');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('clear_filters'); ?></a>
+                </div>
+                <div class="col-lg-4 form-group">
                     <input type="submit" class="col-12 button-align btn btn-primary no-border" value="<?php echo $this->lang->line('filter'); ?>">
                 </div>
             </div>
         </form>
-        <div class="row">
-            <div class="col-lg-4 form-group">
-                <br>
-                <a href="<?php echo base_url('Question/reset_filters');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('clear_filters'); ?></a>
-            </div>
-        </div>
-            <hr>
+        <hr>
         <div class="row">
             <div class="col-12 col-sm-4 form-group">
                 <a class="col-12 btn btn-primary" style="margin-bottom: 10px;" href="<?php echo base_url('Question/add');?>"><?php echo $this->lang->line('btn_add_question');?></a>
@@ -204,7 +202,7 @@ function displayQuestion($question)
 {
     ?>
     <tr id="<?php echo $question->ID; ?>" >
-        <td id="question"><a href="<?=base_url()?>Question/detail/<?php echo $question->ID;?>">
+        <td id="question"><a href="<?=base_url()?>Question/update/<?php echo $question->ID;?>">
             <?php 
             //cut and add "..." if number of letters exceeds 300
             echo substr($question->Question, 0,300);

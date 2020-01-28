@@ -16,9 +16,10 @@ class Questionnaire extends MY_Controller
      * Constructor
      */
     public function __construct()
-    {
-        parent::__construct();
+    {   
         $this->access_level = $this->config->item('access_lvl_manager');
+        parent::__construct();
+        
         $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
         $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));
