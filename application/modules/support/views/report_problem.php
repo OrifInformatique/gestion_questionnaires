@@ -29,9 +29,9 @@
 
         <div class="row">
             <div class="col-12 text-right">
-                <a name="cancel" class="btn btn-default" href="<?=base_url()?>"><?=$this->lang->line('cancel')?></a>
+                <a name="cancel" class="btn btn-default" href="<?=base_url()?>"><?=$this->lang->line('btn_cancel')?></a>
                 <?php
-                    echo form_submit('post', $this->lang->line('post'), 'class="btn btn-primary"');
+                    echo form_submit('post', $this->lang->line('btn_post'), 'class="btn btn-primary"');
                 ?>
             </div>
         </div>
