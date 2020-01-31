@@ -61,7 +61,7 @@ class MY_Controller extends MX_Controller
         else {
             // check if user is logged in
             // if not, redirect to login page
-            if ($_SESSION['logged_in'] != true) {
+            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
                 redirect("auth/login");
             }
             // check if page is accessible for all logged in users

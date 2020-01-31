@@ -1,6 +1,20 @@
 <?php
 
 class Home_Test extends TestCase {
+
+
+    public function setUp()
+    {
+        $this->resetInstance();
+        $this->CI->load->helper('url');
+    }
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->_logout();
+    }
+
+
     /**************
      * TEST METHODS
      **************/
@@ -49,20 +63,22 @@ class Home_Test extends TestCase {
      */
     public function provider_index() : array
     {
+        $this->resetInstance();
+        $this->CI->config->load('../modules/auth/config/MY_auth_config');
         $data = [];
 
         $data['user'] = [
-            $this->config->item('access_lvl_user'),
+            $this->CI->config->item('access_lvl_guest'),
             FALSE
         ];
 
         $data['manager'] = [
-            $this->config->item('access_lvl_manager'),
+            $this->CI->config->item('access_lvl_registered'),
             TRUE
         ];
 
         $data['admin'] = [
-            $this->config->item('access_lvl_admin'),
+            $this->CI->config->item('access_lvl_admin'),
             TRUE
         ];
 
