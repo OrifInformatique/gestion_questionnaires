@@ -78,7 +78,7 @@ class Support_Test extends TestCase {
     {
         $this->request('GET', 'support');
 
-        $this->assertRedirect('auth/login');
+        $this->assertRedirect('user/auth/login');
     }
 
     /**

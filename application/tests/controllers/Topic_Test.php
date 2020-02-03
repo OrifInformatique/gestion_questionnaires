@@ -55,7 +55,7 @@ class Topic_Test extends TestCase {
         $this->resetInstance();
         $this->CI->load->helper('url');
         $this->CI->load->model('topic_model');
-        $this->CI->config->load('../modules/auth/config/MY_auth_config');
+        $this->CI->config->load('../modules/user/config/MY_user_config');
         $this->_login_as($this->CI->config->item('access_lvl_registered'));
     }
     public function tearDown()
@@ -95,7 +95,7 @@ class Topic_Test extends TestCase {
         $output = $this->request('GET', 'topic/index');
 
         if($redirect_expected) {
-            $this->assertRedirect('auth/login');
+            $this->assertRedirect('user/auth/login');
         } elseif($error_expected) {
             $this->assertResponseCode(500);
         } else {
@@ -513,7 +513,7 @@ class Topic_Test extends TestCase {
     public function provider_index() : array
     {
         $this->resetInstance();
-        $this->CI->config->load('../modules/auth/config/MY_auth_config');
+        $this->CI->config->load('../modules/user/config/MY_user_config');
 
         $data = [];
 

@@ -64,7 +64,7 @@ class Questionnaire_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model(['questionnaire_model', 'questionnaire_model_model']);
-        $this->CI->config->load('../modules/auth/config/MY_auth_config');
+        $this->CI->config->load('../modules/user/config/MY_user_config');
         $this->_login_as($this->CI->config->item('access_lvl_registered'));
         $this->CI->load->helper('url');
 

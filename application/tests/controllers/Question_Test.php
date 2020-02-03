@@ -118,7 +118,7 @@ class Question_Test extends TestCase {
         $this->resetInstance();
         $this->CI->load->model('question_model');
         $this->CI->load->helper('url');
-        $this->CI->config->load(to_test_path('auth/MY_auth_config'));
+        $this->CI->config->load(to_test_path('user/MY_user_config'));
         $this->_login_as($this->CI->config->item('access_lvl_registered'));
 
         self::_dummy_question_get();

@@ -50,7 +50,7 @@ class Home_Test extends TestCase {
 
         $this->request('GET', 'home/index');
 
-        $this->assertRedirect('auth/login');
+        $this->assertRedirect('user/auth/login');
     }
 
     /***********
@@ -64,7 +64,7 @@ class Home_Test extends TestCase {
     public function provider_index() : array
     {
         $this->resetInstance();
-        $this->CI->config->load('../modules/auth/config/MY_auth_config');
+        $this->CI->config->load('../modules/user/config/MY_user_config');
         $data = [];
 
         $data['user'] = [
