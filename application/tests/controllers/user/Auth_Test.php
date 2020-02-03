@@ -377,7 +377,7 @@ class Auth_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('user/user_model');
         $CI->config->load(to_test_path('user/MY_user_config'));
 
         $dummy_user = array(
@@ -399,7 +399,7 @@ class Auth_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('user/user_model');
         $CI->config->load(to_test_path('user/MY_user_config'));
 
         $dummy_user = array(
@@ -420,7 +420,7 @@ class Auth_Test extends TestCase {
 		reset_instance();
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
-        $CI->load->model('user_model');
+        $CI->load->model('user/user_model');
 
         $users = $CI->user_model->with_deleted()->get_many_by(['username' => self::$_dummy_values['user']]);
         foreach($users as $user) {
