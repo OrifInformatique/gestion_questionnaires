@@ -144,8 +144,10 @@ class Admin_Test extends TestCase {
      * @param integer $expected_count = Amount of users expected
      * @return void
      */
-    public function test_list_user(string $with_deleted, int $expected_count)
+    public function test_list_user(string $with_deleted, callable $expected_count)
     {
+        $expected_count = $expected_count();
+
         $this->_db_errors_save();
 
         $output = $this->request('GET', 'user/admin/list_user/'.$with_deleted);
@@ -383,25 +385,34 @@ class Admin_Test extends TestCase {
 	public function provider_list_user() : array
 	{
         self::_dummy_user_create();
-        $this->resetInstance();
-        $this->CI->load->database();
-        $this->CI->load->model('user/user_model');
 
         $data = [];
 
         $data['none_hide'] = [
             '',
-            $this->CI->user_model->count_by(['archive' => 0])
+            function() {
+                $CI =& get_instance();
+                $CI->load->model('user/user_model');
+                return $CI->user_model->count_by(['archive' => 0]);
+            }
         ];
 
         $data['hide'] = [
             '0',
-            $this->CI->user_model->count_by(['archive' => 0])
+            function() {
+                $CI =& get_instance();
+                $CI->load->model('user/user_model');
+                return $CI->user_model->count_by(['archive' => 0]);
+            }
         ];
 
         $data['show'] = [
             '1',
-            $this->CI->user_model->with_deleted()->count_all()
+            function() {
+                $CI =& get_instance();
+                $CI->load->model('user/user_model');
+                return $CI->user_model->with_deleted()->count_all();
+            }
         ];
 
         return $data;

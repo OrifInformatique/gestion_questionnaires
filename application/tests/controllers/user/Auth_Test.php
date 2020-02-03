@@ -37,7 +37,7 @@ class Auth_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->helper('url');
-        $this->CI->load->model('user_model');
+        $this->CI->load->model('user/user_model');
     }
     public function tearDown()
     {
