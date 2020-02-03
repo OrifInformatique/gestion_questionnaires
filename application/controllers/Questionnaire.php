@@ -17,7 +17,7 @@ class Questionnaire extends MY_Controller
      */
     public function __construct()
     {   
-        $this->config->load(to_test_path('auth/MY_auth_config'));
+        $this->config->load(to_test_path('user/MY_user_config'));
         $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
         

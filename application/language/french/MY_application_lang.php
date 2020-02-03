@@ -7,6 +7,7 @@
  */
 
 $lang['app_title']                      = 'Gestion questionnaires';
+$lang['page_prefix']                    = 'Gestion questionnaires';
 
 // Page titles
 $lang['page_login']                     = 'Connexion';
@@ -69,6 +70,12 @@ $lang['return']                         = 'Retour';
 $lang['btn_change_password']            = 'Modifier le mot de passe';
 $lang['btn_login']                      = 'Se connecter';
 $lang['btn_logout']                     = 'Se déconnecter';
+$lang['btn_add_m']                      = 'Nouveau';
+$lang['btn_add_f']                      = 'Nouvelle';
+$lang['btn_save']                       = 'Enregistrer';
+$lang['btn_disable']                    = 'Désactiver';
+$lang['btn_delete']                     = 'Supprimer';
+$lang['btn_hard_delete']                = 'Supprimer définitivement';
 
 // Messages
 $lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne sont pas valides';

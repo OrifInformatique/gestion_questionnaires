@@ -8,14 +8,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>
-        <?php
-        echo $this->lang->line('app_title');
-        if (isset($title) && $title!='') {
-          echo " - ".$title;
+    <title><?php
+        if (is_null($title) || $title == '') {
+            echo lang('page_prefix');
+        } else {
+            echo lang('page_prefix').' - '.$title;
         }
-        ?>
-    </title>
+    ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?=base_url()?>assets/images/logo/favicon.ico" />

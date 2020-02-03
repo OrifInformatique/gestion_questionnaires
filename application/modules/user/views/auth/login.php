@@ -5,10 +5,10 @@
                 $attributes = array("class" => "form-horizontal",
                                     "id" => "loginform",
                                     "name" => "loginform");
-                echo form_open("auth/login", $attributes);
+                echo form_open("user/auth/login", $attributes);
             ?>
             <fieldset>
-                <legend><?= lang('page_login'); ?></legend>
+                <legend><?= lang('title_page_login'); ?></legend>
                 
                 <!-- Status messages -->
                 <?php if(!is_null($this->session->flashdata('message-danger'))){ ?>

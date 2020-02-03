@@ -1,6 +1,6 @@
 <?php
-require_once(__DIR__.'/../../third_party/Test_Trait.php');
-require_once(__DIR__.'/../../modules/auth/controllers/Auth.php');
+require_once(__DIR__.'/../../../third_party/Test_Trait.php');
+require_once(__DIR__.'/../../../modules/user/controllers/Auth.php');
 
 /**
  * Class for tests for Auth controller
@@ -73,7 +73,7 @@ class Auth_Test extends TestCase {
 
         $this->_db_errors_save();
 
-        $this->request('POST', 'auth/login', $post_params);
+        $this->request('POST', 'user/auth/login', $post_params);
 
         if($redirect_expected) {
             $this->assertRedirect($redirect_target);
@@ -93,7 +93,7 @@ class Auth_Test extends TestCase {
      */
     public function test_logout()
     {
-        $this->request('GET', 'auth/logout');
+        $this->request('GET', 'user/auth/logout');
 
         $this->assertNull($_SESSION['user_access'] ?? NULL);
     }
@@ -118,7 +118,7 @@ class Auth_Test extends TestCase {
         $_SESSION['username'] = $user_info['username'];
         $_SESSION['user_id'] = $user_info['id'];
 
-        $this->request('POST', 'auth/change_password', $post_params);
+        $this->request('POST', 'user/auth/change_password', $post_params);
 
         if($results['redirect']) {
             $this->assertRedirect(base_url());
@@ -140,21 +140,21 @@ class Auth_Test extends TestCase {
     {
         $this->_login_as(0);
 
-        $this->request('POST', 'auth/change_password', []);
+        $this->request('POST', 'user/auth/change_password', []);
 
-        $this->assertRedirect('auth/login');
+        $this->assertRedirect('user/auth/login');
     }
     /**
-     * Test for `Auth::old_password_check`
+     * Test for `Auth::cb_old_password_check`
      * 
-     * @dataProvider provider_old_password_check
+     * @dataProvider provider_cb_old_password_check
      *
      * @param string $username = Username to use
      * @param string $password = Password to use
      * @param boolean $expected = Expected result
      * @return void
      */
-    public function test_old_password_check(string $username, string $password, bool $expected)
+    public function test_cb_old_password_check(string $username, string $password, bool $expected)
     {
         $this->resetInstance();
         $controller = new Auth();
@@ -162,7 +162,7 @@ class Auth_Test extends TestCase {
 
         $this->_db_errors_save();
 
-        $result = $this->CI->old_password_check($password, $username);
+        $result = $this->CI->cb_old_password_check($password, $username);
 
         $this->assertSame($expected, $result);
         $this->assertFalse(
@@ -335,11 +335,11 @@ class Auth_Test extends TestCase {
         return $data;
     }
     /**
-     * Provider for `test_old_password_check`
+     * Provider for `test_cb_old_password_check`
      *
      * @return array
      */
-    public function provider_old_password_check() : array
+    public function provider_cb_old_password_check() : array
     {
         self::_dummy_user_create();
         $username = self::$_dummy_values['user'];
@@ -378,7 +378,7 @@ class Auth_Test extends TestCase {
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
         $CI->load->model('user_model');
-        $CI->config->load(to_test_path('auth/MY_auth_config'));
+        $CI->config->load(to_test_path('user/MY_user_config'));
 
         $dummy_user = array(
             'Username' => self::$_dummy_values['user'],
@@ -400,7 +400,7 @@ class Auth_Test extends TestCase {
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
         $CI->load->model('user_model');
-        $CI->config->load(to_test_path('auth/MY_auth_config'));
+        $CI->config->load(to_test_path('user/MY_user_config'));
 
         $dummy_user = array(
             'Username' => self::$_dummy_values['user'],
