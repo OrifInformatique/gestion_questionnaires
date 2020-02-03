@@ -21,8 +21,8 @@ class Auth extends MY_Controller
         $this->load->model('user_model');
         $this->load->model('user_type_model');
 
-        $this->config->load('auth/MY_auth_config');
-        $this->lang->load('auth/MY_auth');
+        $this->config->load(to_test_path('auth/MY_auth_config'));
+        $this->lang->load(to_test_path('auth/MY_auth', $this->config->item('language')));
 
         $this->load->library('form_validation');
         $this->form_validation->CI =& $this;
@@ -139,15 +139,15 @@ class Auth extends MY_Controller
                         'field' => 'new_password',
                         'label' => 'lang:field_new_password',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.$this->config->item('username_min_length').']|'
-                                 . 'max_length['.$this->config->item('username_max_length').']'
+                                 . 'min_length['.$this->config->item('password_min_length').']|'
+                                 . 'max_length['.$this->config->item('password_max_length').']'
                     ),
                     array(
                         'field' => 'confirm_password',
                         'label' => 'lang:field_password_confirm',
                         'rules' => 'trim|required|'
-                                 . 'min_length['.$this->config->item('username_min_length').']|'
-                                 . 'max_length['.$this->config->item('username_max_length').']|'
+                                 . 'min_length['.$this->config->item('password_min_length').']|'
+                                 . 'max_length['.$this->config->item('password_max_length').']|'
                                  . 'matches[new_password]'
                     )
                 );

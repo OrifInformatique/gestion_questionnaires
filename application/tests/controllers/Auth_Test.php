@@ -36,8 +36,8 @@ class Auth_Test extends TestCase {
     public function setUp()
     {
         $this->resetInstance();
+        $this->CI->load->helper('url');
         $this->CI->load->model('user_model');
-        $this->_login_as($this->CI->config->item('access_lvl_admin'));
     }
     public function tearDown()
     {
@@ -111,6 +111,8 @@ class Auth_Test extends TestCase {
      */
     public function test_change_password(array $user_info, array $post_params, array $results)
     {
+        $this->_login_as(self::$_dummy_values['user_type']);
+
         $this->_db_errors_save();
 
         $_SESSION['username'] = $user_info['username'];
@@ -154,9 +156,9 @@ class Auth_Test extends TestCase {
      */
     public function test_old_password_check(string $username, string $password, bool $expected)
     {
-        reset_instance();
+        $this->resetInstance();
         $controller = new Auth();
-        $this->CI =& get_instance();
+        $this->CI =& $controller;
 
         $this->_db_errors_save();
 
@@ -179,6 +181,9 @@ class Auth_Test extends TestCase {
      */
     public function provider_login() : array
     {
+        $CI =& get_instance();
+        $CI->load->helper('url');
+
         self::_dummy_user_create();
         $username = self::$_dummy_values['user'];
         $password = self::$_dummy_values['password'];
@@ -215,6 +220,8 @@ class Auth_Test extends TestCase {
      */
     public function provider_change_password() : array
     {
+        $CI =& get_instance();
+
         $user_id = self::_dummy_user_create();
         $username = self::$_dummy_values['user'];
 
@@ -286,7 +293,7 @@ class Auth_Test extends TestCase {
             ]
         ];
 
-        $repeat_count = ceil($this->CI->config->item('password_max_length') / strlen($new_password))+1;
+        $repeat_count = ceil($CI->config->item('password_max_length') / strlen($new_password))+1;
         $long_password = str_repeat($new_password, $repeat_count);
         $data['long_password'] = [
             [
@@ -306,7 +313,7 @@ class Auth_Test extends TestCase {
             ]
         ];
 
-        $short_password = substr($new_password, 0, $this->CI->config->item('password_min_length')-1);
+        $short_password = substr($new_password, 0, $CI->config->item('password_min_length')-1);
         $data['short_password'] = [
             [
                 'id' => $user_id,
@@ -371,11 +378,12 @@ class Auth_Test extends TestCase {
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
         $CI->load->model('user_model');
+        $CI->config->load(to_test_path('auth/MY_auth_config'));
 
         $dummy_user = array(
-            'User' => self::$_dummy_values['user'],
+            'Username' => self::$_dummy_values['user'],
             'FK_User_Type' => self::$_dummy_values['user_type'],
-            'Password' => password_hash(self::$_dummy_values['password'], $this->CI->config->item('password_hash_algorithm')),
+            'Password' => password_hash(self::$_dummy_values['password'], $CI->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
 
@@ -392,11 +400,12 @@ class Auth_Test extends TestCase {
 		CIPHPUnitTest::createCodeIgniterInstance();
         $CI =& get_instance();
         $CI->load->model('user_model');
+        $CI->config->load(to_test_path('auth/MY_auth_config'));
 
         $dummy_user = array(
-            'User' => self::$_dummy_values['user'],
+            'Username' => self::$_dummy_values['user'],
             'FK_User_Type' => self::$_dummy_values['user_type'],
-            'Password' => password_hash(self::$_dummy_values['password'], $this->CI->config->item('password_hash_algorithm')),
+            'Password' => password_hash(self::$_dummy_values['password'], $CI->config->item('password_hash_algorithm')),
             'Archive' => 0
         );
         $CI->user_model->update_many(self::$dummy_ids, $dummy_user);
@@ -413,9 +422,9 @@ class Auth_Test extends TestCase {
         $CI =& get_instance();
         $CI->load->model('user_model');
 
-        $users = $CI->user_model->with_deleted()->get_many_by(['User' => self::$_dummy_values['user']]);
+        $users = $CI->user_model->with_deleted()->get_many_by(['username' => self::$_dummy_values['user']]);
         foreach($users as $user) {
-            $CI->user_model->delete($user->ID, TRUE);
+            $CI->user_model->delete($user->id, TRUE);
         }
 
         self::$dummy_ids = [];
