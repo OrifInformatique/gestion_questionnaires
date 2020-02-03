@@ -13,7 +13,7 @@ class Admin extends MY_Controller {
      * Constructor
      */
     public function __construct() {
-        $this->config->load('auth/MY_auth_config');
+        $this->config->load(to_test_path('auth/MY_auth_config'));
         $this->access_level = $this->config->item('access_lvl_admin');
         parent::__construct();
         $this->lang->load('auth/MY_auth');
