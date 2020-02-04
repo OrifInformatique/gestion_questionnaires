@@ -87,4 +87,14 @@ trait Test_Trait {
         $_SESSION['logged_in'] = (bool)$access_level;
         $_SESSION['user_access'] = $access_level;
     }
+    /**
+     * Destroys the contents of $_SESSION and resets the session
+     *
+     * @return void
+     */
+    private function _logout()
+    {
+        $_SESSION = [];
+        session_reset();
+    }
 }

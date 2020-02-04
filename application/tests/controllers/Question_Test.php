@@ -186,6 +186,19 @@ class Question_Test extends TestCase {
         );
     }
     /**
+     * Test for `Home::index` while not logged in
+     *
+     * @return void
+     */
+    public function test_index_unlogged()
+    {
+        $this->_logout();
+
+        $this->request('GET', 'question');
+
+        $this->assertRedirect('user/auth/login');
+    }
+    /**
      * Test for `Question::reset_filters`
      *
      * @return void

@@ -113,6 +113,19 @@ class Questionnaire_Test extends TestCase {
         );
     }
     /**
+     * Test for `Home::index` while not logged in
+     *
+     * @return void
+     */
+    public function test_index_unlogged()
+    {
+        $this->_logout();
+
+        $this->request('GET', 'questionnaire');
+
+        $this->assertRedirect('user/auth/login');
+    }
+    /**
      * Test for `Questionnaire::update`
      * 
      * @dataProvider provider_update
