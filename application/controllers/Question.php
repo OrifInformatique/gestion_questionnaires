@@ -108,6 +108,7 @@ class Question extends MY_Controller
 		$limit_per_page = $_GET['limit'] ?? ITEMS_PER_PAGE;
 		if($limit_per_page == -1){
 			$limit_per_page = count($output['questions']);
+			$page = 1;
 		}
 
 	    if(($page - 1) * $limit_per_page > count($output['questions'])) {
