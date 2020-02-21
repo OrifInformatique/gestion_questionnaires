@@ -17,7 +17,8 @@ class Questionnaire extends MY_Controller
      */
     public function __construct()
     {   
-        $this->access_level = $this->config->item('access_lvl_manager');
+        $this->config->load(to_test_path('user/MY_user_config'));
+        $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
         
         $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',

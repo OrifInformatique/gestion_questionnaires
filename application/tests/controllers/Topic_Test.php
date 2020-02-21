@@ -53,8 +53,10 @@ class Topic_Test extends TestCase {
     public function setUp()
     {
         $this->resetInstance();
+        $this->CI->load->helper('url');
         $this->CI->load->model('topic_model');
-        $this->_login_as($this->config->item('access_lvl_manager'));
+        $this->CI->config->load('../modules/user/config/MY_user_config');
+        $this->_login_as($this->CI->config->item('access_lvl_registered'));
     }
     public function tearDown()
     {
@@ -93,9 +95,9 @@ class Topic_Test extends TestCase {
         $output = $this->request('GET', 'topic/index');
 
         if($redirect_expected) {
-            $this->assertRedirect('auth/login');
+            $this->assertRedirect('user/auth/login');
         } elseif($error_expected) {
-            $this->assertResponseCode(403);
+            $this->assertResponseCode(500);
         } else {
             $this->assertContains($this->CI->lang->line('title_topic'), $output);
         }
@@ -486,9 +488,9 @@ class Topic_Test extends TestCase {
      */
     public function test_topic_exists(int $topic_id, bool $expected)
     {
-        reset_instance();
+        $this->resetInstance();
         $controller = new Topic();
-        $this->CI =& get_instance();
+        $this->CI =& $controller;
 
         $this->_db_errors_save();
 
@@ -511,6 +513,7 @@ class Topic_Test extends TestCase {
     public function provider_index() : array
     {
         $this->resetInstance();
+        $this->CI->config->load('../modules/user/config/MY_user_config');
 
         $data = [];
 
@@ -520,20 +523,20 @@ class Topic_Test extends TestCase {
             FALSE
         ];
 
-        $data['logged_user'] = [
-            $this->config->item('access_lvl_user'),
+        $data['logged_guest'] = [
+            $this->CI->config->item('access_lvl_guest'),
             FALSE,
             TRUE
         ];
 
-        $data['logged_manager'] = [
-            $this->config->item('access_lvl_manager'),
+        $data['logged_registered'] = [
+            $this->CI->config->item('access_lvl_registered'),
             FALSE,
             FALSE
         ];
 
         $data['logged_admin'] = [
-            $this->config->item('access_lvl_admin'),
+            $this->CI->config->item('access_lvl_admin'),
             FALSE,
             FALSE
         ];

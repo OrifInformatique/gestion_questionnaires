@@ -64,7 +64,9 @@ class Questionnaire_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model(['questionnaire_model', 'questionnaire_model_model']);
-        $this->_login_as($this->config->item('access_lvl_manager'));
+        $this->CI->config->load('../modules/user/config/MY_user_config');
+        $this->_login_as($this->CI->config->item('access_lvl_registered'));
+        $this->CI->load->helper('url');
 
         // Clear tabletopics
         unset($_SESSION['temp_tableTopics']);
@@ -109,6 +111,19 @@ class Questionnaire_Test extends TestCase {
             $this->_db_errors_diff(),
             'One or more error occured in an SQL statement'
         );
+    }
+    /**
+     * Test for `Home::index` while not logged in
+     *
+     * @return void
+     */
+    public function test_index_unlogged()
+    {
+        $this->_logout();
+
+        $this->request('GET', 'questionnaire');
+
+        $this->assertRedirect('user/auth/login');
     }
     /**
      * Test for `Questionnaire::update`
@@ -182,10 +197,11 @@ class Questionnaire_Test extends TestCase {
      */
     public function test_quest_or_model_exists(array $arguments, bool $expected)
     {
-        reset_instance();
-        $this->setCI(new Questionnaire());
+        $this->resetInstance();
+        $controller = new Questionnaire();
+        $CI =& $controller;
 
-        $actual = $this->CI->quest_or_model_exists(...$arguments);
+        $actual = $CI->quest_or_model_exists(...$arguments);
 
         $this->assertSame($expected, $actual);
     }
@@ -493,15 +509,16 @@ class Questionnaire_Test extends TestCase {
      */
     public function test_get_false()
     {
-        reset_instance();
-        $this->setCI(new Questionnaire());
+        $this->resetInstance();
+        $controller = new Questionnaire();
+        $CI =& $controller;
 
-        $this->assertFalse($this->CI->get_false());
+        $this->assertFalse($CI->get_false());
     }
     /**
-     * Test for `Questionnaire::generatePDF`
+     * Test for `Questionnaire::generate_pdf`
      * 
-     * @dataProvider provider_generatePDF
+     * @dataProvider provider_generate_pdf
      *
      * @param integer|null $quest_id = ID of the questionnaire, defaults to -1 if NULL
      * @param TableTopics|null $table_topic = TableTopics to provide to the method,
@@ -509,12 +526,13 @@ class Questionnaire_Test extends TestCase {
      * @param boolean $file_expected = Whether the pdf files are expected to exist
      * @return void
      */
-    public function test_generatePDF(?int &$quest_id, ?TableTopics &$table_topic, bool $file_expected)
+    public function test_generate_pdf(?int &$quest_id, ?TableTopics &$table_topic, bool $file_expected)
     {
         $this->expectException(CIPHPUnitTestRedirectException::class);
         // Set CI to a new Questionnaire, as we can only pass strings to requests
-        reset_instance();
-        $this->setCI(new Questionnaire());
+        $this->resetInstance();
+        $controller = new Questionnaire();
+        $CI =& $controller;
         // Use default value if it's NULL, as NULL isn't empty
         $quest_id = $quest_id ?? -1;
         // Use default values if they are not set in $table_topic
@@ -532,7 +550,7 @@ class Questionnaire_Test extends TestCase {
 
         $this->_db_errors_save();
 
-        $this->CI->generatePDF($quest_id, $table_topic);
+        $CI->generate_pdf($quest_id, $table_topic);
 
         $this->assertFalse(
             $this->_db_errors_diff(),
@@ -555,20 +573,21 @@ class Questionnaire_Test extends TestCase {
         }
     }
     /**
-     * Test for `Questionnaire::generateModel`
+     * Test for `Questionnaire::generate_model`
      * 
-     * @dataProvider provider_generateModel
+     * @dataProvider provider_generate_model
      *
      * @param TableTopics|null $table_topic = TableTopics to provide
      * @param boolean $exist_expected = Whether the model is expected to exist
      * @return void
      */
-    public function test_generateModel(?TableTopics &$table_topic, bool $exist_expected)
+    public function test_generate_model(?TableTopics &$table_topic, bool $exist_expected)
     {
         $this->expectException(CIPHPUnitTestRedirectException::class);
         // Set CI to a new Questionnaire, as we can only pass strings to requests
-        reset_instance();
-        $this->setCI(new Questionnaire());
+        $this->resetInstance();
+        $controller = new Questionnaire();
+        $CI =& $controller;
         $model_name = '';
         if(!is_null($table_topic)) {
             $model_name = $table_topic->getTitle();
@@ -577,7 +596,7 @@ class Questionnaire_Test extends TestCase {
 
         $this->_db_errors_save();
 
-        $this->CI->generateModel($table_topic);
+        $CI->generate_model($table_topic);
 
         $this->assertFalse(
             $this->_db_errors_diff(),
@@ -702,12 +721,13 @@ class Questionnaire_Test extends TestCase {
     public function test_topic_exists(int &$topic_id, bool $exist_expected)
     {
         // Set CI to a new Questionnaire, as we can only get strings from requests
-        reset_instance();
-        $this->setCI(new Questionnaire());
+        $this->resetInstance();
+        $controller = new Questionnaire();
+        $CI =& $controller;
 
         $this->_db_errors_save();
 
-        $exists = $this->CI->cb_topic_exists($topic_id);
+        $exists = $CI->cb_topic_exists($topic_id);
 
         $this->assertFalse(
             $this->_db_errors_diff(),
@@ -1325,11 +1345,11 @@ class Questionnaire_Test extends TestCase {
         return $data;
     }
     /**
-     * Provider for `test_generatePDF`
+     * Provider for `test_generate_pdf`
      *
      * @return array
      */
-    public function provider_generatePDF() : array
+    public function provider_generate_pdf() : array
     {
         $this->resetInstance();
         $this->CI->load->model(['questionnaire_model', 'topic_model']);
@@ -1370,11 +1390,11 @@ class Questionnaire_Test extends TestCase {
         return $data;
     }
     /**
-     * Provider for `test_generateModel`
+     * Provider for `test_generate_model`
      *
      * @return array
      */
-    public function provider_generateModel() : array
+    public function provider_generate_model() : array
     {
         $this->resetInstance();
         $this->CI->load->model('topic_model');

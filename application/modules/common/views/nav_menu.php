@@ -77,7 +77,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
                     </li>
                     <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_admin')) { ?>
                         <li class="nav-item <?php checkactive(5); ?>">
-                            <a class="nav-link" href="<?php echo base_url('admin');?>">
+                            <a class="nav-link" href="<?php echo base_url('user/admin');?>">
                                 <?= $this->lang->line('nav_admin');?>
                             </a>
                         </li>

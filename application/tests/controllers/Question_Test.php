@@ -117,7 +117,9 @@ class Question_Test extends TestCase {
     {
         $this->resetInstance();
         $this->CI->load->model('question_model');
-        $this->_login_as($this->config->item('access_lvl_manager'));
+        $this->CI->load->helper('url');
+        $this->CI->config->load(to_test_path('user/MY_user_config'));
+        $this->_login_as($this->CI->config->item('access_lvl_registered'));
 
         self::_dummy_question_get();
         self::_dummy_cloze_text_get();
@@ -184,7 +186,20 @@ class Question_Test extends TestCase {
         );
     }
     /**
-     * Test for `Question::resetFilters`
+     * Test for `Home::index` while not logged in
+     *
+     * @return void
+     */
+    public function test_index_unlogged()
+    {
+        $this->_logout();
+
+        $this->request('GET', 'question');
+
+        $this->assertRedirect('user/auth/login');
+    }
+    /**
+     * Test for `Question::reset_filters`
      *
      * @return void
      */
@@ -192,7 +207,7 @@ class Question_Test extends TestCase {
     {
         $_SESSION['filtres'] = 'test';
 
-        $this->request('GET', 'question/resetFilters');
+        $this->request('GET', 'question/reset_filters');
 
         $this->assertRedirect('question');
         $this->assertFalse(isset($_SESSION['filtres']));
@@ -275,9 +290,9 @@ class Question_Test extends TestCase {
      */
     public function test_question_exists()
     {
-        reset_instance();
+        $this->resetInstance();
         $controller = new Question();
-        $this->CI =& get_instance();
+        $this->CI =& $controller;
 
         $bad_id = $this->CI->question_model->get_next_id()+100;
         $question_id = self::$_dummy_ids['question'];
@@ -332,76 +347,6 @@ class Question_Test extends TestCase {
                 // Nothing to expect yet
                 break;
         }
-    }
-    /**
-     * Test for `Question::detail`
-     *
-     * @dataProvider provider_detail
-     *
-     * @param integer $question_id = ID of the question
-     * @param boolean $redirect_expected = Whether a redirect is expected
-     * @param string $text_expected = Text expected in the output
-     * @return void
-     */
-    public function test_detail(int &$question_id, bool $redirect_expected, string $text_expected)
-    {
-        $this->_db_errors_save();
-
-        $output = $this->request('GET', "question/detail/{$question_id}");
-
-        if($redirect_expected) {
-            $this->assertRedirect('question');
-        }
-        $this->assertFalse(
-            $this->_db_errors_diff(),
-            'One or more error occured in an SQL statement'
-        );
-        if(!empty($text_expected)) {
-            $this->assertContains($text_expected, $output);
-        }
-    }
-    /**
-     * Test for `Question::detail` with an archived question
-     *
-     * @return void
-     */
-    public function test_detail_archived()
-    {
-        $question_id =& self::$_dummy_ids['question'];
-        $this->CI->question_model->update($question_id, ['Archive' => 1]);
-
-        $this->_db_errors_save();
-
-        $output = $this->request('GET', "question/detail/{$question_id}");
-
-        $this->assertFalse(
-            $this->_db_errors_diff(),
-            'One or more error occured in an SQL statement'
-        );
-        $this->assertContains(lang('question_deleted'), $output);
-    }
-    /**
-     * Test for `Question::detail` with a non-randomly typed question
-     *
-     * @dataProvider provider_detail_type
-     *
-     * @param integer $question_type = Type of the question
-     * @return void
-     */
-    public function test_detail_type(int $question_type)
-    {
-        $question_id =& self::$_dummy_ids['question'];
-        $this->CI->question_model->update($question_id, ['FK_Question_Type' => $question_type]);
-
-        $this->_db_errors_save();
-
-        $output = $this->request('GET', "question/detail/{$question_id}");
-
-        $this->assertFalse(
-            $this->_db_errors_diff(),
-            'One or more error occured in an SQL statement'
-        );
-        $this->assertContains(lang('return'), $output);
     }
     /**
      * Test for `Question::add($step=1)`
@@ -463,25 +408,25 @@ class Question_Test extends TestCase {
 
         switch($type) {
             case 1:
-                $target = 'add_MultipleChoice';
+                $target = 'add_multiple_choice';
                 break;
             case 2:
-                $target = 'add_MultipleAnswer';
+                $target = 'add_Multiple_answer';
                 break;
             case 3:
                 $this->markTestIncomplete('Answer distributions have not been implemented yet');
                 return;
             case 4:
-                $target = 'add_ClozeText';
+                $target = 'add_cloze_text';
                 break;
             case 5:
                 $this->markTestIncomplete('Table cells have not been implemented yet');
                 return;
             case 6:
-                $target = 'add_FreeAnswer';
+                $target = 'add_free_answer';
                 break;
             case 7:
-                $target = "add_PictureLandmark/{$step}";
+                $target = "add_picture_landmark/{$step}";
                 break;
             default:
                 $this->markTestIncomplete("Type {$type} has not been implemented yet");
@@ -524,18 +469,18 @@ class Question_Test extends TestCase {
 
         switch($type) {
             case 1:
-                $target = 'add_MultipleChoice';
+                $target = 'add_multiple_choice';
                 $multiplier = 4;
                 break;
             case 2:
-                $target = 'add_MultipleAnswer';
+                $target = 'add_Multiple_answer';
                 $multiplier = 2;
                 break;
             case 3:
                 $this->markTestIncomplete('Answer distributions have not been implemented yet');
                 return;
             case 4:
-                $target = 'add_ClozeText';
+                $target = 'add_cloze_text';
                 $multiplier = 2;
                 break;
             case 5:
@@ -545,7 +490,7 @@ class Question_Test extends TestCase {
                 $this->markTestIncomplete('Free answers do not have a counter');
                 return;
             case 7:
-                $target = "add_PictureLandmark/{$step}";
+                $target = "add_picture_landmark/{$step}";
                 $multiplier = 3;
                 break;
             default:
@@ -688,47 +633,6 @@ class Question_Test extends TestCase {
                 $i,
                 FALSE
             ];
-        }
-
-        return $data;
-    }
-    /**
-     * Provider for `test_detail`
-     *
-     * @return array
-     */
-    public function provider_detail() : array
-    {
-        $this->resetInstance();
-        $this->CI->load->model('question_model');
-
-        $data = [];
-
-        $data['not_exist'] = [
-            $this->CI->question_model->get_next_id()+100,
-            TRUE,
-            ''
-        ];
-
-        $data['no_error'] = [
-            &self::$_dummy_ids['question'],
-            FALSE,
-            lang('return')
-        ];
-
-        return $data;
-    }
-    /**
-     * Provider for `test_detail_type`
-     *
-     * @return array
-     */
-    public function provider_detail_type() : array
-    {
-        $data = [];
-
-        for($i = 1; $i <= 7; $i++) {
-            $data["detail_{$i}"] = [$i];
         }
 
         return $data;

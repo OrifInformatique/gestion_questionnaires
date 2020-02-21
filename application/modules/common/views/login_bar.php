@@ -15,14 +15,14 @@
         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
 
           <!-- Password change -->
-          <a href="<?= base_url("auth/change_password"); ?>"><?= $this->lang->line('btn_change_password') ?></a><br />
+          <a href="<?= base_url("user/auth/change_password"); ?>"><?= $this->lang->line('btn_change_password') ?></a><br />
           
           <!-- Logged in, display a "logout" button -->
-          <a href="<?= base_url("auth/logout"); ?>" ><?= $this->lang->line('btn_logout'); ?></a>
+          <a href="<?= base_url("user/auth/logout"); ?>" ><?= $this->lang->line('btn_logout'); ?></a>
 
         <?php } else { ?>
           <!-- Not logged in, display a "login" link -->
-          <form action="<?= base_url("auth/login"); ?>" method="post" >
+          <form action="<?= base_url("user/auth/login"); ?>" method="post" >
               <input type="hidden" id="after_login_redirect" name="after_login_redirect" value="<?= current_url() ?>">
               <input type="submit" class="btn btn-link"
                      value="<?= $this->lang->line('btn_login'); ?>" >

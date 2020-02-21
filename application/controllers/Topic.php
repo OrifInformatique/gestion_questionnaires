@@ -11,11 +11,12 @@ class Topic extends MY_Controller
 {
     public function __construct()
     {
-        $this->access_level = $this->config->item('access_lvl_manager');
+        $this->config->load(to_test_path('user/MY_user_config'));
+        $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
-        
         $this->load->model('topic_model');
         $this->load->helper('date');
+
         $this->form_validation->CI =& $this;
     }
 
@@ -42,31 +43,32 @@ class Topic extends MY_Controller
      * Display the update topic view
      */
     public function update_topic($id = 0, $error = 0){
-        if(isset($_POST['save'])){
-            $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
-            $this->form_validation->set_rules('id', 'Id', 'callback_cb_topic_exists', $this->lang->line('msg_err_topic_not_exist'));
+        $topic = $this->topic_model->get($id);
+        if (!is_null($topic)){
+            $outputs = array(
+                'title' => $this->lang->line('title_module_update'),
+                'error' => $error,
+                'id' => $id,
+                'title_topic' => $topic->Topic
+            );
+            $this->display_view("topics/update", $outputs);
+        } else redirect('topic');
+    }
 
-            $id = $this->input->post('id');
-            $title = array('Topic' => $this->input->post('title'));
-            if($this->form_validation->run() == true){
-                $this->topic_model->update($id, $title);
-                redirect('topic');
-            }else{
-                $this->update_topic($id, 1);
-            }
-        }
-        else
-        {
-            $topic = $this->topic_model->get($id);
-            if (!is_null($topic)){
-                $outputs = array(
-                    'title' => $this->lang->line('title_module_update'),
-                    'error' => $error,
-                    'id' => $id,
-                    'title_topic' => $topic->Topic
-                );
-                $this->display_view("topics/update", $outputs);
-            } else redirect('topic');
+    /**
+     * Form validation to update a topic
+     */
+    public function form_update_topic(){
+        $this->form_validation->set_rules('title', 'Title', 'required|max_length['.TOPIC_MAX_LENGTH.']');
+        $this->form_validation->set_rules('id', 'Id', 'callback_cb_topic_exists', $this->lang->line('msg_err_topic_not_exist'));
+
+        $id = $this->input->post('id');
+        $title = array('Topic' => $this->input->post('title'));
+        if($this->form_validation->run() == true){
+            $this->topic_model->update($id, $title);
+            redirect('topic');
+        }else{
+            $this->update_topic($id, 1);
         }
     }
 
@@ -102,39 +104,42 @@ class Topic extends MY_Controller
      * To add a new topic
      */
     public function add_topic($preselect_module = NULL, $error = NULL){
-        if(isset($_POST['save'])){
-            $datestring = '%Y-%m-%d %h:%i:%s';
-            $time = time();
+        $output = array(
+            'title' => $this->lang->line('title_topic_add'),
+            'topics' => $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)'),
+            'error' => ($error == NULL ? NULL : true),
+            'selected_module' => $preselect_module
+        );
+        $this->display_view("topics/add", $output);
+    }
 
-            $valid_modules_db = $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)');
-            foreach($valid_modules_db as &$valid_module_db) {
-                $valid_module_db = $valid_module_db->ID;
-            }
-            $valid_modules = implode(',', $valid_modules_db);
+    /**
+     * Form validation to update a topic (parent topic)
+     */
+    public function form_add_topic(){
+        $datestring = '%Y-%m-%d %h:%i:%s';
+        $time = time();
 
-            $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
-            $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero|in_list['.$valid_modules.']');
+        $valid_modules_db = $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)');
+        foreach($valid_modules_db as &$valid_module_db) {
+            $valid_module_db = $valid_module_db->ID;
+        }
+        $valid_modules = implode(',', $valid_modules_db);
 
-            if($this->form_validation->run()){
+        $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
+        $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero|in_list['.$valid_modules.']');
 
-                $title = array(
-                    'Topic' => $this->input->post('title'),
-                    'FK_Parent_Topic' => $this->input->post('module_selected'),
-                    'Creation_Date' => mdate($datestring, $time));
+        if($this->form_validation->run()){
 
-                $this->topic_model->insert($title);
-                redirect('topic');
-            }else{
-                $this->add_topic(NULL, 1);
-            }
+            $title = array(
+                'Topic' => $this->input->post('title'),
+                'FK_Parent_Topic' => $this->input->post('module_selected'),
+                'Creation_Date' => mdate($datestring, $time));
+
+            $this->topic_model->insert($title);
+            redirect('topic');
         }else{
-            $output = array(
-                'title' => $this->lang->line('title_topic_add'),
-                'topics' => $this->topic_model->get_many_by('(FK_Parent_Topic IS NULL OR FK_Parent_Topic = 0) AND (Archive IS NULL OR Archive = 0)'),
-                'error' => ($error == NULL ? NULL : true),
-                'selected_module' => $preselect_module
-            );
-            $this->display_view("topics/add", $output);
+            $this->add_topic(NULL, 1);
         }
     }
 

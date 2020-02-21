@@ -15,14 +15,15 @@ class Question extends MY_Controller
 	 */
 	public function __construct()
 	{   
-            $this->access_level = $this->config->item('access_lvl_manager');
-            parent::__construct();
+    	$this->config->load(to_test_path('user/MY_user_config'));
+        $this->access_level = $this->config->item('access_lvl_registered');
+        parent::__construct();
 
-            $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model',
-                                     'question_type_model', 'topic_model', 'multiple_choice_model',
-                                     'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
-                                     'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
-            $this->form_validation->CI =& $this;
+        $this->load->model(array('question_questionnaire_model', 'questionnaire_model', 'question_model',
+                                 'question_type_model', 'topic_model', 'multiple_choice_model',
+                                 'multiple_answer_model', 'answer_distribution_model', 'cloze_text_model',
+                                 'cloze_text_answer_model', 'table_cell_model', 'free_answer_model', 'picture_landmark_model'));
+        $this->form_validation->CI =& $this;
 	}
 
 	/**
@@ -318,73 +319,6 @@ class Question extends MY_Controller
 				$this->display_view('picture_landmark/add', $output);
 		}
 	}
-
-	public function detail($id = 0, $error = 0)
-	{
-		$question = $this->question_model->with_all()->with_deleted()->get($id);
-
-		if(is_null($question)) {
-			redirect('question');
-		}
-
-		$output['error'] = $error;
-		$output['id'] = $id;
-		$output['title'] = $this->lang->line('detail_question');
-		$output['question'] = $question;
-		$output['image'] = "";
-		$output['reponse'] = "";
-		switch ($question->FK_Question_Type){
-			case 1:
-				$reponses = $this->multiple_choice_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					if ($reponse->Valid == '1'){
-						$cocher = $this->lang->line('yes');
-					} else {
-						$cocher = $this->lang->line('no');
-					}
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer.":".$cocher;
-				}
-				break;
-			case 2:
-				$reponses = $this->multiple_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer;
-				}
-				break;
-			case 3:
-				$reponses = $this->answer_distribution_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Question_Part."/".$reponse->Answer_Part;
-				}
-				break;
-			case 4:
-				$question = $this->cloze_text_model->get_by('FK_Question = ' . $id);
-				$output['question']->Question = $output['question']->Question.': '.$question->Cloze_Text;
-				$this->db->order_by("Answer_Order");
-				$reponses = $this->cloze_text_answer_model->get_many_by('FK_Cloze_Text = ' . $question->ID);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Answer_Order."/".$reponse->Answer;
-				}
-				break;
-			case 5:
-				$reponses = $this->table_cell_model->get_many_by('FK_Question = ' . $id);
-				break;
-			case 6:
-				$reponses = $this->free_answer_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']." ".$reponse->Answer;
-				}
-				break;
-			case 7:
-				$output['image'] = $question->Picture_Name;
-				$reponses = $this->picture_landmark_model->get_many_by('FK_Question = ' . $id);
-				foreach ($reponses as $reponse) {
-					$output['reponse'] = $output['reponse']."<br>".$reponse->Symbol."/".$reponse->Answer;
-				}
-		}
-		$this->display_view('questions/detail', $output);
-	}
-
 
 	/**
 	 * Display form to add a question

@@ -22,4 +22,5 @@ $config['username_max_length'] = 45;
 $config['password_min_length'] = 6;
 $config['password_max_length'] = 72;
 
+/* Other rules */
 $config['password_hash_algorithm'] = PASSWORD_BCRYPT;

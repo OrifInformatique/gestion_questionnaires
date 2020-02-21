@@ -21,7 +21,8 @@ class Home extends MY_Controller {
      * Redirect depending of user access level
      */
     public function index(){
-    	if($this->session->user_access >= $this->config->item('access_lvl_manager'))
+        $this->config->load(to_test_path('user/MY_user_config'));
+    	if($this->session->user_access >= $this->config->item('access_lvl_registered'))
             redirect('questionnaire');
         else
             $this->display_view("home/home_view");
