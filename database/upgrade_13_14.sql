@@ -14,4 +14,4 @@ UPDATE `t_question_type` SET `Type_Name` = 'Réponses multiples' WHERE `t_questi
 UPDATE `t_question_type` SET `Type_Name` = 'Distribution de réponses' WHERE `t_question_type`.`ID` = 3;
 UPDATE `t_question_type` SET `Type_Name` = 'Texte à trous' WHERE `t_question_type`.`ID` = 4;
 UPDATE `t_question_type` SET `Type_Name` = 'Réponse libre' WHERE `t_question_type`.`ID` = 6;
-UPDATE `t_question_type` SET `Type_Name` = 'Image repères' WHERE `t_question_type`.`ID` = 7;
+UPDATE `t_question_type` SET `Type_Name` = 'Image avec repères' WHERE `t_question_type`.`ID` = 7;

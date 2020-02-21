@@ -225,7 +225,7 @@ INSERT INTO `t_question_type` (`ID`, `Type_Name`, `Archive`) VALUES
 (4, 'Texte à trous', 0),
 (5, 'Tableaux', 1),
 (6, 'Réponse libre', 0),
-(7, 'Image repères', 0);
+(7, 'Image avec repères', 0);
 
 -- --------------------------------------------------------
 
