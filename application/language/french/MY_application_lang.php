@@ -76,6 +76,7 @@ $lang['btn_save']                       = 'Enregistrer';
 $lang['btn_disable']                    = 'Désactiver';
 $lang['btn_delete']                     = 'Supprimer';
 $lang['btn_hard_delete']                = 'Supprimer définitivement';
+$lang['btn_all']                        = 'Tout';
 
 // Messages
 $lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne sont pas valides';

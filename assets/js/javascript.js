@@ -11,8 +11,9 @@ function changeselect() {
     var topic = document.getElementById("topic_selected").value;
     var type = document.getElementById("question_type_selected").value;
     var search = encodeURI(document.getElementById("search").value);
+    var limit = encodeURI(document.getElementById("limit").value);
 
-    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search;
+    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search + '&limit=' + limit;
 
     return false;
 }

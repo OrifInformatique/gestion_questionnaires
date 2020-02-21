@@ -105,7 +105,12 @@ class Question extends MY_Controller
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
 
-	    if(($page - 1) * ITEMS_PER_PAGE > count($output['questions'])) {
+		$limit_per_page = $_GET['limit'] ?? ITEMS_PER_PAGE;
+		if($limit_per_page == -1){
+			$limit_per_page = count($output['questions']);
+		}
+
+	    if(($page - 1) * $limit_per_page > count($output['questions'])) {
 	    	redirect('question/index/1');
 	    }
 
@@ -114,7 +119,7 @@ class Question extends MY_Controller
 		$config = array(
 			'base_url' => base_url('/question/index/'),
 			'total_rows' => count($output['questions']),
-			'per_page' => ITEMS_PER_PAGE,
+			'per_page' => $limit_per_page,
 			'use_page_numbers' => TRUE,
 			'reuse_query_string' => TRUE,
 
@@ -146,9 +151,11 @@ class Question extends MY_Controller
 		$output = array(
 			'title' => $this->lang->line('title_question'),
 			'pagination' => $this->pagination->create_links(),
-			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
+			'questions' => array_slice($output['questions'], ($page-1)*$limit_per_page, $limit_per_page),
 			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
-			'questionTypes' => $this->question_type_model->get_all()
+			'questionTypes' => $this->question_type_model->get_all(),
+			'limit_per_page' => $_GET['limit'] ?? ITEMS_PER_PAGE,
+			'limit_options' => [ITEMS_PER_PAGE => ITEMS_PER_PAGE, -1 => $this->lang->line('btn_all')]
 		);
 
 		$this->display_view('questions/index', $output);
