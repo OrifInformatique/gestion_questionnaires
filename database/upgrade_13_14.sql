@@ -4,3 +4,7 @@ ALTER TABLE `user` ADD `date_creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMEST
 
 RENAME TABLE `gestion_questionnaires`.`t_user_type` TO `gestion_questionnaires`.`user_type`;
 ALTER TABLE `user_type` CHANGE `ID` `id` INT(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `t_question_type` ADD `Archive` BOOLEAN NOT NULL DEFAULT FALSE AFTER `Type_Name`;
+UPDATE `t_question_type` SET `Archive` = '1' WHERE `t_question_type`.`ID` = 3;
+UPDATE `t_question_type` SET `Archive` = '1' WHERE `t_question_type`.`ID` = 5;

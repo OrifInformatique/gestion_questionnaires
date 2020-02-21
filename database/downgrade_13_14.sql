@@ -4,3 +4,9 @@ ALTER TABLE `user` DROP COLUMN `date_creation`;
 
 RENAME TABLE `gestion_questionnaires`.`user_type` TO `gestion_questionnaires`.`t_user_type`;
 ALTER TABLE `user_type` CHANGE `id` `ID` INT(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `t_question_type` ADD `Archive` BOOLEAN NOT NULL DEFAULT FALSE AFTER `Type_Name`;
+UPDATE `t_question_type` SET `Archive` = '1' WHERE `t_question_type`.`ID` = 3;
+UPDATE `t_question_type` SET `Archive` = '1' WHERE `t_question_type`.`ID` = 5;
+
+ALTER TABLE `t_question_type` DROP COLUMN `Archive`;
