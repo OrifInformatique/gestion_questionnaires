@@ -168,6 +168,7 @@ $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore
 $lang['search']                         = 'Recherche';
 $lang['text_search']                    = 'Recherche dans le texte';
 $lang['filter']                         = 'Filtrer';
+$lang['field_limit']                    = 'Nombre à afficher';
 $lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
 

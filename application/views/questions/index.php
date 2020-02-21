@@ -120,7 +120,10 @@
             <div class="col-lg-6">
                 <div id="pagination_top"><?=$pagination?></div>
             </div>
-            <div class="col-lg-6 text-right">
+            <div class="offset-2 col-lg-2 text-right">
+                <b class="form-label"><?=$this->lang->line('field_limit')?> :</b>
+            </div>
+            <div class="col-lg-2 text-right">
                 <?=form_dropdown('limit', $limit_options, $limit_per_page, 'class="form-control" id="limit" onchange="changeselect()"')?>
             </div>
         </div>
