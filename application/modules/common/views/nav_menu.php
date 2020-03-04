@@ -59,7 +59,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
     <div class="container" >
         <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
             <ul class="navbar-nav mr-auto">
-                <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
+                <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_registered')) { ?>
                     <li class="nav-item <?php checkactive(1); ?>">
                         <a class="nav-link" href="<?php echo base_url('questionnaire');?>">
                             <?= $this->lang->line('nav_questionnaire');?>
@@ -92,7 +92,7 @@ if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in']==TRUE))
             </ul>
             
             <!-- Button to submit a problem -->
-            <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_manager')) { ?>
+            <?php if($_SESSION['user_access'] >= $this->config->item('access_lvl_registered')) { ?>
                 <a class="btn btn-outline-warning pull-right" href="<?php echo base_url('support');?>">
                     <?= $this->lang->line('nav_support');?>
                 </a>
