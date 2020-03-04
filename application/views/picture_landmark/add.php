@@ -51,9 +51,9 @@
                 <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($focus_topic)){
-                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
+                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control" id="focus_topic"');
                     } else {
-                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
+                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control" id="focus_topic"');
                     }
                 ?>
             </div>
@@ -78,10 +78,10 @@
             </div>
             <div class="col-sm-1 form-group">
                 <?php 
-                    if(isset($name)){
-                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
+                    if(isset($points)){
+                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="points"');
                     } else {
-                        echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
+                        echo form_input('points', '', 'maxlength="11" class="form-control" id="points"');
                     }
                 ?>
             </div>
@@ -118,13 +118,13 @@
                     <tr>
                         <td class="form-group" width="80">
                             <?php
-                                echo form_input('reponses['.$i.'][symbol]', $answers[$i]['symbol'], 'maxlength="2" class="form-control" id="answer"');
+                                echo form_input('reponses['.$i.'][symbol]', $answers[$i]['symbol'], 'maxlength="2" class="form-control" id="answer['.$i.']"');
                             ?>
                         </td>
                         <td class="form-group">
                             <?php
                                 echo form_hidden('reponses['.$i.'][id]', $answers[$i]['id']);
-                                echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="50" class="form-control" id="answer"');
+                                echo form_input('reponses['.$i.'][answer]', $answers[$i]['answer'], 'maxlength="50" class="form-control" id="answer['.$i.']"');
                             ?>
                         </td>
                         <td class="form-group">
