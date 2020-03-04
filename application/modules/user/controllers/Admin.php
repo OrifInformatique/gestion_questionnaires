@@ -63,6 +63,12 @@ class Admin extends MY_Controller
      */
     public function save_user($user_id = 0)
     {
+        $user_id = $this->input->post('id') ?? $user_id;
+        $user = $this->user_model->with_deleted()->get($user_id);
+        if ($user_id > 0 && is_null($user)) {
+            redirect('user/admin/list_user');
+        }
+
 		$oldName = NULL;
 		$oldUsertype = NULL;
 		if (count($_POST) > 0) {
@@ -122,7 +128,7 @@ class Admin extends MY_Controller
 
         $output = array(
             'title' => $this->lang->line('title_user_'.((bool)$user_id ? 'update' : 'new')),
-            'user' => $this->user_model->with_deleted()->get($user_id),
+            'user' => $user,
             'user_types' => $this->user_type_model->dropdown('name'),
             'user_name' => $oldName,
             'user_usertype' => $oldUsertype
