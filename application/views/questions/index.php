@@ -14,7 +14,7 @@
         <form onsubmit="return changeselect()">
             <div class="row">
                 <div class="col-lg-4 form-group">
-                    <b class="form-label"><?php echo $this->lang->line('focus_module'); ?></b>
+                    <label class="form-label" for="module_selected"><?php echo $this->lang->line('focus_module'); ?></label>
                     <select onchange="changeselect()" class="form-control" id="module_selected">
                         <?php
                         echo "<option selected disabled hidden></option>";
@@ -33,7 +33,7 @@
                     </select>
                 </div>
                 <div class="col-lg-4 form-group">
-                    <b class="form-label"><?php echo $this->lang->line('focus_topic'); ?></b>
+                    <label class="form-label" for="topic_selected"><?php echo $this->lang->line('focus_topic'); ?></label>
                     <select onchange="changeselect()" class="form-control" id="topic_selected">
                         <?php
 
@@ -76,7 +76,7 @@
                     </select>
                 </div>
                 <div class="col-lg-4 form-group">
-                    <b class="form-label"><?php echo $this->lang->line('question_type'); ?></b>
+                    <label class="form-label" for="question_type_selected"><?php echo $this->lang->line('question_type'); ?></label>
                     <select onchange="changeselect()" class="form-control" id="question_type_selected">
                         <?php
                         echo "<option selected disabled hidden></option>";
@@ -95,7 +95,7 @@
             </div>
             <div class="row">
                 <div class="col-12 form-group">
-                    <b class="form-label"><?php echo $this->lang->line('text_search'); ?></b>
+                    <label class="form-label" for="search"><?php echo $this->lang->line('text_search'); ?></label>
                     <?php
                         if(isset($_GET['search'])){
                             echo form_input('search', set_value('search', $_GET['search']), ' class="form-control" id="search"');
@@ -193,7 +193,7 @@
                 ?>
             </div>
         </div>
-        <div id="pagination_top"><?=$pagination?></div>
+        <div id="pagination_bottom"><?=$pagination?></div>
     </div>
 </div>
 
