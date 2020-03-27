@@ -23,7 +23,7 @@ class Questionnaire extends MY_Controller
         
         $this->load->model(array('questionnaire_model', 'topic_model', 'question_model',
             'questionnaire_model_topic_model', 'questionnaire_model_model'));
-        $this->load->library(array('TableTopics', 'fpdf181/Fpdf', 'pdf'));
+        $this->load->library(array('TableTopics', 'fpdf182/Fpdf', 'pdf'));
         $this->form_validation->CI =& $this;
     }
 
