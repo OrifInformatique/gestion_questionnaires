@@ -18,7 +18,7 @@
 			<directory suffix=".php">../hooks</directory>
 			<exclude>
 				<directory>../libraries/PHPExcel-1.8</directory>
-				<directory>../libraries/fpdf181</directory>
+				<directory>../libraries/fpdf</directory>
 			</exclude>
 		</whitelist>
 	</filter>
