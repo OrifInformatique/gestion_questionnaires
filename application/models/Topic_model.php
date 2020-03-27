@@ -102,8 +102,7 @@ class topic_model extends MY_Model
                 }
             }
         }
-        else
-        {
+        if(!isset($topics_tree)){
             // There is no topic to return
             $topics_tree = NULL;
         }
