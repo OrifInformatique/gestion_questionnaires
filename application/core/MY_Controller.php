@@ -2,12 +2,12 @@
 /**
  * A base controller with permission check functions
  * 
- * @author      Didier Viret
- * @link        https://github.com/OrifInformatique/stock
- * @copyright   Copyright (c) 2016, Orif <http://www.orif.ch>
+ * @author      Orif (ViDi)
+ * @link        https://github.com/OrifInformatique
+ * @copyright   Copyright (c) 2019, Orif <http://www.orif.ch>
  */
 
-class MY_Controller extends CI_Controller
+class MY_Controller extends MX_Controller
 {
 
     /**
@@ -20,14 +20,13 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         /* Check permission on construct */
         if (!$this->check_permission()) {
-            show_error($this->lang->line('msg_err_access_denied_message'), 403, $this->lang->line('msg_err_access_denied_header'));
+            show_error($this->lang->line('msg_err_access_denied'));
         }
     }
 
-    
     /**
      * Display the login form.
      * Store the current URL in session to be able to redirect after login.
@@ -39,6 +38,7 @@ class MY_Controller extends CI_Controller
     }
 
     
+
     /**
     * Check if user access level matches the required access level.
     * Required level can be the controller's default level or a custom
@@ -62,7 +62,7 @@ class MY_Controller extends CI_Controller
             // check if user is logged in
             // if not, redirect to login page
             if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) {
-                $this->ask_for_login();
+                redirect("user/auth/login");
             }
             // check if page is accessible for all logged in users
             elseif ($required_level == "@") {

@@ -9,14 +9,15 @@
 
 class Topic extends MY_Controller
 {
-    /* MY_Controller variables definition */
-    protected $access_level = ACCESS_LVL_MANAGER;
-
     public function __construct()
     {
+        $this->config->load(to_test_path('user/MY_user_config'));
+        $this->access_level = $this->config->item('access_lvl_registered');
         parent::__construct();
         $this->load->model('topic_model');
         $this->load->helper('date');
+
+        $this->form_validation->CI =& $this;
     }
 
     /**
@@ -77,30 +78,23 @@ class Topic extends MY_Controller
      */
     public function delete_topic($id = 0, $action = NULL){
         $this->load->model('question_model');
+        $topic = $this->topic_model->get($id);
+        if(is_null($topic)) redirect('topic');
 
-        if($id != 0){
-
-            $topic = $this->topic_model->get($id);
-
-            if (is_null($action)) {
-                $count = $this->question_model->count_by('FK_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
-                $output['ID'] = $id;
-                $output['Topic'] = $this->topic_model->get($id)->Topic;
-                $output['title'] = $this->lang->line('delete_topic');
-                if ($count == 0) {
-                    $this->display_view("topics/delete", $output);
-                } else {
-                    $output['questions'] = $count;
-                    $this->display_view("topics/delete", $output);
-                }
-            } else {
-                $update = array('Archive' => 1);
-                $this->topic_model->update($id, $update);
-                $this->question_model->update_by('FK_Topic='.$id, $update);
-
-                redirect('topic');
+        if (is_null($action)) {
+            $count = $this->question_model->count_by('FK_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
+            $output['ID'] = $id;
+            $output['Topic'] = $this->topic_model->get($id)->Topic;
+            $output['title'] = $this->lang->line('delete_topic');
+            if ($count != 0) {
+                $output['questions'] = $count;
             }
+            $this->display_view("topics/delete", $output);
         } else {
+            $update = array('Archive' => 1);
+            $this->topic_model->update($id, $update);
+            $this->question_model->update_by('FK_Topic='.$id, $update);
+
             redirect('topic');
         }
     }
@@ -127,16 +121,13 @@ class Topic extends MY_Controller
         $time = time();
 
         $valid_modules_db = $this->topic_model->get_many_by('FK_Parent_Topic IS NULL AND (Archive IS NULL OR Archive = 0)');
-        $valid_modules = '';
-        foreach ($valid_modules_db as $module) {
-            $valid_modules .= $module->ID . ',';
+        foreach($valid_modules_db as &$valid_module_db) {
+            $valid_module_db = $valid_module_db->ID;
         }
-        $valid_modules = substr($valid_modules, 0, -1);
+        $valid_modules = implode(',', $valid_modules_db);
 
         $this->form_validation->set_rules('title', $this->lang->line('topic_title_error'), 'required|max_length['.TOPIC_MAX_LENGTH.']');
         $this->form_validation->set_rules('module_selected', $this->lang->line('topic_module_selected_error'), 'required|is_natural_no_zero|in_list['.$valid_modules.']');
-
-
 
         if($this->form_validation->run()){
 
@@ -170,7 +161,6 @@ class Topic extends MY_Controller
                 'title_module' => $topic->Topic,
                 'action' => 'update'
             );
-
             $this->display_view("modules/update", $outputs);
         } else redirect('topic');
     }
@@ -214,35 +204,30 @@ class Topic extends MY_Controller
      */
     public function delete_module($id = 0, $action = NULL){
         $this->load->model('question_model');
+        $topic = $this->topic_model->get($id);
+        if(is_null($topic)) redirect('topic');
 
-        if ($id != 0) {
-            if (is_null($action)) {
-                $count = $this->topic_model->count_by('FK_Parent_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
-                $output['ID'] = $id;
-                $output['Topic'] = $this->topic_model->get($id)->Topic;
-                $output['title'] = $this->lang->line('delete_module');
-                if ($count == 0) {
-                    $this->display_view("topics/delete", $output);
-                } else {
-                    $output['topics'] = $count;
-                    $this->display_view("topics/delete", $output);
-                }
-            } else {
-                $update = array('Archive' => 1);
-                $this->topic_model->update($id, $update);
-                $topics = $this->topic_model->get_many_by('FK_Parent_Topic='.$id);
-                foreach ($topics as $topic) {
-                    $questions = $this->question_model->get_many_by('FK_Topic='.$topic->ID);
-                    foreach ($questions as $question) {
-                        $this->question_model->update($question->ID, $update);
-                    }
-                    $this->question_model->update($topic->ID, $update);
-                }
-                redirect('topic');
+        if (is_null($action)) {
+            $count = $this->topic_model->count_by('FK_Parent_Topic='.$id.' AND (Archive IS NULL OR Archive = 0)');
+            $output['ID'] = $id;
+            $output['Topic'] = $this->topic_model->get($id)->Topic;
+            $output['title'] = $this->lang->line('delete_module');
+            if ($count != 0) {
+                $output['topics'] = $count;
             }
-
+            $this->display_view("topics/delete", $output);
         } else {
-          redirect('topic');
+            $update = array('Archive' => 1);
+            $this->topic_model->update($id, $update);
+            $topics = $this->topic_model->get_many_by('FK_Parent_Topic='.$id);
+            foreach ($topics as $topic) {
+                $questions = $this->question_model->get_many_by('FK_Topic='.$topic->ID);
+                foreach ($questions as $question) {
+                    $this->question_model->update($question->ID, $update);
+                }
+                $this->question_model->update($topic->ID, $update);
+            }
+            redirect('topic');
         }
     }
 

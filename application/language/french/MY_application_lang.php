@@ -7,6 +7,7 @@
  */
 
 $lang['app_title']                      = 'Gestion questionnaires';
+$lang['page_prefix']                    = 'Gestion questionnaires';
 
 // Page titles
 $lang['page_login']                     = 'Connexion';
@@ -37,7 +38,7 @@ $lang['field_old_password']             = 'Ancien mot de passe';
 $lang['invalid_id']                     = 'Ces informations de connexion ne sont pas valides';
 $lang['no_id']                          = 'Veuillez insérer des identifiants';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
-$lang['msg_err_access_denied_message']  = 'Vous n\'avez pas accès à cette partie du programme';
+$lang['msg_err_access_denied_message']  = 'Vous n\'êtes pas autorisé à accéder à cette fonction';
 
 // Log Text
 $lang['indic_login']                    = 'Merci de vous connecter pour accéder à l\'application';
@@ -51,9 +52,9 @@ $lang['btn_add_topic']                  = 'Ajouter un sujet';
 $lang['btn_add_topic_in_module']        = 'Ajouter un sujet dans ce module';
 $lang['btn_add_module']                 = 'Ajouter un module';
 $lang['btn_add_question']               = 'Ajouter une question';
-$lang['btn_add_questionnaire']          = 'Ajouter un questionnaire';
+$lang['btn_add_questionnaire']          = 'Créer un questionnaire';
 $lang['btn_add_user']                   = 'Ajouter un utilisateur';
-$lang['btn_add_questionnaire_model']    = 'Ajouter un modèle de questionnaire';
+$lang['btn_add_questionnaire_model']    = 'Créer un modèle';
 $lang['btn_import_image']               = 'Importer une image';
 $lang['btn_import_question']            = 'Importer une question';
 $lang['btn_next']                       = 'Suivant';
@@ -69,6 +70,12 @@ $lang['return']                         = 'Retour';
 $lang['btn_change_password']            = 'Modifier le mot de passe';
 $lang['btn_login']                      = 'Se connecter';
 $lang['btn_logout']                     = 'Se déconnecter';
+$lang['btn_add_m']                      = 'Nouveau';
+$lang['btn_add_f']                      = 'Nouvelle';
+$lang['btn_save']                       = 'Enregistrer';
+$lang['btn_disable']                    = 'Désactiver';
+$lang['btn_delete']                     = 'Supprimer';
+$lang['btn_hard_delete']                = 'Supprimer définitivement';
 
 // Messages
 $lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne sont pas valides';
@@ -77,6 +84,7 @@ $lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas val
 $lang['msg_err_access_denied']          = 'Accès refusé';
 $lang['msg_err_user_already_inactivate']    = 'L\'utilisateur est déjà inactif';
 $lang['msg_err_user_already_reactivate']    = 'L\'utilisateur est déjà actif';
+$lang['msg_err_user_not_exist']         = 'L\'utilisateur sélectionné n\'existe pas';
 $lang['msg_err_topic_not_exist']        = 'Le topic sélectionné n\'existe pas';
 $lang['msg_err_module_not_exist']       = 'Le module sélectionné n\'existe pas';
 $lang['msg_err_questionnaire_not_exist']    = 'Le questionnaire sélectionné n\'existe pas';
@@ -85,14 +93,15 @@ $lang['msg_err_model_not_exist']        = 'Le modèle sélectionné n\'existe pa
 // Questionnaires pages
 $lang['title_questionnaire']            = 'Liste des questionnaires';
 $lang['title_questionnaire_update']     = 'Modifier un questionnaire';
-$lang['title_questionnaire_model_update']   = 'Modifier un modèle de questionnaire';
-$lang['finish_questionnaire']           = 'Modifier un questionnaire depuis un modèle';
+$lang['title_questionnaire_model_update'] = 'Modifier un modèle de questionnaire';
+$lang['finish_questionnaire']           = 'Générer un questionnaire depuis un modèle';
 $lang['update_title_questionnaire']     = 'Titre :';
 $lang['update_questionnaire_form_err']  = 'Veillez à ce que tous les champs soient remplis';
 $lang['questionnaire']                  = 'Titre';
 $lang['pdf']                            = 'Fichier pdf';
 $lang['corrige']                        = 'Corrigé';
 $lang['regenerate']                     = 'Regénérer';
+$lang['regenerate_questionnaire']       = 'Regénérer le questionnaire';
 $lang['redirect_pdf']                   = 'Voir questionnaire';
 $lang['redirect_corrige']               = 'Voir corrigé';
 $lang['add_questionnaire_title']        = 'Ajouter un questionnaire';
@@ -109,9 +118,9 @@ $lang['delete_questionnaire']           = 'Supprimer le questionnaire';
 $lang['title_model']                    = 'Liste des modèles';
 $lang['questionnaire_model_titles']     = 'Titre des questionnaires';
 $lang['questionnaire_model_subtitles']  = 'Sous-titre des questionnaires';
-$lang['questionnaire_model']            = 'Modèle';
-$lang['generate']                       = 'Générer';
-$lang['add_questionnaire_model_title']  = 'Ajouter un modèle de questionnaire';
+$lang['questionnaire_model_name']       = 'Nom du modèle';
+$lang['generate_questionnaire']         = 'Générer un questionnaire';
+$lang['add_questionnaire_model_title']  = 'Nouveau modèle de questionnaire';
 $lang['add_title_questionnaire_model']  = 'Titre du modèle:';
 $lang['del_questionnaire_model_form_title'] = 'Voulez-vous vraiment supprimer le modèle ';
 
@@ -156,14 +165,15 @@ $lang['question_error_404_heading']     = 'Question inexistante';
 $lang['del_question_form_title']        = 'Voulez-vous vraiment supprimer cette question ?';
 $lang['no_implemented_question_type']   = 'Ce type de question n\'est pas encore implémenté';
 $lang['search']                         = 'Recherche';
+$lang['text_search']                    = 'Recherche dans le texte';
 $lang['filter']                         = 'Filtrer';
 $lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
 
 
 // Topics pages
-$lang['title_topic']                    = 'Liste des sujets';
-$lang['focus_module']                   = 'Module concerné :';
+$lang['title_topic']                    = 'Liste des sujets groupés par module';
+$lang['focus_module']                   = 'Module concerné';
 $lang['title_topic_update']             = 'Modifier un sujet';
 $lang['title_topic_add']                = 'Ajouter un sujet';
 $lang['topic']                          = 'Sujet';
@@ -245,10 +255,3 @@ $lang['pdf_multiple_answer_2']          = 'attendue';
 
 //PDF error
 $lang['pdf_error']                      = "Erreur lors de la génération des questions, il est possible qu'une ou plusieurs des questions soi(en)t mal enregistrée(s)";
-
-// Support Controller
-$lang['title_report_a_problem']         = 'Signaler un problème';
-$lang['issue_title']                    = 'Sujet';
-$lang['issue_body']                     = 'Description du problème';
-$lang['title_problem_submitted']        = 'Problème signalé';
-$lang['text_problem_submitted']         = 'Merci, le problème nous a été signalé.';

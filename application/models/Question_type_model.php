@@ -15,6 +15,8 @@ class question_type_model extends MY_Model
     protected $protected_attributes = ['ID'];
     protected $has_many = ['questions' => ['primary_key' => 'FK_Question_Type',
                                            'model' => 'question_model']];
+    protected $soft_delete = TRUE;
+    protected $soft_delete_key = 'Archive';
 
     /**
      * Constructor

@@ -14,18 +14,9 @@ $update = !is_null($user);
     $attributes = array('id' => 'addUserForm',
                         'name' => 'addUserForm');
     echo form_open('Admin/user_form', $attributes, array(
-        'id' => $user->ID ?? 0
+        'id' => $user->id ?? 0
     ));
     ?>
-
-        <div class="row">
-            <div class="form-group">
-                <a name="cancel" class="btn btn-danger col-xs-12 col-sm-4" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
-                <?php
-                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-success col-xs-12 col-sm-4 col-sm-offset-4"'); 
-                ?>
-            </div>
-        </div>
 
         <!-- ERROR MESSAGES -->
         <?php
@@ -37,7 +28,7 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?= form_label($this->lang->line('user_name'), 'user_name', array('class' => 'form-label')); ?>
-                <?= form_input('user_name', $user->User ?? '', array(
+                <?= form_input('user_name', $user->username ?? '', array(
                     'maxlength' => 45, 'class' => 'form-control', 'id' => 'user_name'
                 )); ?>
             </div>
@@ -46,7 +37,7 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?= form_label($this->lang->line('user_usertype'), 'user_usertype', array('class' => 'form-label')); ?>
-                <?= form_dropdown('user_usertype', $user_types, $user->FK_User_Type ?? null, array(
+                <?= form_dropdown('user_usertype', $user_types, $user->fk_user_type ?? null, array(
                     'class' => 'form-control'
                 )); ?>
             </div>
@@ -74,19 +65,28 @@ $update = !is_null($user);
         <div class="row">
             <div class="form-group col-md-12">
                 <?php
-                if($user->Archive) {
-                    echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-primary col-xs-12 col-sm-4"');
+                if($user->archive) {
+                    echo form_submit('reactivate', $this->lang->line('btn_reactivate'), 'class="btn btn-info col-12 col-sm-4"');
                 } else {
-                    echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-warning col-xs-12 col-sm-4"');
+                    echo form_submit('disactivate', $this->lang->line('btn_desactivate'), 'class="btn btn-warning col-12 col-sm-4"');
                 }
                 ?>
-                <a href="<?= base_url('Admin/user_change_password/'.$user->ID); ?>"
-                    class="btn btn-default col-xs-12 col-sm-4 col-sm-offset-4">
+                <a href="<?= base_url('Admin/user_change_password/'.$user->id); ?>"
+                    class="btn btn-default col-12 col-sm-4 col-sm-offset-4">
                     <?= $this->lang->line("title_user_change_password"); ?>
                 </a>
             </div>
         </div>
         <?php } ?>
+
+        <div class="row">
+            <div class="col-12 text-right">
+                <a name="cancel" class="btn btn-default" href="<?=base_url('/Admin/user_index')?>"><?=$this->lang->line('cancel')?></a>
+                <?php
+                    echo form_submit('save', $this->lang->line('save'), 'class="btn btn-primary"'); 
+                ?>
+            </div>
+        </div>
 
     <?= form_close(); ?>
 </div>

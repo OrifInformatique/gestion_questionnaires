@@ -7,7 +7,7 @@
                     <?= $this->lang->line('question_already_deleted'); ?>
                 </div>
             <?php } else {?>
-                <div class="col-xs-12">
+                <div class="col-12">
                     <div>
                         <h4 class="alert alert-warning"><?= $this->lang->line('del_question_form_title')?></h4>
                     </div>
