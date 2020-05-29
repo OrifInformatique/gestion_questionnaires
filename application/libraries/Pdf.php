@@ -36,7 +36,7 @@ class PDF extends FPDF {
         $y = $this->GetY();
         $this->SetY(10, false);
         $this->SetFont('', 'B');
-        $this->Cell(0, 10, $this->title);
+        $this->Cell(0, 10, iconv('UTF-8', 'windows-1252', $this->title));
         $this->SetFont('', '');
         $this->SetXY($x, $y);
         $this->TextColor = $oldColor;
@@ -68,7 +68,7 @@ class PDF extends FPDF {
      */
     function SetTitle($title, $isUTF8 = false) {
         parent::SetTitle($title, $isUTF8);
-        $this->title = ($isUTF8 ? utf8_encode($title) : $title);
+        $this->title = ($isUTF8 ? $title : utf8_encode($title));
     }
 
     /**
