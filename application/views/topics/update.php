@@ -13,7 +13,7 @@
     $attributes = array("class" => "form-group",
         "id" => "updateTopicForm",
         "name" => "updateTopicForm");
-    echo form_open('Topic/update_topic', $attributes);
+    echo form_open('Topic/form_update_topic', $attributes);
     ?>
     <?php
     if($error == true) {
