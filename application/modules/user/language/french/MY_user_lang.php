@@ -24,6 +24,7 @@ $lang['btn_change_my_password']         = 'Modifier mon mot de passe';
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
 $lang['field_password']                 = 'Mot de passe';
+$lang['field_email']                    = 'Addresse e-mail';
 $lang['field_old_password']             = 'Ancien mot de passe';
 $lang['field_new_password']             = 'Nouveau mot de passe';
 $lang['field_password_confirm']         = 'Confirmer le mot de passe';
@@ -31,6 +32,7 @@ $lang['field_user_name']                = 'Nom d\'utilisateur';
 $lang['field_user_usertype']            = 'Type d\'utilisateur';
 $lang['field_user_active']              = 'Activé';
 $lang['field_deleted_users_display']    = 'Afficher les utilisateurs désactivés';
+$lang['field_login_input']              = 'Nom d\'utilisateur ou e-mail';
 
 // Error messages
 $lang['msg_err_user_not_exist']         = 'L\'utilisateur sélectionné n\'existe pas';
