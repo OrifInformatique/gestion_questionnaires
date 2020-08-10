@@ -33,7 +33,7 @@ class user_model extends MY_Model
      * @param $password
      * @return bool true on success, false on failure
      */
-    public function check_password($username, $password)
+    public function check_password_name($username, $password)
     {
         $user = $this->get_by('username', $username);
 
@@ -45,6 +45,27 @@ class user_model extends MY_Model
         else {
             // No corresponding active user
             return false;
+        }
+    }
+
+    /**
+     * Check email and password for login
+     *
+     * @param string $email
+     * @param string $password
+     * @return bool true on success, false on failure
+     */
+    public function check_password_email($email, $password)
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return FALSE;
+        }
+
+        $user = $this->get_by('email', $email);
+        if (!is_null($user) && $user->archive == FALSE) {
+            return password_verify($password, $user->password);
+        } else {
+            return FALSE;
         }
     }
 }

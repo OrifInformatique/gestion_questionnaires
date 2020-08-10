@@ -33,6 +33,7 @@
         <thead>
             <tr>
                 <th><?= lang('field_user_name'); ?></th>
+                <th><?= lang('field_email'); ?></th>
                 <th><?= lang('field_user_usertype'); ?></th>
                 <th><?= lang('field_user_active'); ?></th>
                 <th></th>
@@ -42,6 +43,7 @@
             <?php foreach($users as $user) { ?>
                 <tr>
                     <td><a href="<?= base_url('user/admin/save_user/'.$user->id); ?>"><?= $user->username; ?></td>
+                    <td><?= $user->email; ?></td>
                     <td><?= $user_types[$user->fk_user_type]; ?></td>
                     <td><?= $this->lang->line($user->archive ? 'no' : 'yes'); ?></td>
                     <td><a href="<?= base_url('user/admin/delete_user/'.$user->id); ?>" class="close">×</td>

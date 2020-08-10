@@ -13,7 +13,7 @@ By default, guest, registered, and admin access levels are defined.
 
 ### Validation rules ###
 
-Defines the min/max length of usernames and passwords.
+Defines the min/max length of usernames, passwords and email addresses.
 
 ### password_hash_algorithm ###
 
@@ -25,7 +25,7 @@ An SQL script defines the tables needed for this module. This script can be foun
 
 ### user ###
 
-Contains the user's basic informations such as id, user_type, username, password (hashed), archive status and creation date.
+Contains the user's basic informations such as id, user_type, username, email address, password (hashed), archive status and creation date.
 The archive status (boolean) is used as a soft delete key. An archived user cannot login anymore but his informations are kept in the database. The admin interface authorises soft or hard deletions.
 
 ### user_type ###
