@@ -32,21 +32,12 @@ $update = !is_null($user);
 
         <!-- USER FIELDS -->
         <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <?= form_label(lang('field_user_name'), 'user_name', ['class' => 'form-label']); ?>
-                    <?= form_input('user_name', $user_name ?? $user->username ?? '', [
-                        'maxlength' => $this->config->item('username_max_length'),
-                        'class' => 'form-control', 'id' => 'user_name'
-                    ]); ?>
-                </div>
-                <div class="form-group">
-                    <?= form_label(lang('field_email'), 'user_email', ['class' => 'form-label']); ?>
-                    <?= form_input('user_email', $user->email ?? '', [
-                        'maxlength' => $this->config->item('email_max_length'),
-                        'class' => 'form-control', 'id' => 'user_email'
-                    ]); ?>
-                </div>
+            <div class="col-sm-6 form-group">
+                <?= form_label(lang('field_user_name'), 'user_name', ['class' => 'form-label']); ?>
+                <?= form_input('user_name', $user_name ?? $user->username ?? '', [
+                    'maxlength' => $this->config->item('username_max_length'),
+                    'class' => 'form-control', 'id' => 'user_name'
+                ]); ?>
             </div>
             <div class="col-sm-6 form-group">
                 <?= form_label(lang('field_user_usertype'), 'user_usertype', ['class' => 'form-label']); ?>
@@ -55,13 +46,18 @@ $update = !is_null($user);
                     if(isset($user) && $_SESSION['user_id'] == $user->id){
                         $dropdown_options['disabled'] = 'disabled';
                         echo form_hidden('user_usertype', $user_usertype ?? $user->fk_user_type ?? NULL);
-                        echo "<div class=\"alert alert-info\">".lang('user_update_usertype_himself')."</div>";
                     }
                 ?>
                 <?= form_dropdown('user_usertype', $user_types, $user_usertype ?? $user->fk_user_type ?? NULL, $dropdown_options); ?>
             </div>
         </div>
-        
+        <?php if(isset($user) && $_SESSION['user_id'] == $user->id){ ?>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info"><?= lang('user_update_usertype_himself') ?></div>
+                </div>
+            </div>
+        <?php } ?>
         <?php if (!$update) { ?>
             <!-- PASSWORD FIELDS ONLY FOR NEW USERS -->
             <div class="row">
@@ -79,9 +75,7 @@ $update = !is_null($user);
                     ]); ?>
                 </div>
             </div>
-        <?php } ?>
-        
-        <?php if ($update) { ?>
+        <?php } else { ?>
             <div class="row">
                 <!-- RESET PASSWORD FOR EXISTING USER -->
                 <div class="col-12">

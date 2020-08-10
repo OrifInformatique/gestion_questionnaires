@@ -69,22 +69,13 @@ class Auth extends MY_Controller {
 
                 // Check fields validation rules
                 if ($this->form_validation->run() == true) {
-                    $input = $this->input->post('username');
+                    $username = $this->input->post('username');
                     $password = $this->input->post('password');
-                    $ismail = $this->user_model->check_password_email($input, $password);
 
-                    if ($ismail || $this->user_model->check_password_name($input, $password)) {
+                    if ($this->user_model->check_password($username, $password)) {
                         // Login success
-                        $user = NULL;
-                        // User is either logging in through an email or an username
-                        // Even if an username is entered like an email, we're not grabbing it
-                        if ($ismail) {
-                            $user = $this->user_model->with('user_type')
-                                                     ->get_by('email', $input);
-                        } else {
-                            $user = $this->user_model->with('user_type')
-                                                     ->get_by('username', $input);
-                        }
+                        $user = $this->user_model->with('user_type')
+                                                 ->get_by('username', $username);
 
                         // Set session variables
                         $_SESSION['user_id'] = (int)$user->id;
@@ -203,6 +194,6 @@ class Auth extends MY_Controller {
      */
     public function cb_old_password_check($pwd, $user)
     {
-        return $this->user_model->check_password_name($user, $pwd);
+        return $this->user_model->check_password($user, $pwd);
     }
 }
