@@ -27,6 +27,13 @@ class Admin extends MY_Controller
     }
 
     /**
+     * Retidrect to list_user();
+     */
+    public function index(){
+        redirect('user/admin/list_user');
+    }
+
+    /**
      * Displays the list of users
      *
      * @param boolean $with_deleted = Display archived users or not
