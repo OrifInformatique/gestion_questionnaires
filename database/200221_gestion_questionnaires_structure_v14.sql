@@ -273,6 +273,13 @@ CREATE TABLE `user` (
   `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `fk_user_type`, `username`, `password`) VALUES
+(1, 1, 'admin', '$2y$10$xD6VFLqS9PgCffufHzEJ9eW0ORtoA9w.W47EjHNDEkYaH/Cx8ElHW');
+
 -- --------------------------------------------------------
 
 --
