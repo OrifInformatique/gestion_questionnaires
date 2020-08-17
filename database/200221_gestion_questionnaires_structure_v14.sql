@@ -278,7 +278,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `fk_user_type`, `username`, `password`) VALUES
-(1, 1, 'admin', '$2y$10$xD6VFLqS9PgCffufHzEJ9eW0ORtoA9w.W47EjHNDEkYaH/Cx8ElHW');
+(1, 1, 'admin', '$2y$10$xD6VFLqS9PgCffufHzEJ9eW0ORtoA9w.W47EjHNDEkYaH/Cx8ElHW'),
+(2, 2, 'member', '$2y$10$6n2dg7RprNZmb3KYOypa1e6hWVPZLOZFv.UJoRkuJBLwsvB2PidZS'),
+(3, 3, 'manager', '$2y$10$YVLOPAmqJjnYiLql.2j4Ge1juBmlZNjo2bZKILl4eq2VyyYrzG.cC');
 
 -- --------------------------------------------------------
 
