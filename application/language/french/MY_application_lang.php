@@ -169,6 +169,11 @@ $lang['text_search']                    = 'Recherche dans le texte';
 $lang['filter']                         = 'Filtrer';
 $lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
+$lang['questions_per_page']             = 'Questions par page :';
+$lang['25_questions']                   = '25';
+$lang['50_questions']                   = '50';
+$lang['100_questions']                  = '100';
+$lang['all_questions']                  = 'Tout';
 
 
 // Topics pages

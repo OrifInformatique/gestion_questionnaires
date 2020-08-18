@@ -17,8 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 define('TOPIC_MAX_LENGTH', 150);
 
-
-define('ITEMS_PER_PAGE',25);
+// ITEMS_PER_PAGE replaced by $items_per_page in controller Question.php
 
 define('PDF_HEADER_COLOR', [
     'red' => 0,

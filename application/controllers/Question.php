@@ -105,16 +105,38 @@ class Question extends MY_Controller
 			$output['questions'] = $this->question_model->with_all()->get_many_by($where);
 		}
 
-	    if(($page - 1) * ITEMS_PER_PAGE > count($output['questions'])) {
+		settype($items_per_page, "integer");
+
+		 if(!empty($_GET['nb_questions'])){
+		 	switch($_GET['nb_questions']){
+		 		case $this->lang->line('25_questions'):
+		 			$items_per_page = 25;
+		 			break;
+		 		case $this->lang->line('50_questions'):
+		 			$items_per_page = 50;
+		 			break;
+		 		case $this->lang->line('100_questions'):
+		 			$items_per_page = 100;
+		 			break;
+		 		case $this->lang->line('all_questions'):
+					$items_per_page = count($output['questions']);
+					 break;
+			}
+		}
+		else{
+			$items_per_page = 25;
+		}
+
+	    if(($page - 1) * $items_per_page > count($output['questions'])) {
 	    	redirect('question/index/1');
-	    }
+		}
 
 		$this->load->library('pagination');
 
 		$config = array(
 			'base_url' => base_url('/question/index/'),
 			'total_rows' => count($output['questions']),
-			'per_page' => ITEMS_PER_PAGE,
+			'per_page' => $items_per_page,
 			'use_page_numbers' => TRUE,
 			'reuse_query_string' => TRUE,
 
@@ -146,7 +168,7 @@ class Question extends MY_Controller
 		$output = array(
 			'title' => $this->lang->line('title_question'),
 			'pagination' => $this->pagination->create_links(),
-			'questions' => array_slice($output['questions'], ($page-1)*ITEMS_PER_PAGE, ITEMS_PER_PAGE),
+			'questions' => array_slice($output['questions'], ($page-1)*$items_per_page, $items_per_page),
 			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
 			'questionTypes' => $this->question_type_model->get_all()
 		);
