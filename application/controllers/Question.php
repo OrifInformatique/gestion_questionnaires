@@ -38,8 +38,8 @@ class Question extends MY_Controller
 			}
 		}
 
-		if(isset($_GET['module']) && isset($_GET['topic']) && isset($_GET['type'])){
-			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
+		if(isset($_GET['module']) && isset($_GET['topic']) && isset($_GET['type']) && isset($_GET['search']) && isset($_GET['nb_questions'])){
+			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type']."&search=".$_GET['search']."&nb_questions=".$_GET['nb_questions'];
 		}
 
 		if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
@@ -107,24 +107,12 @@ class Question extends MY_Controller
 
 		settype($items_per_page, "integer");
 
-		 if(!empty($_GET['nb_questions'])){
-		 	switch($_GET['nb_questions']){
-		 		case $this->lang->line('25_questions'):
-		 			$items_per_page = 25;
-		 			break;
-		 		case $this->lang->line('50_questions'):
-		 			$items_per_page = 50;
-		 			break;
-		 		case $this->lang->line('100_questions'):
-		 			$items_per_page = 100;
-		 			break;
-		 		case $this->lang->line('all_questions'):
-					$items_per_page = count($output['questions']);
-					 break;
-			}
-		}
-		else{
-			$items_per_page = 25;
+		if($_GET['nb_questions'] == $this->lang->line('all_questions')){ // if all questions selected
+			$items_per_page = count($output['questions']); // give item_per_page nb of all questions that are non archived
+		} elseif(empty($_GET['nb_questions'])){ // if dropdown not set, give the value 25 
+			$items_per_page == QUESTION_NB[0];
+		} else{
+			$items_per_page = $_GET['nb_questions'];
 		}
 
 	    if(($page - 1) * $items_per_page > count($output['questions'])) {
@@ -165,12 +153,20 @@ class Question extends MY_Controller
 
 		$this->pagination->initialize($config);
 
+		$questions_nb = array();
+
+		foreach(QUESTIONS_NB as $value){
+			array_push($questions_nb, $value);
+		};
+		array_push($questions_nb, $this->lang->line('all_questions'));
+
 		$output = array(
 			'title' => $this->lang->line('title_question'),
 			'pagination' => $this->pagination->create_links(),
 			'questions' => array_slice($output['questions'], ($page-1)*$items_per_page, $items_per_page),
 			'topics' => $this->topic_model->get_many_by('Archive IS NULL OR Archive = 0'),
-			'questionTypes' => $this->question_type_model->get_all()
+			'questionTypes' => $this->question_type_model->get_all(),
+			'questions_nb' => $questions_nb
 		);
 
 		$this->display_view('questions/index', $output);

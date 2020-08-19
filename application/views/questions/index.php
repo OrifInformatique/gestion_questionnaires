@@ -124,22 +124,18 @@
             <div id="pagination_top" class="col-sm-9"><?=$pagination?></div>
             <div class="col-sm-3">
                 <!-- dropdown nb questions per page -->
-                <?php
-                    $questions_25 = $this->lang->line('25_questions');
-                    $questions_50 = $this->lang->line('50_questions');
-                    $questions_100 = $this->lang->line('100_questions');
-                    $questions_all = $this->lang->line('all_questions');
-                ?>
                 <form onsubmit="return changeselect()">
                     <b class="form-label"><?php echo $this->lang->line('questions_per_page'); ?></b>
                     <select onchange="changeselect()" id="nb_questions_selected" class="form-control">
-                        <option value='<?php echo $questions_25?>' <?php if(isset($_GET['nb_questions'])){if($questions_25==$_GET['nb_questions']){echo"selected";}}; ?>><?php echo $questions_25?></option>
-                        <option value='<?php echo $questions_50?>' <?php if(isset($_GET['nb_questions'])){if($questions_50==$_GET['nb_questions']){echo"selected";}}; ?>><?php echo $questions_50?></option>
-                        <option value='<?php echo $questions_100?>' <?php if(isset($_GET['nb_questions'])){if($questions_100==$_GET['nb_questions']){echo"selected";}}; ?>><?php echo $questions_100?></option>
-                        <option value='<?php echo $questions_all?>' <?php if(isset($_GET['nb_questions'])){if($questions_all==$_GET['nb_questions']){echo"selected";}}; ?>><?php echo $questions_all?></option>
+                        <?php
+                            foreach($questions_nb as $object){
+                                ?>
+                                <option value='<?php echo $object?>' <?php if(isset($_GET['nb_questions'])){if($object==$_GET['nb_questions']){echo"selected";}}; ?>><?php echo $object?></option>
+                                <?php
+                            }
+                            ?>
                     </select>
                 </form>
-                
             </div>
         </div>
         <div class="row">
