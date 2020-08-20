@@ -27,7 +27,7 @@ class TableTopics
     /**
      * @param any $arrayNbQuestion
      */
-    public function setArrayNbQuestion($arrayNbQuestion)
+    public function addArrayNbQuestion($arrayNbQuestion)
     {
         array_push($this->arrayNbQuestion, $arrayNbQuestion);
     }
@@ -51,7 +51,7 @@ class TableTopics
     /**
      * @param any $arrayTopics
      */
-    public function setArrayTopics($arrayTopics)
+    public function addArrayTopics($arrayTopics)
     {
         array_push($this->arrayTopics, $arrayTopics);
     }
