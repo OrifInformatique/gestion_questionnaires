@@ -107,10 +107,10 @@ class Question extends MY_Controller
 
 		settype($items_per_page, "integer");
 
-		if($_GET['nb_questions'] == $this->lang->line('all_questions')){ // if all questions selected
+		if(empty($_GET['nb_questions'])){  // if dropdown not set, give the first value of array QUESTIONS_NB
+			$items_per_page = QUESTIONS_NB[0];
+		} elseif($_GET['nb_questions'] == $this->lang->line('all_questions')){ // if all questions selected
 			$items_per_page = count($output['questions']); // give item_per_page nb of all questions that are non archived
-		} elseif(empty($_GET['nb_questions'])){ // if dropdown not set, give the value 25 
-			$items_per_page == QUESTION_NB[0];
 		} else{
 			$items_per_page = $_GET['nb_questions'];
 		}

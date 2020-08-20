@@ -30,9 +30,9 @@ define('PDF_FOOTER_COLOR', [
     'blue' => 0
 ]);
 
-// Define nb of questions displayed
+// Define nb of questions displayed, will take the array's first value as default value
 define('QUESTIONS_NB', array(
-    25, // default value
+    25,
     50,
     100
     )
