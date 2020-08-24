@@ -40,7 +40,7 @@ $lang['msg_err_user_type_not_exist']    = 'Le type d\'utilisateur n\'existe pas'
 $lang['msg_err_user_not_unique']        = 'Ce nom d\'utilisateur est déjà utilisé, merci d\'en choisir un autre';
 $lang['msg_err_access_denied_header']   = 'Accès interdit';
 $lang['msg_err_access_denied_message']  = 'Vous n\'êtes pas autorisé à accéder à cette fonction';
-$lang['msg_err_invalid_password']       = 'L\'identifiant et le mot de passe ne sont pas valides';
+$lang['msg_err_invalid_password']       = 'L\'identifiant ou le mot de passe n\'est pas valide';
 $lang['msg_err_invalid_old_password']   = 'L\'ancien mot de passe n\'est pas valide';
 
 // Other texts
