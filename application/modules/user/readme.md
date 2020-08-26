@@ -2,6 +2,8 @@
 
 This module contains all elements needed for user administration and authentication.
 
+## Version 1.2 ##
+
 ## Configuration ##
 
 This section describes the module's configurations available in the config directory.
