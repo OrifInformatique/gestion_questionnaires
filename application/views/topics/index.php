@@ -34,7 +34,10 @@
                             <div id="collapse<?=$module->ID?>" class="collapse" aria-labelledby="heading<?=$module->ID?>" data-parent="#accordion">
                                 <div class="card-body">
                                     <table class="table table-hover">
-                                        <tr><td><a class="btn btn-primary" href="<?=base_url('Topic/add_topic/'.$module->ID)?>"><?=$this->lang->line('btn_add_topic_in_module')?></a></td></tr>
+                                        <tr>
+                                            <td><a class="btn btn-primary" href="<?=base_url('Topic/add_topic/'.$module->ID)?>"><?=$this->lang->line('btn_add_topic_in_module')?></a></td>
+                                            <td></td>
+                                        </tr>
                                         <?php foreach ($topics as $topic) {
                                             if($topic->FK_Parent_Topic == $module->ID){ ?>
                                                 <tr>

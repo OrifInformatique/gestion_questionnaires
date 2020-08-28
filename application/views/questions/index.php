@@ -154,7 +154,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>
+                            <th class="col-7">
                                 <?php 
                                     echo $this->lang->line('question'); 
                                     echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"question\")' class='sorted_btn btn btn-default'>$question_sort</a>" 
