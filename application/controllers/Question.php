@@ -34,7 +34,7 @@ class Question extends MY_Controller
 		if(!empty($_GET['module']) && !empty($_GET['topic'])){
 			$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
 			if($nbTopic==0){
-				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
+				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']."&search=".$_GET['search']."&nb_questions=".$_GET['nb_questions']);
 			}
 		}
 
