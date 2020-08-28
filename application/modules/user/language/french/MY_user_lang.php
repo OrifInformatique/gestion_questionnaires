@@ -20,6 +20,7 @@ $lang['btn_admin']                      = 'Administration';
 $lang['btn_login']                      = 'Se connecter';
 $lang['btn_logout']                     = 'Se déconnecter';
 $lang['btn_change_my_password']         = 'Modifier mon mot de passe';
+$lang['btn_back']                       = 'Retour';
 
 // Fields labels
 $lang['field_username']                 = 'Identifiant';
