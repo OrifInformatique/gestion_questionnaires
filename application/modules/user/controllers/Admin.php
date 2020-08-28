@@ -77,7 +77,7 @@ class Admin extends MY_Controller
 				'callback_cb_not_null_user',
 				['cb_not_null_user' => $this->lang->line('msg_err_user_not_exist')]
 			);
-			$this->form_validation->set_rules('user_name', 'lang:user_name',
+			$this->form_validation->set_rules('user_name', 'lang:field_user_name',
 				[
 					'required', 'trim',
 					'min_length['.$this->config->item('username_min_length').']',
@@ -86,10 +86,16 @@ class Admin extends MY_Controller
 				],
 				['cb_unique_user' => $this->lang->line('msg_err_user_not_unique')]
 			);
-			$this->form_validation->set_rules('user_usertype', 'lang:user_usertype',
+			$this->form_validation->set_rules('user_usertype', 'lang:field_user_usertype',
 				['required', 'callback_cb_not_null_user_type'],
 				['cb_not_null_user_type' => $this->lang->line('msg_err_user_type_not_exist')]
-			);
+            );
+            if ($this->input->post('user_email')) {
+                $this->form_validation->set_rules('user_email', 'lang:field_email', [
+                    'required', 'valid_email',
+                    'max_length['.$this->config->item('email_max_length').']'
+                ]);
+            }
 	
 			if ($user_id == 0) {
 				$this->form_validation->set_rules('user_password', lang('field_password'), [
@@ -107,7 +113,8 @@ class Admin extends MY_Controller
 			if ($this->form_validation->run()) {
 				$user = array(
 					'fk_user_type' => $this->input->post('user_usertype'),
-					'username' => $this->input->post('user_name')
+                    'username' => $this->input->post('user_name'),
+                    'email' => $this->input->post('user_email') ?: NULL
 				);
 				if ($user_id > 0) {
 					$this->user_model->update($user_id, $user);

@@ -21,7 +21,7 @@
                             <label for="username" class="control-label"><?= lang('field_username'); ?></label>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control" id="username" name="username" placeholder="<?= lang('field_username'); ?>" type="text" value="<?= set_value('username'); ?>" />
+                            <input class="form-control" id="username" name="username" placeholder="<?= lang('field_login_input'); ?>" type="text" value="<?= set_value('username'); ?>" />
                             <span class="text-danger"><?= form_error('username'); ?></span>
                         </div>
                     </div>
