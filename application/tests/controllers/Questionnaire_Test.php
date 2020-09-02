@@ -405,14 +405,14 @@ class Questionnaire_Test extends TestCase {
     {
         $this->CI->load->model('topic_model');
         $table_topic = new TableTopics();
-        $table_topic->setArrayNbQuestion(5);
+        $table_topic->addArrayNbQuestion(5);
         $rand_topic = $this->CI->topic_model->order_by('RAND()')
             ->get_by('(Archive = 0 OR Archive IS NULL) AND FK_Parent_Topic IS NOT NULL');
         while($rand_topic->ID == self::_dummy_topic_get()) {
             $rand_topic = $this->CI->topic_model->order_by('RAND()')
                 ->get_by('(Archive = 0 OR Archive IS NULL) AND FK_Parent_Topic IS NOT NULL');
         }
-        $table_topic->setArrayTopics($rand_topic);
+        $table_topic->addArrayTopics($rand_topic);
         $_SESSION['temp_tableTopics'] = serialize($table_topic);
 
         $this->_db_errors_save();
@@ -440,9 +440,9 @@ class Questionnaire_Test extends TestCase {
     {
         $this->CI->load->model('topic_model');
         $table_topic = new TableTopics();
-        $table_topic->setArrayNbQuestion(5);
+        $table_topic->addArrayNbQuestion(5);
         $topic = $this->CI->topic_model->get(self::_dummy_topic_get());
-        $table_topic->setArrayTopics($topic);
+        $table_topic->addArrayTopics($topic);
         $_SESSION['temp_tableTopics'] = serialize($table_topic);
 
         $this->_db_errors_save();
@@ -479,8 +479,8 @@ class Questionnaire_Test extends TestCase {
         for($i = 0; $i < $topic_amount; $i++) {
             $rand_topic = $this->CI->topic_model->order_by('RAND()')
                 ->get_by('(Archive = 0 OR Archive IS NULL) AND FK_Parent_Topic IS NOT NULL');
-            $table_topic->setArrayNbQuestion(5);
-            $table_topic->setArrayTopics($rand_topic);
+            $table_topic->addArrayNbQuestion(5);
+            $table_topic->addArrayTopics($rand_topic);
         }
         $is_model = isset($post_params['model']) && (bool)$post_params['model'];
         $_SESSION['temp_tableTopics'.($is_model?'_model':'')] = serialize($table_topic);
@@ -1135,10 +1135,10 @@ class Questionnaire_Test extends TestCase {
         $data['delete_topic_quest_no_error'] = [
             ['delete_topic' => [0 => 1]],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
-                $table_topic->setArrayTopics((object)['ID' => 2, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(2);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 2, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(2);
             },
             1,
             FALSE
@@ -1150,10 +1150,10 @@ class Questionnaire_Test extends TestCase {
                 'model' => TRUE
             ],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
-                $table_topic->setArrayTopics((object)['ID' => 2, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(2);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 2, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(2);
             },
             1,
             FALSE
@@ -1162,8 +1162,8 @@ class Questionnaire_Test extends TestCase {
         $data['delete_topic_quest_not_exist'] = [
             ['delete_topic' => [6 => 1]],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
             },
             1,
             TRUE
@@ -1175,8 +1175,8 @@ class Questionnaire_Test extends TestCase {
                 'model' => TRUE
             ],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
             },
             1,
             TRUE
@@ -1185,8 +1185,8 @@ class Questionnaire_Test extends TestCase {
         $data['delete_topic_quest_negative'] = [
             ['delete_topic' => [-1 => 1]],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
             },
             1,
             TRUE
@@ -1198,8 +1198,8 @@ class Questionnaire_Test extends TestCase {
                 'model' => TRUE
             ],
             function(TableTopics &$table_topic) {
-                $table_topic->setArrayTopics((object)['ID' => 1, 'Topic' => '']);
-                $table_topic->setArrayNbQuestion(1);
+                $table_topic->addArrayTopics((object)['ID' => 1, 'Topic' => '']);
+                $table_topic->addArrayNbQuestion(1);
             },
             1,
             TRUE
@@ -1371,10 +1371,10 @@ class Questionnaire_Test extends TestCase {
         ];
 
         $table_topic = new TableTopics();
-        $table_topic->setArrayNbQuestion(5);
+        $table_topic->addArrayNbQuestion(5);
         $rand_topic = $this->CI->topic_model->order_by('RAND()')
             ->get_by('(Archive = 0 OR Archive IS NULL) AND FK_Parent_Topic IS NOT NULL');
-        $table_topic->setArrayTopics($rand_topic);
+        $table_topic->addArrayTopics($rand_topic);
         $data['tt_no_problem'] = [
             NULL,
             $table_topic,
@@ -1407,10 +1407,10 @@ class Questionnaire_Test extends TestCase {
         ];
 
         $table_topic = new TableTopics;
-        $table_topic->setArrayNbQuestion(5);
+        $table_topic->addArrayNbQuestion(5);
         $rand_topic = $this->CI->topic_model->order_by('RAND()')
             ->get_by('(Archive = 0 OR Archive IS NULL) AND FK_Parent_Topic IS NOT NULL');
-        $table_topic->setArrayTopics($rand_topic);
+        $table_topic->addArrayTopics($rand_topic);
         $table_topic->setModelName(self::$_dummy_values['model']['base_name']);
         $table_topic->setTitle(self::$_dummy_values['model']['name']);
         $table_topic->setSubtitle(self::$_dummy_values['model']['subtitle']);

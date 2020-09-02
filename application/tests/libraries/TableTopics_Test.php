@@ -81,7 +81,7 @@ class TableTopics_Test extends TestCase {
         $amount_remove = rand(0, 10);
         $amount_base = rand(10, 20);
         for($i = 0; $i < $amount_base; $i++) {
-            $instance->setArrayNbQuestion($i);
+            $instance->addArrayNbQuestion($i);
         }
 
         $this->assertCount($amount_base, $instance->getArrayNbQuestion());
@@ -140,7 +140,7 @@ class TableTopics_Test extends TestCase {
         $amount_remove = rand(0, 10);
         $amount_base = rand(10, 20);
         for($i = 0; $i < $amount_base; $i++) {
-            $instance->setArrayTopics($i);
+            $instance->addArrayTopics($i);
         }
 
         $this->assertCount($amount_base, $instance->getArrayTopics());
@@ -220,7 +220,7 @@ class TableTopics_Test extends TestCase {
         $data['single'] = [
             1,
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayNbQuestion(5);
+                $tableTopics->addArrayNbQuestion(5);
             }
         ];
 
@@ -237,7 +237,7 @@ class TableTopics_Test extends TestCase {
 
         $data['none'] = [
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayNbQuestion(5);
+                $tableTopics->addArrayNbQuestion(5);
             },
             1,
             0
@@ -245,8 +245,8 @@ class TableTopics_Test extends TestCase {
 
         $data['single'] = [
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayNbQuestion(5);
-                $tableTopics->setArrayNbQuestion(5);
+                $tableTopics->addArrayNbQuestion(5);
+                $tableTopics->addArrayNbQuestion(5);
             },
             1,
             1
@@ -271,7 +271,7 @@ class TableTopics_Test extends TestCase {
         $data['single'] = [
             1,
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayTopics(5);
+                $tableTopics->addArrayTopics(5);
             }
         ];
 
@@ -288,7 +288,7 @@ class TableTopics_Test extends TestCase {
 
         $data['none'] = [
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayTopics(5);
+                $tableTopics->addArrayTopics(5);
             },
             1,
             0
@@ -296,8 +296,8 @@ class TableTopics_Test extends TestCase {
 
         $data['single'] = [
             function(TableTopics &$tableTopics) {
-                $tableTopics->setArrayTopics(5);
-                $tableTopics->setArrayTopics(5);
+                $tableTopics->addArrayTopics(5);
+                $tableTopics->addArrayTopics(5);
             },
             1,
             1

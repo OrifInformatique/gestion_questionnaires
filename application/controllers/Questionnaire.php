@@ -281,8 +281,8 @@ class Questionnaire extends MY_Controller
                 }
 
                 //And take with him the last inputs
-                $tableTopics->setArrayTopics($topic);
-                $tableTopics->setArrayNbQuestion($nbQuestions);
+                $tableTopics->addArrayTopics($topic);
+                $tableTopics->addArrayNbQuestion($nbQuestions);
                 $_SESSION[$temp_table_name] = serialize($tableTopics);
             }
             $arrayTopics = $tableTopics->getArrayTopics();
@@ -663,8 +663,8 @@ class Questionnaire extends MY_Controller
             $tableTopics->setSubtitle($subtitle);
             foreach($questmodtops as $questmodtop) {
                 $topic = $this->topic_model->get($questmodtop->FK_Topic);
-                $tableTopics->setArrayTopics($topic);
-                $tableTopics->setArrayNbQuestion($questmodtop->Nb_Topic_Questions);
+                $tableTopics->addArrayTopics($topic);
+                $tableTopics->addArrayNbQuestion($questmodtop->Nb_Topic_Questions);
             }
             $this->generate_pdf(-1, $tableTopics);
         } else {
