@@ -45,9 +45,9 @@
                 <?php echo form_label($this->lang->line('focus_topic'), 'focus_topic', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($focus_topic)){
-                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control"');
+                        echo form_dropdown('focus_topic', $topics, $focus_topic->ID, 'class="form-control" id="focus_topic"');
                     } else {
-                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control"');
+                        echo form_dropdown('focus_topic', $topics, null, 'class="form-control" id="focus_topic"');
                     }
                 ?>
             </div>
@@ -73,9 +73,9 @@
             <div class="col-sm-1 form-group">
                 <?php 
                     if(isset($name)){
-                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="name"');
+                        echo form_input('points', $points, 'maxlength="11" class="form-control" id="points"');
                     } else {
-                        echo form_input('points', '', 'maxlength="11" class="form-control" id="name"');
+                        echo form_input('points', '', 'maxlength="11" class="form-control" id="points"');
                     }
                 ?>
             </div>
@@ -88,9 +88,9 @@
                 <?php echo form_label($this->lang->line('answer_question_add'), 'answer', array('class' => 'form-label')); ?>
                 <?php 
                     if(isset($name)){
-                        echo form_input('answer', $answer, 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('answer', $answer, 'maxlength="65535" class="form-control" id="answer"');
                     } else {
-                        echo form_input('answer', '', 'maxlength="65535" class="form-control" id="name"');
+                        echo form_input('answer', '', 'maxlength="65535" class="form-control" id="answer"');
                     }
                 ?>
             </div>
