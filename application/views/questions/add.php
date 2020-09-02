@@ -19,17 +19,17 @@
             <div class="form-group">
                 <div class="row colbox">
                     <div class="col-md-4">
-                        <?= form_label($this->lang->line('focus_topic'), 'topic', 'for="topic"'); ?>
+                        <?= form_label($this->lang->line('focus_topic'), 'focus_topic'); ?>
                     </div>
-                    <div class="col-md-8"><?= form_dropdown('focus_topic', $topics, null, 'class="form-control"'); ?></div>
+                    <div class="col-md-8"><?= form_dropdown('focus_topic', $topics, null, 'class="form-control" id="focus_topic"'); ?></div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="row colbox">
                     <div class="col-md-4">
-                        <?= form_label($this->lang->line('question_type'), 'list_question_type', 'for="question_type"'); ?>
+                        <?= form_label($this->lang->line('question_type'), 'question_type', 'for="question_type"'); ?>
                     </div>
-                    <div class="col-md-8"><?= form_dropdown('question_type', $list_question_type, null, 'class="form-control"'); ?></div>
+                    <div class="col-md-8"><?= form_dropdown('question_type', $list_question_type, null, 'class="form-control" id="question_type"'); ?></div>
                 </div>
             </div>
 
