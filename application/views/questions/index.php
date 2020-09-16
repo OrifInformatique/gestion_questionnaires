@@ -129,22 +129,22 @@
                 if (isset($_GET['sort'])){
                     switch ($_GET['sort']){
                         case 'question_asc':
-                            $question_sort='▼';
-                            break;
-                        case 'question_desc':
                             $question_sort='▲';
                             break;
-                        case 'question_type_asc':
-                            $question_type_sort='▼';
+                        case 'question_desc':
+                            $question_sort='▼';
                             break;
-                        case 'question_type_desc':
+                        case 'question_type_asc':
                             $question_type_sort='▲';
                             break;
+                        case 'question_type_desc':
+                            $question_type_sort='▼';
+                            break;
                         case 'points_asc':
-                            $points_sort='▼';
+                            $points_sort='▲';
                             break;
                         case 'points_desc':
-                            $points_sort='▲';
+                            $points_sort='▼';
                             break;
                     }
                 }
@@ -170,6 +170,9 @@
                                     echo $this->lang->line('points'); 
                                     echo "<a onclick='sortClick(\"".(isset($_GET['sort'])?$_GET['sort']."\"":"\"").", \"points\")' class='sorted_btn btn btn-default'>$points_sort</a>" 
                                 ?>
+                            </th>
+                            <th colspan="2">
+                                <a href="<?php echo base_url('Question/reset_sort');?>" class="col-12 utton-align btn btn-secondary no-border" ><?php echo $this->lang->line('reset_sort'); ?></a>
                             </th>
                         </tr>
                     </thead>
