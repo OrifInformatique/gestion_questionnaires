@@ -12,7 +12,10 @@ function changeselect() {
     var type = document.getElementById("question_type_selected").value;
     var search = encodeURI(document.getElementById("search").value);
 
-    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&search=' + search;
+    //Get URL parameter for sort
+    var sort = new URLSearchParams(window.location.search).get('sort')
+
+    window.location = '?module=' + module + '&topic=' + topic + '&type=' + type + '&sort=' + sort + '&search=' + search;
 
     return false;
 }

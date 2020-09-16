@@ -34,7 +34,7 @@ class Question extends MY_Controller
 		if(!empty($_GET['module']) && !empty($_GET['topic'])){
 			$nbTopic = $this->topic_model->count_by("ID = ".$_GET['topic']." AND FK_Parent_Topic = ".$_GET['module']);
 			if($nbTopic==0){
-				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']);
+				redirect("Question?module=".$_GET['module']."&topic="."&type=".$_GET['type']."&sort=");
 			}
 		}
 
@@ -42,8 +42,17 @@ class Question extends MY_Controller
 			$_SESSION['filtres'] = "Question?module=".$_GET['module']."&topic=".$_GET['topic']."&type=".$_GET['type'];
 		}
 
-		if(isset($_SESSION['filtres']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+		if(isset($_GET['sort'])){
+			$_SESSION['tri'] = "&sort=".$_GET['sort'];
+		}
+
+
+		if(isset($_SESSION['filtres']) && !isset($_SESSION['tri']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
 			redirect($_SESSION['filtres']);
+		} elseif(!isset($_SESSION['filtres']) && isset($_SESSION['tri']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+			redirect("Question?module=&topic=&type=".$_SESSION['tri']);
+		} elseif(isset($_SESSION['filtres']) && isset($_SESSION['tri']) && strpos($_SERVER['REQUEST_URI'], "?") === false){
+			redirect($_SESSION['filtres'].$_SESSION['tri']);
 		}
 
 		$where = "Archive = 0";
@@ -160,7 +169,24 @@ class Question extends MY_Controller
 	 */
 	public function reset_filters() {
 		unset($_SESSION['filtres']);
-		redirect('question');
+		if(isset($_SESSION['tri'])){
+			redirect("Question?" . $_SESSION['tri']);
+		} else {
+			redirect('question');
+		}
+	}
+
+	/**
+	 * Resets the index sorting in $_SESSION['tri']
+	 * and redirect the user to index
+	 */
+	public function reset_sort(){
+		unset($_SESSION['tri']);
+		if(isset($_SESSION['filtres'])){
+			redirect($_SESSION['filtres']);
+		} else {
+			redirect('question');
+		}
 	}
 
 	/**

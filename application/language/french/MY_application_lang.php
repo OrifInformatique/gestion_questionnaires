@@ -169,6 +169,7 @@ $lang['text_search']                    = 'Recherche dans le texte';
 $lang['filter']                         = 'Filtrer';
 $lang['delete_question']                = 'Supprimer la question';
 $lang['detail_question']                = 'Détails de la question';
+$lang['reset_sort']                     = 'Effacer le tri';
 
 
 // Topics pages
