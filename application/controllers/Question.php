@@ -257,7 +257,7 @@ class Question extends MY_Controller
 				}
 				$output['nbAnswer'] = count($reponses);
 				$output['answers'] = $answers;
-				$this->display_view('multiple_choice/add', $output);
+				$this->display_view('multiple_choice/add', $output, true);
 				break;
 			case 2:
 				// MUTLIPLE ANSWER
@@ -271,7 +271,7 @@ class Question extends MY_Controller
 				}
 				$output['nbAnswer'] = count($reponses);
 				$output['answers'] = $answers;
-				$this->display_view('multiple_answer/add', $output);
+				$this->display_view('multiple_answer/add', $output, true);
 				break;
 			case 3:
 				// TODO
@@ -291,7 +291,7 @@ class Question extends MY_Controller
 				$output['answers'] = $answers;
 				$output['cloze_text'] = $cloze_text->Cloze_Text;
 				$output['id_cloze_text'] = $cloze_text->ID;
-				$this->display_view('cloze_text/add', $output);
+				$this->display_view('cloze_text/add', $output, true);
 				break;
 			case 5:
 				// TODO
@@ -300,7 +300,7 @@ class Question extends MY_Controller
 				// FREE ANSWER
 				$output['id_answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->ID;
 				$output['answer'] = $this->free_answer_model->get_by('FK_Question ='.$question->ID)->Answer;
-				$this->display_view('free_answers/add', $output);
+				$this->display_view('free_answers/add', $output, true);
 				break;
 			case 7:
 				// PICTURE LANDMARK
@@ -316,7 +316,7 @@ class Question extends MY_Controller
 				$output['nbAnswer'] = count($reponses);
 				$output['answers'] = $answers;
 
-				$this->display_view('picture_landmark/add', $output);
+				$this->display_view('picture_landmark/add', $output, true);
 		}
 	}
 
