@@ -86,7 +86,7 @@ class MY_Controller extends MX_Controller
     * @param  $view_parts : single view or array of view parts to display
     *         $data : data array to send to the view
     */
-    public function display_view($view_parts, $data = NULL, $question_form = false)
+    public function display_view($view_parts, $data = NULL)
     {
         // If not defined in $data, set page title to empty string
         if (!isset($data['title'])) {
@@ -97,11 +97,6 @@ class MY_Controller extends MX_Controller
         $this->load->view('common/header', $data);
         $this->load->view('common/login_bar');
         $this->load->view('common/nav_menu');
-
-        if ($question_form) {
-            //Display question form header
-            $this->load->view('common/question_form_header');
-        }
 
         if (is_array($view_parts)) {
             // Display multiple view parts defined in $data
